@@ -1,0 +1,19 @@
+{% extends "layouts/generic-template.html" %}
+
+{% block title %}Homepage{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <div class="page-header">
+            <h1>Kikar Hamedina</h1>
+        </div>
+        {% for status in statuses %}
+            <div class="well" style="direction: rtl">
+                <h3>{{ status.feed.person }}</h3>
+                <p>{{ status.content }}</p>
+                <p>{{ status.like_count }} אוהבים את זה</p>
+                <p class="small" style="font-style: italic">{{ status.published }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock body %}
