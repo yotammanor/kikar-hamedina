@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'south',
     'core',
+    'dj_facebook_realtime',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -4,16 +4,67 @@
 
 {% block body %}
     <div class="container">
-        <div class="page-header">
-            <h1>Kikar Hamedina</h1>
+        <div class="page-header clearfix">
+            <h1 class="pull-right">כיכר המדינה</h1>
         </div>
-        {% for status in statuses %}
-            <div class="well" style="direction: rtl">
-                <h3>{{ status.feed.person }}</h3>
-                <p>{{ status.content }}</p>
-                <p>{{ status.like_count }} אוהבים את זה</p>
-                <p class="small" style="font-style: italic">{{ status.published }}</p>
+
+        <ol class="breadcrumb">
+          <li><a href="#">Home</a></li>
+          {% for breadcrumb in breadcrumbs %}
+              <li><a href="#">{{breadcrumb}}</a></li>
+          {% endfor %}
+          <!-- 
+          <li><a href="#">Politician</a></li>
+          <li class="active">Benjamin Netanyahu</li>
+ -->
+        </ol>
+
+        <div class="row">
+            <div class="col-md-9">
+                {% for status in statuses %}
+                    <div class="well" style="direction: rtl">
+                        <h3>{{ status.feed.person }}</h3>
+                        <p>{{ status.content }}</p>
+                        <p>{{ status.like_count }} אוהבים את זה</p>
+                        <p class="small" style="font-style: italic">{{ status.published }}</p>
+
+                        <form class="form-inline" role="form">
+                          <div class="form-group">
+                            <label class="sr-only" for="inputTag">Tag</label>
+                            <input type="text" class="form-control" id="inputTag" placeholder="Tag">
+                          </div>
+                          <button type="submit" class="btn btn-primary">Add tag</button>
+                        </form>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+
+            <div class="col-md-3">
+                <div class="list-group">
+                    {% for person in persons %}
+                        <a href="/person/{{person.id}}/" class="list-group-item">
+                        {{person.name}}
+                        </a>
+                    {% endfor %}
+
+<!--                   <a href="/person/2/" class="list-group-item active">Bibi Netanyahu</a>
+                  <a href="/person/1/" class="list-group-item">Yair Lapid</a>
+ -->                  
+                    {% for party in parties %}
+                        <a href="/party/{{party.id}}/" class="list-group-item">
+                        {{party.name}}
+                        </a>
+                    {% endfor %}
+
+<!--                     <a href="/party/1/" class="list-group-item">Yesh Atid</a>
+                    <a href="/party/2/" class="list-group-item">Likud</a>
+ -->                    
+                    <a href="#" class="list-group-item">National Security</a>
+                    <a href="#" class="list-group-item">Army</a>
+                </div>
+            </div>
+
+        </div>
+            
     </div>
 {% endblock body %}
