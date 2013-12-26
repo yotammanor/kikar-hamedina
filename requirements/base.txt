@@ -1,8 +1,9 @@
 Django==1.6.1
 South==0.8.4
-django-tastypie==0.11.0
+django-extensions==1.2.5
+djangorestframework==2.3.10
 facebook-sdk==0.4.0
-python-dateutil==2.2
+psycopg2==2.5.1
 python-mimeparse==0.1.4
 six==1.4.1
 wsgiref==0.1.2
