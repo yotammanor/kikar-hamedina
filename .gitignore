@@ -1,3 +1,5 @@
 .idea/
 *.pyc
 bak/
+
+/kikar_hamedina/kikar_hamedina/settings/base.py
