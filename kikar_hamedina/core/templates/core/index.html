@@ -7,13 +7,58 @@
         <div class="page-header">
             <h1>Kikar Hamedina</h1>
         </div>
-        {% for status in statuses %}
-            <div class="well" style="direction: rtl">
-                <h3>{{ status.feed.person }}</h3>
-                <p>{{ status.content }}</p>
-                <p>{{ status.like_count }} אוהבים את זה</p>
-                <p class="small" style="font-style: italic">{{ status.published }}</p>
+        <div class="row">
+            {% verbatim %}
+            <div class="col-md-9" ng-view></div>
+            <div class="col-md-3" ng-controller="NavigationCtrl">
+                {{ data }}
+                <ul class="list-group">
+                    <li ng-repeat="party in parties" class="list-group-item">
+                        <a href="/#/party/{{ party.id }}">{{ party.name }}</a></li>
+                </ul>
             </div>
-        {% endfor %}
+            {% endverbatim %}
+        </div>
     </div>
+
+    <script type="text/javascript">
+        var app = angular.module('kh', ['ngResource', 'ngRoute'])
+                .config(function ($routeProvider) {
+                    $routeProvider
+                        .when('/party/:partyId', {templateUrl: '/static/partials/party.html',
+                                controller: 'PartyCtrl',
+                                resolve: {
+                                    party: function (Parties, $route) {
+                                        return Parties.get({partyId: $route.current.params.partyId})
+                                    }
+                                }
+                        })
+                        .otherwise({redirectTo: '/'})
+                })
+                .factory('Parties', function ($resource) {
+                    return $resource(
+                        '/api/parties/:partyId/?format=json',
+                        { partyId: '@partyId' },
+                        {'getAll': { method: "GET", isArray: true }}
+                    )
+                })
+                .factory('Persons', function ($resource) {
+                    return $resource(
+                        '/api/persons/:personId/?format=json',
+                        {personId: '@personId'}
+                    )
+                })
+                .controller('NavigationCtrl', function ($scope, Parties, $http) {
+                    $scope.parties = Parties.getAll();
+
+                    $scope.data = '';
+
+                    $scope.getPerson = function (partyId) {
+                        $scope.data = Parties.get({partyId: partyId});
+                    }
+                })
+                .controller('PartyCtrl', function ($scope, party) {
+                    $scope.party = party;
+                })
+    </script>
 {% endblock body %}
