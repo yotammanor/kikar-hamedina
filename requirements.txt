@@ -1,7 +1,6 @@
 Django==1.6.1
 South==0.8.4
 django-extensions==1.2.5
-## FIXME: could not find svn URL in dependency_links for this package:
 django-facebook-realtime==0.1.1-20130208
 djangorestframework==2.3.10
 facebook-sdk==0.4.0

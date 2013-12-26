@@ -10,7 +10,6 @@ urlpatterns = patterns('',
     url(r'^statuses/$', api.StatusList.as_view(), name='status-list'),
     url(r'^feeds/$', api.FeedList.as_view(), name='feed-list'),
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^$', views.index, name='index'),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
