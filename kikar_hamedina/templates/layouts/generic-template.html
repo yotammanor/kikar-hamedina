@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html ng-app="kh">
+<head>
+    <title>Kikar Hamedina | {% block title %}{% endblock title %}</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-theme.css" />
+
+    <!-- AngularJS -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/angularjs/1.2.5/angularjs.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/angularjs/1.2.5/angular-route.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/angularjs/1.2.5/angular-resource.js"></script>
+
+</head>
+<body>
+    {% block body %}{% endblock body %}
+</body>
+</html>
