@@ -10,11 +10,7 @@ Installation
 
 .. Set your db inside ``kikar_hamedina/kikar_hamedina/settings/base.py`` with your db details.
 
-<<<<<<< HEAD
 .. Install required packages: ``pip install -r requirements/local.txt`` (for local version requirements)
-=======
-Install required packages: ``pip install -r requirements/local.txt`` (for local version requirements)
-
 
 
 Once you're all setup run:
@@ -35,4 +31,3 @@ python manage.py fetchfeed
 The above downloads all feeds. You can also run:
 python manage.py fetchfeed {feed_id}
 to download a single feed.
->>>>>>> c70a69eba98426046486e36e552fa875cefbfbec
