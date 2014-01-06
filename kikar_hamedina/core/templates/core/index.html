@@ -79,11 +79,11 @@
                                     }
                                 }
                         })
-                        .when('/politician/:politicianId', {templateUrl: '/static/partials/politician.html',
-                                controller: 'PoliticianCtrl',
+                        .when('/person/:personId', {templateUrl: '/static/partials/person.html',
+                                controller: 'PersonCtrl',
                                 resolve: {
-                                    politician: function (Politicians, $route) {
-                                        return Politicians.get({politicianId: $route.current.params.politicianId})
+                                    person: function (Persons, $route) {
+                                        return Persons.get({personId: $route.current.params.personId})
                                     }
                                 }
                         })
@@ -113,6 +113,9 @@
                 })
                 .controller('PartyCtrl', function ($scope, party) {
                     $scope.party = party;
+                })
+                .controller('PersonCtrl', function ($scope, person) {
+                    $scope.person = person;
                 })
     </script>
 {% endblock body %}
