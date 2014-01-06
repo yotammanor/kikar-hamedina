@@ -71,37 +71,61 @@
         var app = angular.module('kh', ['ngResource', 'ngRoute'])
                 .config(function ($routeProvider) {
                     $routeProvider
-                        .when('/party/:partyId', {templateUrl: '/static/partials/party.html',
-                                controller: 'PartyCtrl',
-                                resolve: {
-                                    party: function (Parties, $route) {
-                                        return Parties.get({partyId: $route.current.params.partyId})
-                                    }
+                        // .when('/', {
+                        //     templateUrl: '/static/partials/welcome.html',
+                        //     controller: 'WelcomeCtrl',
+                        //     resolve: {
+                        //         statuses: function (Statuses, $route) {
+                        //             var statuses = Statuses.get({});
+                        //             console.log(statuses);
+                        //             return statuses;
+                        //         }
+                        //     }
+                        // })
+                        .when('/party/:partyId', {
+                            templateUrl: '/static/partials/party.html',
+                            controller: 'PartyCtrl',
+                            resolve: {
+                                party: function (Parties, $route) {
+                                    var party = Parties.get({partyId: $route.current.params.partyId});
+                                    console.log(party);
+                                    return party;
                                 }
+                            }
                         })
-                        .when('/person/:personId', {templateUrl: '/static/partials/person.html',
-                                controller: 'PersonCtrl',
-                                resolve: {
-                                    person: function (Persons, $route) {
-                                        return Persons.get({personId: $route.current.params.personId})
-                                    }
+                        .when('/person/:personId', {
+                            templateUrl: '/static/partials/person.html',
+                            controller: 'PersonCtrl',
+                            resolve: {
+                                person: function (Persons, $route) {
+                                    var person = Persons.get({personId: $route.current.params.personId});
+                                    console.log(person);
+                                    return person;
                                 }
+                            }
                         })
-                        .otherwise({redirectTo: '/'})
+                        .otherwise({redirectTo: '/'});
                 })
                 .factory('Parties', function ($resource) {
                     return $resource(
                         '/api/parties/:partyId/?format=json',
                         { partyId: '@partyId' },
                         {'getAll': { method: "GET", isArray: true }}
-                    )
+                    );
                 })
                 .factory('Persons', function ($resource) {
                     return $resource(
                         '/api/persons/:personId/?format=json',
                         {personId: '@personId'}
-                    )
+                    );
                 })
+                // .factory('Statuses', function ($resource) {
+                //     return $resource(
+                //         '/api/parties/:partyId/?format=json',
+                //         { partyId: '@partyId' },
+                //         {'getAll': { method: "GET", isArray: true }}
+                //     );
+                // })
                 .controller('NavigationCtrl', function ($scope, Parties, $http) {
                     $scope.parties = Parties.getAll();
 
@@ -109,13 +133,16 @@
 
                     $scope.getPerson = function (partyId) {
                         $scope.data = Parties.get({partyId: partyId});
-                    }
+                    };
+                })
+                .controller('WelcomeCtrl', function ($scope, statuses) {
+                    $scope.statuses = statuses;
                 })
                 .controller('PartyCtrl', function ($scope, party) {
                     $scope.party = party;
                 })
                 .controller('PersonCtrl', function ($scope, person) {
                     $scope.person = person;
-                })
+                });
     </script>
 {% endblock body %}
