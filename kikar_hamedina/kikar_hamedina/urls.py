@@ -3,7 +3,7 @@ from django.contrib import admin
 from core.views import index
 from core.views import person
 from core.views import party
-from core.views import status
+# from core.views import status
 
 admin.autodiscover()
 
@@ -13,5 +13,5 @@ urlpatterns = patterns('',
     url(r'^$', index, name='index'),
     url(r'^person/(?P<person_id>\d+)/$', person, name='person'),
     url(r'^party/(?P<party_id>\d+)/$', party, name='party'),
-    url(r'^status/(?P<status_id>\d+)/$', status, name='status')
+    # url(r'^status/(?P<status_id>\d+)/$', status, name='status')
 )
