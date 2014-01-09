@@ -1,7 +1,9 @@
 import datetime
 
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone
 import facebook
 from ...models import Facebook_Feed as Facebook_Feed_Model, Facebook_Status as Facebook_Status_Model
 
@@ -24,7 +26,7 @@ class Command(BaseCommand):
 
         select_self_published_status_query = """
                 SELECT
-                    post_id, message, created_time, like_info, comment_info, share_count
+                    post_id, message, created_time, like_info, comment_info, share_count, updated_time
                 FROM
                     stream
                 WHERE
@@ -37,14 +39,35 @@ class Command(BaseCommand):
         Receives a single status object as retrieved from facebook-sdk, an inserts the status
         to the db.
         """
-
-        Facebook_Status_Model(feed_id=feed_id,
-                              status_id=status_object['post_id'],
-                              content=status_object['message'],
-                              like_count=status_object['like_info']['like_count'],
-                              comment_count=status_object['comment_info']['comment_count'],
-                              share_count=status_object['share_count'],
-                              published=datetime.datetime.fromtimestamp(int(status_object['created_time']))).save()
+        #Create a datetime object from int received in status_object
+        current_time_of_update = datetime.datetime.fromtimestamp(status_object['updated_time'],
+                                                                 tz=timezone.utc)
+        try:
+            # If post_id already exists in DB
+            status = Facebook_Status_Model.objects.get(status_id=status_object['post_id'])
+            if status.updated < current_time_of_update:
+                # If post_id exists but of earlier update time, fields are updated.
+                status.content = status_object['message']
+                status.like_count = status_object['like_info']['like_count']
+                status.comment_count = status_object['comment_info']['comment_count']
+                status.share_count = status_object['share_count']
+                status.updated = current_time_of_update
+            else:
+                # If post_id exists but of equal or later time (unlikely, but may happen), disregard
+                self.stdout.write('status id {0} is already up-to-date.'.format(status_object['post_id']))
+        except Facebook_Status_Model.DoesNotExist:
+            # If post_id does not exist at all, create it from data.
+            status = Facebook_Status_Model(feed_id=feed_id,
+                                  status_id=status_object['post_id'],
+                                  content=status_object['message'],
+                                  like_count=status_object['like_info']['like_count'],
+                                  comment_count=status_object['comment_info']['comment_count'],
+                                  share_count=status_object['share_count'],
+                                  published=datetime.datetime.fromtimestamp(int(status_object['created_time'])),
+                                  updated=current_time_of_update)
+        finally:
+            # save status object.
+            status.save()
 
     def get_feed_statuses(self, feed):
         """

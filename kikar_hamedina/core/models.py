@@ -34,6 +34,7 @@ class Facebook_Status(models.Model):
     comment_count = models.PositiveIntegerField(null=True)
     share_count = models.PositiveIntegerField(null=True)
     published = models.DateTimeField()
+    updated = models.DateTimeField()
 
     def __unicode__(self):
         return self.status_id
