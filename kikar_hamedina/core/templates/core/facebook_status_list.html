@@ -1,0 +1,28 @@
+{% extends "layouts/plain-generic-template.html" %}
+
+{% block title %}Homepage{% endblock title %}
+
+{% block body %}
+
+{% for status in object_list %}
+    <div class="container">
+        <div class="well">
+            {{ status.content }}
+            <br>
+            {% for tag in status.tags.all %}
+                {{ tag.name }}
+            {% endfor %}
+            <form action="{% url 'add-tag' status.id %}" method="POST" role="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="add-tag">Add tag</label>
+                    <input type="text" class="form-control" id="add-tag" name="tag" placeholder="Tag">
+                </div>
+            
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock body %}

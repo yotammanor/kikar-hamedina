@@ -3,6 +3,7 @@ from .models import Facebook_Status, Facebook_Feed, Person, Party
 
 
 def index(request):
+
     statuses = Facebook_Status.objects.order_by('published')
 
     persons = Person.objects.all()
