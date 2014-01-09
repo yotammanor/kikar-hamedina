@@ -9,3 +9,9 @@ DATABASES = {
         'HOST': 'localhost'
     }
 }
+
+ALLOWED_HOSTS = [
+    '95.85.54.42',
+    '95.85.54.42:8000',
+    'kikar.hasadna.org.il'
+]
