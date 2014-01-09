@@ -39,9 +39,10 @@ class Facebook_Status(models.Model):
     def __unicode__(self):
         return self.status_id
 
+
 class Tag(models.Model):
     name = models.CharField(unique=True, max_length=128)
-    slug = models.SlugField(unique=True, max_length=128)
+    slug = models.SlugField(unique=False, max_length=128)
     description = models.TextField()
     statuses = models.ManyToManyField(Facebook_Status, related_name='tags')
 
