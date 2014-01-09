@@ -12,19 +12,24 @@ class HomeView(ListView):
 def add_tag(request, id):
     status = Facebook_Status.objects.get(id=id)
 
-    try:
-        tag = Tag.objects.get(name=request.POST['tag'])
-    except Tag.DoesNotExist:
-        # create tag
-        tag = Tag(
-            name = request.POST['tag'],
-            slug = slugify(request.POST['tag'])
-        )
-        tag.save()
-    finally:
-        # add status to tag statuses
-        tag.statuses.add(status)
-        tag.save()
+    tagsString = request.POST['tag']
+    tagsList = tagsString.split(',')
+
+    for tagName in tagsList:
+        strippedTagName = tagName.strip()
+        try:
+            tag = Tag.objects.get(name=strippedTagName)
+        except Tag.DoesNotExist:
+            # create tag
+            tag = Tag(
+                name = strippedTagName,
+                slug = slugify(strippedTagName)
+            )
+            tag.save()
+        finally:
+            # add status to tag statuses
+            tag.statuses.add(status)
+            tag.save()
 
     # Always return an HttpResponseRedirect after successfully dealing
     # with POST data. This prevents data from being posted twice if a
