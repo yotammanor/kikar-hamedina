@@ -87,3 +87,8 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+try:
+    from host_settings import *
+except ImportError:
+    pass
