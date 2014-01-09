@@ -12,7 +12,7 @@
             {% for tag in status.tags.all %}
                 {{ tag.name }}
             {% endfor %}
-            <form action="{% url 'add-tag' status.id %}" method="POST" role="form">
+            <form action="{% url 'add-tag' status.id %}" method="POST" role="form" accept-charset="utf-8">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="add-tag">Add tag</label>
