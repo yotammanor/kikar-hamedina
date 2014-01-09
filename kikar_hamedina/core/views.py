@@ -8,7 +8,8 @@ def index(request):
     persons = Person.objects.all()
     parties = Party.objects.all()
     return render(request, 'core/index.html',
-        {'statuses': statuses, 'persons': persons, 'parties': parties, 'breadcrumbs': []})
+                  {'statuses': statuses, 'persons': persons, 'parties': parties, 'breadcrumbs': []})
+
 
 def person(request, person_id):
     current_person = Person.objects.get(id=person_id)
@@ -19,8 +20,13 @@ def person(request, person_id):
 
     persons = Person.objects.all()
     parties = Party.objects.all()
-    return render(request, 'core/index.html',
-        {'statuses': statuses, 'persons': persons, 'parties': parties, 'breadcrumbs': ['Politicians', current_person.name]})
+    return render(request,
+                  'core/index.html',
+                  {'statuses': statuses,
+                   'persons': persons,
+                   'parties': parties,
+                   'breadcrumbs': ['Politicians', current_person.name]})
+
 
 def party(request, party_id):
     current_party = Party.objects.get(id=party_id)
@@ -31,4 +37,7 @@ def party(request, party_id):
     persons = Person.objects.all()
     parties = Party.objects.all()
     return render(request, 'core/index.html',
-        {'statuses': party_statuses, 'persons': persons, 'parties': parties, 'breadcrumbs': ['Parties', current_party.name]})
+                  {'statuses': party_statuses,
+                   'persons': persons,
+                   'parties': parties,
+                   'breadcrumbs': ['Parties', current_party.name]})
