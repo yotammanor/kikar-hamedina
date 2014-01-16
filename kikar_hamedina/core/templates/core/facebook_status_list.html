@@ -21,8 +21,8 @@
             <li class="dropdown">
                 <a href="" class="dropdown-toggle" data-toggle="dropdown">פוליטיקאים <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  {% for status in object_list %}
-                    <li><a href="#">Politician</a></li>
+                  {% for person in navPersons %}
+                    <li><a href="{% url 'plain-person' person.id %}">{{person.name}}</a></li>
                   {% endfor %}
                   <li class="divider"></li>
                   <li><a href="/persons/">כל הפוליטיקאים</a></li>
@@ -31,8 +31,8 @@
             <li class="dropdown">
                 <a href="" class="dropdown-toggle" data-toggle="dropdown">מפלגות <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  {% for status in object_list %}
-                    <li><a href="#">Party</a></li>
+                  {% for party in navParties %}
+                    <li><a href="{% url 'plain-party' party.id %}">{{party.name}}</a></li>
                   {% endfor %}
                   <li class="divider"></li>
                   <li><a href="/parties/">כל המפלגות</a></li>
@@ -41,8 +41,8 @@
             <li class="dropdown">
                 <a href="" class="dropdown-toggle" data-toggle="dropdown">נושאים <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  {% for status in object_list %}
-                    <li><a href="#">Topic</a></li>
+                  {% for tag in navTags %}
+                    <li><a href="#">{{tag.name}}</a></li>
                   {% endfor %}
                   <li class="divider"></li>
                   <li><a href="/tags/">כל הנושאים</a></li>
@@ -88,20 +88,22 @@
                         {{ tag.name }}
                     {% endfor %}
                     </p>
-                    <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST" role="form">
-                        {% csrf_token %}
-        <!--                 <div class="form-group">
-                            <label for="add-tag">Add tag</label>
-                            <input type="text" class="form-control" id="add-tag" name="tag" placeholder="Tag">
-                        </div> -->
+                    {% if user.is_authenticated %}
+                        <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST" role="form">
+                            {% csrf_token %}
+            <!--                 <div class="form-group">
+                                <label for="add-tag">Add tag</label>
+                                <input type="text" class="form-control" id="add-tag" name="tag" placeholder="Tag">
+                            </div> -->
 
-                        <div class="form-group">
-                            <label class="sr-only" for="add-tag">Add tag</label>
-                            <input type="text" class="form-control wide-input" id="add-tag" name="tag" placeholder="תכניס תג (comma separated)">
-                        </div>
-                    
-                        <button type="submit" class="btn btn-primary">תוסיף תגים</button>
-                    </form>
+                            <div class="form-group">
+                                <label class="sr-only" for="add-tag">Add tag</label>
+                                <input type="text" class="form-control wide-input" id="add-tag" name="tag" placeholder="תכניס תג (comma separated)">
+                            </div>
+                        
+                            <button type="submit" class="btn btn-primary">תוסיף תגים</button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

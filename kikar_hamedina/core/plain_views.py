@@ -48,7 +48,12 @@ class StatusIdFilterView(ListView):
         selected_filter = variable_column
         return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
 
-    # def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['navPersons'] = Person.objects.all().order_by('name')
+        context['navParties'] = Party.objects.all().order_by('name')
+        context['navTags'] = Tag.objects.all().order_by('name')
+        return context
 
 
 
