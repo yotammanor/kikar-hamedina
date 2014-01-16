@@ -68,7 +68,7 @@
     <div class="container">
         <div class="page-header">
             <div class="h1">
-                Statuses
+                סטוסים
             </div>
         </div>
     </div>
@@ -80,7 +80,7 @@
                     <h4>{{ status.feed.person.name }}</h4>
                 </div>
                 <div class="panel-body">
-                    {{ status.content }}
+                    {{ status.content|linebreaks }}
                     <hr>
                     <p>
                     <strong>תגים: </strong>

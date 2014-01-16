@@ -7,7 +7,7 @@ from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
 
 class HomeView(ListView):
   model = Facebook_Status
-  paginate_by = 10
+  # paginate_by = 10
 
 def add_tag(request, id):
     status = Facebook_Status.objects.get(id=id)
