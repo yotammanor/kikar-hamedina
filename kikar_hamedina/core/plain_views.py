@@ -1,3 +1,4 @@
+from django.core.exceptions import FieldError
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -5,9 +6,66 @@ from django.views.generic.list import ListView
 from django.template.defaultfilters import slugify
 from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
 
+
 class HomeView(ListView):
-  model = Facebook_Status
-  paginate_by = 10
+    model = Facebook_Status
+    paginate_by = 10
+
+
+# class PersonView(ListView):
+#     model = Facebook_Status
+#     paginate_by = 10
+#
+#     def get_queryset(self):
+#         return Facebook_Status.objects.filter(feed__person__id=self.kwargs['id']).order_by('-published')
+#
+#
+# class PartyView(ListView):
+#     model = Facebook_Status
+#     paginate_by = 10
+#
+#     def get_queryset(self):
+#         return Facebook_Status.objects.filter(feed__person__party__id=self.kwargs['id']).order_by('-published')
+#
+#
+# class TagView(ListView):
+#     model = Facebook_Status
+#     paginate_by = 10
+#
+#     def get_queryset(self):
+#         return Facebook_Status.objects.filter(tags__id=self.kwargs['id']).order_by('-published')
+
+
+class StatusIdFilterView(ListView):
+    model = Facebook_Status
+    paginate_by = 10
+
+    def get_queryset(self):
+        variable_column = self.kwargs['variable_column']
+        # search_field = 'id'
+        search_string = self.kwargs['id']
+        selected_filter = variable_column
+        return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+
+
+class StatusFilterView(ListView):
+    model = Facebook_Status
+    paginate_by = 10
+
+    def get_queryset(self):
+        variable_column = self.kwargs['variable_column']
+        search_field = self.kwargs['search_field']
+        search_string = self.kwargs['id']
+        selected_filter = variable_column + '__' + search_field
+        try:
+            query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+        except FieldError:
+            selected_filter = variable_column + '__' + 'name'
+            query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+            # Replace with redirect to actual url with 'name' in path
+            # HttpResponseRedirect()
+        return query_set
+
 
 def add_tag(request, id):
     status = Facebook_Status.objects.get(id=id)
