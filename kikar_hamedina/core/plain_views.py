@@ -12,47 +12,7 @@ class HomeView(ListView):
     paginate_by = 10
 
 
-# class PersonView(ListView):
-#     model = Facebook_Status
-#     paginate_by = 10
-#
-#     def get_queryset(self):
-#         return Facebook_Status.objects.filter(feed__person__id=self.kwargs['id']).order_by('-published')
-#
-#
-# class PartyView(ListView):
-#     model = Facebook_Status
-#     paginate_by = 10
-#
-#     def get_queryset(self):
-#         return Facebook_Status.objects.filter(feed__person__party__id=self.kwargs['id']).order_by('-published')
-#
-#
-# class TagView(ListView):
-#     model = Facebook_Status
-#     paginate_by = 10
-#
-#     def get_queryset(self):
-#         return Facebook_Status.objects.filter(tags__id=self.kwargs['id']).order_by('-published')
-
-
-class StatusIdFilterView(ListView):
-    model = Facebook_Status
-    paginate_by = 10
-    # context_object_name = 'filtered_statuses'
-
-    def get_queryset(self):
-        variable_column = self.kwargs['variable_column']
-        # search_field = 'id'
-        search_string = self.kwargs['id']
-        selected_filter = variable_column
-        return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
-
-    # def get_context_data(self, **kwargs):
-
-
-
-class StatusFilterView(ListView):
+class StatusFilterViewSearchFieldAsVariable(ListView):
     model = Facebook_Status
     paginate_by = 10
 
@@ -68,6 +28,41 @@ class StatusFilterView(ListView):
             query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
             # TODO: Replace with redirect to actual url with 'name' in path, and HttpResponseRedirect()
         return query_set
+
+
+class StatusIdFilterView(ListView):
+    model = Facebook_Status
+    paginate_by = 10
+    context_object_name = 'filtered_statuses'
+
+    def get_queryset(self):
+        variable_column = self.kwargs['variable_column']
+        # search_field = 'id'
+        search_string = self.kwargs['id']
+        selected_filter = variable_column
+        return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+
+
+class StatusIdFilterViewContextForParty(ListView):
+    model = Facebook_Status
+    paginate_by = 10
+    context_object_name = 'filtered_statuses'
+
+    def get_queryset(self):
+        variable_column = self.kwargs['variable_column']
+        # search_field = 'id'
+        search_string = self.kwargs['id']
+        selected_filter = variable_column
+        return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+
+    def get_context_data(self, **kwargs):
+            # Call the base implementation first to get a context
+            context = super(StatusIdFilterViewContextForParty, self).get_context_data(**kwargs)
+            # Add in a relevant data
+            party_id = self.kwargs['id']
+            context['party'] = Party.objects.get(id=party_id)
+            context['number_of_people_in_party'] = Person.objects.filter(party__id=party_id).count()
+            return context
 
 
 def add_tag(request, id):
