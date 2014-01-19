@@ -11,6 +11,13 @@ class HomeView(ListView):
     model = Facebook_Status
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        context['navPersons'] = Person.objects.all().order_by('name')
+        context['navParties'] = Party.objects.all().order_by('name')
+        context['navTags'] = Tag.objects.all().order_by('name')
+        return context
+
 
 class StatusFilterViewSearchFieldAsVariable(ListView):
     model = Facebook_Status
