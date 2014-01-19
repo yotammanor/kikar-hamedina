@@ -63,13 +63,17 @@ class StatusIdFilterViewContextForParty(ListView):
         return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
 
     def get_context_data(self, **kwargs):
-            # Call the base implementation first to get a context
-            context = super(StatusIdFilterViewContextForParty, self).get_context_data(**kwargs)
-            # Add in a relevant data
-            party_id = self.kwargs['id']
-            context['party'] = Party.objects.get(id=party_id)
-            context['number_of_people_in_party'] = Person.objects.filter(party__id=party_id).count()
-            return context
+        # Call the base implementation first to get a context
+        context = super(StatusIdFilterViewContextForParty, self).get_context_data(**kwargs)
+        # Add in a relevant data
+        party_id = self.kwargs['id']
+        context['party'] = Party.objects.get(id=party_id)
+        context['number_of_people_in_party'] = Person.objects.filter(party__id=party_id).count()
+
+        context['navPersons'] = Person.objects.all().order_by('name')
+        context['navParties'] = Party.objects.all().order_by('name')
+        context['navTags'] = Tag.objects.all().order_by('name')
+        return context
 
 
 def add_tag(request, id):
