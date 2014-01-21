@@ -13,9 +13,9 @@ Installation
 .. Install required packages: ``pip install -r requirements/local.txt`` (for local version requirements)
 
 To insert initial data into the db, do as follows:
-python manage.py loaddata data_fixture.json
+''python manage.py loaddata data_fixture.json''
 * Note that the core_* tables in the db need to be truncated first. 
-python fetchfeed --initial
+''python fetchfeed --initial''
 
 The first command will insert to db data from a pre-created list of parties, persons, feeds, and tags.
 The second command will fetch statuses for all feeds in data. Tag initial sets the request to 500 messages per feed (as opposed to default of 20), so it might take a while to finish. 
