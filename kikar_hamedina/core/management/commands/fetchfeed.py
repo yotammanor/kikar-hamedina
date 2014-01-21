@@ -1,5 +1,5 @@
 import datetime
-
+from optparse import make_option
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -11,26 +11,41 @@ from ...models import Facebook_Feed as Facebook_Feed_Model, Facebook_Status as F
 # TODO: create only statuses which aren't shown in db
 # TODO: update existing statuses
 
+DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN = 500
+DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN = 20
+
 
 class Command(BaseCommand):
     args = '<feed_id>'
     help = 'Fetches a feed'
+    new_option = make_option('--initial',
+                             action='store_true',
+                             dest='initial',
+                             default=False,
+                             help='flag initial runs fql query with limit of {0} instead of regular limit of {1}'
+                             .format(DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN,
+                                     DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN))
+    option_list_helper = list()
+    for x in BaseCommand.option_list:
+        option_list_helper.append(x)
+    option_list_helper.append(new_option)
+    option_list = tuple(option_list_helper)
 
     graph = facebook.GraphAPI()
 
-    def fetch_status_objects_from_feed(self, feed_id):
+    def fetch_status_objects_from_feed(self, feed_id, fql_limit):
         """
         Receives a feed_id for a facebook
         Returns a facebook-sdk fql query, with all status objects published by the page itself.
-        """
-
+                """
         select_self_published_status_query = """
                 SELECT
                     post_id, message, created_time, like_info, comment_info, share_count, updated_time
                 FROM
                     stream
                 WHERE
-                    source_id IN ({0}) AND actor_id IN ({0})""".format(feed_id)
+                    source_id IN ({0}) AND actor_id IN ({0})
+                LIMIT {1}""".format(feed_id, fql_limit)
 
         return self.graph.fql(query=select_self_published_status_query)
 
@@ -69,12 +84,12 @@ class Command(BaseCommand):
             # save status object.
             status.save()
 
-    def get_feed_statuses(self, feed):
+    def get_feed_statuses(self, feed, fql_limit):
         """
         Returns a Dict object of feed ID. and retrieved status objects.
-        """
+                """
 
-        return {'feed_id': feed.id, 'statuses': self.fetch_status_objects_from_feed(feed.vendor_id)}
+        return {'feed_id': feed.id, 'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, fql_limit)}
 
     def handle(self, *args, **options):
         """
@@ -87,10 +102,17 @@ class Command(BaseCommand):
         # Initialize facebook graph access tokens
         self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
 
+        if options['initial']:
+            fql_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN
+        else:
+            fql_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN
+        print 'Variable fql_limit set to: {0}.'.format(fql_limit)
+
         # Case no args - fetch all feeds
         if len(args) == 0:
             for feed in Facebook_Feed_Model.objects.all():
-                feeds_statuses.append(self.get_feed_statuses(feed))
+                self.stdout.write('Working on feed: {0}.'.format(feed.pk))
+                feeds_statuses.append(self.get_feed_statuses(feed, fql_limit))
             self.stdout.write('Successfully fetched all')
 
         # Case arg exists - fetch feed by id supplied
@@ -103,7 +125,7 @@ class Command(BaseCommand):
             except Facebook_Feed_Model.DoesNotExist:
                 raise CommandError('Feed "%s" does not exist' % feed_id)
 
-            feeds_statuses.append(self.get_feed_statuses(feed))
+            feeds_statuses.append(self.get_feed_statuses(feed, fql_limit))
 
         # Case invalid args
         else:

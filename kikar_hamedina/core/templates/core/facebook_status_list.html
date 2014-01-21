@@ -68,7 +68,11 @@
     <div class="container" id="context-header">
         <div class="page-header">
             <div class="h1">
-                {{ party.name }}
+                {% if party.name %}
+                    {{ party.name }}
+                {% else %}
+                    סטאטוסים
+                {%  endif %}
             </div>
         </div>
     </div>
