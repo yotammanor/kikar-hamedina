@@ -12,24 +12,33 @@ Installation
 
 .. Install required packages: ``pip install -r requirements/local.txt`` (for local version requirements)
 
+
+
 To insert initial data into the db, do as follows:
-``python manage.py loaddata data_fixture.json``
-* Note that the core_* tables in the db need to be truncated first. 
+
+``python manage.py loaddata data_fixture.json`` - Note that the ``core_*`` tables in the db need to be truncated first. 
+
 ``python fetchfeed --initial``
 
 The first command will insert to db data from a pre-created list of parties, persons, feeds, and tags.
 The second command will fetch statuses for all feeds in data. Tag initial sets the request to 500 messages per feed (as opposed to default of 20), so it might take a while to finish. 
 
-You can also run:
-``python manage.py fetchfeed {feed_id} [--initial]``
-to download a single feed.
+
+You can also run: ``python manage.py fetchfeed {feed_id} [--initial]`` to download a single feed.
+
+
 
 Once you're all setup run:
+
 ``python manage.py runserver``
+
 and enjoy the show.
 
 
+
+
 Editing data_fixture:
+
 At the main directory there's a sub-directory called data. Within it there are four csv files, for Party, Person, Feed, and Tag data, which can be edited.
 
 * Note that in order to handle encoding correctly those csv files are UTF-8, which Microsoft Excel does not create as default. You may reffer to http://stackoverflow.com/questions/4221176/excel-to-csv-with-utf8-encoding for help.
