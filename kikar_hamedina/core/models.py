@@ -20,17 +20,17 @@ class Person(models.Model):
 
 class Facebook_Feed(models.Model):
     person = models.ForeignKey('Person')
-    vendor_id = models.CharField(unique=True, max_length=128)
-    username = models.CharField(null=True, max_length=128)
-    birthday = models.CharField(null=True, max_length=128)
-    name = models.CharField(null=True, max_length=256)
+    vendor_id = models.TextField(null=True)
+    username = models.TextField(null=True, default=None)
+    birthday = models.TextField(null=True)
+    name = models.TextField(null=True)
+    about = models.TextField(null=True)
     talking_about_count = models.IntegerField(default=0)
     fan_count = models.IntegerField(default=0)
-    page_url = models.URLField(null=True)
-    pic_large = models.URLField(null=True)
-    pic_square = models.URLField(null=True)
-    website = models.URLField(null=True)
-    about = models.TextField(null=True)
+    page_url = models.URLField(null=True, max_length=2000)
+    pic_large = models.URLField(null=True, max_length=2000)
+    pic_square = models.URLField(null=True, max_length=2000)
+    website = models.URLField(null=True, max_length=2000)
 
     def __unicode__(self):
         return unicode(self.person) + " " + self.vendor_id

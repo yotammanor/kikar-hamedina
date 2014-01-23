@@ -3,14 +3,15 @@
 {% block title %}Homepage{% endblock title %}
 
 {% block h1 %}
-    {{ object.name }}
+    <i class="fa fa-user"></i> {{ object.name }}
 {% endblock %}
 
 {% block details %}
 
         <div class="h4">
-            מפלגה:
-            {{ object.party.name }}
+            <i class="fa fa-group"></i> {{ object.party.name }}
+            <i class="fa fa-thumbs-up"></i> {{ object.feed.all.0.like_count }}
+
         </div>
 
 {% endblock %}
@@ -18,7 +19,7 @@
 {%  block sidebar %}
     <ul class="list-group">
         {% for person in object.party.persons.all %}
-            <li class="list-group-item"><a href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
+            <li class="list-group-item"><i class="fa fa-user"></i> <a href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
         {% endfor %}
     </ul>
 {%  endblock %}

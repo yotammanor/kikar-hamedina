@@ -2,7 +2,8 @@
 <html>
 <head>
     <title>כיכר המדינה | {% block title %}{% endblock title %}</title>
-
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Alef:400,700' rel='stylesheet' type='text/css'>
     <!-- CSS -->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css" />
     <!-- Bootstrap RTL Theme -->
@@ -18,84 +19,88 @@
 </head>
 <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/plain/">כיכר המדינה</a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/plain/">כיכר המדינה</a>
         </div>
         <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">פוליטיקאים <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  {% for person in navPersons %}
-                    <li><a href="{% url 'plain-person' person.id %}">{{person.name}}</a></li>
-                  {% endfor %}
-                  <li class="divider"></li>
-                  <li><a href="/persons/">כל הפוליטיקאים</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">מפלגות <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  {% for party in navParties %}
-                    <li><a href="{% url 'plain-party' party.id %}">{{party.name}}</a></li>
-                  {% endfor %}
-                  <li class="divider"></li>
-                  <li><a href="/parties/">כל המפלגות</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">נושאים <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  {% for tag in navTags %}
-                    <li><a href="{% url 'plain-tag' 'name' tag.name %}">{{tag.name}}</a></li>
-                  {% endfor %}
-                  <li class="divider"></li>
-                  <li><a href="/tags/">כל הנושאים</a></li>
-                </ul>
-            </li>
-            <!-- <li class="active"><a href="#">פוליטיקאים</a></li> -->
-            <!-- <li><a href="#about">מפלגות</a></li> -->
-            <!-- <li><a href="#contact">נושאים</a></li> -->
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
 
-          </ul>
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>
+                        פוליטיקאים <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for person in navPersons %}
+                            <li><a href="{% url 'plain-person' person.id %}">{{person.name}}</a></li>
+                        {% endfor %}
+                        <li class="divider"></li>
+                        <li><a href="/persons/">כל הפוליטיקאים</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-group"></i>
+                        מפלגות <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for party in navParties %}
+                            <li><a href="{% url 'plain-party' party.id %}">{{party.name}}</a></li>
+                        {% endfor %}
+                        <li class="divider"></li>
+                        <li><a href="/parties/">כל המפלגות</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-comments-o"></i>
+                        נושאים <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for tag in navTags %}
+                            <li><a href="{% url 'plain-tag' 'name' tag.name %}">{{tag.name}}</a></li>
+                        {% endfor %}
+                        <li class="divider"></li>
+                        <li><a href="/tags/">כל הנושאים</a></li>
+                    </ul>
+                </li>
+                <!-- <li class="active"><a href="#">פוליטיקאים</a></li> -->
+                <!-- <li><a href="#about">מפלגות</a></li> -->
+                <!-- <li><a href="#contact">נושאים</a></li> -->
+
+            </ul>
 
             <form class="navbar-form navbar-left" role="search">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="חיפוש...">
-              </div>
-              <button type="submit" class="btn btn-success">חיפוש</button>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="חיפוש...">
+                </div>
+                <button type="submit" class="btn btn-success"><i class="fa fa-search"></i></button>
             </form>
 
         </div><!--/.nav-collapse -->
-      </div>
     </div>
+</div>
 
-    {% block body %}
-        <div class="container">
+{% block body %}
+    <div class="container">
 
-            <div id="context-header">
-                <div class="page-header">
-                    <h1>
-                        {% block h1 %}
-                        {% endblock %}
-                    </h1>
-                </div>
+        <div id="context-header">
+            <div class="page-header">
+                <h1>
+                    {% block h1 %}
+                    {% endblock %}
+                </h1>
             </div>
-
-            {% block content %}
-            {% endblock %}
-
-
         </div>
-    {% endblock body %}
+
+        {% block content %}
+        {% endblock %}
+
+
+    </div>
+{% endblock body %}
 
 </body>
 </html>

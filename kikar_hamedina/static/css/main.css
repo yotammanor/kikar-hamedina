@@ -1,8 +1,16 @@
 body {
   padding-top: 50px; /* size of the nav bar */
   /*background-color: #DDF1FF;*/
+    font-family: "Alef", Arial, Sans-Serif;
 }
 
 .wide-input {
     width: 300px;
 }
+
+
+/*
+.navbar-brand {
+    color: #fff !important;
+}
+*/
