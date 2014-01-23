@@ -64,28 +64,45 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
-
-    <div class="container" id="context-header">
-        <div class="page-header">
-            <div class="h1">
-                {% if party.name %}
+    <div class="container">
+    {% if context_object == "party" %}
+        <div class="container" id="context-header">
+            <div class="page-header">
+                <div class="h1">
                     {{ party.name }}
-                {% else %}
-                    סטאטוסים
-                {%  endif %}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container" id="context-descriptors">
-             {% if number_of_people_in_party  %}
-                <div class="h4">
-                מספר דפים במפלגה: {{ number_of_people_in_party }}
+        {%  include "core/party_details_container.html" %}
+    {%  elif context_object == "person" %}
+        <div class="container" id="context-header">
+            <div class="page-header">
+                <div class="h1">
+                    {{ person.name }}
                 </div>
-             {% endif %}
-
-            <div class="h4">
-                אודות :
             </div>
+        </div>
+        {%  include "core/person_details_container.html" %}
+    {%  elif context_object == "tag" %}
+        <div class="container" id="context-header">
+            <div class="page-header">
+                <div class="h1">
+                    {{ tag.name }}
+                </div>
+            </div>
+        </div>
+        {%  include "core/tag_details_container.html" %}
+
+    {%  elif context_object == "index" %}
+        <div class="container" id="context-header">
+            <div class="page-header">
+                <div class="h1">
+                    עמוד ראשי
+                </div>
+            </div>
+        </div>
+        {%  include "core/index_details_container.html" %}
+    {%  endif %}
     </div>
     <div class="container">
         {% for status in object_list %}

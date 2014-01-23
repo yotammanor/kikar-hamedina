@@ -16,70 +16,61 @@ class HomeView(ListView):
         context['navPersons'] = Person.objects.all().order_by('name')
         context['navParties'] = Party.objects.all().order_by('name')
         context['navTags'] = Tag.objects.all().order_by('name')
+        context['context_object'] = self.kwargs['context_object']
         return context
 
 
-class StatusFilterViewSearchFieldAsVariable(ListView):
-    model = Facebook_Status
-    paginate_by = 10
-
-    def get_queryset(self):
-        variable_column = self.kwargs['variable_column']
-        search_field = self.kwargs['search_field']
-        search_string = self.kwargs['id']
-        selected_filter = variable_column + '__' + search_field
-        try:
-            query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
-        except FieldError:
-            selected_filter = variable_column + '__' + 'name'
-            query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
-            # TODO: Replace with redirect to actual url with 'name' in path, and HttpResponseRedirect()
-        return query_set
-
-
-class StatusIdFilterView(ListView):
+class StatusFilterUnifiedView(ListView):
     model = Facebook_Status
     paginate_by = 10
     context_object_name = 'filtered_statuses'
 
     def get_queryset(self):
         variable_column = self.kwargs['variable_column']
-        # search_field = 'id'
         search_string = self.kwargs['id']
-        selected_filter = variable_column
-        return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+        if self.kwargs['context_object'] == 'tag':
+            search_field = self.kwargs['search_field']
+            if search_field == 'id':
+                search_field = 'id'
+            else:
+                search_field = 'name'
+            selected_filter = variable_column + '__' + search_field
+            print selected_filter, search_string
+            try:
+                query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+                print query_set
+            except FieldError:
+                selected_filter = variable_column + '__' + 'name'
+                query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+                # TODO: Replace with redirect to actual url with 'name' in path, and HttpResponseRedirect()
+            return query_set
+        else:
+            selected_filter = variable_column
+            return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
 
     def get_context_data(self, **kwargs):
-        context = super(StatusIdFilterView, self).get_context_data(**kwargs)
+        context = super(StatusFilterUnifiedView, self).get_context_data(**kwargs)
         context['navPersons'] = Person.objects.all().order_by('name')
         context['navParties'] = Party.objects.all().order_by('name')
         context['navTags'] = Tag.objects.all().order_by('name')
-        return context
+        context['context_object'] = self.kwargs['context_object']
 
+        object_id = self.kwargs['id']
+        if context['context_object'] == 'party':
+            context['party'] = Party.objects.get(id=object_id)
+            context['number_of_people_in_party'] = Person.objects.filter(party__id=object_id).count()
 
-class StatusIdFilterViewContextForParty(ListView):
-    model = Facebook_Status
-    paginate_by = 10
-    context_object_name = 'filtered_statuses'
+        elif context['context_object'] == 'person':
+            context['person'] = Person.objects.get(id=object_id)
 
-    def get_queryset(self):
-        variable_column = self.kwargs['variable_column']
-        # search_field = 'id'
-        search_string = self.kwargs['id']
-        selected_filter = variable_column
-        return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+        elif context['context_object'] == 'tag':
+            if self.kwargs['search_field'] == 'id':
+                context['tag'] = Tag.objects.get(id=object_id)
+            else:
+                context['tag'] = Tag.objects.get(name=object_id)
+        elif context['context_object'] == 'index':
+            pass
 
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(StatusIdFilterViewContextForParty, self).get_context_data(**kwargs)
-        # Add in a relevant data
-        party_id = self.kwargs['id']
-        context['party'] = Party.objects.get(id=party_id)
-        context['number_of_people_in_party'] = Person.objects.filter(party__id=party_id).count()
-
-        context['navPersons'] = Person.objects.all().order_by('name')
-        context['navParties'] = Party.objects.all().order_by('name')
-        context['navTags'] = Tag.objects.all().order_by('name')
         return context
 
 
