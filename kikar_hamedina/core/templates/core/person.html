@@ -1,0 +1,24 @@
+{% extends "core/facebook_status_list.html" %}
+
+{% block title %}Homepage{% endblock title %}
+
+{% block h1 %}
+    {{ object.name }}
+{% endblock %}
+
+{% block details %}
+
+        <div class="h4">
+            מפלגה:
+            {{ object.party.name }}
+        </div>
+
+{% endblock %}
+
+{%  block sidebar %}
+    <ul class="list-group">
+        {% for person in object.party.persons.all %}
+            <li class="list-group-item"><a href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
+        {% endfor %}
+    </ul>
+{%  endblock %}

@@ -25,6 +25,7 @@ class StatusFilterUnifiedView(ListView):
     paginate_by = 10
     context_object_name = 'filtered_statuses'
 
+
     def get_queryset(self):
         variable_column = self.kwargs['variable_column']
         search_string = self.kwargs['id']
@@ -35,10 +36,8 @@ class StatusFilterUnifiedView(ListView):
             else:
                 search_field = 'name'
             selected_filter = variable_column + '__' + search_field
-            print selected_filter, search_string
             try:
                 query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
-                print query_set
             except FieldError:
                 selected_filter = variable_column + '__' + 'name'
                 query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
@@ -50,28 +49,28 @@ class StatusFilterUnifiedView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(StatusFilterUnifiedView, self).get_context_data(**kwargs)
-        context['navPersons'] = Person.objects.all().order_by('name')
-        context['navParties'] = Party.objects.all().order_by('name')
-        context['navTags'] = Tag.objects.all().order_by('name')
-        context['context_object'] = self.kwargs['context_object']
 
         object_id = self.kwargs['id']
-        if context['context_object'] == 'party':
-            context['party'] = Party.objects.get(id=object_id)
-            context['number_of_people_in_party'] = Person.objects.filter(party__id=object_id).count()
+        search_field = self.kwargs.get('search_field', 'id')
 
-        elif context['context_object'] == 'person':
-            context['person'] = Person.objects.get(id=object_id)
-
-        elif context['context_object'] == 'tag':
-            if self.kwargs['search_field'] == 'id':
-                context['tag'] = Tag.objects.get(id=object_id)
-            else:
-                context['tag'] = Tag.objects.get(name=object_id)
-        elif context['context_object'] == 'index':
-            pass
+        context['object'] = self.parent_model.objects.get(**{search_field: object_id})
 
         return context
+
+
+class PersonView(StatusFilterUnifiedView):
+    template_name = "core/person.html"
+    parent_model = Person
+
+
+class PartyView(StatusFilterUnifiedView):
+    template_name = "core/party.html"
+    parent_model = Party
+
+
+class TagView(StatusFilterUnifiedView):
+    template_name = "core/tag.html"
+    parent_model = Tag
 
 
 def add_tag(request, id):

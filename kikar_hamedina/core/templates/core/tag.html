@@ -1,0 +1,25 @@
+{% extends "core/facebook_status_list.html" %}
+
+{% block title %}Homepage{% endblock title %}
+
+{% block h1 %}
+    נושא:
+    {{ object.name }}
+{% endblock %}
+
+{% block details %}
+        <div class="h4">
+            סך הכל:
+            {{ object.statuses.count }}
+        </div>
+{% endblock %}
+
+{%  block sidebar %}
+    <ul class="list-group">
+        {% for status in object.statuses.all %}
+            <li class="list-group-item">
+                <a href="{% url 'plain-person' status.feed.person.id %}">{{ status.feed.person.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{%  endblock %}

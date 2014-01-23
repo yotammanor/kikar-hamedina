@@ -2,142 +2,64 @@
 
 {% block title %}Homepage{% endblock title %}
 
-{% block body %}
+{% block h1 %}
+    עמוד ראשי
+{% endblock %}
 
+{% block content %}
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">כיכר המדינה</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">פוליטיקאים <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  {% for person in navPersons %}
-                    <li><a href="{% url 'plain-person' person.id %}">{{person.name}}</a></li>
-                  {% endfor %}
-                  <li class="divider"></li>
-                  <li><a href="/persons/">כל הפוליטיקאים</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">מפלגות <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  {% for party in navParties %}
-                    <li><a href="{% url 'plain-party' party.id %}">{{party.name}}</a></li>
-                  {% endfor %}
-                  <li class="divider"></li>
-                  <li><a href="/parties/">כל המפלגות</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">נושאים <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  {% for tag in navTags %}
-                    <li><a href="#">{{tag.name}}</a></li>
-                  {% endfor %}
-                  <li class="divider"></li>
-                  <li><a href="/tags/">כל הנושאים</a></li>
-                </ul>
-            </li>
-            <!-- <li class="active"><a href="#">פוליטיקאים</a></li> -->
-            <!-- <li><a href="#about">מפלגות</a></li> -->
-            <!-- <li><a href="#contact">נושאים</a></li> -->
-
-          </ul>
-
-            <form class="navbar-form navbar-left" role="search">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="חיפוש...">
-              </div>
-              <button type="submit" class="btn btn-success">חיפוש</button>
-            </form>
-
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
-    <div class="container">
-    {% if context_object == "party" %}
-        <div class="container" id="context-header">
-            <div class="page-header">
-                <div class="h1">
-                    {{ party.name }}
-                </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="context-descriptors" class="well">
+                {% block details %}
+                    {% include "core/index_details_container.html" %}
+                {% endblock %}
             </div>
         </div>
-        {%  include "core/party_details_container.html" %}
-    {%  elif context_object == "person" %}
-        <div class="container" id="context-header">
-            <div class="page-header">
-                <div class="h1">
-                    {{ person.name }}
-                </div>
-            </div>
-        </div>
-        {%  include "core/person_details_container.html" %}
-    {%  elif context_object == "tag" %}
-        <div class="container" id="context-header">
-            <div class="page-header">
-                <div class="h1">
-                    {{ tag.name }}
-                </div>
-            </div>
-        </div>
-        {%  include "core/tag_details_container.html" %}
-
-    {%  elif context_object == "index" %}
-        <div class="container" id="context-header">
-            <div class="page-header">
-                <div class="h1">
-                    עמוד ראשי
-                </div>
-            </div>
-        </div>
-        {%  include "core/index_details_container.html" %}
-    {%  endif %}
-    </div>
-    <div class="container">
-        {% for status in object_list %}
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h4>{{ status.feed.person.name }}</h4>
-                </div>
-                <div class="panel-body">
-                    {{ status.content|linebreaks }}
-                    <hr>
-                    <p>
-                    <strong>תגים: </strong>
-                    {% for tag in status.tags.all %}
-                        {{ tag.name }}
-                    {% endfor %}
-                    </p>
-                    {% if user.is_authenticated %}
-                        <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST" role="form">
-                            {% csrf_token %}
-            <!--                 <div class="form-group">
-                                <label for="add-tag">Add tag</label>
-                                <input type="text" class="form-control" id="add-tag" name="tag" placeholder="Tag">
-                            </div> -->
-
-                            <div class="form-group">
-                                <label class="sr-only" for="add-tag">Add tag</label>
-                                <input type="text" class="form-control wide-input" id="add-tag" name="tag" placeholder="תכניס תג (comma separated)">
-                            </div>
-                        
-                            <button type="submit" class="btn btn-primary">תוסיף תגים</button>
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
     </div>
 
-{% endblock body %}
+    <div class="row">
+        <div class="col-lg-10">
+            {% for status in object_list %}
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>{{ status.feed.person.name }}</h4>
+                    </div>
+                    <div class="panel-body">
+                        {{ status.content|linebreaks }}
+                        <hr>
+                        <p>
+                            <strong>תגים: </strong>
+                            {% for tag in status.tags.all %}
+                                {{ tag.name }}
+                            {% endfor %}
+                        </p>
+                        {% if user.is_authenticated %}
+                            <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST" role="form">
+                                {% csrf_token %}
+                                <!--                 <div class="form-group">
+                                                    <label for="add-tag">Add tag</label>
+                                                    <input type="text" class="form-control" id="add-tag" name="tag" placeholder="Tag">
+                                                </div> -->
+
+                                <div class="form-group">
+                                    <label class="sr-only" for="add-tag">Add tag</label>
+                                    <input type="text" class="form-control wide-input" id="add-tag" name="tag"
+                                           placeholder="תכניס תג (comma separated)">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">תוסיף תגים</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-lg-2">
+            {%  block sidebar %}
+                SIDEBAR
+            {%  endblock %}
+        </div>
+    </div>
+
+{% endblock %}

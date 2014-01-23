@@ -1,0 +1,22 @@
+{% extends "core/facebook_status_list.html" %}
+
+{% block title %}מפלגה: {{ object.name }}{% endblock title %}
+
+{% block h1 %}
+    מפלגה:{{ object.name }}
+{% endblock %}
+
+{% block details %}
+    <div class="h4">
+        מספר דפים במפלגה: {{ object.persons.count }}
+    </div>
+{% endblock %}
+
+{%  block sidebar %}
+    <ul class="list-group">
+        {% for person in object.persons.all %}
+            <li class="list-group-item"><a href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
+        {% endfor %}
+    </ul>
+{%  endblock %}
+
