@@ -8,8 +8,10 @@
 
 {% block content %}
 
+    {% load core_extras %}
+
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-12">
             <div id="context-descriptors" class="well">
                 {% block details %}
                     {% include "core/index_details_container.html" %}
@@ -19,14 +21,23 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-10">
+        <div class="col-md-9">
             {% for status in object_list %}
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h4>{{ status.feed.person.name }}</h4>
+                        <h4>{{ status.feed.person.name }}, {{ status.published }}</h4>
                     </div>
                     <div class="panel-body">
-                        {{ status.content|linebreaks }}
+                        <p>{{ status.content | linebreaks }}</p>
+                        <p>
+                        Likes:
+                        {{ status.like_count }}.
+                        Comments:
+                        {{ status.comment_count }}.
+                        Shares:
+                        {{ status.share_count }}.
+                        </p>
+                        <p><a href="{{status | link}}">Link to post</a></p>
                         <hr>
                         <p>
                             <strong>תגים: </strong>
@@ -37,11 +48,6 @@
                         {% if user.is_authenticated %}
                             <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST" role="form">
                                 {% csrf_token %}
-                                <!--                 <div class="form-group">
-                                                    <label for="add-tag">Add tag</label>
-                                                    <input type="text" class="form-control" id="add-tag" name="tag" placeholder="Tag">
-                                                </div> -->
-
                                 <div class="form-group">
                                     <label class="sr-only" for="add-tag">Add tag</label>
                                     <input type="text" class="form-control wide-input" id="add-tag" name="tag"
@@ -55,7 +61,7 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="col-lg-2">
+        <div class="col-md-3">
             {%  block sidebar %}
                 SIDEBAR
             {%  endblock %}
