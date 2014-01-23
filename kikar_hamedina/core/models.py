@@ -49,6 +49,12 @@ class Facebook_Status(models.Model):
     def __unicode__(self):
         return self.status_id
 
+    @property
+    def get_link(self):
+        "Returns a link to this post."
+        split_status_id = self.status_id.split('_')
+        return 'https://www.facebook.com/%d/posts/%d' % (split_status_id[0], split_status_id[1])
+
 
 class Tag(models.Model):
     name = models.CharField(unique=True, max_length=128)
