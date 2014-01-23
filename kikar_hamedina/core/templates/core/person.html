@@ -8,11 +8,12 @@
 
 {% block details %}
 
-        <div class="h4">
-            <i class="fa fa-group"></i> {{ object.party.name }}
-            <i class="fa fa-thumbs-up"></i> {{ object.feed.all.0.like_count }}
-
-        </div>
+        <h4>
+            <i class="fa fa-group"></i> {{ object.party.name }} <br>
+            {% with object.facebook_feed_set.all|first as feed %}
+                <i class="fa fa-thumbs-up"></i> {{ feed.fan_count }}
+            {% endwith %}
+        </h4>
 
 {% endblock %}
 
