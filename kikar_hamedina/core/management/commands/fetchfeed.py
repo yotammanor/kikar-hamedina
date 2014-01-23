@@ -7,10 +7,6 @@ from django.utils import timezone
 import facebook
 from ...models import Facebook_Feed as Facebook_Feed_Model, Facebook_Status as Facebook_Status_Model
 
-# TODO: using transaction and commit once
-# TODO: create only statuses which aren't shown in db
-# TODO: update existing statuses
-
 DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN = 1000
 DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN = 20
 
