@@ -11,7 +11,7 @@ from ...models import Facebook_Feed as Facebook_Feed_Model, Facebook_Status as F
 # TODO: create only statuses which aren't shown in db
 # TODO: update existing statuses
 
-DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN = 500
+DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN = 1000
 DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN = 20
 
 

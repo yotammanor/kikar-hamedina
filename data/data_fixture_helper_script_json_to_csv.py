@@ -1,11 +1,10 @@
-from unidecode import unidecode
-from pprint import pprint
 __author__ = 'yotam'
 
-
-import os
 import json
 import csv
+from pprint import pprint
+
+
 
 json_data = json.load(open('data_try', mode='r'))
 party_dict = [x for x in json_data if x['model'] == 'core.party']
@@ -19,8 +18,6 @@ def insert_to_csv(chosen_dict):
     for field in chosen_dict[0]['fields'].keys():
         field_names.append(field)
     print field_names
-
-
     flat_dict_list = []
     for dict_object in chosen_dict:
         flat_dict = {}
