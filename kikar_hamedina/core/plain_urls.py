@@ -8,7 +8,7 @@ urlpatterns = patterns('',
         kwargs={'context_object': 'index'},
         name='plain-index'),
     url(r'^untagged/$', plain_views.HomeView.as_view(
-        queryset=Facebook_Status.objects.filter(tags=None).order_by('published')),
+        queryset=Facebook_Status.objects.filter(tags=None).order_by('-published')),
         kwargs={'context_object': 'untagged'},
         name='plain-untagged'),
     url(r'^add-tag/(?P<id>\d+)/$', plain_views.add_tag,
