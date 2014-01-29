@@ -11,7 +11,17 @@
     {% load core_extras %}
 
     <!-- change this to another account? this is using eliezer's details i think -->
-    <div id="fb-root"></div> <script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1"; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk'));</script>
+
+    <div id="fb-root"></div>
+    <script>(function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{ facebook_app_id }}";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
 
     <div class="row">
         <div class="col-md-12">
@@ -32,42 +42,55 @@
                     </div>
                     <div class="panel-body">
                         <p>{{ status.content | linebreaks }}</p>
+
                         <p>
-                        Likes:
-                        {{ status.like_count }}.
-                        Comments:
-                        {{ status.comment_count }}.
-                        Shares:
-                        {{ status.share_count }}.
-                        </p>
-                        <p><a href="{{status | link}}">Link to post</a>
-
-                        <!-- Button trigger modal -->
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#{{status.status_id}}_modal">
-                          See Post
-                        </button>
-
+                            Likes:
+                            {{ status.like_count }}.
+                            Comments:
+                            {{ status.comment_count }}.
+                            Shares:
+                            {{ status.share_count }}.
                         </p>
 
+                        <p><a href="{{ status | link }}">Link to post</a>
+
+                            <!-- Button trigger modal -->
+                            <button class="btn btn-primary" data-toggle="modal"
+                                    data-target="#{{ status.status_id }}_modal">
+                                See Post
+                            </button>
+
+                        </p>
                         <!-- Modal -->
-                        <div class="modal fade" id="{{status.status_id}}_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <!-- <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <!-- <div class="modal-header">
+                                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                 <h4 class="modal-title" id="myModalLabel">Modal title</h4>
                               </div> -->
-                              <div class="modal-body text-center">
+                                    <div class="modal-body text-center">
 
-                                <div class="fb-post" data-href="{{status | embed_link}}" data-width="466"><div class="fb-xfbml-parse-ignore"><a href="{{status | embed_link}}">Post</a> by ‎<a href="{{status.feed.page_url}}">{{status.feed.name}}</a>‎.</div></div>
+                                        <div class="fb-post" data-href="{{ status | embed_link }}"
+                                             data-width="466">
+                                            <div class="fb-xfbml-parse-ignore">
+                                                <a href="{{ status | embed_link }}">פוסט</a> מאת ‎<a
+                                                    href="{{ status.feed.page_url }}">{{ status.feed.name }}</a>‎.
+                                            </div>
+                                        </div>
 
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                              </div>
-                            </div><!-- /.modal-content -->
-                          </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
 
 
                         <hr>
@@ -94,9 +117,9 @@
             {% endfor %}
         </div>
         <div class="col-md-3">
-            {%  block sidebar %}
+            {% block sidebar %}
                 SIDEBAR
-            {%  endblock %}
+            {% endblock %}
         </div>
     </div>
 
