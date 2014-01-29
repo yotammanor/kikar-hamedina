@@ -1,0 +1,25 @@
+{% extends "core/facebook_status_list.html" %}
+
+{% block title %}חיפוש: {{ name }}{% endblock title %}
+
+{% block h1 %}
+    <i class="fa fa-search"></i> {{ name }}
+{% endblock %}
+
+{% block details %}
+    <div class="h4">
+        מספר תוצאות: {{ number_of_results }}
+    </div>
+{% endblock %}
+
+{#{%  block sidebar %}#}
+{#    <ul class="list-group">#}
+{#        {% for person in object.persons.all %}#}
+{#            <li class="list-group-item"> <a href="{% url 'plain-person' person.id %}">#}
+{#                <i class="fa fa-user"></i>#}
+{#                {{ person.name }}</a>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#{%  endblock %}#}
+

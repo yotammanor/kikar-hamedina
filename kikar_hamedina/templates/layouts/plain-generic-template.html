@@ -5,14 +5,16 @@
     <title>כיכר המדינה | {% block title %}{% endblock title %}</title>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Alef:400,700' rel='stylesheet' type='text/css'>
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" />
+
     <!-- CSS -->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css" />
     <!-- Bootstrap RTL Theme -->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-rtl.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-theme.css" />
 
-    <!-- Our CSS -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" />
+
 
     <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/libs/bootstrap/bootstrap.js"></script>
@@ -29,14 +31,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/plain/">
-                <img src="{{ STATIC_URL }}media/kikar_hamedina_logo.jpg" height="200" alt="כיכר המדינה"></a>
+            <a class="navbar-brand photo-container" href="/plain/">
+                <img src="{{ STATIC_URL }}media/kikar_hamedina_logo.png" class="logo-photo navbar-nav" alt="כיכר המדינה"></a>
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="dropdown">
 
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>
+                    <a href="" class="dropdown-toggle navbar-options" data-toggle="dropdown"><i class="fa fa-user"></i>
                         פוליטיקאים <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         {% for person in navPersons %}
@@ -47,7 +49,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-group"></i>
+                    <a href="" class="dropdown-toggle navbar-options" data-toggle="dropdown"><i class="fa fa-group"></i>
                         מפלגות <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         {% for party in navParties %}
@@ -58,7 +60,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-comments-o"></i>
+                    <a href="" class="navbar-options dropdown-toggle" data-toggle="dropdown"><i class="fa fa-comments-o"></i>
                         נושאים <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         {% for tag in navTags %}
@@ -74,9 +76,13 @@
 
             </ul>
 
-            <form class="navbar-form navbar-left" role="search">
+            <form class="navbar-form navbar-left"
+                  role="search"
+                  action='{% url 'plain-search' %}'
+                  method="get">
+                {% csrf_token %}
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="חיפוש...">
+                    <input type="text" name="q" class="form-control" placeholder="חיפוש...">
                 </div>
                 <button type="submit" class="btn btn-success"><i class="fa fa-search"></i></button>
             </form>

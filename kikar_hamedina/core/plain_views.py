@@ -20,11 +20,29 @@ class HomeView(ListView):
         return context
 
 
+class SearchView(ListView):
+    model = Facebook_Status
+    paginate_by = 10
+    context_object_name = 'filtered_statuses'
+    template_name = "core/search.html"
+
+    def get_queryset(self):
+        search_string = self.request.GET['q']
+        queryset = Facebook_Status.objects.filter(content__icontains=search_string).order_by('-published')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        search_string = self.request.GET['q']
+        context = super(SearchView, self).get_context_data(**kwargs)
+        context['name'] = search_string
+        context['number_of_results'] = Facebook_Status.objects.filter(content__icontains=search_string).count()
+        return context
+
+
 class StatusFilterUnifiedView(ListView):
     model = Facebook_Status
     paginate_by = 10
     context_object_name = 'filtered_statuses'
-
 
     def get_queryset(self):
         variable_column = self.kwargs['variable_column']
@@ -52,9 +70,7 @@ class StatusFilterUnifiedView(ListView):
 
         object_id = self.kwargs['id']
         search_field = self.kwargs.get('search_field', 'id')
-
         context['object'] = self.parent_model.objects.get(**{search_field: object_id})
-
         return context
 
 

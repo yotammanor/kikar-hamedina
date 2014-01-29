@@ -8,6 +8,18 @@ body {
     width: 300px;
 }
 
+.logo-photo {
+    height: 29px;
+}
+
+
+.logo-photo:hover {
+	width: 79px;
+}
+
+.navbar-options {
+	margin-top: 9px;
+}
 
 /*
 .navbar-brand {
