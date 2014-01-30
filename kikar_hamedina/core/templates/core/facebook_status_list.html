@@ -8,6 +8,7 @@
 
 {% block content %}
 
+    {% load humanize %}
     {% load core_extras %}
 
     <!-- change this to another account? this is using eliezer's details i think -->
@@ -34,86 +35,123 @@
     </div>
 
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-9 panel-group">
             {% for status in object_list %}
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h4>{{ status.feed.person.name }}, {{ status.published }}</h4>
-                    </div>
-                    <div class="panel-body">
-                        <p>{{ status.content | linebreaks }}</p>
-
-                        <p>
-                            Likes:
-                            {{ status.like_count }}.
-                            Comments:
-                            {{ status.comment_count }}.
-                            Shares:
-                            {{ status.share_count }}.
-                        </p>
-
-                        <p><a href="{{ status | link }}">Link to post</a>
-
-                            <!-- Button trigger modal -->
-                            <button class="btn btn-primary" data-toggle="modal"
-                                    data-target="#{{ status.status_id }}_modal">
-                                See Post
-                            </button>
-
-                        </p>
-                        <!-- Modal -->
-                        <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1" role="dialog"
-                             aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <!-- <div class="modal-header">
-                                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-                              </div> -->
-                                    <div class="modal-body text-center">
-
-                                        <div class="fb-post" data-href="{{ status | embed_link }}"
-                                             data-width="466">
-                                            <div class="fb-xfbml-parse-ignore">
-                                                <a href="{{ status | embed_link }}">פוסט</a> מאת ‎<a
-                                                    href="{{ status.feed.page_url }}">{{ status.feed.name }}</a>‎.
-                                            </div>
-                                        </div>
-
+                <div class="panel">
+                    <div class="panel panel-primary ">
+                        <div class="panel-heading col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <img src="{{ status.feed.pic_square }}" class="profile-photo img-rounded">
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="row" id="name-row-container">
+                                        <h4>{{ status.feed.person.name }}</h4>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close
-                                        </button>
+                                    <div class="row" id="date-row-container">
+                                        <h6>{{ status.published | naturaltime }}</h6>
                                     </div>
                                 </div>
-                                <!-- /.modal-content -->
                             </div>
-                            <!-- /.modal-dialog -->
+
                         </div>
-                        <!-- /.modal -->
+                        <div class="panel-body">
+                            <p>{{ status.content | linebreaks }}</p>
+                        </div>
 
-
-                        <hr>
-                        <p>
-                            <strong>תגים: </strong>
-                            {% for tag in status.tags.all %}
-                                {{ tag.name }}
-                            {% endfor %}
-                        </p>
-                        {% if user.is_authenticated %}
-                            <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST" role="form">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label class="sr-only" for="add-tag">Add tag</label>
-                                    <input type="text" class="form-control wide-input" id="add-tag" name="tag"
-                                           placeholder="תכניס תג (comma separated)" data-role="tagsinput">
+                        <div class="panel-info" id="panel-expanded-footer">
+                            <div class="container col-md-12">
+                                <div class="col-md-4">
+                                <span>
+                                    <b>אהבו: </b> {{ status.like_count|intcomma }}.
+                                </span>
+                                <span>
+                                    <b>הגיבו: </b> {{ status.comment_count|intcomma }}.
+                                </span>
+                                <span>
+                                    <b>שיתפו: </b> {{ status.share_count|intcomma }}.
+                                </span>
                                 </div>
+                                <div class="col-md-1">
+                                      {% if status.tags.count > 0 %}
+                                       <strong>תגים: </strong>
+                                       {% endif %}
+                                </div>
+                                <div class="col-md-5">
+                                       {% for tag in status.tags.all %}
+                                           <a href="{% url 'plain-tag' 'name' tag.name %}"><span
+                                                   class="label label-info">{{ tag.name }}</span></a>
+                                       {% endfor %}
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="label label-info"><a href="{{ status | link }}" target="_blank">הפוסט ב-f</a></button>
+                                </div>
+                                <div class="col-md-1">
+                                    <!-- Button trigger modal -->
+                                    <button class="label label-primary" data-toggle="modal"
+                                            data-target="#{{ status.status_id }}_modal">
+                                        צפה בפוסט
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
+                                         role="dialog"
+                                         aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <!-- <div class="modal-header">
+                                                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                     <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                                   </div> -->
+                                                <div class="modal-body text-center">
 
-                                <button type="submit" class="btn btn-primary">תוסיף תגים</button>
-                            </form>
-                        {% endif %}
+                                                    <div class="fb-post" data-href="{{ status | embed_link }}"
+                                                         data-width="466">
+                                                        <div class="fb-xfbml-parse-ignore">
+                                                            <a href="{{ status | embed_link }}">????</a> ??? <a
+                                                                href="{{ status.feed.page_url }}">{{ status.feed.name }}</a>.
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
+                                    <!-- /.modal -->
+                                </div>
+                                <div class="panel-warning">
+
+
+                                    <hr>
+
+                                    {% if user.is_authenticated %}
+                                        <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
+                                              role="form">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label class="sr-only" for="add-tag">Add tag</label>
+                                                <input type="text" class="form-control input-sm" id="add-tag"
+                                                       name="tag"
+                                                       placeholder="תכניס תג (comma separated)" data-role="tagsinput">
+                                            </div>
+
+                                            <button type="submit" class="label label-primary">הוסף תיוגים</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <p>
+
+                </p>
             {% endfor %}
         </div>
         <div class="col-md-3">

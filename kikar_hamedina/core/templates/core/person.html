@@ -7,16 +7,21 @@
 {% endblock %}
 
 {% block details %}
+{% with object.facebook_feed_set.all|first as feed %}
+    {% load humanize %}
+    <p>
 
+        <img src="{{ feed.pic_large }}" class="img-rounded">
+    </p>
     <p>
         <i class="fa fa-group"></i> {{ object.party.name }}
     </p>
     <p>
-        {% with object.facebook_feed_set.all|first as feed %}
-            <i class="fa fa-thumbs-up"></i> {{ feed.fan_count }}
-        {% endwith %}
-    </p>
 
+            <i class="fa fa-thumbs-up"></i> {{ feed.fan_count }}
+
+    </p>
+{% endwith %}
 {% endblock %}
 
 {%  block sidebar %}

@@ -12,6 +12,12 @@ body {
     height: 29px;
 }
 
+
+.profile-photo {
+	align-items: right;
+}
+
+
 /*
 .logo-photo:hover {
 	width: 79px;
@@ -26,3 +32,11 @@ body {
     color: #fff !important;
 }
 */
+
+#date-row-container {
+    height: 20px;
+}
+
+#name-row-container {
+	height: 20px;
+}

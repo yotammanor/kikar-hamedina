@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'south',
     'core',
     'dj_facebook_realtime',
+    'django.contrib.humanize',
 )
 
 MIDDLEWARE_CLASSES = (
