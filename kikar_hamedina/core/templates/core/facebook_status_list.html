@@ -76,7 +76,7 @@
                                     {% endif %}
                                     {% for tag in status.tags.all %}
                                         <a href="{% url 'plain-tag' 'name' tag.name %}">
-                                            <span class="label label-success">{{ tag.name }}</span>
+                                            <span class="label label-info">{{ tag.name }}</span>
                                         </a>
                                    {% endfor %}
 
