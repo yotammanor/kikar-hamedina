@@ -25,7 +25,9 @@
 
         (function (d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {return;}
+            if (d.getElementById(id)) {
+                return;
+            }
             js = d.createElement(s);
             js.id = id;
             js.src = "//connect.facebook.net/en_US/all.js";
@@ -50,28 +52,28 @@
             {% paginate object_list %}
             {% for status in object_list %}
                 <div class="panel">
-                    <div class="panel panel-primary ">
-                        <div class="panel-heading col-lg-12">
-                            <div class="row">
-                                <div class="col-lg-1">
-                                    <img src="{{ status.feed.pic_square }}" class="profile-photo img-rounded">
-                                </div>
-                                <div class="col-lg-9">
-                                    <div class="row" id="name-row-container">
-                                        <h4>{{ status.feed.person.name }}</h4>
-                                    </div>
-                                    <div class="row" id="date-row-container">
-                                        <h6>{{ status.published | naturaltime }}</h6>
-                                    </div>
-                                </div>
-                            </div>
-
+                <div class="panel panel-primary ">
+                <div class="panel-heading col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-1">
+                            <img src="{{ status.feed.pic_square }}" class="profile-photo img-rounded">
                         </div>
-                        <div class="panel-body">
-                            <p>{{ status.content | linebreaks }}</p>
+                        <div class="col-lg-9">
+                            <div class="row" id="name-row-container">
+                                <h4>{{ status.feed.person.name }}</h4>
+                            </div>
+                            <div class="row" id="date-row-container">
+                                <h6>{{ status.published | naturaltime }}</h6>
+                            </div>
+                        </div>
+                    </div>
 
-                            <div class="row">
-                                <div class="col-md-4">
+                </div>
+                <div class="panel-body">
+                    <p>{{ status.content | linebreaks }}</p>
+
+                    <div class="row">
+                        <div class="col-md-4">
                                     <span>
                                         <b>אהבו: </b> {{ status.like_count|intcomma }}.
                                     </span>
@@ -81,40 +83,34 @@
                                     <span>
                                         <b>שיתפו: </b> {{ status.share_count|intcomma }}.
                                     </span>
-                                </div>
-                                <div class="col-md-8">
-                                    {% if status.tags.count > 0 %}
-                                        <strong>תגים: </strong>
-                                    {% endif %}
-                                    {% for tag in status.tags.all %}
-                                        <a href="{% url 'plain-tag' 'name' tag.name %}">
-                                            <span class="label label-info">{{ tag.name }}</span>
-                                        </a>
-                                   {% endfor %}
+                        </div>
+                        <div class="col-md-8">
+                            {% if status.tags.count > 0 %}
+                                <strong>תגים: </strong>
+                            {% endif %}
+                            {% for tag in status.tags.all %}
+                                <a href="{% url 'plain-tag' 'name' tag.name %}">
+                                    <span class="label label-info">{{ tag.name }}</span>
+                                </a>
+                            {% endfor %}
 
-                                    <div class="pull-left">
-                                        <a href="{{ status | link }}" class="btn btn-info btn-xs" target="_blank">הפוסט ב-f</a>
+                            <div class="pull-left">
+                                <a href="{{ status | link }}" class="btn btn-info btn-xs" target="_blank">הפוסט ב-f</a>
 
-                                        <!-- Button trigger modal -->
-                                        <button class="btn btn-primary btn-xs" data-toggle="modal"
-                                                data-target="#{{ status.status_id }}_modal">
-                                            צפה בפוסט
-                                        </button>
-                                        
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
-                                             role="dialog"
-                                             aria-labelledby="myModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-body text-center">
+                                <!-- Button trigger modal -->
+                                <button class="btn btn-primary btn-xs" data-toggle="modal"
+                                        data-target="#{{ status.status_id }}_modal">
+                                    צפה בפוסט
+                                </button>
 
-                                                        <div class="fb-post" data-href="{{ status | embed_link }}"
-                                                             data-width="466">
-                                                            <div class="fb-xfbml-parse-ignore">
-                                                                <a href="{{ status | embed_link }}">????</a> ??? <a
-                                                                    href="{{ status.feed.page_url }}">{{ status.feed.name }}</a>.
-                                                            </div>
+                                <!-- Modal -->
+                                <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
+                                     role="dialog"
+                                     aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center">
+
                                                     <div class="fb-post" data-href="{{ status | embed_link }}"
                                                          data-width="466">
                                                         <div class="fb-xfbml-parse-ignore">
@@ -124,13 +120,17 @@
 
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                        <button type="button" class="btn btn-default"
+                                                                data-dismiss="modal">
                                                             Close
                                                         </button>
                                                     </div>
-                                                </div><!-- /.modal-content -->
-                                            </div><!-- /.modal-dialog -->
-                                        </div><!-- /.modal -->
+                                                </div>
+                                                <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+                                        <!-- /.modal -->
                                     </div>
 
 
@@ -161,12 +161,13 @@
                 </p>
             {% endfor %}
             <ul class="pagination"> {% show_pages %} </ul>
-        </div>
-        <div class="col-md-3">
-            {% block sidebar %}
-                SIDEBAR
-            {% endblock %}
+            </div>
+            <div class="col-md-3">
+                {% block sidebar %}
+                    SIDEBAR
+                {% endblock %}
+            </div>
+            </div>
         </div>
     </div>
-
 {% endblock %}
