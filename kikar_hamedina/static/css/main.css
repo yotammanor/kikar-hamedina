@@ -40,3 +40,15 @@ body {
 #name-row-container {
 	height: 20px;
 }
+
+#panel-expanded-footer {
+	background-color: #555555;
+}
+
+#profile-photo{
+	max-height: 300px;
+}
+
+/*#politicians-dropdown-menu {
+	min-width: 1000px;
+}

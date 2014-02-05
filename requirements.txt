@@ -1,9 +1,8 @@
-Warning: cannot find svn location for django-facebook-realtime==0.1.1-20130208
+
 Django==1.6.1
 South==0.8.4
 django-endless-pagination==2.0
 django-extensions==1.2.5
-## FIXME: could not find svn URL in dependency_links for this package:
 django-facebook-realtime==0.1.1-20130208
 django-staticfiles-fontawesome==2.0.0
 djangorestframework==2.3.10
