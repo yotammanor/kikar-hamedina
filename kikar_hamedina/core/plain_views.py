@@ -9,7 +9,7 @@ from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
 
 class HomeView(ListView):
     model = Facebook_Status
-    paginate_by = 10
+    # paginate_by = 100
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
@@ -22,7 +22,7 @@ class HomeView(ListView):
 
 class SearchView(ListView):
     model = Facebook_Status
-    paginate_by = 10
+    # paginate_by = 10
     context_object_name = 'filtered_statuses'
     template_name = "core/search.html"
 
@@ -41,7 +41,7 @@ class SearchView(ListView):
 
 class StatusFilterUnifiedView(ListView):
     model = Facebook_Status
-    paginate_by = 10
+    # paginate_by = 10
     context_object_name = 'filtered_statuses'
 
     def get_queryset(self):

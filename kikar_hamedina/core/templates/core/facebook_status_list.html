@@ -14,14 +14,24 @@
     <!-- change this to another account? this is using eliezer's details i think -->
 
     <div id="fb-root"></div>
-    <script>(function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{ facebook_app_id }}";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '{{ facebook_app_id }}',
+                status: true,
+                xfbml: true
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//connect.facebook.net/en_US/all.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
 
 
     <div class="row">
@@ -36,6 +46,8 @@
 
     <div class="row">
         <div class="col-md-9 panel-group">
+            {% load endless %}
+            {% paginate object_list %}
             {% for status in object_list %}
                 <div class="panel">
                     <div class="panel panel-primary ">
@@ -107,8 +119,8 @@
                                                     <div class="fb-post" data-href="{{ status | embed_link }}"
                                                          data-width="466">
                                                         <div class="fb-xfbml-parse-ignore">
-                                                            <a href="{{ status | embed_link }}">????</a> ??? <a
-                                                                href="{{ status.feed.page_url }}">{{ status.feed.name }}</a>.
+                                                            <a href="{{ status | embed_link }}">פוסט</a> מאת <a
+                                                                href="{{ status.feed.page_url }}">{{ status.feed.person.name }}</a>.
                                                         </div>
                                                     </div>
 
@@ -153,6 +165,7 @@
 
                 </p>
             {% endfor %}
+            <ul class="pagination"> {% show_pages %} </ul>
         </div>
         <div class="col-md-3">
             {% block sidebar %}
