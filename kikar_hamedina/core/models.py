@@ -51,16 +51,17 @@ class Facebook_Status(models.Model):
 
     @property
     def get_link(self):
-        "Returns a link to this post."
+        """
+        Returns a link to this post.
+        """
         split_status_id = self.status_id.split('_')
         return 'https://www.facebook.com/%d/posts/%d' % (split_status_id[0], split_status_id[1])
 
 
 class Tag(models.Model):
     name = models.CharField(unique=True, max_length=128)
-    slug = models.SlugField(unique=False, max_length=128)
-    description = models.TextField()
     statuses = models.ManyToManyField(Facebook_Status, related_name='tags')
+    is_for_main_display = models.BooleanField(default=True, null=False)
 
     def __unicode__(self):
         return self.name
