@@ -97,19 +97,15 @@ def add_tag(request, id):
 
     for tagName in tagsList:
         strippedTagName = tagName.strip()
-        try:
-            tag = Tag.objects.get(name=strippedTagName)
-        except Tag.DoesNotExist:
-            # create tag
-            tag = Tag(
-                name=strippedTagName,
-                slug=slugify(strippedTagName)
-            )
+
+        tag, created = Tag.objects.get_or_create(name=strippedTagName)
+        if created:
+            tag.name = strippedTagName
+            tag.is_for_main_display = True
             tag.save()
-        finally:
-            # add status to tag statuses
-            tag.statuses.add(status)
-            tag.save()
+        # add status to tag statuses
+        tag.statuses.add(status)
+        tag.save()
 
     # Always return an HttpResponseRedirect after successfully dealing
     # with POST data. This prevents data from being posted twice if a
