@@ -5,18 +5,47 @@ from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
 from django.template.defaultfilters import slugify
 from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
+from django.db.models import Count
+import datetime
+
+NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
+
+NUMBER_OF_TAGS_TO_PRESENT = 3
 
 
-class HomeView(ListView):
+class AllStatusesView(ListView):
     model = Facebook_Status
+    template_name = 'core/all_results.html'
     # paginate_by = 100
 
     def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
+        context = super(AllStatusesView, self).get_context_data(**kwargs)
         context['navPersons'] = Person.objects.all().order_by('name')
         context['navParties'] = Party.objects.all().order_by('name')
         context['navTags'] = Tag.objects.all().order_by('name')
         context['context_object'] = self.kwargs['context_object']
+        context['side_bar_list'] = Person.objects.filter(
+            facebook_feed__facebook_status__published__gte=(
+                datetime.date.today() - datetime.timedelta(days=3))).distinct()
+        return context
+
+
+class HomepageView(ListView):
+    model = Tag
+    template_name = 'core/homepage.html'
+
+    def get_queryset(self):
+        queryset = Tag.objects.filter(is_for_main_display=True).annotate(number_of_posts=Count('statuses')).order_by(
+            '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(HomepageView, self).get_context_data(**kwargs)
+        wrote_about_tag = dict()
+        for tag in context['object_list']:
+            wrote_about_tag[tag] = Facebook_Feed.objects.filter(
+                facebook_status__tags__id=tag.id).distinct().order_by('-fan_count')[:NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY]
+        context['wrote_about_tag'] = wrote_about_tag
         return context
 
 
@@ -55,10 +84,12 @@ class StatusFilterUnifiedView(ListView):
                 search_field = 'name'
             selected_filter = variable_column + '__' + search_field
             try:
-                query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+                query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by(
+                    '-published')
             except FieldError:
                 selected_filter = variable_column + '__' + 'name'
-                query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by('-published')
+                query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by(
+                    '-published')
                 # TODO: Replace with redirect to actual url with 'name' in path, and HttpResponseRedirect()
             return query_set
         else:
@@ -88,6 +119,31 @@ class TagView(StatusFilterUnifiedView):
     template_name = "core/tag.html"
     parent_model = Tag
 
+    def get_context_data(self, **kwargs):
+        context = super(TagView, self).get_context_data(**kwargs)
+        context['side_bar_list'] = Person.objects.filter(
+            facebook_feed__facebook_status__tags__id=context['object'].id).distinct()
+        return context
+
+
+class AllPersons(ListView):
+    template_name = 'core/all_persons.html'
+    model = Person
+
+
+class AllParties(ListView):
+    template_name = 'core/all_parties.html'
+    model = Party
+
+
+class AllTags(ListView):
+    template_name = 'core/all_tags.html'
+    model = Tag
+
+
+def about_page(request):
+    return render(request, 'core/about.html')
+
 
 def add_tag(request, id):
     status = Facebook_Status.objects.get(id=id)
@@ -103,7 +159,7 @@ def add_tag(request, id):
             tag.name = strippedTagName
             tag.is_for_main_display = True
             tag.save()
-        # add status to tag statuses
+            # add status to tag statuses
         tag.statuses.add(status)
         tag.save()
 

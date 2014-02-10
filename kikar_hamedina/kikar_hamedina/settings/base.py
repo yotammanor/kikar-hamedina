@@ -1,7 +1,7 @@
+
 import os
 from os.path import dirname, abspath, join
 from django.core.exceptions import ImproperlyConfigured
-
 
 # return variable environment value or raise ImproperlyConfigured exception
 def get_env_variable(var_name):

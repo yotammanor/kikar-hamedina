@@ -1,22 +1,17 @@
 {% extends "core/facebook_status_list.html" %}
 
-{% block title %}Homepage{% endblock title %}
+{% block title %}כל העדכונים{% endblock title %}
 
 {% block h1 %}
-    נושא:
-    {{ object.name }}
+    כל העדכונים
 {% endblock %}
 
 {% block details %}
-    <div class="h4">
-        סך הכל:
-        {{ object.statuses.count }}
-    </div>
 {% endblock %}
 
 {% block sidebar %}
     <ul class="list-group">
-        <li class="list-group-item list-group-item-heading"><b> כתבו בנושא: </b></li>
+        <li class="list-group-item list-group-item-heading"><b> כתבו לאחרונה: </b></li>
         {% for person in side_bar_list.all %}
             <li class="list-group-item">
                 <a href="{% url 'plain-person' person.id %}">{{ person.name }}</a>

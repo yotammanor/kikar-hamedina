@@ -1,0 +1,15 @@
+{% extends "layouts/plain-generic-template.html" %}
+
+{% block title %}כל הנושאים{% endblock title %}
+
+{% block h1 %}
+    כל הנושאים
+{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for tag in object_list %}
+            <li><a href="{% url 'plain-tag' 'name' tag.name %}">{{ tag.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

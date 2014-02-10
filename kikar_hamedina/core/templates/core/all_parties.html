@@ -1,0 +1,15 @@
+{% extends "layouts/plain-generic-template.html" %}
+
+{% block title %}כל המפלגות{% endblock title %}
+
+{% block h1 %}
+    כל המפלגות
+{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for party in object_list %}
+            <li><a href="{% url 'plain-party' party.id %}">{{ party.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

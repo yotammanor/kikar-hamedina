@@ -1,0 +1,15 @@
+{% extends "layouts/plain-generic-template.html" %}
+
+{% block title %}כל הפוליטיקאים{% endblock title %}
+
+{% block h1 %}
+    כל הפוליטיקאים
+{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for person in object_list %}
+            <li><a href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
