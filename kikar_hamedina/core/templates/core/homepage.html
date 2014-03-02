@@ -11,40 +11,42 @@
     </div>
 {% endblock %}
 {% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% for tag, feed_list in wrote_about_tag.items %}
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><i
+                                class="fa fa-comments-o"></i> {{ tag.name | truncatechars:32 }}, {{ tag.number_of_posts }}
+                        </div>
 
-    <div class="container col-md-12">
-        {% for tag, feed_list in wrote_about_tag.items %}
-            <div class="col-md-4">
-                <div class="panel panel-primary">
-                    <div class="panel panel-heading"><i
-                            class="fa fa-comments-o"></i> {{ tag.name | truncatechars:32 }}, {{ tag.number_of_posts }}
-                    </div>
-
-                    <div class="panel panel-body">
-                        {% for feed in feed_list %}
-
-                            <div class="container col-md-12">
-                                <div class="col-sm-3">
-                                    <a href="{% url 'plain-person' feed.person.id %}">
-                                        <img src="{{ feed.pic_square }}"
-                                             class="profile-photo img-rounded">
-                                    </a>
+                        <div class="panel-body">
+                            {% for feed in feed_list %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-sm-3">
+                                            <a href="{% url 'plain-person' feed.person.id %}">
+                                                <img src="{{ feed.pic_square }}"
+                                                     class="profile-photo img-rounded">
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            {{ feed.person.name }} <br>
+                                            {{ feed.person.party.name }}
+                                        </div>
+                                    </div><br><br><br>
                                 </div>
-                                <div class="col-sm-9">
-                                    {{ feed.person.name }} <br>
-                                    {{ feed.person.party.name }}
-                                </div>
-                            </div><br><br><br>
-                        {% endfor %}
+                            {% endfor %}
 
-                    </div>
-                    <div class="panel panel-footer">
-                        <a href="{% url 'plain-tag' 'name' tag.name %}"> קרא עוד </a>
+                        </div>
+                        <div class="panel-footer">
+                            <a href="{% url 'plain-tag' 'name' tag.name %}"> קרא עוד </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}</div>
-
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 {##}
 {#{% block sidebar %}#}
