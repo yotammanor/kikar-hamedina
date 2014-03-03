@@ -130,20 +130,53 @@
                             </div>
 
                             {% if user.is_authenticated %}
-                                <hr>
+                                <div class="col-sm-12">
+                                    <hr>
+                                    <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
+                                          role="form">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label class="sr-only" for="add-tag">Add tag</label>
+                                            <input type="text" class="form-control" id="add-tag"
+                                                   name="tag"
+                                                   placeholder="תכניס תג (comma separated)" data-role="tagsinput">
+                                        </div>
 
-                                <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
-                                      role="form">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label class="sr-only" for="add-tag">Add tag</label>
-                                        <input type="text" class="form-control" id="add-tag"
-                                               name="tag"
-                                               placeholder="תכניס תג (comma separated)" data-role="tagsinput">
-                                    </div>
+                                        <button type="submit" class="btn btn-primary">הוסף תיוגים</button>
+                                    </form>
+                                </div>
 
-                                    <button type="submit" class="btn btn-primary">הוסף תיוגים</button>
-                                </form>
+                                <script>
+                                    $(function() {
+                                        var availableTags = [
+                                        "ActionScript",
+                                        "AppleScript",
+                                        "Asp",
+                                        "BASIC",
+                                        "C",
+                                        "C++",
+                                        "Clojure",
+                                        "COBOL",
+                                        "ColdFusion",
+                                        "Erlang",
+                                        "Fortran",
+                                        "Groovy",
+                                        "Haskell",
+                                        "Java",
+                                        "JavaScript",
+                                        "Lisp",
+                                        "Perl",
+                                        "PHP",
+                                        "Python",
+                                        "Ruby",
+                                        "Scala",
+                                        "Scheme"
+                                        ];
+                                        $( "#add-tag" ).autocomplete({
+                                          source: availableTags
+                                        });
+                                    });
+                                </script>
                             {% endif %}
                         </div>
                     </div>
