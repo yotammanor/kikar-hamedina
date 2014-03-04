@@ -35,6 +35,40 @@
         }(document, 'script', 'facebook-jssdk'));
     </script>
 
+    <!-- For autocomplete for tagging. Can be moved somewhere else -->
+    <!-- TODO: availableTags -->
+    <script>
+        $(function() {
+            var availableTags = [
+            "ActionScript",
+            "AppleScript",
+            "Asp",
+            "BASIC",
+            "C",
+            "C++",
+            "Clojure",
+            "COBOL",
+            "ColdFusion",
+            "Erlang",
+            "Fortran",
+            "Groovy",
+            "Haskell",
+            "Java",
+            "JavaScript",
+            "Lisp",
+            "Perl",
+            "PHP",
+            "Python",
+            "Ruby",
+            "Scala",
+            "Scheme"
+            ];
+            $( ".add-tag" ).autocomplete({
+              source: availableTags
+            });
+        });
+    </script>
+
 
 
 
@@ -137,7 +171,7 @@
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label class="sr-only" for="add-tag">Add tag</label>
-                                            <input type="text" class="form-control" id="add-tag"
+                                            <input type="text" class="form-control add-tag" id="add-tag"
                                                    name="tag"
                                                    placeholder="תכניס תג (comma separated)" data-role="tagsinput">
                                         </div>
@@ -145,38 +179,6 @@
                                         <button type="submit" class="btn btn-primary">הוסף תיוגים</button>
                                     </form>
                                 </div>
-
-                                <script>
-                                    $(function() {
-                                        var availableTags = [
-                                        "ActionScript",
-                                        "AppleScript",
-                                        "Asp",
-                                        "BASIC",
-                                        "C",
-                                        "C++",
-                                        "Clojure",
-                                        "COBOL",
-                                        "ColdFusion",
-                                        "Erlang",
-                                        "Fortran",
-                                        "Groovy",
-                                        "Haskell",
-                                        "Java",
-                                        "JavaScript",
-                                        "Lisp",
-                                        "Perl",
-                                        "PHP",
-                                        "Python",
-                                        "Ruby",
-                                        "Scala",
-                                        "Scheme"
-                                        ];
-                                        $( "#add-tag" ).autocomplete({
-                                          source: availableTags
-                                        });
-                                    });
-                                </script>
                             {% endif %}
                         </div>
                     </div>
