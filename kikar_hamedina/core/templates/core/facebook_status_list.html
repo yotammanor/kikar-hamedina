@@ -3,203 +3,207 @@
 {% block title %}Homepage{% endblock title %}
 
 {% block h1 %}
-    עמוד ראשי
+עמוד ראשי
 {% endblock %}
 
 {% block content %}
 
-    {% load humanize %}
-    {% load core_extras %}
+{% load humanize %}
+{% load core_extras %}
 
-    <!-- change this to another account? this is using eliezer's details i think -->
+<!-- change this to another account? this is using eliezer's details i think -->
 
-    <div id="fb-root"></div>
-    <script>
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: '{{ facebook_app_id }}',
-                status: true,
-                xfbml: true
-            });
-        };
+<div id="fb-root"></div>
+<script>
+window.fbAsyncInit = function () {
+    FB.init({
+        appId: '{{ facebook_app_id }}',
+        status: true,
+        xfbml: true
+    });
+};
 
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {
-                return;
-            }
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "//connect.facebook.net/en_US/all.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    </script>
+(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {
+        return;
+    }
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
 
-    <!-- For autocomplete for tagging. Can be moved somewhere else -->
-    <!-- TODO: availableTags -->
-    <script>
-        $(function() {
-            var availableTags = [
-            "ActionScript",
-            "AppleScript",
-            "Asp",
-            "BASIC",
-            "C",
-            "C++",
-            "Clojure",
-            "COBOL",
-            "ColdFusion",
-            "Erlang",
-            "Fortran",
-            "Groovy",
-            "Haskell",
-            "Java",
-            "JavaScript",
-            "Lisp",
-            "Perl",
-            "PHP",
-            "Python",
-            "Ruby",
-            "Scala",
-            "Scheme"
-            ];
-            $( ".add-tag" ).autocomplete({
-              source: availableTags
-            });
-        });
-    </script>
-
-
+<!-- For autocomplete for tagging. Can be moved somewhere else -->
+<!-- TODO: availableTags -->
+<script>
+$(function() {
+    var availableTags = [
+    "ActionScript",
+    "AppleScript",
+    "Asp",
+    "BASIC",
+    "C",
+    "C++",
+    "Clojure",
+    "COBOL",
+    "ColdFusion",
+    "Erlang",
+    "Fortran",
+    "Groovy",
+    "Haskell",
+    "Java",
+    "JavaScript",
+    "Lisp",
+    "Perl",
+    "PHP",
+    "Python",
+    "Ruby",
+    "Scala",
+    "Scheme"
+    ];
+    $( ".add-tag" ).autocomplete({
+      source: availableTags
+  });
+});
+</script>
 
 
-    <div class="row">
-        <div class="col-md-9 panel-group">
-            {% load endless %}
-            {% paginate object_list %}
-            {% for status in object_list %}
-                <div class="panel panel-primary ">
-                    <div class="panel-heading col-lg-12">
-                        <div class="row">
-                            <div class="col-lg-1">
-                                <img src="{{ status.feed.pic_square }}" class="profile-photo img-rounded">
-                            </div>
-                            <div class="col-lg-9">
-                                <div class="row" id="name-row-container">
-                                    <h4>{{ status.feed.person.name }}</h4>
-                                </div>
-                                <div class="row" id="date-row-container">
-                                    <h6>{{ status.published | naturaltime }}</h6>
-                                </div>
-                            </div>
-                        </div>
 
+
+<div class="row">
+    <div class="col-md-9 panel-group">
+        {% load endless %}
+        {% paginate object_list %}
+        {% for status in object_list %}
+        <div class="panel panel-primary ">
+            <div class="panel-heading col-lg-12">
+                <div class="row">
+                    <div class="col-lg-1">
+                        <a href="{% url 'plain-person' status.feed.person.id %}">
+                            <img src="{{ status.feed.pic_square }}" class="profile-photo img-rounded">
+                        </a>
                     </div>
-                    <div class="panel-body">
-                        <p>{{ status.content | linebreaks }}</p>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                    <span>
-                                        <b>אהבו: </b> {{ status.like_count|intcomma }}.
-                                    </span>
-                                    <span>
-                                        <b>הגיבו: </b> {{ status.comment_count|intcomma }}.
-                                    </span>
-                                    <span>
-                                        <b>שיתפו: </b> {{ status.share_count|intcomma }}.
-                                    </span>
-                            </div>
-                            <div class="col-md-8">
-                                {% if status.tags.count > 0 %}
-                                    <strong>תגים: </strong>
-                                {% endif %}
-                                {% for tag in status.tags.all %}
-                                    <a href="{% url 'plain-tag' 'name' tag.name %}">
-                                        <span class="label label-info">{{ tag.name }}</span>
-                                    </a>
-                                {% endfor %}
-
-                                <div class="pull-left">
-                                    <a href="{{ status | link }}" class="btn btn-info btn-xs" target="_blank">הפוסט ב-<i
-                                            class="fa fa-facebook-square"></i> </a>
-
-                                    <!-- Button trigger modal -->
-                                    <button class="btn btn-primary btn-xs" data-toggle="modal"
-                                            data-target="#{{ status.status_id }}_modal">
-                                        צפה בפוסט
-                                    </button>
-
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
-                                         role="dialog"
-                                         aria-labelledby="myModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-body text-center">
-
-                                                    <div class="fb-post" data-href="{{ status | embed_link }}"
-                                                         data-width="466">
-                                                        <div class="fb-xfbml-parse-ignore">
-                                                            <a href="{{ status | embed_link }}">פוסט</a> מאת <a
-                                                                href="{{ status.feed.page_url }}">{{ status.feed.person.name }}</a>.
-                                                        </div>
-
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default"
-                                                                data-dismiss="modal">
-                                                            Close
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <!-- /.modal-content -->
-                                            </div>
-                                            <!-- /.modal-dialog -->
-                                        </div>
-                                        <!-- /.modal -->
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-                            {% if user.is_authenticated %}
-                                <div class="col-sm-12">
-                                    <hr>
-                                    <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
-                                          role="form">
-                                        {% csrf_token %}
-                                        <div class="form-group">
-                                            <label class="sr-only" for="add-tag">Add tag</label>
-                                            <input type="text" class="form-control add-tag" id="add-tag"
-                                                   name="tag"
-                                                   placeholder="תכניס תג (comma separated)" data-role="tagsinput">
-                                        </div>
-
-                                        <button type="submit" class="btn btn-primary">הוסף תיוגים</button>
-                                    </form>
-                                </div>
-                            {% endif %}
+                    <div class="col-lg-9">
+                        <div class="row" id="name-row-container">
+                            <a class="link-on-blue" href="{% url 'plain-person' status.feed.person.id %}">
+                                <h4>{{ status.feed.person.name }}</h4>
+                            </a>
+                        </div>
+                        <div class="row" id="date-row-container">
+                            <h6>{{ status.published | naturaltime }}</h6>
                         </div>
                     </div>
                 </div>
-                <p>
 
-                </p>
-            {% endfor %}
+            </div>
+            <div class="panel-body">
+                <p>{{ status.content | linebreaks }}</p>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <span>
+                            <b>אהבו: </b> {{ status.like_count|intcomma }}.
+                        </span>
+                        <span>
+                            <b>הגיבו: </b> {{ status.comment_count|intcomma }}.
+                        </span>
+                        <span>
+                            <b>שיתפו: </b> {{ status.share_count|intcomma }}.
+                        </span>
+                    </div>
+                    <div class="col-md-8">
+                        {% if status.tags.count > 0 %}
+                        <strong>תגים: </strong>
+                        {% endif %}
+                        {% for tag in status.tags.all %}
+                        <a href="{% url 'plain-tag' 'name' tag.name %}">
+                            <span class="label label-info">{{ tag.name }}</span>
+                        </a>
+                        {% endfor %}
+
+                        <div class="pull-left">
+                            <a href="{{ status | link }}" class="btn btn-info btn-xs" target="_blank">הפוסט ב-<i
+                                class="fa fa-facebook-square"></i> </a>
+
+                                <!-- Button trigger modal -->
+                                <button class="btn btn-primary btn-xs" data-toggle="modal"
+                                data-target="#{{ status.status_id }}_modal">
+                                צפה בפוסט
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
+                            role="dialog"
+                            aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body text-center">
+
+                                        <div class="fb-post" data-href="{{ status | embed_link }}"
+                                        data-width="466">
+                                        <div class="fb-xfbml-parse-ignore">
+                                            <a href="{{ status | embed_link }}">פוסט</a> מאת <a
+                                            href="{{ status.feed.page_url }}">{{ status.feed.person.name }}</a>.
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default"
+                                        data-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                    <!-- /.modal -->
+                </div>
+
+
+            </div>
         </div>
-        <div class="col-md-2">
-            {% block sidebar %}
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-heading"><b> כתבו לאחרונה: </b></li>
-                    {% for person in side_bar_list.all %}
-                        <li class="list-group-item">
-                            <a href="{% url 'plain-person' person.id %}">{{ person.name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endblock %}
-        </div>
+
+        {% if user.is_authenticated %}
+        <div class="col-sm-12">
+            <hr>
+            <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
+            role="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="sr-only" for="add-tag">Add tag</label>
+                <input type="text" class="form-control add-tag" id="add-tag"
+                name="tag"
+                placeholder="תכניס תג (comma separated)" data-role="tagsinput">
+            </div>
+
+            <button type="submit" class="btn btn-primary">הוסף תיוגים</button>
+        </form>
     </div>
-    <ul class="pagination"> {% show_pages %} </ul>
+    {% endif %}
+</div>
+</div>
+</div>
+<p>
+
+</p>
+{% endfor %}
+</div>
+<div class="col-md-2">
+    {% block sidebar %}
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-heading"><b> כתבו לאחרונה: </b></li>
+        {% for person in side_bar_list.all %}
+        <li class="list-group-item">
+            <a href="{% url 'plain-person' person.id %}">{{ person.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endblock %}
+</div>
+</div>
+<ul class="pagination"> {% show_pages %} </ul>
 {% endblock %}
