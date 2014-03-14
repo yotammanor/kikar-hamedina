@@ -23,10 +23,10 @@ To insert initial data into the db, do as follows:
 
 ``python manage.py loaddata data_fixture.json`` - Note that the ``core_*`` tables in the db need to be truncated first. 
 
-``python fetchfeed --initial``
+``python manage.py fetchfeed --initial``
 
 The first command will insert to db data from a pre-created list of parties, persons, feeds, and tags.
-The second command will fetch statuses for all feeds in data. Tag initial sets the request to 500 messages per feed (as opposed to default of 20), so it might take a while to finish. 
+The second command will fetch statuses for all feeds in data. Tag initial sets the request to 1000 messages per feed (as opposed to default of 20), so it might take a while to finish. *Note: Default numner of messages is set within fetchfeed.py command, see file for exact value.
 
 
 You can also run: ``python manage.py fetchfeed {feed_id} [--initial]`` to download a single feed.
