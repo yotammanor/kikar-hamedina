@@ -8,6 +8,8 @@ from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
 from django.db.models import Count
 import datetime
 
+import facebook, os
+
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
 NUMBER_OF_TAGS_TO_PRESENT = 3
@@ -102,6 +104,7 @@ class StatusFilterUnifiedView(ListView):
         object_id = self.kwargs['id']
         search_field = self.kwargs.get('search_field', 'id')
         context['object'] = self.parent_model.objects.get(**{search_field: object_id})
+        context['access_token'] = facebook.get_app_access_token(os.environ['FACEBOOK_APP_ID'], os.environ['FACEBOOK_SECRET_KEY'])
         return context
 
 
