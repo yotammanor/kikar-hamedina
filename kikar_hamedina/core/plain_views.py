@@ -1,3 +1,4 @@
+import pprint
 from django.core.exceptions import FieldError
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
@@ -5,10 +6,13 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.views.generic.list import ListView
 from django.template.defaultfilters import slugify
-from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
+from django.utils import timezone
+from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag, User_Token
 from django.db.models import Count
 import datetime
 import facebook
+
+
 
 
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
@@ -178,17 +182,46 @@ def login_page(request):
 
 
 def get_data_from_facebook(request):
-    user_access_token = request.POST['access_token']
-    print user_access_token
-    graph = facebook.GraphAPI(access_token=user_access_token)
-    # graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
-    stav = '508516607'
-    anna = '509928464'
-    a = graph.get_object(anna)
-    print a
-    # b = graph.request('https://graph.facebook.com/%s/statuses?access_token=%s' % (stav, user_access_token))
-    # print b
-    b = graph.get_connections(anna, 'statuses')
-    print b
+    """
+    This Function creates or updates within our db a facebook token recieved from a user.
+    After receiving the token, it is first extended into  a long-term user token
+    (see https://developers.facebook.com/docs/facebook-login/access-tokens#extending for mored details)
 
+    Next the token is saved in our db. Afterwards, the token is tested on all of our user-profile feeds, for each
+    feed that the token works for, their relation will be saved in our db, for future use.
+
+    At the end, the function redirects backwards into referrer url.
+    """
+    user_access_token = request.POST['access_token']
+    graph = facebook.GraphAPI(access_token=user_access_token)
+    # Extension into long-term token
+    extended_access_token = graph.extend_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
+    print 'access token, changed \nfrom: %s \nto: %s ' % (user_access_token, extended_access_token)
+    graph.access_token = extended_access_token['access_token']
+    # create or update token for user in db
+    user = graph.get_object('me')
+    token, created = User_Token.objects.get_or_create(user_id=user['id'])
+    if created:
+        token.token = user_access_token
+        token.user_id = user['id']
+    token.token = user_access_token
+    token.date_of_creation = timezone.now()
+    token.date_of_expiration = timezone.now() + timezone.timedelta(seconds=int(extended_access_token['expires']))
+    token.save()
+
+    # add or update relevant feeds for token
+    user_profile_feeds = Facebook_Feed.objects.filter(feed_type='UP')
+        # user_profile_feeds = ['508516607', '509928464']  # Used for testing
+    relevant_feeds = []
+    print 'working on %d user_profile feeds.' % len(user_profile_feeds)
+    for feed in user_profile_feeds:
+        statuses = graph.get_connections(feed.vendor_id, 'statuses')
+        if statuses['data']:
+            print 'feed %s returns at least one result.' % feed
+            relevant_feeds.append(feed)
+    for feed in relevant_feeds:
+        token.feeds.add(feed)
+    print 'adding %d feeds to token' % len(relevant_feeds)
+    token.save()
+    # Redirect
     return HttpResponseRedirect(request.META["HTTP_REFERER"])

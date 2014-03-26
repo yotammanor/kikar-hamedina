@@ -6,7 +6,10 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 import facebook
-from ...models import Facebook_Feed as Facebook_Feed_Model, Facebook_Status as Facebook_Status_Model
+from ...models import \
+    Facebook_Feed as Facebook_Feed_Model, \
+    Facebook_Status as Facebook_Status_Model,\
+    User_Token as User_Token_Model
 
 
 class Command(BaseCommand):
@@ -14,30 +17,53 @@ class Command(BaseCommand):
     help = 'Fetches a person'
     graph = facebook.GraphAPI()
 
+    def fetch_user_profile_object_by_feed_id(self, feed_id):
+        """
+        Receives a feed_id for a facebook
+        Returns a facebook-sdk fql query, with all status objects published by the page itself.
+        """
+
+        select_user_profile_query = """
+            SELECT
+                name,
+                uid,
+                birthday_date,
+                profile_url,
+                pic_square,
+                pic_big,
+                username
+            FROM
+                user
+            WHERE
+                uid = {0}""".format(feed_id)
+        # '508516607'
+        return self.graph.fql(query=select_user_profile_query)
+
+
     def fetch_page_object_by_feed_id(self, feed_id):
         """
         Receives a feed_id for a facebook
         Returns a facebook-sdk fql query, with all status objects published by the page itself.
                 """
+        select_public_page_info_query = """
+                    SELECT
+                        about,
+                        birthday,
+                        fan_count,
+                        name,
+                        page_id,
+                        page_url,
+                        pic_large,
+                        pic_square,
+                        talking_about_count,
+                        username,
+                        website
+                    FROM
+                        page
+                    WHERE
+                        page_id={0}""".format(feed_id)
+        return self.graph.fql(query=select_public_page_info_query)
 
-        select_self_published_status_query = """
-                SELECT
-                    about,
-                    birthday,
-                    fan_count,
-                    name,
-                    page_id,
-                    page_url,
-                    pic_large,
-                    pic_square,
-                    talking_about_count,
-                    username,
-                    website
-                FROM
-                    page
-                WHERE
-                    page_id={0}""".format(feed_id)
-        return self.graph.fql(query=select_self_published_status_query)
 
     def update_feed_data_to_db(self, feed_data, feed_id):
         """
@@ -71,12 +97,36 @@ class Command(BaseCommand):
             print 'Error: {0} is missing from db'.format(feed_id)
             raise
 
+
     def get_feed_data(self, feed):
         """
         Returns a Dict object of feed ID. and retrieved feed data.
         """
+        if feed.feed_type == 'UP':  # User Profile
+            # Set facebook graph access token to user access token
+            token = User_Token_Model.objects.filter(is_expired=False).order_by('-date_of_creation').first()
+            if token:
+                print 'token is: %s' % token.token
+            else:
+                raise Exception('No User Access Token was found in the database!')  #TODO:Write as a real exception
+            self.graph.access_token = token.token
+            data_dict = {'feed_id': feed.id, 'data': self.fetch_user_profile_object_by_feed_id(feed.vendor_id)}
+            pprint(data_dict)
+            # Transform data to fit existing public page
+            data_dict['data'][0]['fan_count'] = 0
+            data_dict['data'][0]['talking_about_count'] = 0
+            data_dict['data'][0]['about'] = ''
+            data_dict['data'][0]['page_url'] = data_dict['data'][0]['profile_url']
+            data_dict['data'][0]['website'] = data_dict['data'][0]['profile_url']
+            data_dict['data'][0]['pic_large'] = data_dict['data'][0]['pic_big']
+            data_dict['data'][0]['birthday'] = data_dict['data'][0]['birthday_date']
+            return data_dict
+        else:  # 'PP - Public Page'
+            # Set facebook graph access token to app access token
+            self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
+            data_dict = {'feed_id': feed.id, 'data': self.fetch_page_object_by_feed_id(feed.vendor_id)}
+            return data_dict
 
-        return {'feed_id': feed.id, 'data': self.fetch_page_object_by_feed_id(feed.vendor_id)}
 
     def handle(self, *args, **options):
         """
@@ -85,10 +135,6 @@ class Command(BaseCommand):
         or no feed ID and therefore retrieves data for all the feeds.
         """
         feeds_data = []
-
-        # Initialize facebook graph access tokens
-        self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
-
         # Case no args - fetch all feeds
         if len(args) == 0:
             for feed in Facebook_Feed_Model.objects.all():

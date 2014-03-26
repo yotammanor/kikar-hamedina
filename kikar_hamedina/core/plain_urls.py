@@ -38,7 +38,7 @@ urlpatterns = patterns('',
                            name='all-tags'),
                        url(r'^about/$', plain_views.about_page, name='about',),
                        url(r'^fblogin/$', plain_views.login_page, name='fblogin'),
-                       url(r'^get-data/$', plain_views.get_data_from_facebook, name='get-data-from-facebook'),
+                       url(r'^fblogin/get-data/$', plain_views.get_data_from_facebook, name='get-data-from-facebook'),
 
                        # url(r'^search/(?P<id>[\w\s]+)/$', plain_views.SearchView.as_view(),
                        #     kwargs={'variable_column': 'content',

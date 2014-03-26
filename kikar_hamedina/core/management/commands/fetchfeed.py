@@ -5,7 +5,10 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 import facebook
-from ...models import Facebook_Feed as Facebook_Feed_Model, Facebook_Status as Facebook_Status_Model
+from ...models import \
+    Facebook_Feed as Facebook_Feed_Model, \
+    Facebook_Status as Facebook_Status_Model, \
+    User_Token as User_Token_Model
 
 DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN = 1000
 DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN = 20
@@ -69,13 +72,14 @@ class Command(BaseCommand):
         except Facebook_Status_Model.DoesNotExist:
             # If post_id does not exist at all, create it from data.
             status = Facebook_Status_Model(feed_id=feed_id,
-                                  status_id=status_object['post_id'],
-                                  content=status_object['message'],
-                                  like_count=status_object['like_info']['like_count'],
-                                  comment_count=status_object['comment_info']['comment_count'],
-                                  share_count=status_object['share_count'],
-                                  published=datetime.datetime.fromtimestamp(int(status_object['created_time'])),
-                                  updated=current_time_of_update)
+                                           status_id=status_object['post_id'],
+                                           content=status_object['message'],
+                                           like_count=status_object['like_info']['like_count'],
+                                           comment_count=status_object['comment_info']['comment_count'],
+                                           share_count=status_object['share_count'],
+                                           published=datetime.datetime.fromtimestamp(
+                                               int(status_object['created_time'])),
+                                           updated=current_time_of_update)
         finally:
             # save status object.
             status.save()
@@ -84,8 +88,24 @@ class Command(BaseCommand):
         """
         Returns a Dict object of feed ID. and retrieved status objects.
                 """
+        if feed.feed_type == 'PP':
+            # Set facebook graph access tokens as app access token
+            self.graph.access_token = facebook.get_app_access_token(
+                settings.FACEBOOK_APP_ID,
+                settings.FACEBOOK_SECRET_KEY
+            )
+            return {'feed_id': feed.id, 'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, fql_limit)}
 
-        return {'feed_id': feed.id, 'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, fql_limit)}
+        else:  # feed_type == 'UP' - User Profile
+            # Set facebook graph access token to user access token
+            token = User_Token_Model.objects.filter(feeds__id=feed.id).order_by('-date_of_creation').first()
+            if not token:
+                print 'No Token found for User Profile %s' % feed
+                return {'feed_id': feed.id, 'statuses': []}
+            else:
+                print 'using token by user_id: %s' % token.user_id
+                self.graph.access_token = token.token
+                return {'feed_id': feed.id, 'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, fql_limit)}
 
     def handle(self, *args, **options):
         """
@@ -94,9 +114,6 @@ class Command(BaseCommand):
         or no feed ID and therefore retrieves all Statuses for all the feeds.
         """
         feeds_statuses = []
-
-        # Initialize facebook graph access tokens
-        self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
 
         if options['initial']:
             fql_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN
