@@ -104,7 +104,7 @@ class Command(BaseCommand):
         """
         if feed.feed_type == 'UP':  # User Profile
             # Set facebook graph access token to user access token
-            token = User_Token_Model.objects.filter(is_expired=False).order_by('-date_of_creation').first()
+            token = User_Token_Model.objects.all().order_by('-date_of_creation').first()
             if token:
                 print 'token is: %s' % token.token
             else:
