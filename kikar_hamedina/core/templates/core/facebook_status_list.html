@@ -70,37 +70,22 @@ $(function() {
 </script>
 
 <script>
+// AJAX that updates the stats for every status-panel.
 $(document).ready(function(){
     $(".status-panel").each( function( index ) {
-    access_token = $(this).data("token");
-    status_id = $(this).data("statusid");
-    fields = "likes.limit(1).summary(true),shares,comments.limit(1).summary(true)";
-
-    url = "https://graph.facebook.com"
-    url += "?"
-    url += 'access_token='+access_token+"&"
-    url += 'id='+status_id+"&"
-    url += 'fields='+fields
-    $.get( url, function( data ) {
-        if ("likes" in data) {
-            if ("summary" in data["likes"]) {
-                $("#"+data['id']+"-likes").text(data['likes']['summary']['total_count'])
+        status_id = $(this).data("statusid");
+        url = "http://"+document.domain+":8000/plain/status_update/"+status_id
+        $.ajax({
+            url: url,
+            contentType: "application/json",
+            success: function(data) {
+                $("#"+data['id']+"-likes").text(data['likes'])
+                $("#"+data['id']+"-comments").text(data['comments'])
+                $("#"+data['id']+"-shares").text(data['shares'])
             }
-        }
-        if ("shares" in data) {
-            if ("count" in data["shares"]) {
-                $("#"+data['id']+"-shares").text(data['shares']['total_count'])
-            }
-        }
-        if ("comments" in data) {
-            if ("summary" in data["comments"]) {
-                $("#"+data['id']+"-comments").text(data['comments']['summary']['total_count'])
-            }
-        }
+        });
     });
 });
-
-})
 </script>
 
 
@@ -158,60 +143,60 @@ $(document).ready(function(){
                         <div class="pull-left">
                             <a href="{{ status | link }}" class="btn btn-info btn-xs" target="_blank">הפוסט ב-<i class="fa fa-facebook-square"></i> </a>
 
-                                <!-- Button trigger modal -->
-                                <button class="btn btn-primary btn-xs" data-toggle="modal"
-                                data-target="#{{ status.status_id }}_modal">
-                                צפה בפוסט
-                            </button>
+                            <!-- Button trigger modal -->
+                            <button class="btn btn-primary btn-xs" data-toggle="modal"
+                            data-target="#{{ status.status_id }}_modal">
+                            צפה בפוסט
+                        </button>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
-                            role="dialog"
-                            aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-body text-center">
+                        <!-- Modal -->
+                        <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
+                        role="dialog"
+                        aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body text-center">
 
-                                        <div class="fb-post" data-href="{{ status | embed_link }}"
-                                        data-width="466">
-                                        <div class="fb-xfbml-parse-ignore">
-                                            <a href="{{ status | embed_link }}">פוסט</a> מאת <a href="{{ status.feed.page_url }}">{{ status.feed.person.name }}</a>.
-                                        </div>
-
+                                    <div class="fb-post" data-href="{{ status | embed_link }}"
+                                    data-width="466">
+                                    <div class="fb-xfbml-parse-ignore">
+                                        <a href="{{ status | embed_link }}">פוסט</a> מאת <a href="{{ status.feed.page_url }}">{{ status.feed.person.name }}</a>.
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default"
-                                        data-dismiss="modal">
-                                        Close
-                                    </button>
+
                                 </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">
+                                    Close
+                                </button>
                             </div>
-                            <!-- /.modal-content -->
                         </div>
-                        <!-- /.modal-dialog -->
+                        <!-- /.modal-content -->
                     </div>
-                    <!-- /.modal -->
+                    <!-- /.modal-dialog -->
                 </div>
+                <!-- /.modal -->
             </div>
         </div>
-
-        {% if user.is_authenticated %}
-        <div class="col-sm-12">
-            <hr>
-            <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
-            role="form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label class="sr-only" for="add-tag">Add tag</label>
-                <input type="text" class="form-control add-tag" id="add-tag"
-                name="tag"
-                placeholder="תכניס תג (comma separated)" data-role="tagsinput">
-            </div>
-
-            <button type="submit" class="btn btn-primary">הוסף תיוגים</button>
-        </form>
     </div>
-    {% endif %}
+
+    {% if user.is_authenticated %}
+    <div class="col-sm-12">
+        <hr>
+        <form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
+        role="form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="sr-only" for="add-tag">Add tag</label>
+            <input type="text" class="form-control add-tag" id="add-tag"
+            name="tag"
+            placeholder="תכניס תג (comma separated)" data-role="tagsinput">
+        </div>
+
+        <button type="submit" class="btn btn-primary">הוסף תיוגים</button>
+    </form>
+</div>
+{% endif %}
 </div>
 </div>
 </div>

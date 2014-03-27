@@ -36,7 +36,9 @@ urlpatterns = patterns('',
                            name='all-parties'),
                        url(r'^tags/$', plain_views.AllTags.as_view(queryset=Tag.objects.all()),
                            name='all-tags'),
-                       url(r'^about/$', plain_views.about_page, name='about',)
+                       url(r'^about/$', plain_views.about_page, name='about',),
+
+                       url(r'^status_update/(?P<status_id>\w+)/$',plain_views.status_update)
 
                        # url(r'^search/(?P<id>[\w\s]+)/$', plain_views.SearchView.as_view(),
                        #     kwargs={'variable_column': 'content',

@@ -6,9 +6,10 @@ from django.views.generic.list import ListView
 from django.template.defaultfilters import slugify
 from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
 from django.db.models import Count
+from django.conf import settings
 import datetime
 
-import facebook, os
+import facebook, os, urllib2, json
 
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
@@ -172,3 +173,38 @@ def add_tag(request, id):
     # return HttpResponseRedirect(reverse('plain-index'))
     print request.META["HTTP_REFERER"]
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
+
+#A handler for status_update ajax call from client
+def status_update(request, status_id):
+
+    status = Facebook_Status.objects.get(status_id=status_id)
+
+    url = "https://graph.facebook.com/"
+    url += str(status.status_id)
+    url += "?access_token="+facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
+    url += "&fields=shares,likes.limit(1).summary(true),comments.limit(1).summary(true)"
+
+    try:
+        responseText = urllib2.urlopen(url).read()
+        responseJson = json.loads(responseText)
+
+        response_data = dict()
+        response_data['likes'] = responseJson['likes']['summary']['total_count']
+        response_data['comments'] = responseJson['comments']['summary']['total_count']
+        response_data['shares'] = responseJson['shares']['count']
+        response_data['id'] = status.status_id
+        try:
+            status.like_count = int(response_data['likes'])
+            status.comment_count = int(response_data['comments'])
+            status.share_count = int(response_data['shares'])
+            status.save()
+        finally:
+            return HttpResponse(json.dumps(response_data), content_type="application/json")
+    finally:
+        response_data = dict()
+        response_data['likes'] = status.like_count
+        response_data['comments'] = status.comment_count
+        response_data['shares'] = status.share_count
+        response_data['id'] = status.status_id
+
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
