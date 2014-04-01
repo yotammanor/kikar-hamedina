@@ -51,4 +51,12 @@ body {
 
 /*#politicians-dropdown-menu {
 	min-width: 1000px;
+} */
+
+.link-on-blue {
+	color: white;
+}
+
+.link-on-blue:hover {
+	color: white;
 }
