@@ -7,8 +7,8 @@ from django.conf import settings
 from django.views.generic.list import ListView
 from django.template.defaultfilters import slugify
 from django.utils import timezone
-from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag, User_Token
-from django.db.models import Count
+from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag, User_Token, Feed_Popularity
+from django.db.models import Count, F
 import datetime
 import facebook
 
@@ -51,8 +51,15 @@ class HomepageView(ListView):
         context = super(HomepageView, self).get_context_data(**kwargs)
         wrote_about_tag = dict()
         for tag in context['object_list']:
-            wrote_about_tag[tag] = Facebook_Feed.objects.filter(
-                facebook_status__tags__id=tag.id).distinct().order_by('-fan_count')[:NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY]
+            list_of_writers = Facebook_Feed.objects.filter(facebook_status__tags__id=tag.id).distinct()
+            list_of_writers_with_latest_fan_count = list()
+            for feed in list_of_writers:
+                list_of_writers_with_latest_fan_count.append({'feed': feed,
+                                                              'fan_count': feed.current_fan_count})
+            sorted_list_of_writers = sorted(list_of_writers_with_latest_fan_count,
+                                            key=lambda x: x['fan_count'],
+                                            reverse=True)
+            wrote_about_tag[tag] = [feed['feed'] for feed in sorted_list_of_writers][:NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY]
         context['wrote_about_tag'] = wrote_about_tag
         return context
 
@@ -202,9 +209,9 @@ def get_data_from_facebook(request):
     user = graph.get_object('me')
     token, created = User_Token.objects.get_or_create(user_id=user['id'])
     if created:
-        token.token = user_access_token
+        token.token = extended_access_token['access_token']
         token.user_id = user['id']
-    token.token = user_access_token
+    token.token = extended_access_token['access_token']
     token.date_of_creation = timezone.now()
     token.date_of_expiration = timezone.now() + timezone.timedelta(seconds=int(extended_access_token['expires']))
     token.save()

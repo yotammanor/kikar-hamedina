@@ -7,27 +7,29 @@
 {% endblock %}
 
 {% block details %}
-{% with object.facebook_feed_set.all|first as feed %}
-    {% load humanize %}
-    <p>
+    {% with object.facebook_feed_set.all|first as feed %}
+        {% load humanize %}
+        <p>
 
-        <img src="{{ feed.pic_large }}" class="img-rounded" id="profile-photo">
-    </p>
-    <p>
-        <i class="fa fa-group"></i> {{ object.party.name }}
-    </p>
-    <p>
+            <img src="{{ feed.pic_large }}" class="img-rounded" id="profile-photo">
+        </p>
+        <p>
+            <i class="fa fa-group"></i> {{ object.party.name }}
+        </p>
+        <p>
 
-            <i class="fa fa-thumbs-up"></i> {{ feed.fan_count }}
+            <i class="fa fa-thumbs-up"></i>
+            {{ feed.current_fan_count|intcomma }}
 
-    </p>
-{% endwith %}
+        </p>
+    {% endwith %}
 {% endblock %}
 
-{%  block sidebar %}
+{% block sidebar %}
     <ul class="list-group">
         {% for person in object.party.persons.all %}
-            <li class="list-group-item"><i class="fa fa-user"></i> <a href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
+            <li class="list-group-item"><i class="fa fa-user"></i> <a
+                    href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
         {% endfor %}
     </ul>
-{%  endblock %}
+{% endblock %}

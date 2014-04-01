@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
+from time import strftime
+
 
 class Party(models.Model):
     name = models.CharField(unique=True, max_length=128)
@@ -37,15 +39,37 @@ class Facebook_Feed(models.Model):
     # Public Page Only
     about = models.TextField(null=True, default='')
     website = models.URLField(null=True, max_length=2000)
+
+    class Meta:
+        ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
+
+    def __unicode__(self):
+        return unicode(self.person) + " " + self.vendor_id
+
+    @property
+    def get_current_fan_count(self):
+        return Feed_Popularity.objects.filter(feed=self).latest('date_of_creation').fan_count
+
+    current_fan_count = get_current_fan_count
+
+
+class Feed_Popularity(models.Model):
+    feed = models.ForeignKey('Facebook_Feed')
+    date_of_creation = models.DateTimeField(default=timezone.now())
+    # PublicPage Only
     talking_about_count = models.IntegerField(default=0)
     fan_count = models.IntegerField(default=0)
     # UserProfile Only
     followers_count = models.IntegerField(default=0)
     friends_count = models.IntegerField(default=0)
 
-    def __unicode__(self):
-        return unicode(self.person) + " " + self.vendor_id
+    class Meta:
+        ordering = ['-date_of_creation']
 
+    def __unicode__(self):
+        return unicode(self.feed) + " " + str(self.date_of_creation)
+               # strftime("%Y_%M_%D_%H:%m:%s", self.date_of_creation)
+#
 
 class Facebook_Status(models.Model):
     feed = models.ForeignKey('Facebook_Feed')

@@ -9,7 +9,8 @@ import facebook
 from ...models import \
     Facebook_Feed as Facebook_Feed_Model, \
     Facebook_Status as Facebook_Status_Model,\
-    User_Token as User_Token_Model
+    User_Token as User_Token_Model, \
+    Feed_Popularity as Feed_Popularity_Model
 
 
 class Command(BaseCommand):
@@ -80,16 +81,23 @@ class Command(BaseCommand):
                 # Assuming retrieved data from facebook is always more up-to-date than our data
                 feed.about = feed_dict['about']
                 feed.birthday = feed_dict['birthday']
-                feed.fan_count = feed_dict['fan_count']
                 feed.name = feed_dict['name']
                 feed.page_url = feed_dict['page_url']
                 feed.pic_large = feed_dict['pic_large']
                 feed.pic_square = feed_dict['pic_square']
-                feed.talking_about_count = feed_dict['talking_about_count']
                 feed.username = feed_dict['username']
                 feed.website = feed_dict['website']
                 # save feed object.
                 feed.save()
+                # feed_popularity data
+                feed_popularity = Feed_Popularity_Model(
+                    feed=feed,
+                    date_of_creation=timezone.now(),
+                    fan_count=feed_dict['fan_count'],
+                    talking_about_count=feed_dict['talking_about_count'],
+                )
+                feed_popularity.save()
+
             else:
                 print 'No data retrieved for feed {0}'.format(feed_id)
         except Facebook_Feed_Model.DoesNotExist:
