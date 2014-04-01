@@ -3,50 +3,65 @@
 {% block title %}עמוד ראשי{% endblock title %}
 
 {% block h1 %}
-    כיכר המדינה
+כיכר המדינה
 {% endblock %}
 {% block details %}
-    <div class="h4">
-        הנושאים החמים
-    </div>
+<div class="h4">
+    הנושאים החמים
+</div>
 {% endblock %}
 {% block content %}
-    <div class="row">
-        <div class="col-md-12">
-            {% for tag, feed_list in wrote_about_tag.items %}
-                <div class="col-md-4">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading"><i
-                                class="fa fa-comments-o"></i> {{ tag.name | truncatechars:32 }}, {{ tag.number_of_posts }}
+<div class="row">
+    <div class="col-md-12">
+        {% for tag, feed_list in wrote_about_tag.items %}
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <i class="fa fa-comments-o"></i>
                         </div>
-
-                        <div class="panel-body">
-                            {% for feed in feed_list %}
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="col-sm-3">
-                                            <a href="{% url 'plain-person' feed.person.id %}">
-                                                <img src="{{ feed.pic_square }}"
-                                                     class="profile-photo img-rounded">
-                                            </a>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            {{ feed.person.name }} <br>
-                                            {{ feed.person.party.name }}
-                                        </div>
-                                    </div><br><br><br>
-                                </div>
-                            {% endfor %}
-
+                        <div class="col-md-2">
+                            <a class="link-on-blue" href="{% url 'plain-tag' 'name' tag.name %}">{{ tag.name | truncatechars:32 }}</a>
                         </div>
-                        <div class="panel-footer">
-                            <a href="{% url 'plain-tag' 'name' tag.name %}"> קרא עוד </a>
+                        <div class="col-md-1">
+                            {{ tag.number_of_posts }}
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+
+                <div class="panel-body">
+                    {% for feed in feed_list %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-sm-3">
+                                <a href="{% url 'plain-person' feed.person.id %}">
+                                    <img src="{{ feed.pic_square }}"
+                                    class="profile-photo img-rounded">
+                                </a>
+                            </div>
+                            <div class="col-sm-9">
+                                <a href="{% url 'plain-person' feed.person.id %}">
+                                    {{ feed.person.name }}
+                                </a>
+                                <br>
+                                <a href="{% url 'plain-party' feed.person.party.id %}">
+                                    {{ feed.person.party.name }}
+                                </a>
+                            </div>
+                        </div><br><br><br>
+                    </div>
+                    {% endfor %}
+
+                </div>
+                <div class="panel-footer">
+                    <a href="{% url 'plain-tag' 'name' tag.name %}"> קרא עוד</a>
+                </div>
+            </div>
         </div>
+        {% endfor %}
     </div>
+</div>
 {% endblock %}
 {##}
 {#{% block sidebar %}#}

@@ -74,7 +74,7 @@ class Command(BaseCommand):
                                   like_count=status_object['like_info']['like_count'],
                                   comment_count=status_object['comment_info']['comment_count'],
                                   share_count=status_object['share_count'],
-                                  published=datetime.datetime.fromtimestamp(int(status_object['created_time'])),
+                                  published=datetime.datetime.fromtimestamp(int(status_object['created_time']),tz=timezone.utc),
                                   updated=current_time_of_update)
         finally:
             # save status object.
@@ -108,7 +108,11 @@ class Command(BaseCommand):
         if len(args) == 0:
             for feed in Facebook_Feed_Model.objects.all():
                 self.stdout.write('Working on feed: {0}.'.format(feed.pk))
-                feeds_statuses.append(self.get_feed_statuses(feed, fql_limit))
+                feed_statuses = self.get_feed_statuses(feed,fql_limit)
+                self.stdout.write('Successfully fetched feed: {0}.'.format(feed.pk))
+                for status in feed_statuses['statuses']:
+                    self.insert_status_object_to_db(status, feed_statuses['feed_id'])
+                self.stdout.write('Successfully written feed: {0}.'.format(feed.pk))
             self.stdout.write('Successfully fetched all')
 
         # Case arg exists - fetch feed by id supplied
@@ -121,15 +125,15 @@ class Command(BaseCommand):
             except Facebook_Feed_Model.DoesNotExist:
                 raise CommandError('Feed "%s" does not exist' % feed_id)
 
-            feeds_statuses.append(self.get_feed_statuses(feed, fql_limit))
+            feed_statuses = self.get_feed_statuses(feed,fql_limit)
+            for status in feed_statuses['statuses']:
+                self.insert_status_object_to_db(status, feed_statuses['feed_id'])
+            self.stdout.write('Successfully written feed: {0}.'.format(feed.id))
 
         # Case invalid args
         else:
             raise CommandError('Please enter a valid feed id')
 
-        # Insert fetched statuses to database
-        for feed_statuses in feeds_statuses:
-            for status in feed_statuses['statuses']:
-                self.insert_status_object_to_db(status, feed_statuses['feed_id'])
+
 
         self.stdout.write('Successfully saved all statuses to db.')

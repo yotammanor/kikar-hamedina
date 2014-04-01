@@ -14,7 +14,8 @@
         <img src="{{ feed.pic_large }}" class="img-rounded" id="profile-photo">
     </p>
     <p>
-        <i class="fa fa-group"></i> {{ object.party.name }}
+        <i class="fa fa-group"></i>
+        <a href="{% url 'plain-party' object.party.id %}">{{ object.party.name }}</a>
     </p>
     <p>
 
