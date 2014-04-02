@@ -59,15 +59,49 @@ class SearchView(ListView):
     template_name = "core/search.html"
 
     def get_queryset(self):
-        search_string = self.request.GET['q']
-        queryset = Facebook_Status.objects.filter(content__icontains=search_string).order_by('-published')
+        feeds = []
+        if 'people' in self.request.GET.keys():
+            feeds = [int(feed_id) for feed_id in self.request.GET['people'].split(',')]
+        tags = []
+        if 'tags' in self.request.GET.keys():
+            tags = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
+
+        if not feeds and not tags:
+            queryset = Facebook_Status.objects.filter(feed=-1)
+        elif feeds and not tags:
+            queryset = Facebook_Status.objects.filter(feed__in=feeds).order_by('-published')
+        elif not feeds and tags:
+            queryset = Facebook_Status.objects.filter(tags__in=tags).order_by('-published')
+        else:
+            queryset = Facebook_Status.objects.filter(feed__in=feeds,tags__in=tags).order_by('-published')
+
+        # queryset = Facebook_Status.objects.filter(feed__in=range(100),tags__in=[]).order_by('-published')
         return queryset
 
     def get_context_data(self, **kwargs):
-        search_string = self.request.GET['q']
+
+
+        feeds = []
+        feeds_str = ""
+        if 'people' in self.request.GET.keys():
+            feeds = [int(feed_id) for feed_id in self.request.GET['people'].split(',')]
+            for feed_id in feeds:
+                feeds_str+= Facebook_Feed.objects.get(pk=feed_id).person.name
+                feeds_str+= ","
+            feeds_str = feeds_str[:len(feeds_str) - 1]
+        tags = []
+        tags_str = ""
+        if 'tags' in self.request.GET.keys():
+            tags = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
+            for tag_id in tags:
+                tags_str += Tag.objects.get(pk=tag_id).name
+                tags_str += ','
+            tags_str = tags_str[:len(tags_str) - 1]
+
         context = super(SearchView, self).get_context_data(**kwargs)
-        context['name'] = search_string
-        context['number_of_results'] = Facebook_Status.objects.filter(content__icontains=search_string).count()
+        context['feeds'] = feeds_str
+        context['tags'] = tags_str
+        context['number_of_results'] = 3
         return context
 
 
