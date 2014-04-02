@@ -5,7 +5,7 @@ import json
 import csv
 
 
-json_data = open('data_fixture.json', mode='wb')
+json_data = open('data_fixture_core.json', mode='wb')
 party_csv = csv.DictReader(open('data_from_json_core.party.csv', 'r'))
 person_csv = csv.DictReader(open('data_from_json_core.person.csv', 'r'))
 facebook_feed_csv = csv.DictReader(open('data_from_json_core.facebook_feed.csv', 'r'))

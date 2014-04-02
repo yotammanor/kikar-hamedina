@@ -1,4 +1,5 @@
-from core.models import Person, Party, Tag, Facebook_Status, Facebook_Feed, Feed_Popularity
+from persons.models import Person, Party
+from core.models import Tag, Facebook_Status, Facebook_Feed, Feed_Popularity
 from django.db.models import F, Count
 from kikar_hamedina.settings.base import FACEBOOK_APP_ID
 

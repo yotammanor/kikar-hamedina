@@ -27,7 +27,7 @@ class Facebook_Feed(models.Model):
         ('UP', 'User Profile'),
     )
 
-    person = models.ForeignKey('Person')
+    person = models.ForeignKey('persons.Person')
     vendor_id = models.TextField(null=True)
     username = models.TextField(null=True, default=None)
     birthday = models.TextField(null=True)
