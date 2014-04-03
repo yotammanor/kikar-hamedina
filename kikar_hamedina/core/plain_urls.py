@@ -38,8 +38,8 @@ urlpatterns = patterns('',
                            name='all-tags'),
                        url(r'^about/$', plain_views.about_page, name='about',),
 
-                       url(r'^status_update/(?P<status_id>\w+)/$',plain_views.status_update)
-
+                       url(r'^status_update/(?P<status_id>\w+)/$',plain_views.status_update),
+                       url(r'^search_bar/$',plain_views.search_bar)
                        # url(r'^search/(?P<id>[\w\s]+)/$', plain_views.SearchView.as_view(),
                        #     kwargs={'variable_column': 'content',
                        #             'context_object': 'search'},

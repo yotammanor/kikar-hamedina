@@ -7,9 +7,7 @@ from django.template.defaultfilters import slugify
 from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
 from django.db.models import Count
 from django.conf import settings
-import datetime
-
-import facebook, os, urllib2, json
+import datetime, facebook, os, urllib2, json
 
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
@@ -242,3 +240,35 @@ def status_update(request, status_id):
         response_data['id'] = status.status_id
 
         return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+#A handler for the search bar request from the client
+def search_bar(request):
+    searchText = request.GET['text']
+
+    response_data = dict()
+    response_data['number_of_results'] = 0
+    response_data['results'] = []
+    if searchText.strip() == "":
+        print "NO STRING"
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+    people = Person.objects.filter(name__contains=searchText)
+    for person in people:
+        newResult = dict()
+        newResult['id'] = person.id
+        newResult['name'] = person.name
+        newResult['party'] = person.party.name
+        newResult['type'] = "PERSON"
+        response_data['results'].append(newResult)
+        response_data['number_of_results'] += 1
+
+    tags = Tag.objects.filter(name__contains=searchText)
+    for tag in tags:
+        newResult = dict()
+        newResult['id'] = tag.id
+        newResult['name'] = tag.name
+        newResult['type'] = "TAG"
+        response_data['results'].append(newResult)
+        response_data['number_of_results'] += 1
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
