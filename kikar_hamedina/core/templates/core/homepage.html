@@ -35,18 +35,18 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="col-sm-3">
-                                <a href="{% url 'plain-person' feed.person.id %}">
+                                <a href="{% url 'plain-person' feed.content_object.id %}">
                                     <img src="{{ feed.pic_square }}"
                                     class="profile-photo img-rounded">
                                 </a>
                             </div>
                             <div class="col-sm-9">
-                                <a href="{% url 'plain-person' feed.person.id %}">
-                                    {{ feed.person.name }}
+                                <a href="{% url 'plain-person' feed.content_object.id %}">
+                                    {{ feed.content_object.name }}
                                 </a>
                                 <br>
-                                <a href="{% url 'plain-party' feed.person.party.id %}">
-                                    {{ feed.person.party.name }}
+                                <a href="{% url 'plain-party' feed.content_object.party.id %}">
+                                    {{ feed.content_object.party.name }}
                                 </a>
                             </div>
                         </div><br><br><br>

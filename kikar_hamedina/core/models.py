@@ -2,32 +2,41 @@ from django.db import models
 from django.utils import timezone
 from datetime import timedelta
 from time import strftime
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+
+# Deprecated, use persons app
+
+# class Party(models.Model):
+#     name = models.CharField(unique=True, max_length=128)
+#     slug = models.SlugField(unique=True)
+#
+#     def __unicode__(self):
+#         return self.name
+#
+#
+# class Person(models.Model):
+#     name = models.CharField(unique=True, max_length=128)
+#     slug = models.SlugField(unique=True)
+#     party = models.ForeignKey('Party', related_name='persons')
+#
+#     def __unicode__(self):
+#         return self.name
 
 
-class Party(models.Model):
-    name = models.CharField(unique=True, max_length=128)
-    slug = models.SlugField(unique=True)
-
-    def __unicode__(self):
-        return self.name
+class Facebook_Feed_Generic(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey()
 
 
-class Person(models.Model):
-    name = models.CharField(unique=True, max_length=128)
-    slug = models.SlugField(unique=True)
-    party = models.ForeignKey('Party', related_name='persons')
-
-    def __unicode__(self):
-        return self.name
-
-
-class Facebook_Feed(models.Model):
+class Facebook_Feed(Facebook_Feed_Generic):
     FEED_TYPES = (
         ('PP', 'Public Page'),
         ('UP', 'User Profile'),
     )
 
-    person = models.ForeignKey('persons.Person')
+    # person = models.ForeignKey('persons.Person')
     vendor_id = models.TextField(null=True)
     username = models.TextField(null=True, default=None)
     birthday = models.TextField(null=True)
@@ -44,7 +53,7 @@ class Facebook_Feed(models.Model):
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
 
     def __unicode__(self):
-        return unicode(self.person) + " " + self.vendor_id
+        return unicode(self.username) + " " + self.vendor_id
 
     @property
     def get_current_fan_count(self):

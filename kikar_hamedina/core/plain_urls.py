@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import plain_views
-from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
+from .models import Facebook_Status, Facebook_Feed, Tag
+from persons.models import Person, Party
 
 urlpatterns = patterns('',
                        url(r'^$', plain_views.HomepageView.as_view(), name='plain-index'),
@@ -40,11 +41,6 @@ urlpatterns = patterns('',
                        url(r'^fblogin/$', plain_views.login_page, name='fblogin'),
                        url(r'^fblogin/get-data/$', plain_views.get_data_from_facebook, name='get-data-from-facebook'),
                        url(r'^status_update/(?P<status_id>\w+)/$', plain_views.status_update),
-
-                       # url(r'^search/(?P<id>[\w\s]+)/$', plain_views.SearchView.as_view(),
-                       #     kwargs={'variable_column': 'content',
-                       #             'context_object': 'search'},
-                       #     name='plain-search'),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

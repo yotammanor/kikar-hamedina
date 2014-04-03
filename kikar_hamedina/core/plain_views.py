@@ -13,26 +13,11 @@ from django.views.generic.list import ListView
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 
+DAYS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
+
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
 NUMBER_OF_TAGS_TO_PRESENT = 3
-
-
-class AllStatusesView(ListView):
-    model = Facebook_Status
-    template_name = 'core/all_results.html'
-    # paginate_by = 100
-
-    def get_context_data(self, **kwargs):
-        context = super(AllStatusesView, self).get_context_data(**kwargs)
-        context['navPersons'] = Person.objects.all().order_by('name')
-        context['navParties'] = Party.objects.all().order_by('name')
-        context['navTags'] = Tag.objects.all().order_by('name')
-        context['context_object'] = self.kwargs['context_object']
-        context['side_bar_list'] = Person.objects.filter(
-            facebook_feed__facebook_status__published__gte=(
-                datetime.date.today() - datetime.timedelta(days=3))).distinct()
-        return context
 
 
 class HomepageView(ListView):
@@ -56,11 +41,33 @@ class HomepageView(ListView):
             sorted_list_of_writers = sorted(list_of_writers_with_latest_fan_count,
                                             key=lambda x: x['fan_count'],
                                             reverse=True)
-            wrote_about_tag[tag] = [feed['feed'] for feed in sorted_list_of_writers][:NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY]
+            wrote_about_tag[tag] = [feed['feed'] for feed in sorted_list_of_writers][
+                                   :NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY]
         context['wrote_about_tag'] = wrote_about_tag
         return context
 
 
+class AllStatusesView(ListView):
+    model = Facebook_Status
+    template_name = 'core/all_results.html'
+    # paginate_by = 100
+
+    def get_context_data(self, **kwargs):
+        context = super(AllStatusesView, self).get_context_data(**kwargs)
+        context['navPersons'] = Person.objects.all().order_by('name')
+        context['navParties'] = Party.objects.all().order_by('name')
+        context['navTags'] = Tag.objects.all().order_by('name')
+        context['context_object'] = self.kwargs['context_object']
+
+        feeds = Facebook_Feed.objects.filter(
+            facebook_status__published__gte=(
+                datetime.date.today() - datetime.timedelta(days=DAYS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
+        context['side_bar_list'] = Person.objects.filter(
+            id__in=[feed.object_id for feed in feeds]).distinct().order_by('name')
+        return context
+
+
+#
 class SearchView(ListView):
     model = Facebook_Status
     # paginate_by = 10
@@ -79,6 +86,8 @@ class SearchView(ListView):
         context['number_of_results'] = Facebook_Status.objects.filter(content__icontains=search_string).count()
         return context
 
+
+#
 
 class StatusFilterUnifiedView(ListView):
     model = Facebook_Status
@@ -118,6 +127,14 @@ class StatusFilterUnifiedView(ListView):
 
 
 class PersonView(StatusFilterUnifiedView):
+    def get_queryset(self, **kwargs):
+        search_string = self.kwargs['id']
+        all_feeds_for_person = Person.objects.get(id=search_string).feeds.select_related()
+        print all_feeds_for_person
+        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_person]).order_by(
+            '-published')
+        return query_set
+
     template_name = "core/person.html"
     parent_model = Person
 
@@ -126,6 +143,18 @@ class PartyView(StatusFilterUnifiedView):
     template_name = "core/party.html"
     parent_model = Party
 
+    def get_queryset(self, **kwargs):
+        search_string = self.kwargs['id']
+        all_persons_for_party = Person.objects.filter(party__id=search_string)
+        all_feeds_for_party = list()
+        for person in all_persons_for_party:
+            all_feeds_for_person = Person.objects.get(id=person.id).feeds.select_related()
+            for feed in all_feeds_for_person:
+                all_feeds_for_party.append(feed)
+        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]).order_by(
+            '-published')
+        return query_set
+
 
 class TagView(StatusFilterUnifiedView):
     template_name = "core/tag.html"
@@ -133,8 +162,8 @@ class TagView(StatusFilterUnifiedView):
 
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
-        context['side_bar_list'] = Person.objects.filter(
-            facebook_feed__facebook_status__tags__id=context['object'].id).distinct()
+        all_feeds_for_tag = Facebook_Feed.objects.filter(facebook_status__tags__id=context['object'].id).distinct()
+        context['side_bar_list'] = Person.objects.filter(id__in=[feed.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
 
 
@@ -177,7 +206,6 @@ def add_tag(request, id):
     # with POST data. This prevents data from being posted twice if a
     # user hits the Back button.
     # return HttpResponseRedirect(reverse('plain-index'))
-    print request.META["HTTP_REFERER"]
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 

@@ -5,10 +5,13 @@ import json
 import csv
 
 
-json_data = open('data_fixture_core.json', mode='wb')
-party_csv = csv.DictReader(open('data_from_json_core.party.csv', 'r'))
-person_csv = csv.DictReader(open('data_from_json_core.person.csv', 'r'))
+json_data_core = open('data_fixture_core.json', mode='wb')
+json_data_persons = open('data_fixture_persons.json', mode='wb')
+
+party_csv = csv.DictReader(open('data_from_json_persons.party.csv', 'r'))
+person_csv = csv.DictReader(open('data_from_json_persons.person.csv', 'r'))
 facebook_feed_csv = csv.DictReader(open('data_from_json_core.facebook_feed.csv', 'r'))
+facebook_feed_generic_csv = csv.DictReader(open('data_from_json_core.facebook_feed_generic.csv', 'r'))
 tag_csv = csv.DictReader(open('data_from_json_core.tag.csv', 'r'))
 
 
@@ -20,7 +23,10 @@ def turn_csv_to_dict(dict_reader_object):
         full_dict['model'] = row.pop('model')
         fields_dict = dict()
         for key, value in row.items():
-            fields_dict[key] = value
+            if key == 'content_type':
+                fields_dict[key] = eval(value)
+            else:
+                fields_dict[key] = value
         full_dict['fields'] = fields_dict
         list_of_dicts_for_insertion.append(full_dict)
 
@@ -29,14 +35,23 @@ def turn_csv_to_dict(dict_reader_object):
 
 
 def main():
-    all_data_for_insertion = turn_csv_to_dict(party_csv) + \
-        turn_csv_to_dict(person_csv) + \
+    all_persons_data_for_insertion =  turn_csv_to_dict(party_csv) + \
+        turn_csv_to_dict(person_csv)
+
+    all_core_data_for_insertion = turn_csv_to_dict(facebook_feed_generic_csv) + \
         turn_csv_to_dict(facebook_feed_csv) + \
         turn_csv_to_dict(tag_csv)
 
-    pprint(all_data_for_insertion)
-    json.dump(all_data_for_insertion, json_data, encoding='utf-8')
-    json_data.close()
+    print 'creating persons data fixture'
+    pprint(all_persons_data_for_insertion)
+    json.dump(all_persons_data_for_insertion, json_data_persons, encoding='utf-8')
+    json_data_persons.close()
+
+    print 'creating core data fixture'
+    pprint(all_core_data_for_insertion)
+    json.dump(all_core_data_for_insertion, json_data_core, encoding='utf-8')
+    json_data_core.close()
+
 
 
 if __name__ == "__main__":

@@ -8,17 +8,17 @@ NUMBER_OF_TOP_TAGS_TO_BRING = 12
 
 
 def generic(request):
-    persons = Person.objects.filter(facebook_feed__gt=0)
+
+    persons = Person.objects.all()
+    persons_with_feed = [person for person in persons if person.feeds.select_related()]
     list_of_persons = list()
-    for person in persons:
+    for person in persons_with_feed:
         try:
-            feed_popularity = person.facebook_feed_set.first().current_fan_count
-            print feed_popularity
+            feed_popularity = person.feeds.select_related().first().current_fan_count
             list_of_persons.append({'person': person, 'popularity': feed_popularity})
         except:
             pass
     sorted_list_of_persons = sorted(list_of_persons, key=lambda x: x['popularity'], reverse=True)
-    print sorted_list_of_persons
 
     return {
         'navPersons': [x['person'] for x in sorted_list_of_persons][:NUMBER_OF_TOP_POLITICIANS_TO_BRING],
