@@ -2,22 +2,16 @@ from django.core.exceptions import FieldError
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.views.generic.list import ListView
 from django.template.defaultfilters import slugify
 from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
 from django.db.models import Count
 from django.conf import settings
-import datetime
-import facebook
-
-
-import facebook, os, urllib2, json
+import datetime, facebook, os, urllib2, json
 
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
 NUMBER_OF_TAGS_TO_PRESENT = 3
-
 
 
 class AllStatusesView(ListView):
@@ -63,15 +57,49 @@ class SearchView(ListView):
     template_name = "core/search.html"
 
     def get_queryset(self):
-        search_string = self.request.GET['q']
-        queryset = Facebook_Status.objects.filter(content__icontains=search_string).order_by('-published')
+        feeds = []
+        if 'people' in self.request.GET.keys():
+            feeds = [int(feed_id) for feed_id in self.request.GET['people'].split(',')]
+        tags = []
+        if 'tags' in self.request.GET.keys():
+            tags = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
+
+        if not feeds and not tags:
+            queryset = Facebook_Status.objects.filter(feed=-1)
+        elif feeds and not tags:
+            queryset = Facebook_Status.objects.filter(feed__in=feeds).order_by('-published')
+        elif not feeds and tags:
+            queryset = Facebook_Status.objects.filter(tags__in=tags).order_by('-published')
+        else:
+            queryset = Facebook_Status.objects.filter(feed__in=feeds,tags__in=tags).order_by('-published')
+
+        # queryset = Facebook_Status.objects.filter(feed__in=range(100),tags__in=[]).order_by('-published')
         return queryset
 
     def get_context_data(self, **kwargs):
-        search_string = self.request.GET['q']
+
+
+        feeds = []
+        feeds_str = ""
+        if 'people' in self.request.GET.keys():
+            feeds = [int(feed_id) for feed_id in self.request.GET['people'].split(',')]
+            for feed_id in feeds:
+                feeds_str+= Facebook_Feed.objects.get(pk=feed_id).person.name
+                feeds_str+= ","
+            feeds_str = feeds_str[:len(feeds_str) - 1]
+        tags = []
+        tags_str = ""
+        if 'tags' in self.request.GET.keys():
+            tags = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
+            for tag_id in tags:
+                tags_str += Tag.objects.get(pk=tag_id).name
+                tags_str += ','
+            tags_str = tags_str[:len(tags_str) - 1]
+
         context = super(SearchView, self).get_context_data(**kwargs)
-        context['name'] = search_string
-        context['number_of_results'] = Facebook_Status.objects.filter(content__icontains=search_string).count()
+        context['feeds'] = feeds_str
+        context['tags'] = tags_str
+        context['number_of_results'] = 3
         return context
 
 
@@ -233,4 +261,45 @@ def status_update(request, status_id):
         response_data['id'] = status.status_id
 
         return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+#A handler for the search bar request from the client
+def search_bar(request):
+    searchText = request.GET['text']
+
+    response_data = dict()
+    response_data['number_of_results'] = 0
+    response_data['results'] = []
+    if searchText.strip() == "":
+        print "NO STRING"
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+    people = Person.objects.filter(name__contains=searchText)
+    for person in people:
+        newResult = dict()
+        newResult['id'] = person.id
+        newResult['name'] = person.name
+        newResult['party'] = person.party.name
+        newResult['type'] = "PERSON"
+        response_data['results'].append(newResult)
+        response_data['number_of_results'] += 1
+
+    tags = Tag.objects.filter(name__contains=searchText)
+    for tag in tags:
+        newResult = dict()
+        newResult['id'] = tag.id
+        newResult['name'] = tag.name
+        newResult['type'] = "TAG"
+        response_data['results'].append(newResult)
+        response_data['number_of_results'] += 1
+
+    parties = Party.objects.filter(name__contains=searchText)
+    for party in parties:
+        newResult = dict()
+        newResult['id'] = party.id
+        newResult['name'] = party.name
+        newResult['type'] = "PARTY"
+        response_data['results'].append(newResult)
+        response_data['number_of_results'] += 1
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 

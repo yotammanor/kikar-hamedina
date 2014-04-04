@@ -40,7 +40,7 @@ urlpatterns = patterns('',
                        url(r'^fblogin/$', plain_views.login_page, name='fblogin'),
                        url(r'^get-data/$', plain_views.get_data_from_facebook, name='get-data-from-facebook'),
                        url(r'^status_update/(?P<status_id>\w+)/$', plain_views.status_update),
-
+                       url(r'^search_bar/$',plain_views.search_bar)
                        # url(r'^search/(?P<id>[\w\s]+)/$', plain_views.SearchView.as_view(),
                        #     kwargs={'variable_column': 'content',
                        #             'context_object': 'search'},
