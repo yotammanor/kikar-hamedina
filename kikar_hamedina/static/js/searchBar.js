@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$("#navbar-search-box").keydown(function(event) {
-		$('#search-results-dropdown').parent().removeClass("open")
+		$('#search-results-dropdown').removeClass("open")
 		inputText = $("#navbar-search-box").val()
 
 		url = "http://"+document.domain+":8000/plain/search_bar/?text="+inputText
@@ -18,12 +18,15 @@ $(document).ready(function() {
 	            		else if (result['type'] == "TAG") {
 	            			var source = $("#result-tag-list-item-template").html()
 	            		}
+	            		else if (result['type'] == "PARTY") {
+	            			var source = $("#result-party-list-item-template").html()
+	            		}
 						var template = Handlebars.compile(source);
 						var html    = template(result);
 	            		$('#search-results-list').append(html)
 	            	}
 	            	if (data['number_of_results'] > 0) {
-	            		$('#search-results-dropdown').parent().addClass("open")
+	            		$('#search-results-dropdown').addClass("open")
 	            	}
 	            }
 	        });

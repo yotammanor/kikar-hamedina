@@ -271,4 +271,13 @@ def search_bar(request):
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
+    parties = Party.objects.filter(name__contains=searchText)
+    for party in parties:
+        newResult = dict()
+        newResult['id'] = party.id
+        newResult['name'] = party.name
+        newResult['type'] = "PARTY"
+        response_data['results'].append(newResult)
+        response_data['number_of_results'] += 1
+
     return HttpResponse(json.dumps(response_data), content_type="application/json")
