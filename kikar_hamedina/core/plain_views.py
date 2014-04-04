@@ -58,37 +58,52 @@ class SearchView(ListView):
     template_name = "core/search.html"
 
     def get_queryset(self):
-        feeds = []
+        people = []
         if 'people' in self.request.GET.keys():
-            feeds = [int(feed_id) for feed_id in self.request.GET['people'].split(',')]
+            people = [int(person_id) for person_id in self.request.GET['people'].split(',')]
+        if 'parties' in self.request.GET.keys():
+            parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
+            parties = Party.objects.filter(id__in=parties_ids)
+            for party in parties:
+                for person in party.persons.all():
+                    if person.id not in people:
+                        people.append(person.id)
+
         tags = []
         if 'tags' in self.request.GET.keys():
             tags = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
 
-        if not feeds and not tags:
+
+        if not people and not tags:
             queryset = Facebook_Status.objects.filter(feed=-1)
-        elif feeds and not tags:
-            queryset = Facebook_Status.objects.filter(feed__in=feeds).order_by('-published')
-        elif not feeds and tags:
+        elif people and not tags:
+            queryset = Facebook_Status.objects.filter(feed__in=people).order_by('-published')
+        elif not people and tags:
             queryset = Facebook_Status.objects.filter(tags__in=tags).order_by('-published')
         else:
-            queryset = Facebook_Status.objects.filter(feed__in=feeds,tags__in=tags).order_by('-published')
+            queryset = Facebook_Status.objects.filter(feed__in=people,tags__in=tags).order_by('-published')
 
         # queryset = Facebook_Status.objects.filter(feed__in=range(100),tags__in=[]).order_by('-published')
         return queryset
 
     def get_context_data(self, **kwargs):
 
-
-        feeds = []
-        feeds_str = ""
+        people_str = ""
         if 'people' in self.request.GET.keys():
-            feeds = [int(feed_id) for feed_id in self.request.GET['people'].split(',')]
-            for feed_id in feeds:
-                feeds_str+= Facebook_Feed.objects.get(pk=feed_id).person.name
-                feeds_str+= ","
-            feeds_str = feeds_str[:len(feeds_str) - 1]
-        tags = []
+            people = [int(feed_id) for feed_id in self.request.GET['people'].split(',')]
+            for person_id in people:
+                people_str+= Person.objects.get(pk=feed_id).name
+                people_str+= ","
+            people_str = people_str[:len(people_str) - 1]
+
+        parties_str = ""
+        if 'parties' in self.request.GET.keys():
+            parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
+            for party_id in parties_ids:
+                parties_str += Party.objects.get(pk=party_id).name
+                parties_str += ","
+            parties_str = parties_str[:len(parties_str) - 1]
+
         tags_str = ""
         if 'tags' in self.request.GET.keys():
             tags = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
@@ -98,7 +113,8 @@ class SearchView(ListView):
             tags_str = tags_str[:len(tags_str) - 1]
 
         context = super(SearchView, self).get_context_data(**kwargs)
-        context['feeds'] = feeds_str
+        context['people'] = people_str
+        context['parties'] = parties_str
         context['tags'] = tags_str
         context['number_of_results'] = 3
         return context
