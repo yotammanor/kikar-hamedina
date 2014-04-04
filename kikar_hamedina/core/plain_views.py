@@ -2,6 +2,7 @@ from django.core.exceptions import FieldError
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.views.generic.list import ListView
 from django.template.defaultfilters import slugify
 from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
@@ -183,27 +184,46 @@ def about_page(request):
 
 def add_tag(request, id):
     status = Facebook_Status.objects.get(id=id)
-
     tagsString = request.POST['tag']
     tagsList = tagsString.split(',')
-
     for tagName in tagsList:
         strippedTagName = tagName.strip()
-
-        tag, created = Tag.objects.get_or_create(name=strippedTagName)
-        if created:
-            tag.name = strippedTagName
-            tag.is_for_main_display = True
+        if strippedTagName:
+            tag, created = Tag.objects.get_or_create(name=strippedTagName)
+            if created:
+                tag.name = strippedTagName
+                tag.is_for_main_display = True
+                tag.save()
+                # add status to tag statuses
+            tag.statuses.add(status)
             tag.save()
-            # add status to tag statuses
-        tag.statuses.add(status)
-        tag.save()
 
     # Always return an HttpResponseRedirect after successfully dealing
     # with POST data. This prevents data from being posted twice if a
     # user hits the Back button.
     # return HttpResponseRedirect(reverse('plain-index'))
     print request.META["HTTP_REFERER"]
+    return HttpResponseRedirect(request.META["HTTP_REFERER"])
+
+# Views for getting facebook data using a user Token
+def login_page(request):
+    return render(request, 'core/login_page.html')
+
+
+def get_data_from_facebook(request):
+    user_access_token = request.POST['access_token']
+    print user_access_token
+    graph = facebook.GraphAPI(access_token=user_access_token)
+    # graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
+    stav = '508516607'
+    anna = '509928464'
+    a = graph.get_object(anna)
+    print a
+    # b = graph.request('https://graph.facebook.com/%s/statuses?access_token=%s' % (stav, user_access_token))
+    # print b
+    b = graph.get_connections(anna, 'statuses')
+    print b
+
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 #A handler for status_update ajax call from client
