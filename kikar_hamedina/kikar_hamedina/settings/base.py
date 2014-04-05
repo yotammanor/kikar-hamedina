@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'south',
     'core',
     'persons',
+    'facebook_feeds',
     'dj_facebook_realtime',
     'django.contrib.humanize',
     'endless_pagination',

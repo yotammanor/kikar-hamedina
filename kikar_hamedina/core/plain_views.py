@@ -1,5 +1,5 @@
 import pprint
-from .models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
 from persons.models import Party, Person
 from django.db.models import Count, F
 

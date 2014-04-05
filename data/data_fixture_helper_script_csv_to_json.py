@@ -5,14 +5,14 @@ import json
 import csv
 
 
-json_data_core = open('data_fixture_core.json', mode='wb')
+json_data_facebook_feeds = open('data_fixture_facebook_feeds.json', mode='wb')
 json_data_persons = open('data_fixture_persons.json', mode='wb')
 
 party_csv = csv.DictReader(open('data_from_json_persons.party.csv', 'r'))
 person_csv = csv.DictReader(open('data_from_json_persons.person.csv', 'r'))
-facebook_feed_csv = csv.DictReader(open('data_from_json_core.facebook_feed.csv', 'r'))
-facebook_feed_generic_csv = csv.DictReader(open('data_from_json_core.facebook_feed_generic.csv', 'r'))
-tag_csv = csv.DictReader(open('data_from_json_core.tag.csv', 'r'))
+facebook_feed_csv = csv.DictReader(open('data_from_json_facebook_feeds.facebook_feed.csv', 'r'))
+facebook_feed_generic_csv = csv.DictReader(open('data_from_json_facebook_feeds.facebook_feed_generic.csv', 'r'))
+tag_csv = csv.DictReader(open('data_from_json_facebook_feeds.tag.csv', 'r'))
 
 
 def turn_csv_to_dict(dict_reader_object):
@@ -38,7 +38,7 @@ def main():
     all_persons_data_for_insertion =  turn_csv_to_dict(party_csv) + \
         turn_csv_to_dict(person_csv)
 
-    all_core_data_for_insertion = turn_csv_to_dict(facebook_feed_generic_csv) + \
+    all_facebook_feeds_data_for_insertion = turn_csv_to_dict(facebook_feed_generic_csv) + \
         turn_csv_to_dict(facebook_feed_csv) + \
         turn_csv_to_dict(tag_csv)
 
@@ -47,10 +47,10 @@ def main():
     json.dump(all_persons_data_for_insertion, json_data_persons, encoding='utf-8')
     json_data_persons.close()
 
-    print 'creating core data fixture'
-    pprint(all_core_data_for_insertion)
-    json.dump(all_core_data_for_insertion, json_data_core, encoding='utf-8')
-    json_data_core.close()
+    print 'creating facebook_feeds data fixture'
+    pprint(all_facebook_feeds_data_for_insertion)
+    json.dump(all_facebook_feeds_data_for_insertion, json_data_facebook_feeds, encoding='utf-8')
+    json_data_facebook_feeds.close()
 
 
 

@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import plain_views
-from .models import Facebook_Status, Facebook_Feed, Tag
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag
 from persons.models import Person, Party
 
 urlpatterns = patterns('',

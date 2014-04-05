@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from core.models import Facebook_Feed
+from facebook_feeds.models import Facebook_Feed
 from django.contrib.contenttypes import generic
 
 class Party(models.Model):

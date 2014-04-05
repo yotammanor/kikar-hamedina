@@ -9,9 +9,11 @@ from pprint import pprint
 json_data = json.load(open('data_try', mode='r'))  # insert name of json
 party_dict = [x for x in json_data if x['model'] == 'persons.party']
 person_dict = [x for x in json_data if x['model'] == 'persons.person']
-facebook_feed_generic_dict = [x for x in json_data if x['model'] == 'core.facebook_feed_generic']
-facebook_feed_dict = [x for x in json_data if x['model'] == 'core.facebook_feed']
-tag_dict = [x for x in json_data if x['model'] == 'core.tag']
+facebook_feed_generic_dict = [x for x in json_data if x['model'] == 'facebook_feeds.facebook_feed_generic']
+facebook_feed_dict = [x for x in json_data if x['model'] == 'facebook_feeds.facebook_feed']
+tag_dict = [x for x in json_data if x['model'] == 'facebook_feeds.tag']
+
+all_dicts = [party_dict, person_dict, facebook_feed_generic_dict, facebook_feed_dict, tag_dict]
 
 
 def insert_to_csv(chosen_dict):
@@ -47,8 +49,13 @@ def insert_to_csv(chosen_dict):
         csv_data.writerow({k: unicode(v).encode('utf-8') for k, v in flat_dict.items()})
     output_file.close()
 
+for json_dict in all_dicts:
+    insert_to_csv(json_dict)
 
-insert_to_csv(tag_dict)
-print len(party_dict), len(person_dict), len(facebook_feed_dict), len(tag_dict)
+print len(party_dict), \
+    len(person_dict), \
+    len(facebook_feed_generic_dict), \
+    len(facebook_feed_dict), \
+    len(tag_dict)
 
 
