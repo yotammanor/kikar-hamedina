@@ -14,7 +14,7 @@ from ...models import \
 
 class Command(BaseCommand):
     # args = '<person_id>'
-    help = 'Checks all user tokens in db, extends their duration if possible, and reports on missing'
+    help = 'Checks all user tokens in db, extends their duration if possible, and reports on missing. Not implemented!'
     graph = facebook.GraphAPI()
 
     def fetch_user_profile_object_by_feed_id(self, feed_id):
