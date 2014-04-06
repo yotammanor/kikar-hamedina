@@ -130,6 +130,11 @@ class SearchView(ListView):
         context['number_of_results'] = return_queryset.count()
         return context
 
+class SearchGuiView(ListView):
+    model = Facebook_Status
+    template_name = "core/searchgui.html"
+
+
 
 class StatusFilterUnifiedView(ListView):
     model = Facebook_Status
@@ -305,7 +310,7 @@ def search_bar(request):
         newResult['id'] = person.id
         newResult['name'] = person.name
         newResult['party'] = person.party.name
-        newResult['type'] = "PERSON"
+        newResult['type'] = "person"
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
@@ -314,7 +319,7 @@ def search_bar(request):
         newResult = dict()
         newResult['id'] = tag.id
         newResult['name'] = tag.name
-        newResult['type'] = "TAG"
+        newResult['type'] = "tag"
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
@@ -323,7 +328,7 @@ def search_bar(request):
         newResult = dict()
         newResult['id'] = party.id
         newResult['name'] = party.name
-        newResult['type'] = "PARTY"
+        newResult['type'] = "party"
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
