@@ -5,9 +5,9 @@ from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
 from django.template.defaultfilters import slugify
 from .models import Facebook_Status, Facebook_Feed, Person, Party, Tag
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.conf import settings
-import datetime, facebook, os, urllib2, json
+import datetime, facebook, os, urllib2, json, itertools
 
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
@@ -57,50 +57,82 @@ class SearchView(ListView):
     template_name = "core/search.html"
 
     def get_queryset(self):
-        feeds = []
+
+        people = []
         if 'people' in self.request.GET.keys():
-            feeds = [int(feed_id) for feed_id in self.request.GET['people'].split(',')]
-        tags = []
+            people = [int(person_id) for person_id in self.request.GET['people'].split(',')]
+        if 'parties' in self.request.GET.keys():
+            parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
+            parties = Party.objects.filter(id__in=parties_ids)
+            for party in parties:
+                for person in party.persons.all():
+                    if person.id not in people:
+                        people.append(person.id)
+
+        person_query = Person.objects.filter(id__in=people)
+        feeds = Facebook_Feed.objects.filter(person__in=person_query)
+
+        tags_ids = []
         if 'tags' in self.request.GET.keys():
-            tags = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
+            tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
 
-        if not feeds and not tags:
-            queryset = Facebook_Status.objects.filter(feed=-1)
-        elif feeds and not tags:
-            queryset = Facebook_Status.objects.filter(feed__in=feeds).order_by('-published')
-        elif not feeds and tags:
-            queryset = Facebook_Status.objects.filter(tags__in=tags).order_by('-published')
-        else:
-            queryset = Facebook_Status.objects.filter(feed__in=feeds,tags__in=tags).order_by('-published')
+        query_Q = Q(feed__in=feeds) | Q(tags__in=tags_ids)
 
-        # queryset = Facebook_Status.objects.filter(feed__in=range(100),tags__in=[]).order_by('-published')
-        return queryset
+        if 'search_str' in self.request.GET.keys():
+            search_str = self.request.GET['search_str']
+            query_Q = Q(content__contains=search_str) | query_Q
+            search_words = search_str.strip().split(' ')
+            for word in search_words:
+                query_Q = Q(content__contains=word) | query_Q
+        return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
+        return return_queryset
 
     def get_context_data(self, **kwargs):
-
-
-        feeds = []
-        feeds_str = ""
-        if 'people' in self.request.GET.keys():
-            feeds = [int(feed_id) for feed_id in self.request.GET['people'].split(',')]
-            for feed_id in feeds:
-                feeds_str+= Facebook_Feed.objects.get(pk=feed_id).person.name
-                feeds_str+= ","
-            feeds_str = feeds_str[:len(feeds_str) - 1]
-        tags = []
-        tags_str = ""
-        if 'tags' in self.request.GET.keys():
-            tags = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
-            for tag_id in tags:
-                tags_str += Tag.objects.get(pk=tag_id).name
-                tags_str += ','
-            tags_str = tags_str[:len(tags_str) - 1]
-
         context = super(SearchView, self).get_context_data(**kwargs)
-        context['feeds'] = feeds_str
-        context['tags'] = tags_str
-        context['number_of_results'] = 3
+
+        people = []
+        if 'people' in self.request.GET.keys():
+            people = [int(person_id) for person_id in self.request.GET['people'].split(',')]
+        context['people'] = Person.objects.filter(id__in=people)
+
+        parties_ids = []
+        if 'parties' in self.request.GET.keys():
+            parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
+            parties = Party.objects.filter(id__in=parties_ids)
+            for party in parties:
+                for person in party.persons.all():
+                    if person.id not in people:
+                        people.append(person.id)
+        context['parties'] = Party.objects.filter(id__in=parties_ids)
+
+        person_query = Person.objects.filter(id__in=people)
+        feeds = Facebook_Feed.objects.filter(person__in=person_query)
+
+        tags_ids = []
+        if 'tags' in self.request.GET.keys():
+            tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
+        context['tags'] = Tag.objects.filter(id__in=tags_ids)
+
+
+        query_Q = Q(feed__in=feeds) | Q(tags__in=tags_ids)
+        search_str = None
+        if 'search_str' in self.request.GET.keys():
+            search_str = self.request.GET['search_str']
+            query_Q = Q(content__contains=search_str) | query_Q
+            search_words = search_str.strip().split(' ')
+            for word in search_words:
+                query_Q = Q(content__contains=word) | query_Q
+
+        context['search_str'] = search_str
+        return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
+
+        context['number_of_results'] = return_queryset.count()
         return context
+
+class SearchGuiView(ListView):
+    model = Facebook_Status
+    template_name = "core/searchgui.html"
+
 
 
 class StatusFilterUnifiedView(ListView):
@@ -227,6 +259,7 @@ def get_data_from_facebook(request):
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
+
 #A handler for status_update ajax call from client
 def status_update(request, status_id):
 
@@ -279,7 +312,7 @@ def search_bar(request):
         newResult['id'] = person.id
         newResult['name'] = person.name
         newResult['party'] = person.party.name
-        newResult['type'] = "PERSON"
+        newResult['type'] = "person"
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
@@ -288,7 +321,7 @@ def search_bar(request):
         newResult = dict()
         newResult['id'] = tag.id
         newResult['name'] = tag.name
-        newResult['type'] = "TAG"
+        newResult['type'] = "tag"
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
@@ -297,7 +330,7 @@ def search_bar(request):
         newResult = dict()
         newResult['id'] = party.id
         newResult['name'] = party.name
-        newResult['type'] = "PARTY"
+        newResult['type'] = "party"
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 

@@ -12,13 +12,13 @@ $(document).ready(function() {
 	            	$('#search-results-list').html('')
 	            	for(var i=0; i < data['number_of_results']; i++ ) {
 	            		var result = data['results'][i]
-	            		if (result['type'] == "PERSON") {
+	            		if (result['type'] == "person") {
 	            			var source = $("#result-person-list-item-template").html()
 	            		}
-	            		else if (result['type'] == "TAG") {
+	            		else if (result['type'] == "tag") {
 	            			var source = $("#result-tag-list-item-template").html()
 	            		}
-	            		else if (result['type'] == "PARTY") {
+	            		else if (result['type'] == "party") {
 	            			var source = $("#result-party-list-item-template").html()
 	            		}
 						var template = Handlebars.compile(source);
@@ -33,6 +33,7 @@ $(document).ready(function() {
 	    }
 	});
 })
+
 
 
 

@@ -1,0 +1,79 @@
+
+
+{% extends "core/facebook_status_list.html" %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/searchgui.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/searchGui.css"/>
+{% endblock %}
+
+{% block title %}מסך חיפוש{% endblock title %}
+
+{% block handlebar_templates %}
+{% verbatim %}
+<script id="search-gui-result-list-item-template" type="text/x-handlebars-template" >
+<a href="#" class="list-group-item" id="{{type}}{{id}}" data-name="{{name}}" data-type="{{type}}" data-id="{{id}}" data-icon="{{icon}}">
+<span class="badge"><span class="glyphicon glyphicon-{{icon}}"></span></span>
+<span class="badge hidden-badge"><span class="glyphicon glyphicon-arrow-left"></span></span>
+{{name}}
+</a>
+</script>
+
+<script id="search-gui-added-list-item-template" type="text/x-handlebars-template" >
+<a href="#" class="list-group-item" id="{{type}}{{id}}">
+<span class="badge"><span class="glyphicon glyphicon-{{icon}}"></span></span>
+<span class="badge hidden-badge result-info" data-id="{{id}}" data-type="{{type}}" data-name="{{name}}"><span class="glyphicon glyphicon-remove"></span></span>
+{{name}}
+</a>
+</script>
+
+{% endverbatim %}
+{% endblock %}
+
+{% block content %}
+
+<div class="col-sm-3">
+	<div class="list-group">
+		<li class="list-group-item" id="searchgui-go-button">
+			חפש!
+		</li>
+		<li class="list-group-item">
+			<div class="input-group">
+				<input type="text" class="form-control" id="searchgui-text-input">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="button" id="searchgui-add-word" data-word-num="1">הוסף מילה</button>
+				</span>
+			</div>
+		</li>
+		<span id="searchgui-search-words"></span>
+		<li class="list-group-item active">
+			תוצאות
+			<span class="badge">
+				<span class="glyphicon glyphicon-trash"></span>
+			</span>
+		</li>
+		<span id="search-gui-result-list"></span>
+	</div>
+</div>
+<div class="col-sm-3">
+	<div class="list-group">
+		<li class="list-group-item active">חברי כנסת</li>
+		<span id="search-gui-person-added-list"></span>
+	</div>
+</div>
+
+<div class="col-sm-3">
+	<div class="list-group">
+		<li class="list-group-item active">מפלגות</li>
+		<span id="search-gui-party-added-list"></span>
+	</div>
+</div>
+
+<div class="col-sm-3">
+	<div class="list-group">
+		<li class="list-group-item active">תגים</li>
+		<span id="search-gui-tag-added-list"></span>
+	</div>
+</div>
+
+{% endblock %}

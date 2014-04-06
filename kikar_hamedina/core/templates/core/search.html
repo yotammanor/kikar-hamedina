@@ -4,8 +4,18 @@
 
 {% block h1 %}
     <i class="fa fa-search"></i></br>
-    חברי כנסת:{{ feeds }}. </br>
-    תגיות: {{ tags }}.
+    {% if people|length > 0 %}
+    חברי כנסת:{{ people|length }}
+    {% endif %}
+    {% if parties|length > 0 %}
+    מפלגות:{{ parties|length }}
+    {% endif %}
+    {% if tags|length > 0 %}
+    תגיות: {{ tags|length }}
+    {% endif %}
+    {% if search_str %}
+    מילות חיפוש: {{ search_str }}
+    {% endif %}
 {% endblock %}
 
 {% block details %}
