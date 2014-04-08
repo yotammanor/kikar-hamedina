@@ -30,8 +30,17 @@
 	<link rel="stylesheet" href="{{ STATIC_URL }}css/main.css"/>
 	<link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/>
 
+	{% block scripts %}
+	{% endblock %}
+
 	<!-- Handelbar Templates -->
+
+
+	{% block handlebar_templates %}
+	{% endblock %}
+
 	{% verbatim %}
+
 	<!-- Templates for the search bar autocomplete -->
 	<script id="result-person-list-item-template" type="text/x-handlebars-template" >
 	<li class="result-container">
@@ -56,6 +65,8 @@
 	</li>
 	</script>
 	{% endverbatim %}
+
+
 </head>
 <body>
 
@@ -123,6 +134,9 @@
 					{% if user.is_authenticated %}
 					<li class="navbar-nav navbar-right">
 						<a href="{% url 'plain-untagged' %}" class="navbar-options">תיוג פוסטים</a>
+					</li>
+					<li class="navbar-nav navbar-right">
+						<a href="{% url 'search-gui' %}" class="navbar-options">חיפוש</a>
 					</li>
 					{% endif %}
 					<!-- <li class="active"><a href="#">פוליטיקאים</a></li> -->
