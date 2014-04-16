@@ -11,21 +11,26 @@ def get_env_variable(var_name):
         error_msg = 'Set the %s environment variable' % var_name
         raise ImproperlyConfigured(error_msg)
 
-root = lambda *x: abspath(join(dirname(__file__), '..', '..', *x))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir))
+
+sub_path = lambda *x: os.path.join(PROJECT_ROOT, *x)
+
+# Configuring DATA_ROOT
+DATA_ROOT = sub_path("data")
 
 # Configuring MEDIA_ROOT
-MEDIA_ROOT = root("media")
+MEDIA_ROOT = sub_path("media")
 
 # Configuring STATIC_ROOT
-STATIC_ROOT = root("collected_static")
+STATIC_ROOT = sub_path("collected_static")
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    root('static'),
+    sub_path('static'),
 )
 
 # Configuring TEMPLATE_DIRS
-TEMPLATE_DIRS = root("templates")
+TEMPLATE_DIRS = sub_path("templates")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_env_variable('SECRET_KEY')
@@ -46,10 +51,19 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
     'rest_framework',
     'django_extensions',
     'south',
+    'pagination',
+    'tagging',
+    'planet',
     'persons',
+    'knesset',
+    'links',
+    'video',
+    'mks',
     'facebook_feeds',
     'core',
     'dj_facebook_realtime',
@@ -65,6 +79,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'pagination.middleware.PaginationMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -75,7 +91,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
+    "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
+    "planet.context_processors.context",
     "core.context_processors.generic",
 )
 
@@ -104,3 +122,19 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+#Django-planet requirements
+PLANET = {
+    "USER_AGENT": "Kikar-Hamedina Planet/1.0"
+}
+
+SITE_ID = 1
+
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+LANGUAGE_COOKIE_NAME = "he"
+SESSION_COOKIE_NAME = "myplanetid"
