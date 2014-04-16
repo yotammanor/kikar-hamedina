@@ -15,4 +15,4 @@ pyreadline==2.0
 pytz==2013.9
 requests==2.1.0
 unidecode==0.04.14
-
+test_utils==0.1.0
