@@ -7,9 +7,13 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ("persons", "0001_initial"),
+    )
+
     def forwards(self, orm):
 
-        # Changing field 'Facebook_Feed.person'
+        # # Changing field 'Facebook_Feed.person'
         db.alter_column(u'core_facebook_feed', 'person_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['persons.Person']))
 
     def backwards(self, orm):

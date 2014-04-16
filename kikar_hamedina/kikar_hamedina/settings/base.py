@@ -49,12 +49,13 @@ INSTALLED_APPS = (
     'rest_framework',
     'django_extensions',
     'south',
-    'core',
     'persons',
     'facebook_feeds',
+    'core',
     'dj_facebook_realtime',
     'django.contrib.humanize',
     'endless_pagination',
+    'test_utils',
 )
 
 MIDDLEWARE_CLASSES = (
