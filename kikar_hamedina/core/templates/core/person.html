@@ -14,7 +14,7 @@
             <img src="{{ feed.pic_large }}" class="img-rounded" id="profile-photo">
         </p>
         <p>
-            <i class="fa fa-group"></i> {{ object.party.name }}
+            <i class="fa fa-group"></i> {{ object.current_party.name }}
         </p>
         <p>
 
@@ -27,7 +27,7 @@
 
 {% block sidebar %}
     <ul class="list-group">
-        {% for person in object.party.persons.all %}
+        {% for person in object.current_party.current_members.all %}
             <li class="list-group-item"><i class="fa fa-user"></i> <a
                     href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
         {% endfor %}

@@ -436,7 +436,7 @@
     "model": "mks.party", 
     "fields": {
         "number_of_seats": 4, 
-        "name": " \u05e8\u05e2\u201d\u05de-\u05ea\u05e2\u201d\u05dc", 
+        "name": "\u05e8\u05e2\u201d\u05de-\u05ea\u05e2\u201d\u05dc",
         "end_date": null, 
         "knesset": 19, 
         "is_coalition": false, 

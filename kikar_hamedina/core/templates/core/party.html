@@ -9,13 +9,13 @@
 
 {% block details %}
     <div class="h4">
-        מספר דפים במפלגה: {{ object.persons.count }}
+        מספר דפים במפלגה: {{ object.current_members.count }}
     </div>
 {% endblock %}
 
 {%  block sidebar %}
     <ul class="list-group">
-        {% for person in object.persons.all %}
+        {% for person in object.current_members.all %}
             <li class="list-group-item"> <a href="{% url 'plain-person' person.id %}">
                 <i class="fa fa-user"></i>
                 {{ person.name }}</a>

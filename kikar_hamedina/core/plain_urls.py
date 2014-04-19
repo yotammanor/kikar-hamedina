@@ -2,11 +2,14 @@ from django.conf.urls import patterns, url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import plain_views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag
-from persons.models import Person, Party
+from mks.models import Party, Member
+from kikar_hamedina.settings.base import CURRENT_KNESSET_NUMBER
+
 
 urlpatterns = patterns('',
                        url(r'^$', plain_views.HomepageView.as_view(), name='plain-index'),
-                       url(r'^all-statuses/$', plain_views.AllStatusesView.as_view(queryset=Facebook_Status.objects.order_by('-published')),
+                       url(r'^all-statuses/$',
+                           plain_views.AllStatusesView.as_view(queryset=Facebook_Status.objects.order_by('-published')),
                            kwargs={'context_object': 'index'},
                            name='plain-all-statuses'),
                        url(r'^untagged/$', plain_views.AllStatusesView.as_view(
@@ -23,8 +26,6 @@ urlpatterns = patterns('',
                            kwargs={'variable_column': 'feed__person__id',
                                    'context_object': 'person'},
                            name='plain-person'),
-                       # url(r'^tag/id/(?P<id>\d+)/$', plain_views.StatusFilterView.as_view(),
-                       # kwargs={'variable_column': 'tags__id'}, name='plain-tag-id'),
                        url(r'^tag/(?P<search_field>\w+)/(?P<id>[\w\s\-:"\'!\?&\.#]+)/$', plain_views.TagView.as_view(),
                            kwargs={'variable_column': 'tags',
                                    'context_object': 'tag'},
@@ -32,21 +33,20 @@ urlpatterns = patterns('',
                        url(r'^search/$', plain_views.SearchView.as_view(),
                            kwargs={'variable_column': 'content', 'context_object': 'search'}, name='plain-search'),
                        url(r'^searchgui/$', plain_views.SearchGuiView.as_view(), name="search-gui"),
-                       url(r'^persons/$', plain_views.AllPersons.as_view(queryset=Person.objects.all()),
+                       url(r'^persons/$',
+                           plain_views.AllPersons.as_view(queryset=Member.objects.filter(is_current=True)),
                            name='all-persons'),
-                       url(r'^parties/$', plain_views.AllParties.as_view(queryset=Party.objects.all()),
+                       url(r'^parties/$', plain_views.AllParties.as_view(
+                           queryset=Party.objects.filter(knesset__number=CURRENT_KNESSET_NUMBER)),
                            name='all-parties'),
                        url(r'^tags/$', plain_views.AllTags.as_view(queryset=Tag.objects.all()),
                            name='all-tags'),
-                       url(r'^about/$', plain_views.about_page, name='about',),
+                       url(r'^about/$', plain_views.about_page, name='about', ),
                        url(r'^fblogin/$', plain_views.login_page, name='fblogin'),
                        url(r'^fblogin/get-data/$', plain_views.get_data_from_facebook, name='get-data-from-facebook'),
                        url(r'^status_update/(?P<status_id>\w+)/$', plain_views.status_update),
-                       url(r'^search_bar/$',plain_views.search_bar)
-                       # url(r'^search/(?P<id>[\w\s]+)/$', plain_views.SearchView.as_view(),
-                       #     kwargs={'variable_column': 'content',
-                       #             'context_object': 'search'},
-                       #     name='plain-search'),
+                       url(r'^search_bar/$', plain_views.search_bar),
+
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

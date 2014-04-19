@@ -11,9 +11,10 @@ from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.db.models import Count, Q, F
 from django.conf import settings
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
-from persons.models import Party, Person
 from mks.models import Knesset
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
+from mks.models import Party, Member
+from kikar_hamedina.settings.base import CURRENT_KNESSET_NUMBER
 
 DAYS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 
@@ -56,7 +57,7 @@ class AllStatusesView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
-        context['navPersons'] = Person.objects.all().order_by('name')
+        context['navPersons'] = Member.objects.all().order_by('name')
         context['navParties'] = Party.objects.all().order_by('name')
         context['navTags'] = Tag.objects.all().order_by('name')
         context['context_object'] = self.kwargs['context_object']
@@ -64,7 +65,7 @@ class AllStatusesView(ListView):
         feeds = Facebook_Feed.objects.filter(
             facebook_status__published__gte=(
                 datetime.date.today() - datetime.timedelta(days=DAYS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
-        context['side_bar_list'] = Person.objects.filter(
+        context['side_bar_list'] = Member.objects.filter(
             id__in=[feed.object_id for feed in feeds]).distinct().order_by('name')
         return context
 
@@ -89,7 +90,7 @@ class SearchView(ListView):
                     if person.id not in people:
                         people.append(person.id)
 
-        person_query = Person.objects.filter(id__in=people)
+        person_query = Member.objects.filter(id__in=people)
         feeds = Facebook_Feed.objects.filter(object_id__in=[person.id for person in person_query])
         tags_ids = []
         if 'tags' in self.request.GET.keys():
@@ -112,7 +113,7 @@ class SearchView(ListView):
         people = []
         if 'people' in self.request.GET.keys():
             people = [int(person_id) for person_id in self.request.GET['people'].split(',')]
-        context['people'] = Person.objects.filter(id__in=people)
+        context['people'] = Member.objects.filter(id__in=people)
 
         parties_ids = []
         if 'parties' in self.request.GET.keys():
@@ -124,7 +125,7 @@ class SearchView(ListView):
                         people.append(person.id)
         context['parties'] = Party.objects.filter(id__in=parties_ids)
 
-        person_query = Person.objects.filter(id__in=people)
+        person_query = Member.objects.filter(id__in=people)
         feeds = Facebook_Feed.objects.filter(object_id__in=person_query)
 
         tags_ids = []
@@ -194,14 +195,14 @@ class StatusFilterUnifiedView(ListView):
 class PersonView(StatusFilterUnifiedView):
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
-        all_feeds_for_person = Person.objects.get(id=search_string).feeds.select_related()
+        all_feeds_for_person = Member.objects.get(id=search_string).feeds.select_related()
         print all_feeds_for_person
         query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_person]).order_by(
             '-published')
         return query_set
 
     template_name = "core/person.html"
-    parent_model = Person
+    parent_model = Member
 
 
 class PartyView(StatusFilterUnifiedView):
@@ -210,10 +211,10 @@ class PartyView(StatusFilterUnifiedView):
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
-        all_persons_for_party = Person.objects.filter(party__id=search_string)
+        all_persons_for_party = Member.objects.filter(current_party__id=search_string)
         all_feeds_for_party = list()
         for person in all_persons_for_party:
-            all_feeds_for_person = Person.objects.get(id=person.id).feeds.select_related()
+            all_feeds_for_person = Member.objects.get(id=person.id).feeds.select_related()
             for feed in all_feeds_for_person:
                 all_feeds_for_party.append(feed)
         query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]).order_by(
@@ -228,13 +229,13 @@ class TagView(StatusFilterUnifiedView):
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
         all_feeds_for_tag = Facebook_Feed.objects.filter(facebook_status__tags__id=context['object'].id).distinct()
-        context['side_bar_list'] = Person.objects.filter(id__in=[feed.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
+        context['side_bar_list'] = Member.objects.filter(id__in=[feed.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
 
 
 class AllPersons(ListView):
     template_name = 'core/all_persons.html'
-    model = Person
+    model = Member
 
 
 class AllParties(ListView):
@@ -372,12 +373,12 @@ def search_bar(request):
         print "NO STRING"
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-    people = Person.objects.filter(name__contains=searchText)
+    people = Member.objects.filter(name__contains=searchText, is_current=True)
     for person in people:
         newResult = dict()
         newResult['id'] = person.id
         newResult['name'] = person.name
-        newResult['party'] = person.party.name
+        newResult['party'] = person.current_party.name
         newResult['type'] = "person"
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
@@ -391,7 +392,7 @@ def search_bar(request):
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
-    parties = Party.objects.filter(name__contains=searchText)
+    parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER)
     for party in parties:
         newResult = dict()
         newResult['id'] = party.id
@@ -400,5 +401,6 @@ def search_bar(request):
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
+    print 'number of results:', response_data['number_of_results']
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 

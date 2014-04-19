@@ -45,8 +45,8 @@
                                     {{ feed.content_object.name }}
                                 </a>
                                 <br>
-                                <a href="{% url 'plain-party' feed.content_object.party.id %}">
-                                    {{ feed.content_object.party.name }}
+                                <a href="{% url 'plain-party' feed.content_object.current_party.id %}">
+                                    {{ feed.content_object.current_party.name }}
                                 </a>
                             </div>
                         </div><br><br><br>

@@ -5,8 +5,10 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
+from django.contrib.contenttypes import generic
+
 from planet.models import Blog
-from core import plain_views
+from facebook_feeds.models import Facebook_Feed
 
 from mks.managers import (
     BetterManager, KnessetManager, CurrentKnessetMembersManager,
@@ -210,6 +212,9 @@ class Member(models.Model):
 
     objects = BetterManager()
     current_knesset = CurrentKnessetMembersManager()
+
+    #added by kikar-hamedina
+    feeds = generic.GenericRelation(Facebook_Feed)
 
     class Meta:
         ordering = ['name']

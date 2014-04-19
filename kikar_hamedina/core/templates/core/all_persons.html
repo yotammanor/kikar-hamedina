@@ -6,6 +6,12 @@
     כל הפוליטיקאים
 {% endblock %}
 
+{% block details %}
+    <div class="h4">
+       מספר דפים: {{ object_list.count }}
+    </div>
+{% endblock %}
+
 {% block content %}
     <ul>
         {% for person in object_list %}
