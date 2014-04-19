@@ -1,0 +1,351 @@
+[{
+    "pk": 1,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 4,
+        "name": "\u05d4\u05d0\u05d9\u05d7\u05d5\u05d3 \u05d4\u05dc\u05d0\u05d5\u05de\u05d9",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 4,
+        "start_date": "2009-03-04"
+    }
+},
+{
+    "pk": 2,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 27,
+        "name": "\u05d4\u05dc\u05d9\u05db\u05d5\u05d3",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 27,
+        "start_date": "2009-03-04"
+    }
+},
+{
+    "pk": 3,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 8,
+        "name": "\u05d4\u05e2\u05d1\u05d5\u05d3\u05d4",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 9,
+        "start_date": "2009-03-04"
+    }
+},
+{
+    "pk": 4,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 5,
+        "name": "\u05d9\u05d4\u05d3\u05d5\u05ea \u05d4\u05ea\u05d5\u05e8\u05d4",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 5,
+        "start_date": "2009-03-04"
+    }
+},
+{
+    "pk": 5,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 15,
+        "name": "\u05d9\u05e9\u05e8\u05d0\u05dc \u05d1\u05d9\u05ea\u05e0\u05d5",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 15,
+        "start_date": "2009-03-04"
+    }
+},
+{
+    "pk": 6,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 28,
+        "name": "\u05e7\u05d3\u05d9\u05de\u05d4",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 29,
+        "start_date": "2009-03-04"
+    }
+},
+{
+    "pk": 7,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 11,
+        "name": "\u05e9\"\u05e1",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 11,
+        "start_date": "2009-03-04"
+    }
+},
+{
+    "pk": 8,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 4,
+        "name": "\u05d7\u05d3\"\u05e9",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 4,
+        "start_date": "2009-03-04"
+    }
+},
+{
+    "pk": 9,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 3,
+        "name": "\u05d1\u05dc\"\u05d3",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 3,
+        "start_date": "2009-03-09"
+    }
+},
+{
+    "pk": 10,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 4,
+        "name": "\u05e8\u05e2\"\u05de-\u05ea\u05e2\"\u05dc",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 4,
+        "start_date": "2009-03-09"
+    }
+},
+{
+    "pk": 11,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 3,
+        "name": "\u05de\u05e8\u05e6",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 3,
+        "start_date": "2009-03-09"
+    }
+},
+{
+    "pk": 12,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 3,
+        "name": "\u05d4\u05d1\u05d9\u05ea \u05d4\u05d9\u05d4\u05d5\u05d3\u05d9",
+        "end_date": "2010-02-03",
+        "knesset": 18,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 3,
+        "start_date": "2009-03-18"
+    }
+},
+{
+    "pk": 13,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 5,
+        "name": "\u05d4\u05e2\u05e6\u05de\u05d0\u05d5\u05ea",
+        "end_date": null,
+        "knesset": 18,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 5,
+        "start_date": "2011-01-17"
+    }
+},
+{
+    "pk": 14,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 31,
+        "name": "\u05d4\u05dc\u05d9\u05db\u05d5\u05d3 \u2013 \u05d9\u05e9\u05e8\u05d0\u05dc \u05d1\u05d9\u05ea\u05e0\u05d5",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 31,
+        "start_date": null
+    }
+},
+{
+    "pk": 15,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 19,
+        "name": "\u05d9\u05e9 \u05e2\u05ea\u05d9\u05d3",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 19,
+        "start_date": null
+    }
+},
+{
+    "pk": 16,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 15,
+        "name": "\u05d4\u05e2\u05d1\u05d5\u05d3\u05d4",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 15,
+        "start_date": null
+    }
+},
+{
+    "pk": 17,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 12,
+        "name": "\u05d4\u05d1\u05d9\u05ea \u05d4\u05d9\u05d4\u05d5\u05d3\u05d9",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 12,
+        "start_date": null
+    }
+},
+{
+    "pk": 18,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 11,
+        "name": "\u05e9\u201d\u05e1",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 11,
+        "start_date": null
+    }
+},
+{
+    "pk": 19,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 7,
+        "name": "\u05d9\u05d4\u05d3\u05d5\u05ea \u05d4\u05ea\u05d5\u05e8\u05d4",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 7,
+        "start_date": null
+    }
+},
+{
+    "pk": 20,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 6,
+        "name": "\u05de\u05e8\u05e6",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 6,
+        "start_date": null
+    }
+},
+{
+    "pk": 21,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 6,
+        "name": "\u05d4\u05ea\u05e0\u05d5\u05e2\u05d4",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": true,
+        "logo": "",
+        "number_of_members": 6,
+        "start_date": null
+    }
+},
+{
+    "pk": 22,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 4,
+        "name": "\u05d7\u05d6\u05d9\u05ea \u05d3\u05de\u05d5\u05e7\u05e8\u05d8\u05d9\u05ea \u05dc\u05e9\u05dc\u05d5\u05dd \u05d5\u05e9\u05d5\u05d5\u05d9\u05d5\u05df",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 4,
+        "start_date": null
+    }
+},
+{
+    "pk": 23,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 4,
+        "name": " \u05e8\u05e2\u201d\u05de-\u05ea\u05e2\u201d\u05dc",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 4,
+        "start_date": null
+    }
+},
+{
+    "pk": 24,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 3,
+        "name": "\u05d1\u05e8\u05d9\u05ea \u05dc\u05d0\u05d5\u05de\u05d9\u05ea \u05d3\u05de\u05d5\u05e7\u05e8\u05d8\u05d9\u05ea",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 3,
+        "start_date": null
+    }
+},
+{
+    "pk": 25,
+    "model": "mks.party",
+    "fields": {
+        "number_of_seats": 2,
+        "name": "\u05e7\u05d3\u05d9\u05de\u05d4",
+        "end_date": null,
+        "knesset": 19,
+        "is_coalition": false,
+        "logo": "",
+        "number_of_members": 2,
+        "start_date": null
+    }
+}
+]

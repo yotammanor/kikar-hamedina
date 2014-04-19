@@ -13,7 +13,7 @@ from django.db.models import Count, Q, F
 from django.conf import settings
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
 from persons.models import Party, Person
-
+from mks.models import Knesset
 
 DAYS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 

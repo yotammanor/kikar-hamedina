@@ -426,16 +426,16 @@ class Member(models.Model):
             names.append(altname.name)
         return names
 
-    def get_agendas_values(self):
-        from agendas.models import Agenda
-
-        out = {}
-        for agenda_id, mks in Agenda.objects.get_mks_values().items():
-            try:
-                out[agenda_id] = dict(mks)[self.id]
-            except KeyError:
-                pass
-        return out
+    # def get_agendas_values(self):
+    #     from agendas.models import Agenda
+    #
+    #     out = {}
+    #     for agenda_id, mks in Agenda.objects.get_mks_values().items():
+    #         try:
+    #             out[agenda_id] = dict(mks)[self.id]
+    #         except KeyError:
+    #             pass
+    #     return out
 
     @property
     def firstname(self):
