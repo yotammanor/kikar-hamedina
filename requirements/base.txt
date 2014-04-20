@@ -16,4 +16,4 @@ requests==2.1.0
 unidecode==0.04.14
 django-testutils
 
--r ./oknesset.txt
+-r oknesset.txt
