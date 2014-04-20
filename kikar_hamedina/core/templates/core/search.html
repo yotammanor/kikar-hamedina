@@ -4,8 +4,8 @@
 
 {% block h1 %}
     <i class="fa fa-search"></i></br>
-    {% if people|length > 0 %}
-    חברי כנסת:{{ people|length }}
+    {% if members|length > 0 %}
+    חברי כנסת:{{ members|length }}
     {% endif %}
     {% if parties|length > 0 %}
     מפלגות:{{ parties|length }}
@@ -24,14 +24,14 @@
     </div>
 {% endblock %}
 
-{#{%  block sidebar %}#}
-{#    <ul class="list-group">#}
-{#        {% for person in object.persons.all %}#}
-{#            <li class="list-group-item"> <a href="{% url 'plain-person' person.id %}">#}
-{#                <i class="fa fa-user"></i>#}
-{#                {{ person.name }}</a>#}
-{#            </li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
-{#{%  endblock %}#}
 
+{% block sidebar %}
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter}} השעות האחרונות: </b></li>
+        {% for member in side_bar_list.all %}
+            <li class="list-group-item">
+                <a href="{% url 'plain-member' member.id %}">{{ member.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

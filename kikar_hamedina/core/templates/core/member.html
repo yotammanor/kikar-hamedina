@@ -27,9 +27,9 @@
 
 {% block sidebar %}
     <ul class="list-group">
-        {% for person in object.current_party.current_members.all %}
+        {% for member in object.current_party.current_members.all %}
             <li class="list-group-item"><i class="fa fa-user"></i> <a
-                    href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
+                    href="{% url 'plain-member' member.id %}">{{ member.name }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

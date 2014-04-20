@@ -98,14 +98,14 @@
                     <div class="panel-heading col-lg-12">
                         <div class="row">
                             <div class="col-lg-1">
-                                <a href="{% url 'plain-person' status.feed.content_object.id %}">
+                                <a href="{% url 'plain-member' status.feed.content_object.id %}">
                                     <img src="{{ status.feed.pic_square }}" class="profile-photo img-rounded">
                                 </a>
                             </div>
                             <div class="col-lg-9">
                                 <div class="row" id="name-row-container">
                                     <a class="link-on-blue"
-                                       href="{% url 'plain-person' status.feed.content_object.id %}">
+                                       href="{% url 'plain-member' status.feed.content_object.id %}">
                                         <h4>{{ status.feed.content_object.name }}</h4>
                                     </a>
                                 </div>
@@ -213,14 +213,6 @@
         </div>
         <div class="col-md-2">
             {% block sidebar %}
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-heading"><b> כתבו לאחרונה: </b></li>
-                    {% for person in side_bar_list.all %}
-                        <li class="list-group-item">
-                            <a href="{% url 'plain-person' person.id %}">{{ person.name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
             {% endblock %}
         </div>
     </div>

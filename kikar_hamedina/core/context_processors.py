@@ -11,19 +11,19 @@ NUMBER_OF_TOP_TAGS_TO_BRING = 12
 
 def generic(request):
 
-    persons = Member.objects.filter(is_current=True)
-    persons_with_feed = [person for person in persons if person.feeds.select_related()]
-    list_of_persons = list()
-    for person in persons_with_feed:
+    members = Member.objects.filter(is_current=True)
+    members_with_feed = [member for member in members if member.feeds.select_related()]
+    list_of_members = list()
+    for member in members_with_feed:
         try:
-            feed_popularity = person.feeds.select_related().first().current_fan_count
-            list_of_persons.append({'person': person, 'popularity': feed_popularity})
+            feed_popularity = member.feeds.select_related().first().current_fan_count
+            list_of_members.append({'member': member, 'popularity': feed_popularity})
         except:
             pass
-    sorted_list_of_persons = sorted(list_of_persons, key=lambda x: x['popularity'], reverse=True)
+    sorted_list_of_members = sorted(list_of_members, key=lambda x: x['popularity'], reverse=True)
 
     return {
-        'navPersons': [x['person'] for x in sorted_list_of_persons][:NUMBER_OF_TOP_POLITICIANS_TO_BRING],
+        'navMembers': [x['member'] for x in sorted_list_of_members][:NUMBER_OF_TOP_POLITICIANS_TO_BRING],
         'navParties': Party.objects.filter(knesset__number=CURRENT_KNESSET_NUMBER)
                     .order_by('-number_of_members')[:NUMBER_OF_TOP_PARTIES_TO_BRING],
         'navTags': Tag.objects.filter(is_for_main_display=True)

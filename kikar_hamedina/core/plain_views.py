@@ -16,7 +16,7 @@ from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Toke
 from mks.models import Party, Member
 from kikar_hamedina.settings.base import CURRENT_KNESSET_NUMBER
 
-DAYS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
+HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
@@ -57,16 +57,12 @@ class AllStatusesView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
-        context['navPersons'] = Member.objects.all().order_by('name')
-        context['navParties'] = Party.objects.all().order_by('name')
-        context['navTags'] = Tag.objects.all().order_by('name')
-        context['context_object'] = self.kwargs['context_object']
-
         feeds = Facebook_Feed.objects.filter(
             facebook_status__published__gte=(
-                datetime.date.today() - datetime.timedelta(days=DAYS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
+                datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
         context['side_bar_list'] = Member.objects.filter(
             id__in=[feed.object_id for feed in feeds]).distinct().order_by('name')
+        context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
 
 
@@ -79,19 +75,19 @@ class SearchView(ListView):
 
     def get_queryset(self):
 
-        people = []
-        if 'people' in self.request.GET.keys():
-            people = [int(person_id) for person_id in self.request.GET['people'].split(',')]
+        members = []
+        if 'members' in self.request.GET.keys():
+            members = [int(member_id) for member_id in self.request.GET['members'].split(',')]
         if 'parties' in self.request.GET.keys():
             parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
             parties = Party.objects.filter(id__in=parties_ids)
             for party in parties:
-                for person in party.persons.all():
-                    if person.id not in people:
-                        people.append(person.id)
+                for member in party.current_members():
+                    if member.id not in members:
+                        members.append(member.id)
 
-        person_query = Member.objects.filter(id__in=people)
-        feeds = Facebook_Feed.objects.filter(object_id__in=[person.id for person in person_query])
+        member_query = Member.objects.filter(id__in=members)
+        feeds = Facebook_Feed.objects.filter(object_id__in=[member.id for member in member_query])
         tags_ids = []
         if 'tags' in self.request.GET.keys():
             tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
@@ -110,29 +106,28 @@ class SearchView(ListView):
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
-        people = []
-        if 'people' in self.request.GET.keys():
-            people = [int(person_id) for person_id in self.request.GET['people'].split(',')]
-        context['people'] = Member.objects.filter(id__in=people)
+        members = []
+        if 'members' in self.request.GET.keys():
+            members = [int(member_id) for member_id in self.request.GET['members'].split(',')]
+        context['members'] = Member.objects.filter(id__in=members)
 
         parties_ids = []
         if 'parties' in self.request.GET.keys():
             parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
             parties = Party.objects.filter(id__in=parties_ids)
             for party in parties:
-                for person in party.persons.all():
-                    if person.id not in people:
-                        people.append(person.id)
+                for member in party.current_members():
+                    if member.id not in members:
+                        members.append(member.id)
         context['parties'] = Party.objects.filter(id__in=parties_ids)
 
-        person_query = Member.objects.filter(id__in=people)
-        feeds = Facebook_Feed.objects.filter(object_id__in=person_query)
+        member_query = Member.objects.filter(id__in=members)
+        feeds = Facebook_Feed.objects.filter(object_id__in=member_query)
 
         tags_ids = []
         if 'tags' in self.request.GET.keys():
             tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
-
 
         query_Q = Q(feed__in=feeds) | Q(tags__in=tags_ids)
         search_str = None
@@ -147,6 +142,8 @@ class SearchView(ListView):
         return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
 
         context['number_of_results'] = return_queryset.count()
+        context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
+
         return context
 
 
@@ -192,16 +189,16 @@ class StatusFilterUnifiedView(ListView):
         return context
 
 
-class PersonView(StatusFilterUnifiedView):
+class MemberView(StatusFilterUnifiedView):
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
-        all_feeds_for_person = Member.objects.get(id=search_string).feeds.select_related()
-        print all_feeds_for_person
-        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_person]).order_by(
+        all_feeds_for_member = Member.objects.get(id=search_string).feeds.select_related()
+        print all_feeds_for_member
+        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_member]).order_by(
             '-published')
         return query_set
 
-    template_name = "core/person.html"
+    template_name = "core/member.html"
     parent_model = Member
 
 
@@ -211,11 +208,11 @@ class PartyView(StatusFilterUnifiedView):
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
-        all_persons_for_party = Member.objects.filter(current_party__id=search_string)
+        all_members_for_party = Party.objects.get(id=search_string).current_members()
         all_feeds_for_party = list()
-        for person in all_persons_for_party:
-            all_feeds_for_person = Member.objects.get(id=person.id).feeds.select_related()
-            for feed in all_feeds_for_person:
+        for member in all_members_for_party:
+            all_feeds_for_member = Member.objects.get(id=member.id).feeds.select_related()
+            for feed in all_feeds_for_member:
                 all_feeds_for_party.append(feed)
         query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]).order_by(
             '-published')
@@ -229,12 +226,13 @@ class TagView(StatusFilterUnifiedView):
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
         all_feeds_for_tag = Facebook_Feed.objects.filter(facebook_status__tags__id=context['object'].id).distinct()
-        context['side_bar_list'] = Member.objects.filter(id__in=[feed.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
+        context['side_bar_list'] = Member.objects.filter(
+            id__in=[feed.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
 
 
-class AllPersons(ListView):
-    template_name = 'core/all_persons.html'
+class AllMembers(ListView):
+    template_name = 'core/all_members.html'
     model = Member
 
 
@@ -310,7 +308,7 @@ def get_data_from_facebook(request):
 
     # add or update relevant feeds for token
     user_profile_feeds = Facebook_Feed.objects.filter(feed_type='UP')
-        # user_profile_feeds = ['508516607', '509928464']  # Used for testing
+    # user_profile_feeds = ['508516607', '509928464']  # Used for testing
     relevant_feeds = []
     print 'working on %d user_profile feeds.' % len(user_profile_feeds)
     for feed in user_profile_feeds:
@@ -326,15 +324,13 @@ def get_data_from_facebook(request):
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
-
 #A handler for status_update ajax call from client
 def status_update(request, status_id):
-
     status = Facebook_Status.objects.get(status_id=status_id)
 
     url = "https://graph.facebook.com/"
     url += str(status.status_id)
-    url += "?access_token="+facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
+    url += "?access_token=" + facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
     url += "&fields=shares,likes.limit(1).summary(true),comments.limit(1).summary(true)"
 
     try:
@@ -362,6 +358,7 @@ def status_update(request, status_id):
 
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+
 #A handler for the search bar request from the client
 def search_bar(request):
     searchText = request.GET['text']
@@ -373,13 +370,13 @@ def search_bar(request):
         print "NO STRING"
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-    people = Member.objects.filter(name__contains=searchText, is_current=True)
-    for person in people:
+    members = Member.objects.filter(name__contains=searchText, is_current=True)
+    for member in members:
         newResult = dict()
-        newResult['id'] = person.id
-        newResult['name'] = person.name
-        newResult['party'] = person.current_party.name
-        newResult['type'] = "person"
+        newResult['id'] = member.id
+        newResult['name'] = member.name
+        newResult['party'] = member.current_party.name
+        newResult['type'] = "member"
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 

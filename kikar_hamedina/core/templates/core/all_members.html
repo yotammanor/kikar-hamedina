@@ -14,8 +14,8 @@
 
 {% block content %}
     <ul>
-        {% for person in object_list %}
-            <li><a href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
+        {% for member in object_list %}
+            <li><a href="{% url 'plain-member' member.id %}">{{ member.name }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

@@ -91,10 +91,10 @@
 							<i class="fa fa-user"></i>פוליטיקאים <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu" id="politicians-dropdown-menu">
-							<li><a href={% url 'all-persons' %}>כל הפוליטיקאים</a></li>
+							<li><a href={% url 'all-members' %}>כל הפוליטיקאים</a></li>
 							<li class="divider"></li>
-							{% for person in navPersons %}
-							<li><a href="{% url 'plain-person' person.id %}">{{ person.name }}</a></li>
+							{% for member in navMembers %}
+							<li><a href="{% url 'plain-member' member.id %}">{{ member.name }}</a></li>
 							{% endfor %}
 						</ul>
 					</li>

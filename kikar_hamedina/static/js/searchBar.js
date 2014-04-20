@@ -12,8 +12,8 @@ $(document).ready(function() {
 	            	$('#search-results-list').html('')
 	            	for(var i=0; i < data['number_of_results']; i++ ) {
 	            		var result = data['results'][i]
-	            		if (result['type'] == "person") {
-	            			var source = $("#result-person-list-item-template").html()
+	            		if (result['type'] == "member") {
+	            			var source = $("#result-member-list-item-template").html()
 	            		}
 	            		else if (result['type'] == "tag") {
 	            			var source = $("#result-tag-list-item-template").html()

@@ -15,10 +15,10 @@
 
 {%  block sidebar %}
     <ul class="list-group">
-        {% for person in object.current_members.all %}
-            <li class="list-group-item"> <a href="{% url 'plain-person' person.id %}">
+        {% for member in object.current_members.all %}
+            <li class="list-group-item"> <a href="{% url 'plain-member' member.id %}">
                 <i class="fa fa-user"></i>
-                {{ person.name }}</a>
+                {{ member.name }}</a>
             </li>
         {% endfor %}
     </ul>

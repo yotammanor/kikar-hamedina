@@ -3,7 +3,7 @@ $(document).ready(function() {
 	$(".glyphicon-trash").parent().click(function() {
 		$('#searchgui-text-input').val('')
 		$('#search-gui-result-list').html('')
-		$('#search-gui-person-added-list').html('')
+		$('#search-gui-member-added-list').html('')
 		$('#search-gui-party-added-list').html('')
 		$('#search-gui-tag-added-list').html('')
 	})
@@ -14,16 +14,16 @@ $(document).ready(function() {
 
 	$("#searchgui-go-button").click(function() {
 		console.log("hERE")
-		searchTerms = {'person':[],'party':[],'tag':[],'search_str':[]}
+		searchTerms = {'member':[],'party':[],'tag':[],'search_str':[]}
 		$(".result-info").each(function() {
 			type = $(this).data('type')
 			id = $(this).data('id')
 			searchTerms[type].push(id)
 		})
 		url = "http://"+document.domain+":8000/plain/search/?"
-		person_ids = searchTerms['person'].join(',')
-		if (person_ids.length > 0) {
-			url += "people="+person_ids+"&"
+		member_ids = searchTerms['member'].join(',')
+		if (member_ids.length > 0) {
+			url += "members="+member_ids+"&"
 		}
 		party_ids = searchTerms['party'].join(',')
 		if (party_ids.length > 0) {
@@ -87,7 +87,7 @@ $('#searchgui-text-input').keydown(function() {
 						continue;
 					}
 					var source = $("#search-gui-result-list-item-template").html()
-					if (result['type'] == "person") {
+					if (result['type'] == "member") {
 						result['icon'] = 'user'
 					}
 					else if (result['type'] == "party") {
