@@ -1,6 +1,7 @@
 import datetime
 import urllib2
 import json
+from IPython.lib.pretty import pprint
 import facebook
 from django.core.exceptions import FieldError
 from django.shortcuts import render
@@ -400,5 +401,6 @@ def search_bar(request):
         response_data['number_of_results'] += 1
 
     print 'number of results:', response_data['number_of_results']
+    pprint(response_data)
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 

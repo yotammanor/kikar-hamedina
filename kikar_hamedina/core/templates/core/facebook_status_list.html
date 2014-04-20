@@ -213,7 +213,16 @@
         </div>
         <div class="col-md-2">
             {% block sidebar %}
-            {% endblock %}
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות
+                        האחרונות: </b></li>
+                    {% for member in side_bar_list.all %}
+                        <li class="list-group-item">
+                            <a href="{% url 'plain-member' member.id %}">{{ member.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endblock sidebar %}
         </div>
     </div>
     <ul class="pagination"> {% show_pages %} </ul>

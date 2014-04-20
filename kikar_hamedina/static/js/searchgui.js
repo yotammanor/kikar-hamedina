@@ -91,7 +91,7 @@ $('#searchgui-text-input').keydown(function() {
 						result['icon'] = 'user'
 					}
 					else if (result['type'] == "party") {
-						result['icon'] = 'flag'
+						result['icon'] = 'group'
 					}
 					else if (result['type'] == "tag") {
 						result['icon'] = 'tag'

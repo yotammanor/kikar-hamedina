@@ -13,7 +13,7 @@
     {% verbatim %}
     <script id="search-gui-result-list-item-template" type="text/x-handlebars-template">
 <a href="#" class="list-group-item" id="{{type}}{{id}}" data-name="{{name}}" data-type="{{type}}" data-id="{{id}}" data-icon="{{icon}}">
-<span class="badge"><span class="glyphicon glyphicon-{{icon}}"></span></span>
+<span class="badge"><i class="fa fa-{{icon}}"></i></span>
 <span class="badge hidden-badge"><span class="glyphicon glyphicon-arrow-left"></span></span>
 {{name}}
 </a>
@@ -21,7 +21,7 @@
 
     <script id="search-gui-added-list-item-template" type="text/x-handlebars-template">
 <a href="#" class="list-group-item" id="{{type}}{{id}}">
-<span class="badge"><span class="glyphicon glyphicon-{{icon}}"></span></span>
+<span class="badge"><i class="fa fa-{{icon}}"></i></span>
 <span class="badge hidden-badge result-info" data-id="{{id}}" data-type="{{type}}" data-name="{{name}}"><span class="glyphicon glyphicon-remove"></span></span>
 {{name}}
 </a>
