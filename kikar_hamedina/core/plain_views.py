@@ -96,10 +96,11 @@ class SearchView(ListView):
 
         if 'search_str' in self.request.GET.keys():
             search_str = self.request.GET['search_str']
-            query_Q = Q(content__contains=search_str) | query_Q
+            query_str_Q = Q(content__contains=search_str)
             search_words = search_str.strip().split(' ')
             for word in search_words:
-                query_Q = Q(content__contains=word) | query_Q
+                query_str_Q = Q(content__contains=word) | query_str_Q
+            query_Q = query_Q & query_str_Q
         return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
         return return_queryset
 
