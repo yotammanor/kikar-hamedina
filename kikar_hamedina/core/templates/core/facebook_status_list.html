@@ -121,18 +121,18 @@
 
                         <div class="row">
                             <div class="col-md-4">
-                        <span>
-                            <b>אהבו: </b> <span
-                                id="{{ status.status_id }}-likes">{{ status.like_count|intcomma }}</span>.
-                        </span>
-                        <span>
-                            <b>הגיבו: </b> <span
-                                id="{{ status.status_id }}-comments">{{ status.comment_count|intcomma }}</span>.
-                        </span>
-                        <span>
-                            <b>שיתפו: </b> <span
-                                id="{{ status.status_id }}-shares">{{ status.share_count|intcomma }}</span>.
-                        </span>
+                                <span>
+                                    <b>אהבו: </b> <span
+                                        id="{{ status.status_id }}-likes">{{ status.like_count|intcomma }}</span>.
+                                </span>
+                                <span>
+                                    <b>הגיבו: </b> <span
+                                        id="{{ status.status_id }}-comments">{{ status.comment_count|intcomma }}</span>.
+                                </span>
+                                <span>
+                                    <b>שיתפו: </b> <span
+                                        id="{{ status.status_id }}-shares">{{ status.share_count|intcomma }}</span>.
+                                </span>
                             </div>
                             <div class="col-md-8">
                                 {% if status.tags.count > 0 %}
@@ -151,6 +151,9 @@
                                     <!-- Button trigger modal -->
                                     <button class="btn btn-primary btn-xs" data-toggle="modal"
                                             data-target="#{{ status.status_id }}_modal">
+                                        {% if status.has_attachment %}
+                                            <i class="fa fa-paperclip"></i>
+                                        {% endif %}
                                         צפה בפוסט
                                     </button>
 

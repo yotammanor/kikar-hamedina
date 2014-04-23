@@ -83,6 +83,17 @@ class Facebook_Status(models.Model):
         split_status_id = self.status_id.split('_')
         return 'https://www.facebook.com/%d/posts/%d' % (split_status_id[0], split_status_id[1])
 
+    @property
+    def has_attachment(self):
+        try:
+            if self.attachment:
+                return True
+            else:
+                return False
+        except:
+            return False
+
+
 status_with_photo = '161648040544835_720225251353775'
 status_with_youtube_link = '161648040544835_723225304387103'
 status_with_link_to_newspaper = '161648040544835_719797924729841'
@@ -128,6 +139,15 @@ class Facebook_Status_Attachment(models.Model):
     @property
     def is_internal_link(self):
         return 'https://www.facebook.com/' in self.link
+
+    @property
+    def get_link(self):
+        if self.link:
+            return self.link
+        elif self.media.count() == 1:
+            return self.media.first().link
+        else:
+            return None
 
 
 class Facebook_Status_Attachment_Media(models.Model):
