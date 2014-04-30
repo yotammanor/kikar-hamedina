@@ -133,7 +133,7 @@ class Facebook_Status_Attachment(models.Model):
     name = models.TextField(null=True)  #name
     caption = models.TextField(null=True)  #caption
     description = models.TextField(null=True)  #description
-    link = models.URLField(null=True, max_length=512)  #href
+    link = models.TextField(null=True)  #href
     facebook_object_id = models.CharField(unique=False, null=True, max_length=128)  #fb_object_id (exists only for internal links)
 
     @property
@@ -153,14 +153,15 @@ class Facebook_Status_Attachment(models.Model):
 class Facebook_Status_Attachment_Media(models.Model):
     attachment = models.ForeignKey(Facebook_Status_Attachment, related_name='media')
     type = models.CharField(null=True, choices=ATTACHMENT_MEDIA_TYPES, max_length=16)  #type
-    link = models.URLField(null=True, max_length=512)  #href
+    link = models.TextField(null=True)  #href
     alt = models.TextField(null=True) #alt
-    picture = models.URLField(null=True, max_length=512)  #picture
-    thumbnail = models.URLField(null=True, max_length=512)  # src
+    picture = models.TextField(null=True)  #picture
+    thumbnail = models.TextField(null=True)  # src
     owner_id = models.TextField(null=True)  # photo.owner
 
     class Meta:
         unique_together = ('attachment', 'link')
+
 
 class User_Token(models.Model):
     token = models.CharField(max_length=256, unique=True)
