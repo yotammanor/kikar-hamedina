@@ -68,8 +68,7 @@ INSTALLED_APPS = (
     'core',
     'dj_facebook_realtime',
     'django.contrib.humanize',
-    'endless_pagination',
-    'test_utils',
+    'endless_pagination'
 )
 
 MIDDLEWARE_CLASSES = (
