@@ -1,4 +1,4 @@
-{% extends "layouts/plain-generic-template.html" %}
+{% extends "layouts/generic-template.html" %}
 
 {% block title %}עמוד ראשי{% endblock title %}
 
@@ -22,7 +22,7 @@
                             <i class="fa fa-comments-o"></i>
                         </div>
                         <div class="col-md-2">
-                            <a class="link-on-blue" href="{% url 'plain-tag' 'name' tag.name %}">{{ tag.name | truncatechars:32 }}</a>
+                            <a class="link-on-blue" href="{% url 'tag' 'name' tag.name %}">{{ tag.name | truncatechars:32 }}</a>
                         </div>
                         <div class="col-md-1">
                             {{ tag.number_of_posts }}
@@ -35,17 +35,17 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="col-sm-3">
-                                <a href="{% url 'plain-member' feed.content_object.id %}">
+                                <a href="{% url 'member' feed.content_object.id %}">
                                     <img src="{{ feed.pic_square }}"
                                     class="profile-photo img-rounded">
                                 </a>
                             </div>
                             <div class="col-sm-9">
-                                <a href="{% url 'plain-member' feed.content_object.id %}">
+                                <a href="{% url 'member' feed.content_object.id %}">
                                     {{ feed.content_object.name }}
                                 </a>
                                 <br>
-                                <a href="{% url 'plain-party' feed.content_object.current_party.id %}">
+                                <a href="{% url 'party' feed.content_object.current_party.id %}">
                                     {{ feed.content_object.current_party.name }}
                                 </a>
                             </div>
@@ -55,7 +55,7 @@
 
                 </div>
                 <div class="panel-footer">
-                    <a href="{% url 'plain-tag' 'name' tag.name %}"> קרא עוד</a>
+                    <a href="{% url 'tag' 'name' tag.name %}"> קרא עוד</a>
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@
 {#        <li class="list-group-item list-group-item-heading"><b> כתבו לאחרונה </b></li>#}
 {#        {% for member in side_bar_list.all %}#}
 {#            <li class="list-group-item">#}
-{#                <a href="{% url 'plain-member' member.id %}">{{ member.name }}</a>#}
+{#                <a href="{% url 'member' member.id %}">{{ member.name }}</a>#}
 {#            </li>#}
 {#        {% endfor %}#}
 {#    </ul>#}

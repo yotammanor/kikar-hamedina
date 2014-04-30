@@ -1,4 +1,4 @@
-{% extends "layouts/plain-generic-template.html" %}
+{% extends "layouts/generic-template.html" %}
 
 {% block title %}כל הפוליטיקאים{% endblock title %}
 
@@ -15,7 +15,7 @@
 {% block content %}
     <ul>
         {% for member in object_list %}
-            <li><a href="{% url 'plain-member' member.id %}">{{ member.name }}</a></li>
+            <li><a href="{% url 'member' member.id %}">{{ member.name }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

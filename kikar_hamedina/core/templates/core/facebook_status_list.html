@@ -1,4 +1,4 @@
-{% extends "layouts/plain-generic-template.html" %}
+{% extends "layouts/generic-template.html" %}
 
 {% block title %}Homepage{% endblock title %}
 
@@ -98,14 +98,14 @@
                     <div class="panel-heading col-lg-12">
                         <div class="row">
                             <div class="col-lg-1">
-                                <a href="{% url 'plain-member' status.feed.content_object.id %}">
+                                <a href="{% url 'member' status.feed.content_object.id %}">
                                     <img src="{{ status.feed.pic_square }}" class="profile-photo img-rounded">
                                 </a>
                             </div>
                             <div class="col-lg-9">
                                 <div class="row" id="name-row-container">
                                     <a class="link-on-blue"
-                                       href="{% url 'plain-member' status.feed.content_object.id %}">
+                                       href="{% url 'member' status.feed.content_object.id %}">
                                         <h4>{{ status.feed.content_object.name }}</h4>
                                     </a>
                                 </div>
@@ -139,7 +139,7 @@
                                     <strong>תגים: </strong>
                                 {% endif %}
                                 {% for tag in status.tags.all %}
-                                    <a href="{% url 'plain-tag' 'name' tag.name %}">
+                                    <a href="{% url 'tag' 'name' tag.name %}">
                                         <span class="label label-info">{{ tag.name }}</span>
                                     </a>
                                 {% endfor %}
@@ -223,7 +223,7 @@
                         האחרונות: </b></li>
                     {% for member in side_bar_list.all %}
                         <li class="list-group-item">
-                            <a href="{% url 'plain-member' member.id %}">{{ member.name }}</a>
+                            <a href="{% url 'member' member.id %}">{{ member.name }}</a>
                         </li>
                     {% endfor %}
                 </ul>

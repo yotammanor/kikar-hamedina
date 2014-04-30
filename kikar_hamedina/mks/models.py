@@ -138,7 +138,7 @@ class Party(models.Model):
     # Changed for kikar-integration!! original - reverse 'party-details'
     @models.permalink
     def get_absolute_url(self):
-        return ('plain-party', [str(self.id)])
+        return ('party', [str(self.id)])
 
     def get_affiliation(self):
         return _('Coalition') if self.is_coalition else _('Opposition')
