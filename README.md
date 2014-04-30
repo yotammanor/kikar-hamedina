@@ -1,3 +1,6 @@
+*** Dear Developer! Branch Master is not used for development, for updated readme file, switch to newmodel ***
+
+
 Installation
 ==============
 
