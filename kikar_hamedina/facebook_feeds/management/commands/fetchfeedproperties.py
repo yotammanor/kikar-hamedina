@@ -116,7 +116,8 @@ class Command(BaseCommand):
             if token:
                 print 'token is: %s' % token.token
             else:
-                raise Exception('No User Access Token was found in the database!')  #TODO:Write as a real exception
+                print Exception('No User Access Token was found in the database!')  #TODO:Write as a real exception
+                return {}
             self.graph.access_token = token.token
             data_dict = {'feed_id': feed.id, 'data': self.fetch_user_profile_object_by_feed_id(feed.vendor_id)}
             pprint(data_dict)

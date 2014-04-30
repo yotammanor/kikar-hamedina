@@ -7,7 +7,7 @@
 # mimms - Video download
 # poppler - required only for simple/management/parse_government_bill,
 # kikar-hamedina - leftout: Django==1.5.5 (We work on 1.6.1)
-# Also: ipython, south - appear in our base.txt requirements
+# Also: ipython, south - appear in our base.txt requirement, gunicorn - in vps.txt
 
 PIL
 django-pagination==1.0.7
@@ -17,7 +17,6 @@ BeautifulSoup
 vobject
 feedparser
 gdata
-gunicorn
 django-social-auth>=0.7.19
 oauth==1.0.1
 python-dateutil==1.5
