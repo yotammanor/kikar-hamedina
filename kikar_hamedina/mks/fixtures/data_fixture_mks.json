@@ -35830,9 +35830,7 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": [
-            "yotam"
-        ],
+        "user": null
         "average_monthly_committee_presence": 4.77, 
         "name": "\u05d6\u05d0\u05d1 \u05d1\u05d9\u05dc\u05e1\u05e7\u05d9", 
         "gender": "M", 
