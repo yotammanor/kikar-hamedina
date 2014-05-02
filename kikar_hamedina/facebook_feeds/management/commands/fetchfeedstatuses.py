@@ -199,7 +199,7 @@ class Command(BaseCommand):
                                            comment_count=status_object['comment_info']['comment_count'],
                                            share_count=status_object['share_count'],
                                            published=datetime.datetime.fromtimestamp(
-                                               int(status_object['created_time'])),
+                                               int(status_object['created_time']),tz=timezone.utc),
                                            updated=current_time_of_update)
             if len(str(status_object['attachment'])) > LENGTH_OF_EMPTY_ATTACHMENT_JSON:
                 #There's an attachment

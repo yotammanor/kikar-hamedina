@@ -195,7 +195,6 @@ class MemberView(StatusFilterUnifiedView):
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
         all_feeds_for_member = Member.objects.get(id=search_string).feeds.select_related()
-        print all_feeds_for_member
         query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_member]).order_by(
             '-published')
         return query_set
