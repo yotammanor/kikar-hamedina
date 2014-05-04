@@ -34,8 +34,8 @@ def turn_csv_to_dict(dict_reader_object):
 
 def main():
     all_facebook_feeds_data_for_insertion = turn_csv_to_dict(facebook_feed_generic_csv) + \
-        turn_csv_to_dict(facebook_feed_csv) + \
-        turn_csv_to_dict(tag_csv)
+        turn_csv_to_dict(facebook_feed_csv)  # + \
+        # turn_csv_to_dict(tag_csv)
 
     print 'creating facebook_feeds data fixture'
     pprint(all_facebook_feeds_data_for_insertion)

@@ -436,7 +436,7 @@
     "model": "mks.party", 
     "fields": {
         "number_of_seats": 4, 
-        "name": "\u05e8\u05e2\u201d\u05de-\u05ea\u05e2\u201d\u05dc",
+        "name": "\u05e8\u05e2\u201d\u05de-\u05ea\u05e2\u201d\u05dc", 
         "end_date": null, 
         "knesset": 19, 
         "is_coalition": false, 
@@ -3550,7 +3550,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.27, 
         "name": "\u05d9\u05d5\u05dc\u05d9 - \u05d9\u05d5\u05d0\u05dc \u05d0\u05d3\u05dc\u05e9\u05d8\u05d9\u05d9\u05df", 
         "gender": "M", 
@@ -3710,7 +3712,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 20.63, 
         "name": "\u05d7\u05d9\u05d9\u05dd \u05d0\u05d5\u05e8\u05d5\u05df", 
         "gender": "M", 
@@ -3790,7 +3794,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 11.08, 
         "name": "\u05d3\u05d5\u05d3 \u05d0\u05d6\u05d5\u05dc\u05d0\u05d9", 
         "gender": "M", 
@@ -3830,7 +3836,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.69, 
         "name": "\u05d3\u05dc\u05d9\u05d4 \u05d0\u05d9\u05e6\u05d9\u05e7", 
         "gender": "F", 
@@ -3870,7 +3878,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.65, 
         "name": "\u05de\u05d9\u05db\u05d0\u05dc \u05d0\u05d9\u05ea\u05df", 
         "gender": "M", 
@@ -4030,7 +4040,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.68, 
         "name": "\u05d8\u05dc\u05d1 \u05d0\u05dc\u05e1\u05d0\u05e0\u05e2", 
         "gender": "M", 
@@ -4070,7 +4082,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.0, 
         "name": "\u05d6\u05d0\u05d1 \u05d1\u05e0\u05d9\u05de\u05d9\u05df  \u05d1\u05d2\u05d9\u05df", 
         "gender": "M", 
@@ -4150,7 +4164,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.32, 
         "name": "\u05d6\u05d0\u05d1 \u05d1\u05d5\u05d9\u05dd", 
         "gender": "M", 
@@ -4310,7 +4326,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.04, 
         "name": "\u05d1\u05e0\u05d9\u05de\u05d9\u05df (\u05e4\u05d5\u05d0\u05d3) \u05d1\u05df-\u05d0\u05dc\u05d9\u05e2\u05d6\u05e8", 
         "gender": "M", 
@@ -4630,7 +4648,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.12, 
         "name": "\u05d0\u05d4\u05d5\u05d3 \u05d1\u05e8\u05e7", 
         "gender": "M", 
@@ -4910,7 +4930,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 22.73, 
         "name": "\u05de\u05e9\u05d4 \u05d2\u05e4\u05e0\u05d9", 
         "gender": "M", 
@@ -5310,7 +5332,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.29, 
         "name": "\u05e6\u05d7\u05d9 \u05d4\u05e0\u05d2\u05d1\u05d9", 
         "gender": "M", 
@@ -5510,7 +5534,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 12.36, 
         "name": "\u05d9\u05e6\u05d7\u05e7 \u05d5\u05e7\u05e0\u05d9\u05df", 
         "gender": "M", 
@@ -6030,7 +6056,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.4, 
         "name": "\u05d0\u05dc\u05d9\u05d4\u05d5 \u05d9\u05e9\u05d9", 
         "gender": "M", 
@@ -6070,7 +6098,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 5.47, 
         "name": "\u05d0\u05d9\u05ea\u05df \u05db\u05d1\u05dc", 
         "gender": "M", 
@@ -6110,7 +6140,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 2.98, 
         "name": "\u05d9\u05e6\u05d7\u05e7 \u05db\u05d4\u05df", 
         "gender": "M", 
@@ -6270,7 +6302,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.61, 
         "name": "\u05d9\u05e9\u05e8\u05d0\u05dc \u05db\u05e5", 
         "gender": "M", 
@@ -6310,7 +6344,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.15, 
         "name": "\u05dc\u05d9\u05de\u05d5\u05e8 \u05dc\u05d1\u05e0\u05ea", 
         "gender": "F", 
@@ -6590,7 +6626,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.79, 
         "name": "\u05e2\u05d5\u05d6\u05d9 \u05dc\u05e0\u05d3\u05d0\u05d5", 
         "gender": "M", 
@@ -6630,7 +6668,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.03, 
         "name": "\u05e1\u05d5\u05e4\u05d4 \u05dc\u05e0\u05d3\u05d1\u05e8", 
         "gender": "F", 
@@ -7030,7 +7070,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.02, 
         "name": "\u05d3\u05df \u05de\u05e8\u05d9\u05d3\u05d5\u05e8", 
         "gender": "M", 
@@ -7110,7 +7152,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.41, 
         "name": "\u05d1\u05e0\u05d9\u05de\u05d9\u05df \u05e0\u05ea\u05e0\u05d9\u05d4\u05d5", 
         "gender": "M", 
@@ -7150,7 +7194,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 9.35, 
         "name": "\u05de\u05e8\u05d9\u05e0\u05d4 \u05e1\u05d5\u05dc\u05d5\u05d3\u05e7\u05d9\u05df", 
         "gender": "F", 
@@ -7350,7 +7396,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.83, 
         "name": "\u05d2\u05d3\u05e2\u05d5\u05df \u05e2\u05d6\u05e8\u05d0", 
         "gender": "M", 
@@ -7510,7 +7558,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 15.94, 
         "name": "\u05d0\u05d5\u05e4\u05d9\u05e8 \u05e4\u05d9\u05e0\u05e1-\u05e4\u05d6", 
         "gender": "M", 
@@ -7630,7 +7680,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.56, 
         "name": "\u05de\u05d0\u05d9\u05e8 \u05e4\u05e8\u05d5\u05e9", 
         "gender": "M", 
@@ -7710,7 +7762,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.46, 
         "name": "\u05e2\u05de\u05d9\u05e8 \u05e4\u05e8\u05e5", 
         "gender": "M", 
@@ -8070,7 +8124,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 3.61, 
         "name": "\u05e8\u05d0\u05d5\u05d1\u05df \u05e8\u05d9\u05d1\u05dc\u05d9\u05df", 
         "gender": "M", 
@@ -8110,7 +8166,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.41, 
         "name": "\u05d7\u05d9\u05d9\u05dd \u05e8\u05de\u05d5\u05df", 
         "gender": "M", 
@@ -8270,7 +8328,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.13, 
         "name": "\u05de\u05d0\u05d9\u05e8 \u05e9\u05d8\u05e8\u05d9\u05ea", 
         "gender": "M", 
@@ -8390,7 +8450,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.67, 
         "name": "\u05e1\u05d9\u05dc\u05d1\u05df \u05e9\u05dc\u05d5\u05dd", 
         "gender": "M", 
@@ -8430,7 +8492,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.42, 
         "name": "\u05e9\u05dc\u05d5\u05dd \u05e9\u05de\u05d7\u05d5\u05df", 
         "gender": "M", 
@@ -11230,7 +11294,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 15.84, 
         "name": "\u05d6\u05d1\u05d5\u05dc\u05d5\u05df \u05d0\u05d5\u05e8\u05dc\u05d1", 
         "gender": "M", 
@@ -11310,7 +11376,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.11, 
         "name": "\u05de\u05d5\u05d7\u05de\u05d3 \u05d1\u05e8\u05db\u05d4", 
         "gender": "M", 
@@ -11430,7 +11498,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 8.37, 
         "name": "\u05d0\u05d9\u05dc\u05df \u05d2\u05d9\u05dc\u05d0\u05d5\u05df", 
         "gender": "M", 
@@ -11470,7 +11540,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 6.07, 
         "name": "\u05d6\u05d4\u05d1\u05d4 \u05d2\u05dc\u05d0\u05d5\u05df", 
         "gender": "F", 
@@ -11590,7 +11662,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.11, 
         "name": "\u05de\u05ea\u05df \u05d5\u05d9\u05dc\u05e0\u05d0\u05d9", 
         "gender": "M", 
@@ -11670,7 +11744,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 8.08, 
         "name": "\u05e0\u05e1\u05d9\u05dd \u05d6\u05d0\u05d1", 
         "gender": "M", 
@@ -11750,7 +11826,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 6.87, 
         "name": "\u05d0\u05d7\u05de\u05d3 \u05d8\u05d9\u05d1\u05d9", 
         "gender": "M", 
@@ -11830,7 +11908,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 16.42, 
         "name": "\u05d0\u05de\u05e0\u05d5\u05df \u05db\u05d4\u05df", 
         "gender": "M", 
@@ -11910,7 +11990,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 13.13, 
         "name": "\u05d7\u05d9\u05d9\u05dd \u05db\u05e5", 
         "gender": "M", 
@@ -11950,7 +12032,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.67, 
         "name": "\u05e6\u05d9\u05e4\u05d9 \u05dc\u05d1\u05e0\u05d9", 
         "gender": "F", 
@@ -11990,7 +12074,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.14, 
         "name": "\u05d0\u05d1\u05d9\u05d2\u05d3\u05d5\u05e8 \u05dc\u05d9\u05d1\u05e8\u05de\u05df", 
         "gender": "M", 
@@ -12070,7 +12156,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 2.72, 
         "name": "\u05d9\u05e2\u05e7\u05d1 \u05dc\u05d9\u05e6\u05de\u05df", 
         "gender": "M", 
@@ -12310,7 +12398,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.7, 
         "name": "\u05de\u05e9\u05d5\u05dc\u05dd \u05e0\u05d4\u05e8\u05d9", 
         "gender": "M", 
@@ -12630,7 +12720,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.56, 
         "name": "\u05d0\u05d9\u05d5\u05d1 \u05e7\u05e8\u05d0", 
         "gender": "M", 
@@ -30990,7 +31082,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.81, 
         "name": "\u05d9\u05d5\u05d1\u05dc \u05e9\u05d8\u05d9\u05d9\u05e0\u05d9\u05e5", 
         "gender": "M", 
@@ -31070,7 +31164,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.02, 
         "name": "\u05d9\u05d5\u05dc\u05d9 \u05ea\u05de\u05d9\u05e8", 
         "gender": "F", 
@@ -31710,7 +31806,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.45, 
         "name": "\u05d0\u05d5\u05e8\u05d9 \u05d9\u05d4\u05d5\u05d3\u05d4 \u05d0\u05e8\u05d9\u05d0\u05dc", 
         "gender": "M", 
@@ -31870,7 +31968,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.46, 
         "name": "\u05d0\u05d5\u05e8\u05d9\u05ea \u05e0\u05d5\u05e7\u05d3", 
         "gender": "F", 
@@ -31990,7 +32090,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.65, 
         "name": "\u05e9\u05d0\u05d5\u05dc \u05de\u05d5\u05e4\u05d6", 
         "gender": "M", 
@@ -32070,7 +32172,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 2.31, 
         "name": "\u05d2\u05d9\u05dc\u05d4 \u05d2\u05de\u05dc\u05d9\u05d0\u05dc", 
         "gender": "F", 
@@ -32110,7 +32214,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.12, 
         "name": "\u05e8\u05d5\u05d7\u05de\u05d4 \u05d0\u05d1\u05e8\u05d4\u05dd \u05d1\u05dc\u05d9\u05dc\u05d0", 
         "gender": "F", 
@@ -32150,7 +32256,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.7, 
         "name": "\u05d2\u05d3\u05e2\u05d5\u05df \u05e1\u05e2\u05e8", 
         "gender": "M", 
@@ -32230,7 +32338,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.54, 
         "name": "\u05de\u05d2\u05dc\u05d9 \u05d5\u05d4\u05d1\u05d4", 
         "gender": "M", 
@@ -32270,7 +32380,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 11.85, 
         "name": "\u05d9\u05e2\u05e7\u05d1 \u05d0\u05d3\u05e8\u05d9", 
         "gender": "M", 
@@ -32350,7 +32462,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 2.99, 
         "name": "\u05d0\u05dc\u05d9 \u05d0\u05e4\u05dc\u05dc\u05d5", 
         "gender": "M", 
@@ -32390,7 +32504,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.96, 
         "name": "\u05de\u05e9\u05d4 \u05db\u05d7\u05dc\u05d5\u05df", 
         "gender": "M", 
@@ -32510,7 +32626,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.19, 
         "name": "\u05d2\u05dc\u05e2\u05d3 \u05d0\u05e8\u05d3\u05df", 
         "gender": "M", 
@@ -32550,7 +32668,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.06, 
         "name": "\u05e8\u05d5\u05e0\u05d9 \u05d1\u05e8-\u05d0\u05d5\u05df", 
         "gender": "M", 
@@ -32670,7 +32790,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.21, 
         "name": "\u05dc\u05d0\u05d4 \u05e0\u05e1", 
         "gender": "F", 
@@ -32750,7 +32872,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.11, 
         "name": "\u05d9\u05e6\u05d7\u05e7 \u05d4\u05e8\u05e6\u05d5\u05d2", 
         "gender": "M", 
@@ -33190,7 +33314,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 2.15, 
         "name": "\u05d9\u05e2\u05e7\u05d1 \u05de\u05e8\u05d2\u05d9", 
         "gender": "M", 
@@ -33230,7 +33356,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 5.77, 
         "name": "\u05d0\u05e8\u05d9\u05d4 \u05d0\u05dc\u05d3\u05d3", 
         "gender": "M", 
@@ -33310,7 +33438,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 8.77, 
         "name": "\u05d9\u05e9\u05e8\u05d0\u05dc \u05d0\u05d9\u05d9\u05db\u05dc\u05e8", 
         "gender": "M", 
@@ -33390,7 +33520,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 3.9, 
         "name": "\u05d2`\u05de\u05d0\u05dc \u05d6\u05d7\u05d0\u05dc\u05e7\u05d4", 
         "gender": "M", 
@@ -33470,7 +33602,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 8.9, 
         "name": "\u05e8\u05d0\u05dc\u05d1 \u05de\u05d2`\u05d0\u05d3\u05dc\u05d4", 
         "gender": "M", 
@@ -33870,7 +34004,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 9.15, 
         "name": "\u05d6\u05d0\u05d1 \u05d0\u05dc\u05e7\u05d9\u05df", 
         "gender": "M", 
@@ -33990,7 +34126,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.21, 
         "name": "\u05d0\u05d1\u05d9 (\u05de\u05e9\u05d4) \u05d3\u05d9\u05db\u05d8\u05e8", 
         "gender": "M", 
@@ -34030,7 +34168,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 6.47, 
         "name": "\u05d9\u05d5\u05d0\u05dc \u05d7\u05e1\u05d5\u05df", 
         "gender": "M", 
@@ -34110,7 +34250,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 8.43, 
         "name": "\u05e8\u05d5\u05e0\u05d9\u05ea \u05ea\u05d9\u05e8\u05d5\u05e9", 
         "gender": "F", 
@@ -34190,7 +34332,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 3.02, 
         "name": "\u05e2\u05ea\u05e0\u05d9\u05d0\u05dc \u05e9\u05e0\u05dc\u05e8", 
         "gender": "M", 
@@ -34350,7 +34494,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 17.95, 
         "name": "\u05d3\u05d1 \u05d7\u05e0\u05d9\u05df", 
         "gender": "M", 
@@ -34390,7 +34536,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.69, 
         "name": "\u05d9\u05e9\u05e8\u05d0\u05dc \u05d7\u05e1\u05d5\u05df", 
         "gender": "M", 
@@ -34430,7 +34578,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 10.54, 
         "name": "\u05e9\u05dc\u05d9 \u05d9\u05d7\u05d9\u05de\u05d5\u05d1\u05d9\u05e5", 
         "gender": "F", 
@@ -34510,7 +34660,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 20.22, 
         "name": "\u05d0\u05d1\u05e8\u05d4\u05dd \u05de\u05d9\u05db\u05d0\u05dc\u05d9", 
         "gender": "M", 
@@ -34550,7 +34702,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 16.86, 
         "name": "\u05d0\u05dc\u05db\u05e1 \u05de\u05d9\u05dc\u05e8", 
         "gender": "M", 
@@ -34590,7 +34744,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.04, 
         "name": "\u05e1\u05d8\u05e1 \u05de\u05d9\u05e1\u05d6`\u05e0\u05d9\u05e7\u05d5\u05d1", 
         "gender": "M", 
@@ -34710,7 +34866,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 5.99, 
         "name": "\u05d7\u05e0\u05d0 \u05e1\u05d5\u05d9\u05d9\u05d3", 
         "gender": "M", 
@@ -34750,7 +34908,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.12, 
         "name": "\u05d9\u05e6\u05d7\u05e7 \u05d0\u05d4\u05e8\u05d5\u05e0\u05d5\u05d1\u05d9\u05e5", 
         "gender": "M", 
@@ -34790,7 +34950,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.94, 
         "name": "\u05d0\u05e8\u05d9\u05d0\u05dc \u05d0\u05d8\u05d9\u05d0\u05e1", 
         "gender": "M", 
@@ -34870,7 +35032,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.85, 
         "name": "\u05e8\u05d5\u05d1\u05e8\u05d8 \u05d0\u05d9\u05dc\u05d8\u05d5\u05d1", 
         "gender": "M", 
@@ -34950,7 +35114,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.02, 
         "name": "\u05d7\u05d9\u05d9\u05dd \u05d0\u05de\u05e1\u05dc\u05dd", 
         "gender": "M", 
@@ -35030,7 +35196,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.78, 
         "name": "\u05d0\u05d1\u05d9\u05e9\u05d9 \u05d1\u05e8\u05d5\u05d5\u05e8\u05de\u05df", 
         "gender": "M", 
@@ -35150,7 +35318,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 1.37, 
         "name": "\u05d0\u05d1\u05e8\u05d4\u05d9\u05dd \u05e6\u05e8\u05e6\u05d5\u05e8", 
         "gender": "M", 
@@ -35230,7 +35400,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 8.74, 
         "name": "\u05dc\u05d9\u05d4 \u05e9\u05de\u05d8\u05d5\u05d1", 
         "gender": "F", 
@@ -35310,7 +35482,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 11.83, 
         "name": "\u05e9\u05d9 \u05d7\u05e8\u05de\u05e9", 
         "gender": "M", 
@@ -35350,7 +35524,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 17.14, 
         "name": "\u05d3\u05d5\u05d3 \u05e8\u05d5\u05ea\u05dd", 
         "gender": "M", 
@@ -35430,7 +35606,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.96, 
         "name": "\u05e1\u05e2\u05d9\u05d3 \u05e0\u05e4\u05d0\u05e2", 
         "gender": "M", 
@@ -35510,7 +35688,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 2.83, 
         "name": "\u05d9\u05d5\u05d7\u05e0\u05df \u05e4\u05dc\u05e1\u05e0\u05e8", 
         "gender": "M", 
@@ -35550,7 +35730,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 12.16, 
         "name": "\u05e9\u05dc\u05de\u05d4 (\u05e0\u05d2\u05d5\u05e1\u05d4) \u05de\u05d5\u05dc\u05d4", 
         "gender": "M", 
@@ -35710,7 +35892,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 19.37, 
         "name": "\u05d0\u05d5\u05e8\u05d9 \u05de\u05e7\u05dc\u05d1", 
         "gender": "M", 
@@ -35816,7 +36000,7 @@
         "family_status": "", 
         "place_of_residence_lat": "32.1833333", 
         "average_weekly_presence_hours": 11.7, 
-        "blog": null,
+        "blog": null, 
         "date_of_birth": "1949-03-13", 
         "backlinks_enabled": true, 
         "img_url": "http://www.knesset.gov.il/mk/images/members/Bielski_Zeev-s.jpg", 
@@ -35830,7 +36014,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null,
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.77, 
         "name": "\u05d6\u05d0\u05d1 \u05d1\u05d9\u05dc\u05e1\u05e7\u05d9", 
         "gender": "M", 
@@ -35870,7 +36056,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.7, 
         "name": "\u05e0\u05d7\u05de\u05df \u05e9\u05d9", 
         "gender": "M", 
@@ -35910,7 +36098,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 6.31, 
         "name": "\u05e8\u05d5\u05d1\u05e8\u05d8 \u05d8\u05d9\u05d1\u05d9\u05d9\u05d1", 
         "gender": "M", 
@@ -35936,7 +36126,7 @@
         "family_status": "", 
         "place_of_residence_lat": "31.7994444", 
         "average_weekly_presence_hours": 15.7, 
-        "blog": null,
+        "blog": null, 
         "date_of_birth": null, 
         "backlinks_enabled": true, 
         "img_url": "http://www.knesset.gov.il/mk/images/members/Adatto_Rachel-s.jpg", 
@@ -35950,7 +36140,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 13.1, 
         "name": "\u05e8\u05d7\u05dc \u05d0\u05d3\u05d8\u05d5", 
         "gender": "F", 
@@ -35990,7 +36182,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.12, 
         "name": "\u05d0\u05e8\u05d9\u05d4 \u05d1\u05d9\u05d1\u05d9", 
         "gender": "M", 
@@ -36016,7 +36210,7 @@
         "family_status": "", 
         "place_of_residence_lat": "32.2833333", 
         "average_weekly_presence_hours": 14.0, 
-        "blog": null,
+        "blog": null, 
         "date_of_birth": "1967-02-21", 
         "backlinks_enabled": true, 
         "img_url": "http://www.knesset.gov.il/mk/images/members/Zuaretz_Orit-s.jpg", 
@@ -36030,7 +36224,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.1, 
         "name": "\u05d0\u05d5\u05e8\u05d9\u05ea \u05d6\u05d5\u05d0\u05e8\u05e5", 
         "gender": "F", 
@@ -36070,7 +36266,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.4, 
         "name": "\u05de\u05e9\u05d4 \u05d9\u05e2\u05dc\u05d5\u05df", 
         "gender": "M", 
@@ -36110,7 +36308,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.31, 
         "name": "\u05d9\u05d5\u05e1\u05d9 \u05e4\u05dc\u05d3", 
         "gender": "M", 
@@ -36150,7 +36350,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 5.03, 
         "name": "\u05e6\u05d9\u05e4\u05d9 \u05d7\u05d5\u05d8\u05d5\u05d1\u05dc\u05d9", 
         "gender": "F", 
@@ -36190,7 +36392,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 11.31, 
         "name": "\u05d9\u05e8\u05d9\u05d1 \u05dc\u05d5\u05d9\u05df", 
         "gender": "M", 
@@ -36230,7 +36434,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 23.05, 
         "name": "\u05e6\u05d9\u05d5\u05df \u05e4\u05d9\u05e0\u05d9\u05d0\u05df", 
         "gender": "M", 
@@ -36270,7 +36476,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.52, 
         "name": "\u05d3\u05e0\u05d9 \u05d3\u05e0\u05d5\u05df", 
         "gender": "M", 
@@ -36310,7 +36518,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 17.55, 
         "name": "\u05db\u05e8\u05de\u05dc \u05e9\u05d0\u05de\u05d4", 
         "gender": "M", 
@@ -36350,7 +36560,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 8.91, 
         "name": "\u05d0\u05d5\u05e4\u05d9\u05e8 \u05d0\u05e7\u05d5\u05e0\u05d9\u05e1", 
         "gender": "M", 
@@ -36390,7 +36602,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.81, 
         "name": "\u05de\u05d9\u05e8\u05d9 \u05e8\u05d2\u05d1", 
         "gender": "F", 
@@ -36430,7 +36644,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 8.3, 
         "name": "\u05d0\u05d5\u05e8\u05dc\u05d9 \u05dc\u05d5\u05d9-\u05d0\u05d1\u05e7\u05e1\u05d9\u05e1", 
         "gender": "F", 
@@ -36470,7 +36686,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.17, 
         "name": "\u05d3\u05e0\u05d9\u05d0\u05dc \u05d0\u05d9\u05dc\u05d5\u05df", 
         "gender": "M", 
@@ -36510,7 +36728,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.02, 
         "name": "\u05d0\u05e0\u05e1\u05d8\u05e1\u05d9\u05d4 \u05de\u05d9\u05db\u05d0\u05dc\u05d9", 
         "gender": "F", 
@@ -36550,7 +36770,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 12.41, 
         "name": "\u05e4\u05d0\u05d9\u05e0\u05d4 (\u05e4\u05e0\u05d9\u05d4) \u05e7\u05d9\u05e8\u05e9\u05e0\u05d1\u05d0\u05d5\u05dd", 
         "gender": "F", 
@@ -36590,7 +36812,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 3.27, 
         "name": "\u05d3\u05e0\u05d9\u05d0\u05dc \u05d1\u05df-\u05e1\u05d9\u05de\u05d5\u05df", 
         "gender": "M", 
@@ -36630,7 +36854,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 12.59, 
         "name": "\u05d7\u05de\u05d3 \u05e2\u05de\u05d0\u05e8", 
         "gender": "M", 
@@ -36670,7 +36896,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.35, 
         "name": "\u05de\u05e9\u05d4 \u05de\u05d5\u05e5 \u05de\u05d8\u05dc\u05d5\u05df", 
         "gender": "M", 
@@ -36710,7 +36938,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 3.91, 
         "name": "\u05de\u05e0\u05d7\u05dd \u05d0\u05dc\u05d9\u05e2\u05d6\u05e8 \u05de\u05d5\u05d6\u05e1", 
         "gender": "M", 
@@ -36750,7 +36980,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 5.12, 
         "name": "\u05d9\u05e2\u05e7\u05d1 (\u05db\u05e6\u05dc`\u05d4) \u05db\u201d\u05e5", 
         "gender": "M", 
@@ -36790,7 +37022,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 4.95, 
         "name": "\u05de\u05d9\u05db\u05d0\u05dc \u05d1\u05df-\u05d0\u05e8\u05d9", 
         "gender": "M", 
@@ -36830,7 +37064,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 5.9, 
         "name": "\u05e2\u05e4\u05d5 \u05d0\u05d2\u05d1\u05d0\u05e8\u05d9\u05d4", 
         "gender": "M", 
@@ -36870,7 +37106,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.68, 
         "name": "\u05e0\u05d9\u05e6\u05df \u05d4\u05d5\u05e8\u05d5\u05d1\u05d9\u05e5", 
         "gender": "M", 
@@ -36910,7 +37148,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 5.65, 
         "name": "\u05de\u05e1\u05e2\u05d5\u05d3 \u05d2\u05e0\u05d0\u05d9\u05dd", 
         "gender": "M", 
@@ -36950,7 +37190,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 8.08, 
         "name": "\u05d0\u05d5\u05e8\u05d9 \u05d0\u05d5\u05e8\u05d1\u05da", 
         "gender": "M", 
@@ -36990,7 +37232,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": true, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 3.46, 
         "name": "\u05d7\u05e0\u05d9\u05df \u05d6\u05d5\u05e2\u05d1\u05d9", 
         "gender": "F", 
@@ -37030,7 +37274,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 0.67, 
         "name": "\u05d3\u05e0\u05d9\u05d0\u05dc \u05d4\u05e8\u05e9\u05e7\u05d5\u05d1\u05d9\u05e5", 
         "gender": "M", 
@@ -37070,7 +37316,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 6.83, 
         "name": "\u05d9\u05d5\u05dc\u05d9\u05d4 \u05e9\u05de\u05d0\u05dc\u05d5\u05d1 \u05d1\u05e8\u05e7\u05d5\u05d1\u05d9\u05e5`", 
         "gender": "F", 
@@ -37110,7 +37358,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 7.09, 
         "name": "\u05e2\u05d9\u05e0\u05ea \u05d5\u05d9\u05dc\u05e3", 
         "gender": "F", 
@@ -37150,7 +37400,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 2.27, 
         "name": "\u05e0\u05d9\u05e0\u05d5 \u05d0\u05d1\u05e1\u05d3\u05d6\u05d4", 
         "gender": "F", 
@@ -37190,7 +37442,9 @@
         "date_of_death": null, 
         "phone": "", 
         "is_current": false, 
-        "user": null
+        "user": [
+            "yotam"
+        ], 
         "average_monthly_committee_presence": 2.83, 
         "name": "\u05d3\u05d5\u05e8\u05d5\u05df \u05d0\u05d1\u05d9\u05d8\u05dc", 
         "gender": "M", 
