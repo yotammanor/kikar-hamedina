@@ -3,7 +3,7 @@ $(document).ready(function() {
 		$('#search-results-dropdown').removeClass("open")
 		inputText = $("#navbar-search-box").val()
 
-		url = "http://"+document.domain+":8000/search_bar/?text="+inputText
+		url = "/search_bar/?text="+inputText
 		if (inputText.length > 1) {
 			$.ajax({
 	            url: url,

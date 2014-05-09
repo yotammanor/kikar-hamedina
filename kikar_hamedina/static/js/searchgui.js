@@ -20,7 +20,7 @@ $(document).ready(function() {
 			id = $(this).data('id')
 			searchTerms[type].push(id)
 		})
-		url = "http://"+document.domain+":8000/search/?"
+		url = "/search/?"
 		member_ids = searchTerms['member'].join(',')
 		if (member_ids.length > 0) {
 			url += "members="+member_ids+"&"
@@ -73,7 +73,7 @@ $(document).ready(function() {
 $('#searchgui-text-input').keydown(function() {
 	inputValue = $('#searchgui-text-input').val()
 
-	url = "http://"+document.domain+":8000/search_bar/?text="+inputValue
+	url = "/search_bar/?text="+inputValue
 	if (inputValue.length > 1) {
 		$.ajax({
 			url: url,
