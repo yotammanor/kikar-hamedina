@@ -4,7 +4,9 @@ from collections import defaultdict
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
+from django.core.mail import send_mail
 import facebook
+import logging
 from ...models import \
     Facebook_Feed as Facebook_Feed_Model, \
     Facebook_Status as Facebook_Status_Model, \
@@ -59,8 +61,20 @@ class Command(BaseCommand):
                 WHERE
                     source_id IN ({0}) AND actor_id IN ({0})
                 LIMIT {1}""".format(feed_id, fql_limit)
-
-        return self.graph.fql(query=select_self_published_status_query)
+        tryNumber = 1
+        while tryNumber < 4:
+            try:
+                returnStatuses = self.graph.fql(query=select_self_published_status_query)
+                return returnStatuses
+            except:
+                warning_msg = "Failed first attempt for feed #({0}) from FB API.".format(feed_id)
+                logger = logging.getLogger('django')
+                logger.warning(warning_msg)
+                tryNumber += 1
+        error_msg = "Failed three attempts for feed #({0}) from FB API.".format(feed_id)
+        logger = logging.getLogger('django.request')
+        logger.warning(error_msg)
+        return []
 
     @staticmethod
     def insert_status_attachment(status, status_object):
@@ -187,9 +201,8 @@ class Command(BaseCommand):
                 # force update of attachment, regardless of time
                 status.save()
                 self.create_or_update_attachment(status, status_object)
-            else:
-                # If post_id exists but of equal or later time (unlikely, but may happen), disregard
-                self.stdout.write('status id {0} is already up-to-date.'.format(status_object['post_id']))
+            # If post_id exists but of equal or later time (unlikely, but may happen), disregard
+            # Should be an else here for this case but as it is, just disregard
         except Facebook_Status_Model.DoesNotExist:
             # If post_id does not exist at all, create it from data.
             status = Facebook_Status_Model(feed_id=feed_id,
@@ -239,7 +252,6 @@ class Command(BaseCommand):
         or no feed ID and therefore retrieves all Statuses for all the feeds.
         """
         feeds_statuses = []
-
         if options['initial']:
             fql_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN
         else:
@@ -255,7 +267,9 @@ class Command(BaseCommand):
                 for status in feed_statuses['statuses']:
                     self.insert_status_object_to_db(status, feed_statuses['feed_id'], options)
                 self.stdout.write('Successfully written feed: {0}.'.format(feed.pk))
-            self.stdout.write('Successfully fetched all')
+                info_msg = "Successfully updated feed: {0}.".format(feed.pk)
+                logger = logging.getLogger('django')
+                logger.info(info_msg)
 
         # Case arg exists - fetch feed by id supplied
         elif len(args) == 1:
@@ -263,17 +277,24 @@ class Command(BaseCommand):
 
             try:
                 feed = Facebook_Feed_Model.objects.get(pk=feed_id)
-                self.stdout.write('Successfully fetched feed id {0}'.format(feed_id))
             except Facebook_Feed_Model.DoesNotExist:
+                warning_msg = "Feed #({0}) does not exist.".format(feed_id)
+                logger = logging.getLogger('django')
+                logger.warning(warning_msg)
                 raise CommandError('Feed "%s" does not exist' % feed_id)
 
             feed_statuses = self.get_feed_statuses(feed, fql_limit)
             for status in feed_statuses['statuses']:
                 self.insert_status_object_to_db(status, feed_statuses['feed_id'], options)
             self.stdout.write('Successfully written feed: {0}.'.format(feed.id))
+            info_msg = "Successfully updated feed: {0}.".format(feed_id)
+            logger = logging.getLogger('django')
+            logger.info(info_msg)
 
         # Case invalid args
         else:
             raise CommandError('Please enter a valid feed id')
-
+        info_msg = "Successfully saved all statuses to db"
+        logger = logging.getLogger('django')
+        logger.info(info_msg)
         self.stdout.write('Successfully saved all statuses to db.')
