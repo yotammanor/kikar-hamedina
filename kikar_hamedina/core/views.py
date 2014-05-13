@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.db.models import Count, Q, F
@@ -231,6 +232,17 @@ class TagView(StatusFilterUnifiedView):
             id__in=[feed.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
 
+class FacebookStatusDetailView(DetailView):
+    template_name = 'core/facebook_status_detail.html'
+
+    model = Facebook_Status
+    slug_field = 'status_id'
+
+    def get_context_data(self, **kwargs):
+        context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
+        context['now'] = timezone.now()
+        context['member'] = Member.objects.get(id=context['object'].feed.object_id)
+        return context
 
 class AllMembers(ListView):
     template_name = 'core/all_members.html'

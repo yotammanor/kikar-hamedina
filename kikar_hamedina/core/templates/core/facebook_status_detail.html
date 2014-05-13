@@ -1,0 +1,18 @@
+{% extends "layouts/generic-template.html" %}
+
+{% block title %} סטטוס של {{member.name}} {% endblock title %}
+
+
+
+
+
+{% block h1 %}
+סטטוס של {{member.name}}
+{% endblock %}
+
+{% block context-header %}
+{% endblock %}
+
+{% block content %}
+<p>{{ object.content }}</p>
+{% endblock %}
