@@ -69,7 +69,8 @@ INSTALLED_APPS = (
     'dj_facebook_realtime',
     'django.contrib.humanize',
     'endless_pagination',
-    'dumpdata_chunks'
+    'dumpdata_chunks',
+    'tastypie',
 )
 
 MIDDLEWARE_CLASSES = (

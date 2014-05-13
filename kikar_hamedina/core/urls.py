@@ -4,7 +4,17 @@ from . import views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag
 from mks.models import Party, Member
 from kikar_hamedina.settings.base import CURRENT_KNESSET_NUMBER
+from tastypie.api import Api
+from api import *
 
+
+v1_api = Api(api_name='v1')
+v1_api.register(MemberResource())
+v1_api.register(PartyResource())
+v1_api.register(KnessetResource())
+v1_api.register(Facebook_StatusResource())
+v1_api.register(Facebook_FeedResource())
+v1_api.register(TagResource())
 
 urlpatterns = patterns('',
                        url(r'^$', views.HomepageView.as_view(), name='index'),
@@ -46,7 +56,7 @@ urlpatterns = patterns('',
                        url(r'^fblogin/get-data/$', views.get_data_from_facebook, name='get-data-from-facebook'),
                        url(r'^status_update/(?P<status_id>\w+)/$', views.status_update),
                        url(r'^search_bar/$', views.search_bar),
-
+                       url(r'^api/',include(v1_api.urls)),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
