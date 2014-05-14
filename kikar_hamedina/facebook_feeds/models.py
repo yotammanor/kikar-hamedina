@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-
+from django_pandas.managers import DataFrameManager
 # Create your models here.
 
 
@@ -30,6 +30,8 @@ class Facebook_Feed(Facebook_Feed_Generic):
     # Public Page Only
     about = models.TextField(null=True, default='')
     website = models.URLField(null=True, max_length=2000)
+
+    objects = DataFrameManager()
 
     class Meta:
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
@@ -71,6 +73,8 @@ class Facebook_Status(models.Model):
     share_count = models.PositiveIntegerField(null=True)
     published = models.DateTimeField()
     updated = models.DateTimeField()
+
+    objects = DataFrameManager()
 
     def __unicode__(self):
         return self.status_id
