@@ -36,7 +36,7 @@
 
                     chart.xAxis     //Chart x-axis settings
                             .axisLabel('Time (Month)')
-                            .tickFormat(function(data) {
+                            .tickFormat(function (data) {
                                 return d3.time.format('%x')(new Date(data))
                             });
 
@@ -45,9 +45,9 @@
                             .tickFormat(d3.format('.02f'));
 
                     /* Done setting the chart up? Time to render it!*/
-                    var myData = renderPandas();   //You need data...
+                    var myData = renderPopularityData();   //You need data...
 
-                    d3.select('#chart svg')    //Select the <svg> element you want to render the chart in.
+                    d3.select('#chart-popularity svg')    //Select the <svg> element you want to render the chart in.
                             .datum(myData)         //Populate the <svg> element with chart data...
                             .call(chart);          //Finally, render the chart!
 
@@ -59,61 +59,68 @@
                 });
 
                 /*********/
-                function renderPandas() {
+                function renderPopularityData() {
                     var popularity = "{{ stats.mean_monthly_popularity_by_status | escapejs }}";
-
                     var popularity_json = JSON.parse(popularity);
-                    alert(popularity_json[0]);
+                    {#                    alert(popularity_json[0]);#}
 
-                    return    [ {
-                        values: popularity_json,
-                        key: 'Like Count',
-                        color: '#ff7f0e'
-                    }
-                ]
-                }
-
-                /**************************************
-                 * Simple test data generator
-                 */
-                function sinAndCos() {
-                    var sin = [], sin2 = [],
-                            cos = [];
-
-                    //Data is represented as an array of {x,y} pairs.
-                    for (var i = 0; i < 100; i++) {
-                        sin.push({x: i, y: Math.sin(i / 10)});
-                        sin2.push({x: i, y: Math.sin(i / 10) * 0.25 + 0.5});
-                        cos.push({x: i, y: .5 * Math.cos(i / 10)});
-                    }
-
-                    //Line chart data should be sent as an array of series objects.
-                    return [
+                    var mean_popularity = "{{ stats.mean_like_count_all | escapejs }}";
+                    var mean_popularity_json = JSON.parse(mean_popularity);
+                    return    [
                         {
-                            values: sin,      //values - represents the array of {x,y} data points
-                            key: 'Sine Wave', //key  - the name of the series.
-                            color: '#ff7f0e'  //color - optional: choose your own line color.
+                            values: popularity_json,
+                            key: 'Like Count',
+                            color: '#ff7f0e'
                         },
                         {
-                            values: cos,
-                            key: 'Cosine Wave',
-                            color: '#2ca02c'
-                        },
-                        {
-                            values: sin2,
-                            key: 'Another sine wave',
-                            color: '#7777ff',
-                            area: true      //area - set to true if you want this line to turn into a filled area chart.
+                            values: mean_popularity_json,
+                            key: 'Average Likes',
+                            color: '#ff0044'
                         }
-                    ];
+
+                    ]
                 }
 
+                /* Tag Pie Chart */
+                function renderTagData() {
+                    var tag_data = "{{ stats.tags_for_member | escapejs }}";
+
+                    var tag_json = JSON.parse(tag_data);
+{#                    alert(tag_json[0]);#}
+
+                    return  tag_json;
+                }
             </script>
-        <div id="chart">
-            <svg></svg>
-        </div>
-        {{ stats }}
+
         </p>
+        <div id="chart-popularity">
+            <svg></svg>
+
+        </div>
+        <script type="text/javascript">
+            var tagData = renderTagData();
+            nv.addGraph(function () {
+                var chart = nv.models.pieChart()
+                        .x(function (d) {
+                            return d.label
+                        })
+                        .y(function (d) {
+                            return d.value
+                        })
+                        .showLabels(true);
+
+                d3.select("#chart-tags svg")
+                        .datum(tagData)
+                        .transition().duration(1200)
+                        .call(chart);
+
+                return chart;
+            });
+
+        </script>
+        <div id="chart-tags">
+           <svg width="250" height="250"></svg>  {# TODO move to css file #}
+        </div>
     {% endwith %}
 {% endblock %}
 

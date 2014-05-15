@@ -216,37 +216,34 @@ class MemberView(StatusFilterUnifiedView):
         df_statuses = statuses_for_member.to_dataframe('like_count', index='published')
         mean_monthly_popularity_by_status_raw = df_statuses.resample('M', how='mean').to_dict()
 
-        mean_monthly_popularity_by_status_list_unsorted = list()
-        for key, value in mean_monthly_popularity_by_status_raw['like_count'].items():
-            values_dict = dict()
-            values_dict["x"] = time.mktime(key.timetuple())*1000  # Convert pandas datetime to epoch
-            values_dict["y"] = value
-            mean_monthly_popularity_by_status_list_unsorted.append(values_dict)
-
-        mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted, key=lambda x: x['x'])
+        mean_monthly_popularity_by_status_list_unsorted = [{'x': time.mktime(key.timetuple()) * 1000, 'y': value} for
+                                                           # *1000 - seconds->miliseconds
+                                                           key, value in
+                                                           mean_monthly_popularity_by_status_raw['like_count'].items()]
+        mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted,
+                                                               key=lambda x: x['x'])
         mean_monthly_popularity_by_status = json.dumps(mean_monthly_popularity_by_status_list_sorted)
-        #
-        # mean_monthly_popularity_by_status = str([{"x: %s" % time.strftime('%Y-%m'), "y: %s" % value} for time, value in
-        #                                      mean_monthly_popularity_by_status_raw['like_count'].items()])
-        print mean_monthly_popularity_by_status
-        # df_statuses = statuses_for_member.to_dataframe('status_id', index='published')
-        # total_monthly_post_frequency = df_statuses.resample('M', how='count').to_period().to_dict()
-
-        # mean_monthly_popularity_by_status = "[{'x': 1, 'y': 1}, {'x': 2, 'y': 2}]"
 
         mean_like_count_all = mean([status.like_count for status in statuses_for_member])
+        mean_like_count_all_series = [{'x': time.mktime(key.timetuple()) * 1000, 'y': mean_like_count_all} for
+                                      # *1000 - seconds->miliseconds
+                                      key, value in
+                                      mean_monthly_popularity_by_status_raw['like_count'].items()]
+        mean_like_count_all_series_json = json.dumps(mean_like_count_all_series)
+
         mean_like_count_last_month = mean([status.like_count for status in statuses_for_member.filter(
             published__gte=timezone.now() - timezone.timedelta(days=30))])
 
         tags_for_member = Tag.objects.filter(statuses__feed__object_id=member_id).annotate(
             number_of_posts=Count('statuses')).order_by(
             '-number_of_posts')
+        tags_for_member_list = [{'label': tag.name, 'value': tag.number_of_posts} for tag in tags_for_member]
+        tags_for_member_json = json.dumps(tags_for_member_list)
 
-        stats['tags_for_member'] = tags_for_member
+        stats['tags_for_member'] = tags_for_member_json
         stats['mean_monthly_popularity_by_status'] = mean_monthly_popularity_by_status
         # stats['total_monthly_post_frequency'] = total_monthly_post_frequency
-        stats['mean_like_count_all'] = mean_like_count_all
-        stats['mean_like_count_last_month'] = mean_like_count_last_month
+        stats['mean_like_count_all'] = mean_like_count_all_series_json
 
         context['stats'] = stats
 
