@@ -57,7 +57,7 @@ urlpatterns = patterns('',
                        url(r'^status_update/(?P<status_id>\w+)/$', views.status_update),
                        url(r'^search_bar/$', views.search_bar),
                        url(r'^api/',include(v1_api.urls)),
-                       url(r'^facebook_status_permalink/(?P<slug>[-_\w]+)/$', views.FacebookStatusDetailView.as_view(), name='status-detail'),
+                       url(r'^status_permalink/(?P<slug>[-_\w]+)/$', views.FacebookStatusDetailView.as_view(), name='status-detail'),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

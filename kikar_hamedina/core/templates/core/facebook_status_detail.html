@@ -3,9 +3,6 @@
 {% block title %} סטטוס של {{member.name}} {% endblock title %}
 
 
-
-
-
 {% block h1 %}
 סטטוס של {{member.name}}
 {% endblock %}
@@ -14,5 +11,5 @@
 {% endblock %}
 
 {% block content %}
-<p>{{ object.content }}</p>
+	{% include "core/facebook_status.html" with status=object %}
 {% endblock %}
