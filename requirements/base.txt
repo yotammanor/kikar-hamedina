@@ -15,5 +15,9 @@ pytz==2013.9
 requests==2.1.0
 unidecode==0.04.14
 django-testutils
-
+numpy==1.8.1
+pandas==0.13.1
+django-pandas==0.1.0
+python-dateutil==1.5
+django-tastypie==0.9.15
 -r oknesset.txt

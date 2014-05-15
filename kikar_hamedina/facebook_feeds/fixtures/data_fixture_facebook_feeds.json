@@ -1323,8 +1323,8 @@
         "pk": "70",
         "model": "facebook_feeds.facebook_feed",
         "fields": {
-            "feed_type": "UP",
-            "vendor_id": "781279420"
+            "feed_type": "PP",
+            "vendor_id": "1411524072449425"
         }
     },
     {
@@ -1428,7 +1428,7 @@
         "model": "facebook_feeds.facebook_feed",
         "fields": {
             "feed_type": "PP",
-            "vendor_id": "292869284157269"
+            "vendor_id": "344375515658579"
         }
     },
     {
@@ -1565,94 +1565,6 @@
         "fields": {
             "feed_type": "PP",
             "vendor_id": "284775634985944"
-        }
-    },
-    {
-        "pk": "1",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05d1\u05d8\u05d7\u05d5\u05df",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "2",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05d7\u05d5\u05e5",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "3",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05db\u05dc\u05db\u05dc\u05d4",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "4",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05d1\u05e8\u05d9\u05d0\u05d5\u05ea",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "5",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05e1\u05d1\u05d9\u05d1\u05d4",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "6",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05e8\u05d5\u05d5\u05d7\u05d4",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "7",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05e1\u05e4\u05d5\u05e8\u05d8",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "8",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05d0\u05d9\u05e9\u05d9",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "9",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05ea\u05e8\u05d1\u05d5\u05ea",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "10",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05de\u05d3\u05e2",
-            "statuses": ""
-        }
-    },
-    {
-        "pk": "11",
-        "model": "facebook_feeds.tag",
-        "fields": {
-            "name": "\u05d4\u05e1\u05e4\u05d3",
-            "statuses": ""
         }
     }
 ]

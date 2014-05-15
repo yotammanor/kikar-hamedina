@@ -1,8 +1,9 @@
-import datetime
+import datetime, time
 import urllib2
 import json
 from IPython.lib.pretty import pprint
 import facebook
+from numpy import mean
 from django.core.exceptions import FieldError
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
@@ -193,6 +194,9 @@ class StatusFilterUnifiedView(ListView):
 
 
 class MemberView(StatusFilterUnifiedView):
+    template_name = "core/member.html"
+    parent_model = Member
+
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
         all_feeds_for_member = Member.objects.get(id=search_string).feeds.select_related()
@@ -200,8 +204,54 @@ class MemberView(StatusFilterUnifiedView):
             '-published')
         return query_set
 
-    template_name = "core/member.html"
-    parent_model = Member
+    def get_context_data(self, **kwargs):
+        context = super(MemberView, self).get_context_data(**kwargs)
+        stats = dict()
+        member_id = self.kwargs['id']
+        feed = Facebook_Feed.objects.get(object_id=member_id)
+
+        all_statuses = feed.facebook_status_set.all()
+
+        statuses_for_member = Facebook_Status.objects.filter(feed__object_id=member_id).order_by('-like_count')
+
+        df_statuses = statuses_for_member.to_dataframe('like_count', index='published')
+        mean_monthly_popularity_by_status_raw = df_statuses.resample('M', how='mean').to_dict()
+
+        mean_monthly_popularity_by_status_list_unsorted = list()
+        for key, value in mean_monthly_popularity_by_status_raw['like_count'].items():
+            values_dict = dict()
+            values_dict["x"] = time.mktime(key.timetuple())*1000  # Convert pandas datetime to epoch
+            values_dict["y"] = value
+            mean_monthly_popularity_by_status_list_unsorted.append(values_dict)
+
+        mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted, key=lambda x: x['x'])
+        mean_monthly_popularity_by_status = json.dumps(mean_monthly_popularity_by_status_list_sorted)
+        #
+        # mean_monthly_popularity_by_status = str([{"x: %s" % time.strftime('%Y-%m'), "y: %s" % value} for time, value in
+        #                                      mean_monthly_popularity_by_status_raw['like_count'].items()])
+        print mean_monthly_popularity_by_status
+        # df_statuses = statuses_for_member.to_dataframe('status_id', index='published')
+        # total_monthly_post_frequency = df_statuses.resample('M', how='count').to_period().to_dict()
+
+        # mean_monthly_popularity_by_status = "[{'x': 1, 'y': 1}, {'x': 2, 'y': 2}]"
+
+        mean_like_count_all = mean([status.like_count for status in statuses_for_member])
+        mean_like_count_last_month = mean([status.like_count for status in statuses_for_member.filter(
+            published__gte=timezone.now() - timezone.timedelta(days=30))])
+
+        tags_for_member = Tag.objects.filter(statuses__feed__object_id=member_id).annotate(
+            number_of_posts=Count('statuses')).order_by(
+            '-number_of_posts')
+
+        stats['tags_for_member'] = tags_for_member
+        stats['mean_monthly_popularity_by_status'] = mean_monthly_popularity_by_status
+        # stats['total_monthly_post_frequency'] = total_monthly_post_frequency
+        stats['mean_like_count_all'] = mean_like_count_all
+        stats['mean_like_count_last_month'] = mean_like_count_last_month
+
+        context['stats'] = stats
+
+        return context
 
 
 class PartyView(StatusFilterUnifiedView):

@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'endless_pagination',
     'dumpdata_chunks',
+    'django_pandas',
     'tastypie',
 )
 
