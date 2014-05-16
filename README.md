@@ -4,6 +4,13 @@
 Installation
 ==============
 
+1. Get Python 2.7, and pip.
+2. ``sudo pip install virtualenv`` or ``pip install virtualenvwrapper`` for Windows.
+
+3. ``mkvirtualenv kikar`` to create the virtualenv.
+
+4. Go to ``env/kikar/scripts/postactivate.sh`` and set environment variables, as described:
+
 .. Set the following environment variables:
 
 - DJANGO_SETTINGS_MODULE (for local version set 'kikar_hamedina.settings.local')
@@ -19,7 +26,7 @@ Installation
 To Set up DB run the following:
 
 1. ``python manage.py syncdb`` - You should get a message that says 'core' tables not being synced.
-2. ``python manage.py migrate core`` - This will create core tables in the db, using south migrations.
+2. ``python manage.py migrate`` - This will create necessery tables in the db, using south migrations.
 
 
 To insert initial data into the db, do as follows:
