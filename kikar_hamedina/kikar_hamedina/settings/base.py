@@ -35,6 +35,7 @@ TEMPLATE_DIRS = sub_path("templates")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_env_variable('SECRET_KEY')
 
+
 # SECURITY WARNING: keep the facebook app secret key used in production secret!
 FACEBOOK_SECRET_KEY = get_env_variable('FACEBOOK_SECRET_KEY')
 
@@ -66,7 +67,6 @@ INSTALLED_APPS = (
     'mks',
     'facebook_feeds',
     'core',
-    'dj_facebook_realtime',
     'django.contrib.humanize',
     'endless_pagination',
     'dumpdata_chunks',
