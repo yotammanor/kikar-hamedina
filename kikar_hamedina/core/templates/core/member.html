@@ -62,7 +62,7 @@
                 function renderPopularityData() {
                     var popularity = "{{ stats.mean_monthly_popularity_by_status | escapejs }}";
                     var popularity_json = JSON.parse(popularity);
-                    {#                    alert(popularity_json[0]);#}
+{#                    alert(popularity_json[0]);#}
 
                     var mean_popularity = "{{ stats.mean_like_count_all | escapejs }}";
                     var mean_popularity_json = JSON.parse(mean_popularity);
@@ -112,10 +112,11 @@
                 var tag_data = "{{ stats.tags_for_member | escapejs }}";
 
                 var tag_json = JSON.parse(tag_data);
-                {#                    alert(tag_json[0]);#}
+{#                alert(tag_json[0]);#}
 
                 return  tag_json;
-            };
+            }
+            ;
 
         </script>
         <div id="chart-tags">

@@ -224,7 +224,7 @@ class MemberView(StatusFilterUnifiedView):
         mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted,
                                                                key=lambda x: x['x'])
         mean_monthly_popularity_by_status = json.dumps(mean_monthly_popularity_by_status_list_sorted)
-
+        print mean_monthly_popularity_by_status
         mean_like_count_all = mean([status.like_count for status in statuses_for_member])
         mean_like_count_all_series = [{'x': time.mktime(key.timetuple()) * 1000, 'y': mean_like_count_all} for
                                       # *1000 - seconds->miliseconds
