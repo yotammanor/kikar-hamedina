@@ -4,3 +4,6 @@ bak/
 
 /kikar_hamedina/kikar_hamedina/settings/base.py
 /kikar_hamedina/kikar_hamedina/settings/local.py
+
+debug.log
+kikar_hamedina/debug.log
