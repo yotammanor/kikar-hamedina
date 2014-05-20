@@ -12,6 +12,13 @@ class Facebook_Persona(models.Model):
     content_object = generic.GenericForeignKey()
     main_feed = models.SmallIntegerField(null=True, default=0)
 
+    @property
+    def get_main_feed(self):
+        try:
+            return Facebook_Feed.objects.get(id=self.main_feed)
+        except:
+            return None  # TODO: What should we return here when no main feed is defined/ no feeds exist?
+
 
 class Facebook_Feed(models.Model):
     FEED_TYPES = (
@@ -19,7 +26,7 @@ class Facebook_Feed(models.Model):
         ('UP', 'User Profile'),
     )
 
-    persona = models.ForeignKey('Facebook_Persona')
+    persona = models.ForeignKey('Facebook_Persona', related_name='feeds')
     vendor_id = models.TextField(null=True)
     username = models.TextField(null=True, default=None)
     birthday = models.TextField(null=True)

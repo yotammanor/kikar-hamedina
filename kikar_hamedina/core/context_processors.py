@@ -12,11 +12,13 @@ NUMBER_OF_TOP_TAGS_TO_BRING = 12
 def generic(request):
 
     members = Member.objects.filter(is_current=True)
-    members_with_feed = [member for member in members if member.feeds.select_related()]
+    print members
+    members_with_persona = [member for member in members if member.facebook_persona]
+    members_with_feed = [member for member in members_with_persona if member.facebook_persona.feeds.all()]
     list_of_members = list()
     for member in members_with_feed:
         try:
-            feed_popularity = member.feeds.select_related().first().current_fan_count
+            feed_popularity = member.facebook_persona.get_main_feed.current_fan_count
             list_of_members.append({'member': member, 'popularity': feed_popularity})
         except:
             pass

@@ -214,7 +214,11 @@ class Member(models.Model):
     current_knesset = CurrentKnessetMembersManager()
 
     #added by kikar-hamedina
-    feeds = generic.GenericRelation(Facebook_Persona)
+    persona = generic.GenericRelation(Facebook_Persona)
+
+    @property
+    def facebook_persona(self):
+        return self.persona.select_related().first()
 
     class Meta:
         ordering = ['name']
