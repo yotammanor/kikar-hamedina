@@ -3,7 +3,7 @@ from django.contrib import admin
 from models import Facebook_Feed, \
     Facebook_Status, \
     Tag, \
-    User_Token, Feed_Popularity, Facebook_Feed_Generic, \
+    User_Token, Feed_Popularity, Facebook_Persona, \
     Facebook_Status_Attachment, Facebook_Status_Attachment_Media
 
 

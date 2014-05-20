@@ -27,8 +27,12 @@ def turn_csv_to_dict(dict_reader_object):
         full_dict['model'] = row.pop('model')
         fields_dict = dict()
         for key, value in row.items():
-            if key == 'content_type':
+            if key == 'content_type' or value == 'None':
                 fields_dict[key] = eval(value)
+            elif value == "TRUE":
+                fields_dict[key] = True
+            elif value == "FALSE":
+                fields_dict[key] = False
             else:
                 fields_dict[key] = value
         full_dict['fields'] = fields_dict

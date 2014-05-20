@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 
 from planet.models import Blog
-from facebook_feeds.models import Facebook_Feed
+from facebook_feeds.models import Facebook_Persona
 
 from mks.managers import (
     BetterManager, KnessetManager, CurrentKnessetMembersManager,
@@ -214,7 +214,7 @@ class Member(models.Model):
     current_knesset = CurrentKnessetMembersManager()
 
     #added by kikar-hamedina
-    feeds = generic.GenericRelation(Facebook_Feed)
+    feeds = generic.GenericRelation(Facebook_Persona)
 
     class Meta:
         ordering = ['name']

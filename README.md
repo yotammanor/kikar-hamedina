@@ -34,8 +34,6 @@ To insert initial data into the db, do as follows:
 ``python manage.py loaddata data_fixture_planet.json``
 ``python manage.py loaddata data_fixture_mks.json``
 
-``python manage.py loaddata data_fixture_persons.json`` - This is an empty json, waiting for deprecation
-
 ``python manage.py loaddata data_fixture_facebook_feeds.json``
 
 

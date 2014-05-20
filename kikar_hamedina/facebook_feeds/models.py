@@ -6,19 +6,20 @@ from django_pandas.managers import DataFrameManager
 # Create your models here.
 
 
-class Facebook_Feed_Generic(models.Model):
+class Facebook_Persona(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey()
+    main_feed = models.SmallIntegerField(null=True, default=0)
 
 
-class Facebook_Feed(Facebook_Feed_Generic):
+class Facebook_Feed(models.Model):
     FEED_TYPES = (
         ('PP', 'Public Page'),
         ('UP', 'User Profile'),
     )
 
-    # person = models.ForeignKey('persons.Person')
+    persona = models.ForeignKey('Facebook_Persona')
     vendor_id = models.TextField(null=True)
     username = models.TextField(null=True, default=None)
     birthday = models.TextField(null=True)
