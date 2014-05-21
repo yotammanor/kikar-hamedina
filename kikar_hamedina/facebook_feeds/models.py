@@ -73,6 +73,23 @@ class Feed_Popularity(models.Model):
 
 
 class Facebook_Status(models.Model):
+
+    TYPE_CHOICES = (
+        (11, 'Group created'),
+        (12, 'Event created'),
+        (46, 'Status update'),
+        (56, 'Post on wall from another user'),
+        (66, 'Note created'),
+        (80, 'Link posted'),
+        (128, 'Video posted'),
+        (247, 'Photos posted'),
+        (237, 'App story'),
+        (257, 'Comment created'),
+        (272, 'App story'),
+        (285, 'Checkin to a place'),
+        (308, 'Post in Group'),
+    )
+
     feed = models.ForeignKey('Facebook_Feed')
     status_id = models.CharField(unique=True, max_length=128)
     content = models.TextField()
@@ -81,6 +98,7 @@ class Facebook_Status(models.Model):
     share_count = models.PositiveIntegerField(null=True)
     published = models.DateTimeField()
     updated = models.DateTimeField()
+    status_type = models.SmallIntegerField(null=True, choices=TYPE_CHOICES)
 
     objects = DataFrameManager()
 

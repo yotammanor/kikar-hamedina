@@ -12,7 +12,6 @@ NUMBER_OF_TOP_TAGS_TO_BRING = 12
 def generic(request):
 
     members = Member.objects.filter(is_current=True)
-    print members
     members_with_persona = [member for member in members if member.facebook_persona]
     members_with_feed = [member for member in members_with_persona if member.facebook_persona.feeds.all()]
     list_of_members = list()
