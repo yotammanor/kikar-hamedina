@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block details %}
-    {% with object.feeds.all|first as feed %}
+    {% with object.facebook_persona.get_main_feed as feed %}
         {% load humanize %}
         <p>
 

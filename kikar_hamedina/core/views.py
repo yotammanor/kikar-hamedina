@@ -64,7 +64,7 @@ class AllStatusesView(ListView):
             facebook_status__published__gte=(
                 datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
         context['side_bar_list'] = Member.objects.filter(
-            id__in=[feed.facbook_persona.object_id for feed in feeds]).distinct().order_by('name')
+            id__in=[feed.persona.object_id for feed in feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
 
@@ -274,7 +274,7 @@ class TagView(StatusFilterUnifiedView):
         context = super(TagView, self).get_context_data(**kwargs)
         all_feeds_for_tag = Facebook_Feed.objects.filter(facebook_status__tags__id=context['object'].id).distinct()
         context['side_bar_list'] = Member.objects.filter(
-            id__in=[feed.facebook_persona.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
+            id__in=[feed.persona.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
 
 

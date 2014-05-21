@@ -5,14 +5,14 @@ data-token="{{ access_token }}">
 <div class="panel-heading col-lg-12">
 	<div class="row">
 		<div class="col-lg-1">
-			<a href="{% url 'member' status.feed.content_object.id %}">
+			<a href="{% url 'member' status.feed.persona.content_object.id %}">
 				<img src="{{ status.feed.pic_square }}" class="profile-photo img-rounded">
 			</a>
 		</div>
 		<div class="col-lg-9">
 			<div class="row" id="name-row-container">
-				<a class="link-on-blue" href="{% url 'member' status.feed.content_object.id %}">
-					<h4>{{ status.feed.content_object.name }}</h4>
+				<a class="link-on-blue" href="{% url 'member' status.feed.persona.content_object.id %}">
+					<h4>{{ status.feed.persona.content_object.name }}</h4>
 				</a>
 		</div>
 		<div class="row" id="date-row-container">
