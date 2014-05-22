@@ -194,6 +194,7 @@ class Command(BaseCommand):
                 status.like_count = status_object['like_info']['like_count']
                 status.comment_count = status_object['comment_info']['comment_count']
                 status.share_count = status_object['share_count']
+                status.status_type = status_object['type']
                 status.updated = current_time_of_update
                 # update attachment data
                 self.create_or_update_attachment(status, status_object)
@@ -201,8 +202,8 @@ class Command(BaseCommand):
                 # force update of attachment, regardless of time
                 status.save()
                 self.create_or_update_attachment(status, status_object)
-            # If post_id exists but of equal or later time (unlikely, but may happen), disregard
-            # Should be an else here for this case but as it is, just disregard
+                # If post_id exists but of equal or later time (unlikely, but may happen), disregard
+                # Should be an else here for this case but as it is, just disregard
         except Facebook_Status_Model.DoesNotExist:
             # If post_id does not exist at all, create it from data.
             status = Facebook_Status_Model(feed_id=feed_id,
@@ -212,8 +213,9 @@ class Command(BaseCommand):
                                            comment_count=status_object['comment_info']['comment_count'],
                                            share_count=status_object['share_count'],
                                            published=datetime.datetime.fromtimestamp(
-                                               int(status_object['created_time']),tz=timezone.utc),
-                                           updated=current_time_of_update)
+                                               int(status_object['created_time']), tz=timezone.utc),
+                                           updated=current_time_of_update,
+                                           status_type=status_object['type'])
             if len(str(status_object['attachment'])) > LENGTH_OF_EMPTY_ATTACHMENT_JSON:
                 #There's an attachment
                 status.save()

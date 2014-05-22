@@ -88,6 +88,7 @@ class Facebook_Status(models.Model):
         (272, 'App story'),
         (285, 'Checkin to a place'),
         (308, 'Post in Group'),
+        (0, 'Kikar - missing data')
     )
 
     feed = models.ForeignKey('Facebook_Feed')
@@ -98,7 +99,7 @@ class Facebook_Status(models.Model):
     share_count = models.PositiveIntegerField(null=True)
     published = models.DateTimeField()
     updated = models.DateTimeField()
-    status_type = models.SmallIntegerField(null=True, choices=TYPE_CHOICES)
+    status_type = models.SmallIntegerField(null=True, choices=TYPE_CHOICES, default=0)
 
     objects = DataFrameManager()
 
