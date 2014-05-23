@@ -235,7 +235,6 @@ class MemberView(StatusFilterUnifiedView):
         feed = Facebook_Feed.objects.get(persona__object_id=member_id)
 
         # Statistical Data for member - PoC
-        all_statuses = feed.facebook_status_set.all()
 
         statuses_for_member = Facebook_Status.objects.filter(feed__persona__object_id=member_id).order_by('-like_count')
 
