@@ -50,9 +50,9 @@ def main():
 	client = dropbox_client.DropboxClient(sess)
 
 	try:
-		with open(datetime.datetime.today().strftime("%Y%m%d") + ".tar"): pass #check existance of while
+		with open(datetime.datetime.today().strftime("%Y%m%d") + "-db-backup"): pass #check existance of while
 		print "Uploading started..."
-		print client.put_file("/db_backup/" + datetime.datetime.today().strftime("%Y%m%d") + ".tar", open(datetime.datetime.today().strftime("%Y%m%d") + ".tar"))
+		print client.put_file("/db_backup/" + datetime.datetime.today().strftime("%Y%m%d") + "-db-backup", open(datetime.datetime.today().strftime("%Y%m%d") + "-db-backup"))
 		print "Uploading completed..."
 	except IOError:
 		#print client.account_info()
