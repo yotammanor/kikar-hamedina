@@ -1,5 +1,6 @@
 import json
 import datetime
+import os, sys
 
 try:
 	from dropbox import client as dropbox_client
@@ -48,16 +49,21 @@ def main():
 	sess.set_token(client_secrets.get("access_key"),client_secrets.get("access_secret"))
 	# create the client object
 	client = dropbox_client.DropboxClient(sess)
-
+	nameOfFile = datetime.datetime.today().strftime("%Y%m%d") + "-db-backup.gz"
 	try:
-		nameOfFile = datetime.datetime.today().strftime("%Y%m%d") + "-db-backup.gz"
 		with open(nameOfFile): pass #check existance of while
 		print "Uploading started..."
 		print client.put_file("/db_backup/" + nameOfFile, open(nameOfFile))
 		print "Uploading completed..."
-	except IOError:
-		#print client.account_info()
-		print "DB backup file does not exists"
+	except IOError, e:
+
+		traceback_str = traceback.format_exc()
+		content = "String of error:\n\n"+str(traceback_str)+"\n\n***********\n\n"
+		content = content.replace("<","").replace(">","")
+		content +="File trying to work with:"+nameOfFile
+		subject = "Kikar: Problem with DB backup"
+		addresses = "agam.rafaeli@gmail.com,yotammanor@gmail.com"
+		os.system('echo "%s" | mail -s "%s" "%s"' % (content, subject, addresses))
 	return
 
 if __name__ == '__main__':
