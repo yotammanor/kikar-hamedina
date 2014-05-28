@@ -7,11 +7,11 @@ from pprint import pprint
 
 
 json_data = json.load(open('data_fixture_facebook_feeds.json', mode='r'))  # insert name of json
-facebook_feed_generic_dict = [x for x in json_data if x['model'] == 'facebook_feeds.facebook_feed_generic']
+facebook_persona_dict = [x for x in json_data if x['model'] == 'facebook_feeds.facebook_persona']
 facebook_feed_dict = [x for x in json_data if x['model'] == 'facebook_feeds.facebook_feed']
 tag_dict = [x for x in json_data if x['model'] == 'facebook_feeds.tag']
 
-all_dicts = [facebook_feed_generic_dict, facebook_feed_dict, tag_dict]
+all_dicts = [facebook_persona_dict, facebook_feed_dict, tag_dict]
 
 
 def insert_to_csv(chosen_dict):
@@ -50,7 +50,7 @@ def insert_to_csv(chosen_dict):
 for json_dict in all_dicts:
     insert_to_csv(json_dict)
 
-print len(facebook_feed_generic_dict), \
+print len(facebook_persona_dict), \
     len(facebook_feed_dict), \
     len(tag_dict)
 

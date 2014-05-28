@@ -4,14 +4,18 @@ import json
 import csv
 from pprint import pprint
 
-
-
-json_data = json.load(open('data_fixture_mks.json', mode='r'))  # insert name of json
+json_file = open('data_fixture_mks.json', mode='r')
+json_data = json.load(json_file, encoding='utf-8')  # insert name of json
+knesset_dict = [x for x in json_data if x['model'] == 'mks.knesset']
 party_dict = [x for x in json_data if x['model'] == 'mks.party']
 member_dict = [x for x in json_data if x['model'] == 'mks.member']
+coalitionmembership_dict = [x for x in json_data if x['model'] == 'mks.coalitionmembership']
+membership_dict = [x for x in json_data if x['model'] == 'mks.membership']
+weeklypresence_dict = [x for x in json_data if x['model'] == 'mks.weeklypresence']
+memberaltname_dict = [x for x in json_data if x['model'] == 'mks.memberaltname']
 
-
-all_dicts = [party_dict, member_dict]
+all_dicts = [knesset_dict, party_dict, member_dict, coalitionmembership_dict, membership_dict, weeklypresence_dict,
+             memberaltname_dict]
 
 
 def insert_to_csv(chosen_dict):
@@ -47,13 +51,15 @@ def insert_to_csv(chosen_dict):
         csv_data.writerow({k: unicode(v).encode('utf-8') for k, v in flat_dict.items()})
     output_file.close()
 
+
 for json_dict in all_dicts:
     insert_to_csv(json_dict)
 
-print len(party_dict), \
-    len(member_dict)
-    # len(facebook_feed_generic_dict), \
-    # len(facebook_feed_dict), \
-    # len(tag_dict)
-
+print len(knesset_dict), \
+    len(party_dict), \
+    len(member_dict), \
+    len(membership_dict), \
+    len(memberaltname_dict), \
+    len(coalitionmembership_dict), \
+    len(weeklypresence_dict)
 

@@ -8,8 +8,8 @@ import csv
 json_data_facebook_feeds = open('data_fixture_facebook_feeds.json', mode='wb')
 
 facebook_feed_csv = csv.DictReader(open('data_from_json_facebook_feeds.facebook_feed.csv', 'r'))
-facebook_feed_generic_csv = csv.DictReader(open(
-    'data_from_json_facebook_feeds.facebook_feed_generic.csv', 'r'))
+facebook_persona_csv = csv.DictReader(open(
+    'data_from_json_facebook_feeds.facebook_persona.csv', 'r'))
 tag_csv = csv.DictReader(open('data_from_json_facebook_feeds.tag.csv', 'r'))
 
 
@@ -33,13 +33,13 @@ def turn_csv_to_dict(dict_reader_object):
 
 
 def main():
-    all_facebook_feeds_data_for_insertion = turn_csv_to_dict(facebook_feed_generic_csv) + \
+    all_facebook_feeds_data_for_insertion = turn_csv_to_dict(facebook_persona_csv) + \
         turn_csv_to_dict(facebook_feed_csv)  # + \
         # turn_csv_to_dict(tag_csv)
 
     print 'creating facebook_feeds data fixture'
     pprint(all_facebook_feeds_data_for_insertion)
-    json.dump(all_facebook_feeds_data_for_insertion, json_data_facebook_feeds, encoding='utf-8')
+    json.dump(all_facebook_feeds_data_for_insertion, json_data_facebook_feeds, encoding='utf-8', indent=4)
     json_data_facebook_feeds.close()
 
 if __name__ == "__main__":

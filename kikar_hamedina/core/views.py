@@ -64,7 +64,7 @@ class AllStatusesView(ListView):
             facebook_status__published__gte=(
                 datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
         context['side_bar_list'] = Member.objects.filter(
-            id__in=[feed.object_id for feed in feeds]).distinct().order_by('name')
+            id__in=[feed.persona.object_id for feed in feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
 
@@ -76,36 +76,39 @@ class SearchView(ListView):
     context_object_name = 'filtered_statuses'
     template_name = "core/search.html"
 
-    def get_queryset(self):
-
-        members = []
-        if 'members' in self.request.GET.keys():
-            members = [int(member_id) for member_id in self.request.GET['members'].split(',')]
-        if 'parties' in self.request.GET.keys():
-            parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
-            parties = Party.objects.filter(id__in=parties_ids)
-            for party in parties:
-                for member in party.current_members():
-                    if member.id not in members:
-                        members.append(member.id)
-
-        member_query = Member.objects.filter(id__in=members)
-        feeds = Facebook_Feed.objects.filter(object_id__in=[member.id for member in member_query])
-        tags_ids = []
-        if 'tags' in self.request.GET.keys():
-            tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
-
-        query_Q = Q(feed__in=feeds) | Q(tags__in=tags_ids)
-
-        if 'search_str' in self.request.GET.keys():
-            search_str = self.request.GET['search_str']
-            query_str_Q = Q(content__contains=search_str)
-            search_words = search_str.strip().split(' ')
-            for word in search_words:
-                query_str_Q = Q(content__contains=word) | query_str_Q
-            query_Q = query_Q & query_str_Q
-        return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
-        return return_queryset
+    # def get_queryset(self):
+    #
+    #     members = []
+    #     if 'members' in self.request.GET.keys():
+    #         members = [int(member_id) for member_id in self.request.GET['members'].split(',')]
+    #     if 'parties' in self.request.GET.keys():
+    #         parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
+    #         parties = Party.objects.filter(id__in=parties_ids)
+    #         for party in parties:
+    #             for member in party.current_members():
+    #                 if member.id not in members:
+    #                     members.append(member.id)
+    #
+    #     member_query = Member.objects.filter(id__in=members)
+    #     feeds = Facebook_Feed.objects.filter(persona__object_id__in=[member.id for member in member_query])
+    #     tags_ids = []
+    #     if 'tags' in self.request.GET.keys():
+    #         tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
+    #
+    #     query_Q = Q(feed__in=feeds) | Q(tags__in=tags_ids)
+    #
+    #     if 'search_str' in self.request.GET.keys():
+    #         search_str = self.request.GET['search_str']
+    #         query_str_Q = Q(content__contains=search_str)
+    #         search_words = search_str.strip().split(' ')
+    #         for word in search_words:
+    #             query_str_Q = Q(content__contains=word) | query_str_Q
+    #         query_Q = query_Q & query_str_Q
+    #
+    #     print query_Q
+    #     return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
+    #     print 'number of results: %d' % len(return_queryset)
+    #     return return_queryset
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
@@ -126,25 +129,46 @@ class SearchView(ListView):
         context['parties'] = Party.objects.filter(id__in=parties_ids)
 
         member_query = Member.objects.filter(id__in=members)
-        feeds = Facebook_Feed.objects.filter(object_id__in=member_query)
+        feeds = Facebook_Feed.objects.filter(persona__object_id__in=member_query)
 
         tags_ids = []
         if 'tags' in self.request.GET.keys():
             tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
 
-        query_Q = Q(feed__in=feeds) | Q(tags__in=tags_ids)
+        if feeds and tags_ids:
+            query_q_objecs = Q(feed__in=feeds) | Q(tags__in=tags_ids)
+        elif tags_ids:
+            query_q_objecs = Q(tags__in=tags_ids)
+        elif feeds:
+            query_q_objecs = Q(feed__in=feeds)
+        else:
+            query_q_objecs = None
+
+        query_q_words = None
         search_str = None
         if 'search_str' in self.request.GET.keys():
             search_str = self.request.GET['search_str']
-            query_Q = Q(content__contains=search_str) | query_Q
+            query_q_words = Q(content__contains=search_str)
             search_words = search_str.strip().split(' ')
             for word in search_words:
-                query_Q = Q(content__contains=word) | query_Q
+                query_q_words = Q(content__contains=word) | query_q_words
+
+        if query_q_objecs and query_q_words:
+            query_q = query_q_objecs & query_q_words
+        elif query_q_words:
+            query_q = query_q_words
+        elif query_q_objecs:
+            query_q = query_q_objecs
+        else:
+            query_q = Q(content__contains='')
 
         context['search_str'] = search_str
-        return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
 
+        print query_q
+        return_queryset = Facebook_Status.objects.filter(query_q).order_by("-published")
+        print len(return_queryset)
+        self.queryset = return_queryset
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -199,8 +223,8 @@ class MemberView(StatusFilterUnifiedView):
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
-        all_feeds_for_member = Member.objects.get(id=search_string).feeds.select_related()
-        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_member]).order_by(
+        query_set = Member.objects.get(
+            id=search_string).facebook_persona.get_main_feed.facebook_status_set.all().order_by(
             '-published')
         return query_set
 
@@ -208,46 +232,43 @@ class MemberView(StatusFilterUnifiedView):
         context = super(MemberView, self).get_context_data(**kwargs)
         stats = dict()
         member_id = self.kwargs['id']
-        feed = Facebook_Feed.objects.get(object_id=member_id)
+        feed = Facebook_Feed.objects.get(persona__object_id=member_id)
 
-        all_statuses = feed.facebook_status_set.all()
+        # Statistical Data for member - PoC
 
-        statuses_for_member = Facebook_Status.objects.filter(feed__object_id=member_id).order_by('-like_count')
+        statuses_for_member = Facebook_Status.objects.filter(feed__persona__object_id=member_id).order_by('-like_count')
 
         df_statuses = statuses_for_member.to_dataframe('like_count', index='published')
         mean_monthly_popularity_by_status_raw = df_statuses.resample('M', how='mean').to_dict()
 
-        mean_monthly_popularity_by_status_list_unsorted = list()
-        for key, value in mean_monthly_popularity_by_status_raw['like_count'].items():
-            values_dict = dict()
-            values_dict["x"] = time.mktime(key.timetuple())*1000  # Convert pandas datetime to epoch
-            values_dict["y"] = value
-            mean_monthly_popularity_by_status_list_unsorted.append(values_dict)
-
-        mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted, key=lambda x: x['x'])
+        mean_monthly_popularity_by_status_list_unsorted = [{'x': time.mktime(key.timetuple()) * 1000, 'y': value} for
+                                                           # *1000 - seconds->miliseconds
+                                                           key, value in
+                                                           mean_monthly_popularity_by_status_raw['like_count'].items()]
+        mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted,
+                                                               key=lambda x: x['x'])
         mean_monthly_popularity_by_status = json.dumps(mean_monthly_popularity_by_status_list_sorted)
-        #
-        # mean_monthly_popularity_by_status = str([{"x: %s" % time.strftime('%Y-%m'), "y: %s" % value} for time, value in
-        #                                      mean_monthly_popularity_by_status_raw['like_count'].items()])
         print mean_monthly_popularity_by_status
-        # df_statuses = statuses_for_member.to_dataframe('status_id', index='published')
-        # total_monthly_post_frequency = df_statuses.resample('M', how='count').to_period().to_dict()
-
-        # mean_monthly_popularity_by_status = "[{'x': 1, 'y': 1}, {'x': 2, 'y': 2}]"
-
         mean_like_count_all = mean([status.like_count for status in statuses_for_member])
+        mean_like_count_all_series = [{'x': time.mktime(key.timetuple()) * 1000, 'y': mean_like_count_all} for
+                                      # *1000 - seconds->miliseconds
+                                      key, value in
+                                      mean_monthly_popularity_by_status_raw['like_count'].items()]
+        mean_like_count_all_series_json = json.dumps(mean_like_count_all_series)
+
         mean_like_count_last_month = mean([status.like_count for status in statuses_for_member.filter(
             published__gte=timezone.now() - timezone.timedelta(days=30))])
 
-        tags_for_member = Tag.objects.filter(statuses__feed__object_id=member_id).annotate(
+        tags_for_member = Tag.objects.filter(statuses__feed__persona__object_id=member_id).annotate(
             number_of_posts=Count('statuses')).order_by(
             '-number_of_posts')
+        tags_for_member_list = [{'label': tag.name, 'value': tag.number_of_posts} for tag in tags_for_member]
+        tags_for_member_json = json.dumps(tags_for_member_list)
 
-        stats['tags_for_member'] = tags_for_member
+        stats['tags_for_member'] = tags_for_member_json
         stats['mean_monthly_popularity_by_status'] = mean_monthly_popularity_by_status
         # stats['total_monthly_post_frequency'] = total_monthly_post_frequency
-        stats['mean_like_count_all'] = mean_like_count_all
-        stats['mean_like_count_last_month'] = mean_like_count_last_month
+        stats['mean_like_count_all'] = mean_like_count_all_series_json
 
         context['stats'] = stats
 
@@ -261,11 +282,8 @@ class PartyView(StatusFilterUnifiedView):
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
         all_members_for_party = Party.objects.get(id=search_string).current_members()
-        all_feeds_for_party = list()
-        for member in all_members_for_party:
-            all_feeds_for_member = Member.objects.get(id=member.id).feeds.select_related()
-            for feed in all_feeds_for_member:
-                all_feeds_for_party.append(feed)
+        all_feeds_for_party = [Member.objects.get(id=member.id).facebook_persona.get_main_feed for member in
+                               all_members_for_party]
         query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]).order_by(
             '-published')
         return query_set
@@ -279,8 +297,9 @@ class TagView(StatusFilterUnifiedView):
         context = super(TagView, self).get_context_data(**kwargs)
         all_feeds_for_tag = Facebook_Feed.objects.filter(facebook_status__tags__id=context['object'].id).distinct()
         context['side_bar_list'] = Member.objects.filter(
-            id__in=[feed.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
+            id__in=[feed.persona.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
+
 
 class FacebookStatusDetailView(DetailView):
     template_name = 'core/facebook_status_detail.html'
@@ -291,8 +310,9 @@ class FacebookStatusDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
-        context['member'] = Member.objects.get(id=context['object'].feed.object_id)
+        context['member'] = Member.objects.get(id=context['object'].feed.facbook_persona.object_id)
         return context
+
 
 class AllMembers(ListView):
     template_name = 'core/all_members.html'

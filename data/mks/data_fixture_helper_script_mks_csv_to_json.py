@@ -5,10 +5,18 @@ import json
 import csv
 
 
-json_data_mks = open('../mks/data_fixture_mks.party.json', mode='wb')
+json_data_mks = open('../mks/data_fixture_mks.json', mode='wb')
 
+knesset_csv = csv.DictReader(open('../mks/data_from_json_mks.knesset.csv', 'r'))
 party_csv = csv.DictReader(open('../mks/data_from_json_mks.party.csv', 'r'))
-# person_csv = csv.DictReader(open('data_from_json_persons.person.csv', 'r'))
+member_csv = csv.DictReader(open('../mks/data_from_json_mks.member.csv', 'r'))
+coalitionmembership_csv = csv.DictReader(open('../mks/data_from_json_mks.coalitionmembership.csv', 'r'))
+memberaltname_csv = csv.DictReader(open('../mks/data_from_json_mks.memberaltname.csv', 'r'))
+membership_csv = csv.DictReader(open('../mks/data_from_json_mks.membership.csv', 'r'))
+weeklypresence_csv = csv.DictReader(open('data_from_json_mks.weeklypresence.csv', 'r'))
+
+all_csv = [knesset_csv, party_csv, member_csv, coalitionmembership_csv, memberaltname_csv, membership_csv,
+           weeklypresence_csv]
 
 
 def turn_csv_to_dict(dict_reader_object):
@@ -19,8 +27,12 @@ def turn_csv_to_dict(dict_reader_object):
         full_dict['model'] = row.pop('model')
         fields_dict = dict()
         for key, value in row.items():
-            if key == 'content_type':
+            if key == 'content_type' or value == 'None':
                 fields_dict[key] = eval(value)
+            elif value == "TRUE":
+                fields_dict[key] = True
+            elif value == "FALSE":
+                fields_dict[key] = False
             else:
                 fields_dict[key] = value
         full_dict['fields'] = fields_dict
@@ -31,12 +43,13 @@ def turn_csv_to_dict(dict_reader_object):
 
 
 def main():
-    all_mks_data_for_insertion = turn_csv_to_dict(party_csv) \
-        # + turn_csv_to_dict(person_csv)
+    all_mks_data_for_insertion = list()
+    for csv_data in all_csv:
+        all_mks_data_for_insertion += turn_csv_to_dict(csv_data)
 
     print 'creating mks data fixture'
-    pprint(all_mks_data_for_insertion)
-    json.dump(all_mks_data_for_insertion, json_data_mks, encoding='utf-8')
+    pprint(len(all_mks_data_for_insertion))
+    json.dump(all_mks_data_for_insertion, json_data_mks, encoding='utf-8', indent=4)
     json_data_mks.close()
 
 

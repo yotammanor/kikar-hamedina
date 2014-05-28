@@ -21,6 +21,6 @@ pk,model,number_of_seats,name,end_date,knesset,is_coalition,logo,number_of_membe
 20,mks.party,6,מרצ,None,19,False,,6,None
 21,mks.party,6,התנועה,None,19,True,,6,None
 22,mks.party,4,חזית דמוקרטית לשלום ושוויון,None,19,False,,4,None
-23,mks.party,4,רע”מ-תע”ל,None,19,False,,4,None
+23,mks.party,4, רע”מ-תע”ל,None,19,False,,4,None
 24,mks.party,3,ברית לאומית דמוקרטית,None,19,False,,3,None
 25,mks.party,2,קדימה,None,19,False,,2,None

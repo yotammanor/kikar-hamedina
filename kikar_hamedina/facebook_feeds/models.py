@@ -6,19 +6,27 @@ from django_pandas.managers import DataFrameManager
 # Create your models here.
 
 
-class Facebook_Feed_Generic(models.Model):
+class Facebook_Persona(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey()
+    main_feed = models.SmallIntegerField(null=True, default=0)
+
+    @property
+    def get_main_feed(self):
+        try:
+            return Facebook_Feed.objects.get(id=self.main_feed)
+        except:
+            return None  # TODO: What should we return here when no main feed is defined/ no feeds exist?
 
 
-class Facebook_Feed(Facebook_Feed_Generic):
+class Facebook_Feed(models.Model):
     FEED_TYPES = (
         ('PP', 'Public Page'),
         ('UP', 'User Profile'),
     )
 
-    # person = models.ForeignKey('persons.Person')
+    persona = models.ForeignKey('Facebook_Persona', related_name='feeds')
     vendor_id = models.TextField(null=True)
     username = models.TextField(null=True, default=None)
     birthday = models.TextField(null=True)
@@ -65,6 +73,24 @@ class Feed_Popularity(models.Model):
 
 
 class Facebook_Status(models.Model):
+
+    TYPE_CHOICES = (
+        (11, 'Group created'),
+        (12, 'Event created'),
+        (46, 'Status update'),
+        (56, 'Post on wall from another user'),
+        (66, 'Note created'),
+        (80, 'Link posted'),
+        (128, 'Video posted'),
+        (247, 'Photos posted'),
+        (237, 'App story'),
+        (257, 'Comment created'),
+        (272, 'App story'),
+        (285, 'Checkin to a place'),
+        (308, 'Post in Group'),
+        (0, 'Kikar - missing data')
+    )
+
     feed = models.ForeignKey('Facebook_Feed')
     status_id = models.CharField(unique=True, max_length=128)
     content = models.TextField()
@@ -73,6 +99,7 @@ class Facebook_Status(models.Model):
     share_count = models.PositiveIntegerField(null=True)
     published = models.DateTimeField()
     updated = models.DateTimeField()
+    status_type = models.SmallIntegerField(null=True, choices=TYPE_CHOICES, default=0)
 
     objects = DataFrameManager()
 
