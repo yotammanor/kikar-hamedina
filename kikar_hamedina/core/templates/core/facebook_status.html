@@ -47,10 +47,9 @@ data-token="{{ access_token }}">
 			</span>
 		</div>
 		<div class="col-md-8">
-			{% if status.tags.count > 0 %}
-			<strong>תגים: </strong>
-			{% endif %}
-			<span id="{{status.status_id}}-tags">
+
+			<strong style="display:{% if status.tags.count > 0 %}inherit{% else %}none{% endif %}">תגים: </strong>
+			<span id="{{status.id}}-tags">
 			{% for tag in status.tags.all %}
 			<a href="{% url 'tag' 'name' tag.name %}">
 				<span class="label label-info">{{ tag.name }}</span>

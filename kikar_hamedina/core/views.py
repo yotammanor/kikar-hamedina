@@ -425,8 +425,8 @@ def add_tag_to_status(request):
 
     response_data = dict()
     response_data['success'] = False
-    status_id=request.GET["status_id"]
-    response_data['status_id'] = status_id
+    status_id=request.GET["id"]
+    response_data['id'] = status_id
     tagName=request.GET["tag_str"]
     strippedTagName = tagName.strip()
     try:
@@ -441,6 +441,10 @@ def add_tag_to_status(request):
             tag.save()
             response_data['tag'] = {'id':tag.id,'name':tag.name}
         response_data['success'] = True
+    except:
+        print "ERROR AT ADDING STATUS TO TAG"
+        print status_id
+
     finally:
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
