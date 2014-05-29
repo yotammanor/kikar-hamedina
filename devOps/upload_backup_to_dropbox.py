@@ -1,5 +1,5 @@
 import datetime
-import os, traceback
+import os, traceback, datetime
 
 try:
 	from dropbox import client as dropbox_client
@@ -9,7 +9,35 @@ except ImportError:
 	exit()
 
 def main():
-	print "HERE"
+
+	try:
+		PGPASSWORD= os.environ['PGPASSWORD']
+	except KeyError, e:
+		print "The environment variable PGPASSWORD is not set"
+		return
+
+	try:
+		PGUSER= os.environ['PGUSER']
+	except KeyError, e:
+		print "The environment variable PGUSER is not set"
+		return
+
+	try:
+		PGDATABASE= os.environ['PGDATABASE']
+	except KeyError, e:
+		print "The environment variable PGDATABASE is not set"
+		return
+
+
+
+
+	command = "export PGPASSWORD=%s\npg_dump --username=%s -h localhost %s" % (PGPASSWORD, PGUSER, PGDATABASE)
+	command += ' > '+str(datetime.date.today())
+	os.system(command)
+	command = "gzip "+str(datetime.date.today())
+	os.system(command)
+
+
 	try:
 		DROPBOX_APP_KEY = os.environ['DROPBOX_APP_KEY']
 	except KeyError, e:
@@ -85,8 +113,13 @@ def main():
 		print "Uploading started..."
 		print client.put_file("/db_backup/" + datetime.datetime.today().strftime("%Y%m%d") + "-db-backup", open(datetime.datetime.today().strftime("%Y%m%d") + "-db-backup"))
 		print "Uploading completed..."
-	except IOError:
 
+		print "Removing yesterday's backup"
+		yesterday = datetime.datetime.now() - datetime.timedelta(hours=24)
+		command = "rm "+str(yesterday)+".gz"
+		os.system(command)
+		print "Done removing"
+	except IOError:
 		content = traceback.format_exc()
 		subject = "Kikar: Error on upload of DB backup to Dropbox"
 		addresses = DB_BACKUP_ERROR_NOTIFY
@@ -94,6 +127,8 @@ def main():
 		os.system(command)
 		print "DB backup file does not exists"
 	return
+
+
 
 if __name__ == '__main__':
 	main()
