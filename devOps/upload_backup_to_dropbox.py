@@ -22,17 +22,17 @@ def main():
 		print "The environment variable DROPBOX_APP_SECRET is not set"
 		return
 
-	# try:
-	# 	DROPBOX_ACCESS_KEY = os.environ['DROPBOX_ACCESS_KEY']
-	# except KeyError, e:
-	# 	print "The environment variable DROPBOX_ACCESS_KEY is not set"
-	# 	return
+	try:
+		DROPBOX_ACCESS_KEY = os.environ['DROPBOX_ACCESS_KEY']
+	except KeyError, e:
+		print "The environment variable DROPBOX_ACCESS_KEY is not set"
+		return
 
-	# try:
-	# 	DROPBOX_ACCESS_SECRET = os.environ['DROPBOX_ACCESS_SECRET']
-	# except KeyError, e:
-	# 	print "The environment variable DROPBOX_ACCESS_SECRET is not set"
-	# 	return
+	try:
+		DROPBOX_ACCESS_SECRET = os.environ['DROPBOX_ACCESS_SECRET']
+	except KeyError, e:
+		print "The environment variable DROPBOX_ACCESS_SECRET is not set"
+		return
 
 	try:
 		DB_BACKUP_ERROR_NOTIFY= os.environ['DB_BACKUP_ERROR_NOTIFY']
