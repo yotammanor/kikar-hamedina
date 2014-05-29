@@ -1,6 +1,6 @@
-import json
 import datetime
-import os, sys
+import os, traceback
+
 
 try:
 	from dropbox import client as dropbox_client
@@ -10,10 +10,40 @@ except ImportError:
 	exit()
 
 def main():
-	client_secrets = json.loads(open("client_secrets.json").read())
+	print "HERE"
+	try:
+		DROPBOX_APP_KEY = os.environ['DROPBOX_APP_KEY']
+	except KeyError, e:
+		print "The environment variable DROPBOX_APP_KEY is not set"
+		return
 
 	try:
-		if len(client_secrets["app_key"]) and len(client_secrets["app_secret"]):
+		DROPBOX_APP_SECRET = os.environ['DROPBOX_APP_SECRET']
+	except KeyError, e:
+		print "The environment variable DROPBOX_APP_SECRET is not set"
+		return
+
+	try:
+		DROPBOX_ACCESS_KEY = os.environ['DROPBOX_ACCESS_KEY']
+	except KeyError, e:
+		print "The environment variable DROPBOX_ACCESS_KEY is not set"
+		return
+
+	try:
+		DROPBOX_ACCESS_SECRET = os.environ['DROPBOX_ACCESS_SECRET']
+	except KeyError, e:
+		print "The environment variable DROPBOX_ACCESS_SECRET is not set"
+		return
+
+	try:
+		DB_BACKUP_ERROR_NOTIFY= os.environ['DB_BACKUP_ERROR_NOTIFY']
+	except KeyError, e:
+		print "The environment variable DROPBOX_ACCESS_SECRET is not set"
+		return
+
+
+	try:
+		if len(DROPBOX_APP_KEY) and len(DROPBOX_APP_SECRET):
 			# ready to go
 			pass
 		else:
@@ -23,10 +53,10 @@ def main():
 	except KeyError, e:
 		raise e
 
-	sess = session.DropboxSession(client_secrets.get("app_key"), client_secrets.get("app_secret"), client_secrets.get("access_type")) # created the session object
+	sess = session.DropboxSession(DROPBOX_APP_KEY, DROPBOX_APP_SECRET, "dropbox") # created the session object
 
 	try:
-		if len(client_secrets["access_key"]) and len(client_secrets["access_secret"]):
+		if len(DROPBOX_ACCESS_KEY) and len(DROPBOX_ACCESS_SECRET):
 			# authorized
 			pass
 		else:
@@ -40,7 +70,8 @@ def main():
 			access_token = sess.obtain_access_token(request_token)
 			print "access_key --> " + access_token.key
 			print "access_secret --> " + access_token.secret
-			print "\nCopy the access_key and access_secret to client_secrets.json"
+			print "\nEnter the access_key and access_secret into environment variables"
+			print "named DROPBOX_ACCESS_KEY and DROPBOX_ACCESS_SECRET"
 			return
 	except KeyError, e:
 		raise e
@@ -55,15 +86,13 @@ def main():
 		print "Uploading started..."
 		print client.put_file("/db_backup/" + nameOfFile, open(nameOfFile))
 		print "Uploading completed..."
-	except IOError, e:
-
-		traceback_str = traceback.format_exc()
-		content = "String of error:\n\n"+str(traceback_str)+"\n\n***********\n\n"
-		content = content.replace("<","").replace(">","")
-		content +="File trying to work with:"+nameOfFile
-		subject = "Kikar: Problem with DB backup"
-		addresses = "agam.rafaeli@gmail.com,yotammanor@gmail.com"
-		os.system('echo "%s" | mail -s "%s" "%s"' % (content, subject, addresses))
+	except IOError:
+		content = traceback.format_exc()
+		subject = "Kikar: Error on upload of DB backup to Dropbox"
+		addresses = DB_BACKUP_ERROR_NOTIFY
+		command = "echo \""+content+"\" | mail -s \""+subject+"\" +\""+addresses+"\""
+		os.system(command)
+		print "DB backup file does not exists"
 	return
 
 if __name__ == '__main__':
