@@ -99,7 +99,9 @@ class Facebook_Status(models.Model):
     share_count = models.PositiveIntegerField(null=True)
     published = models.DateTimeField()
     updated = models.DateTimeField()
-    status_type = models.SmallIntegerField(null=True, choices=TYPE_CHOICES, default=0)
+    status_type = models.CharField(null=True, default=None, max_length=128)
+    story = models.CharField(null=True, max_length=512)
+
 
     objects = DataFrameManager()
 
@@ -164,8 +166,13 @@ class Facebook_Status_Attachment(models.Model):
     name = models.TextField(null=True)  #name
     caption = models.TextField(null=True)  #caption
     description = models.TextField(null=True)  #description
-    link = models.TextField(null=True)  #href
-    facebook_object_id = models.CharField(unique=False, null=True, max_length=128)  #fb_object_id (exists only for internal links)
+    link = models.TextField(null=True)  #link
+    facebook_object_id = models.CharField(unique=False, null=True, max_length=128)  # object_id (exists only for internal links)
+
+     #    'fields': "from, message, id, created_time, \
+     # updated_time, type, link, caption, picture, description, name,\
+     # status_type, story, object_id, properties, source, to, shares, \
+     # likes.summary(true).limit(1), comments.summary(true).limit(1)"}
 
     @property
     def is_internal_link(self):
@@ -184,7 +191,7 @@ class Facebook_Status_Attachment(models.Model):
 class Facebook_Status_Attachment_Media(models.Model):
     attachment = models.ForeignKey(Facebook_Status_Attachment, related_name='media')
     type = models.CharField(null=True, choices=ATTACHMENT_MEDIA_TYPES, max_length=16)  #type
-    link = models.TextField(null=True)  #href
+    link = models.TextField(null=True)  #link
     alt = models.TextField(null=True) #alt
     picture = models.TextField(null=True)  #picture
     thumbnail = models.TextField(null=True)  # src

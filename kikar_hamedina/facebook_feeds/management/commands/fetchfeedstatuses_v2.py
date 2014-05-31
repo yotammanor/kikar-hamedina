@@ -14,10 +14,12 @@ from ...models import \
     Facebook_Status_Attachment as Facebook_Status_Attachment_Model, \
     Facebook_Status_Attachment_Media as Facebook_Status_Attachment_Media_Model
 
+NUMBER_OF_TRIES_FOR_REQUEST = 3
+
 LENGTH_OF_EMPTY_ATTACHMENT_JSON = 21
 
 DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN = 1000
-DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN = 20
+DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN = 2
 
 
 class Command(BaseCommand):
@@ -48,7 +50,7 @@ class Command(BaseCommand):
 
     graph = facebook.GraphAPI()
 
-    def fetch_status_objects_from_feed(self, feed_id, fql_limit):
+    def fetch_status_objects_from_feed(self, feed_id, post_number_limit):
         """
         Receives a feed_id for a facebook
         Returns a facebook-sdk fql query, with all status objects published by the page itself.
@@ -63,11 +65,19 @@ class Command(BaseCommand):
                     stream
                 WHERE
                     source_id IN ({0}) AND actor_id IN ({0})
-                LIMIT {1}""".format(feed_id, fql_limit)
+                LIMIT {1}""".format(feed_id, post_number_limit)
+
+        api_request_path = "{0}/posts".format(feed_id)
+        args_for_request = {'limit': post_number_limit,
+                            'fields': "from, message, id, created_time, \
+                             updated_time, type, link, caption, picture, description, name,\
+                             status_type, story, object_id, properties, source, to, shares, \
+                             likes.summary(true).limit(1), comments.summary(true).limit(1)"}
+
         try_number = 1
-        while try_number < 4:
+        while try_number <= NUMBER_OF_TRIES_FOR_REQUEST:
             try:
-                return_statuses = self.graph.fql(query=select_self_published_status_query)
+                return_statuses = self.graph.request(path=api_request_path, args=args_for_request)
                 return return_statuses
             except:
                 warning_msg = "Failed first attempt for feed #({0}) from FB API.".format(feed_id)
@@ -87,8 +97,8 @@ class Command(BaseCommand):
             name=attachment_defaultdict['name'],
             caption=attachment_defaultdict['caption'],
             description=attachment_defaultdict['description'],
-            link=attachment_defaultdict['href'],
-            facebook_object_id=attachment_defaultdict['fb_object_id']
+            link=attachment_defaultdict['link'],
+            facebook_object_id=attachment_defaultdict['object_id']
         )
         attachment.save()
         # add all media files related to attachment
@@ -98,7 +108,7 @@ class Command(BaseCommand):
             media = Facebook_Status_Attachment_Media_Model(
                 attachment=attachment,
                 type=media_file_defaultdict['type'],
-                link=media_file_defaultdict['href'],
+                link=media_file_defaultdict['link'],
                 alt=media_file_defaultdict['alt'],
                 thumbnail=media_file_defaultdict['src'],
             )
@@ -111,8 +121,8 @@ class Command(BaseCommand):
     @staticmethod
     def get_unique_link_for_media(attachment, i, media_file):
         media_file_defaultdict = defaultdict(str, media_file)
-        if media_file_defaultdict['href']:
-            unique_link = media_file_defaultdict['href']
+        if media_file_defaultdict['link']:
+            unique_link = media_file_defaultdict['link']
         elif 'music' in media_file_defaultdict.keys():
             unique_link = media_file_defaultdict['music']['source_url']
         else:
@@ -122,13 +132,13 @@ class Command(BaseCommand):
     @staticmethod
     def update_status_attachment(attachment, status_object):
 
-        #Update relevant attachment fields
+        # Update relevant attachment fields
         attachment_defaultdict = defaultdict(str, status_object['attachment'])
         attachment.name = attachment_defaultdict['name']
         attachment.caption = attachment_defaultdict['caption']
         attachment.description = attachment_defaultdict['description']
-        attachment.link = attachment_defaultdict['href']
-        attachment.facebook_object_id = attachment_defaultdict['fb_object_id']
+        attachment.link = attachment_defaultdict['link']
+        attachment.facebook_object_id = attachment_defaultdict['object_id']
         attachment.save()
 
         # add or update all media files related to attachment
@@ -139,7 +149,7 @@ class Command(BaseCommand):
                 media, created = Facebook_Status_Attachment_Media_Model.objects.get_or_create(attachment=attachment,
                                                                                               link=unique_link)
                 media.type = media_file_defaultdict['type']
-                media.link = media_file_defaultdict['href']
+                media.link = media_file_defaultdict['link']
                 media.alt = media_file_defaultdict['alt']
                 media.thumbnail = media_file_defaultdict['src']
                 if media.type == 'photo':
@@ -148,7 +158,7 @@ class Command(BaseCommand):
                 media.save()
         except:
             raise
-        #delete a media if no longer appears in retrieved attachment but appears in db
+        # delete a media if no longer appears in retrieved attachment but appears in db
         list_of_links = list()
         for i, media_file in enumerate(status_object['attachment']['media']):
             media_file_defaultdict, unique_link = Command.get_unique_link_for_media(attachment, i, media_file)
@@ -184,50 +194,89 @@ class Command(BaseCommand):
         Receives a single status object as retrieved from facebook-sdk, an inserts the status
         to the db.
                 """
-        #Create a datetime object from int received in status_object
-        current_time_of_update = datetime.datetime.fromtimestamp(status_object['updated_time'],
-                                                                 tz=timezone.utc)
+        # Create a datetime object from int received in status_object
+        current_time_of_update = datetime.datetime.strptime(status_object['updated_time'], '%Y-%m-%dT%H:%M:%S+0000').replace(tzinfo=timezone.utc)
+        print current_time_of_update
+        print current_time_of_update.timetz()
+        # current_time_of_update.tzinfo()
+        # current_time_of_update.astimezone(timezone.utc)
+        # print current_time_of_update
+
+         #
+         #        'fields': "from, message, id, created_time, \
+         # updated_time, type, link, caption, picture, description, name,\
+         # status_type, story, object_id, properties, source, to, shares, \
+         # likes.summary(true).limit(1), comments.summary(true).limit(1)"}
+
+        def_dict_rec = lambda: defaultdict(def_dict_rec)
+
+        status_object_defaultdict = defaultdict(lambda: None, status_object)
 
         try:
             # If post_id already exists in DB
-            status = Facebook_Status_Model.objects.get(status_id=status_object['post_id'])
+            status = Facebook_Status_Model.objects.get(status_id=status_object['id'])
             if status.updated < current_time_of_update:
+                print 'here'
                 # If post_id exists but of earlier update time, fields are updated.
-                status.content = status_object['message']
-                status.like_count = status_object['like_info']['like_count']
-                status.comment_count = status_object['comment_info']['comment_count']
-                status.share_count = status_object['share_count']
-                status.status_type = status_object['type']
+                status.content = status_object_defaultdict['message']
+                status.like_count = status_object_defaultdict['likes']['summary']['total_count']
+                status.comment_count = status_object_defaultdict['comments']['summary']['total_count']
+                status.share_count = status_object_defaultdict['shares']['count']
+                status.status_type = status_object_defaultdict['type']  # note that fb has type AND status_type fields
                 status.updated = current_time_of_update
                 # update attachment data
-                self.create_or_update_attachment(status, status_object)
+                self.create_or_update_attachment(status, status_object_defaultdict)
             elif options['force-attachment-update']:
                 # force update of attachment, regardless of time
                 status.save()
-                self.create_or_update_attachment(status, status_object)
+                self.create_or_update_attachment(status, status_object_defaultdict)
                 # If post_id exists but of equal or later time (unlikely, but may happen), disregard
                 # Should be an else here for this case but as it is, just disregard
         except Facebook_Status_Model.DoesNotExist:
             # If post_id does not exist at all, create it from data.
+            print 'i am here'
+            print status_object_defaultdict['message']
+            if status_object_defaultdict['message']:
+                message = status_object_defaultdict['message']
+            else:
+                message = ''
+
+            if status_object_defaultdict['likes']:
+                like_count = status_object_defaultdict['likes']['summary']['total_count']
+            else:
+                like_count = None
+
+            if status_object_defaultdict['comments']:
+                comment_count = status_object_defaultdict['comments']['summary']['total_count']
+            else:
+                comment_count = None
+
+            if status_object_defaultdict['shares']:
+                share_count = status_object_defaultdict['shares']['count']
+            else:
+                share_count = None
+            published = datetime.datetime.strptime(status_object_defaultdict['created_time'], '%Y-%m-%dT%H:%M:%S+0000').replace(tzinfo=timezone.utc)
+
             status = Facebook_Status_Model(feed_id=feed_id,
-                                           status_id=status_object['post_id'],
-                                           content=status_object['message'],
-                                           like_count=status_object['like_info']['like_count'],
-                                           comment_count=status_object['comment_info']['comment_count'],
-                                           share_count=status_object['share_count'],
-                                           published=datetime.datetime.fromtimestamp(
-                                               int(status_object['created_time']), tz=timezone.utc),
+                                           status_id=status_object['id'],
+                                           content=message,
+                                           like_count=like_count,
+                                           comment_count=comment_count,
+                                           share_count=share_count,
+                                           published=published,
                                            updated=current_time_of_update,
-                                           status_type=status_object['type'])
-            if len(str(status_object['attachment'])) > LENGTH_OF_EMPTY_ATTACHMENT_JSON:
-                #There's an attachment
+                                           status_type=status_object_defaultdict['type'])
+            print 'here'
+            if len(str(status_object_defaultdict['attachment'])) > LENGTH_OF_EMPTY_ATTACHMENT_JSON:
+                print 'here2'
+                # There's an attachment
                 status.save()
                 self.insert_status_attachment(status, status_object)
         finally:
             # save status object.
             status.save()
 
-    def get_feed_statuses(self, feed, fql_limit):
+    def get_feed_statuses(self, feed, post_number_limit):
         """
         Returns a Dict object of feed ID. and retrieved status objects.
                 """
@@ -237,7 +286,8 @@ class Command(BaseCommand):
                 settings.FACEBOOK_APP_ID,
                 settings.FACEBOOK_SECRET_KEY
             )
-            return {'feed_id': feed.id, 'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, fql_limit)}
+            return {'feed_id': feed.id,
+                    'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit)}
 
         else:  # feed_type == 'UP' - User Profile
             # Set facebook graph access token to user access token
@@ -248,7 +298,8 @@ class Command(BaseCommand):
             else:
                 print 'using token by user_id: %s' % token.user_id
                 self.graph.access_token = token.token
-                return {'feed_id': feed.id, 'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, fql_limit)}
+                return {'feed_id': feed.id,
+                        'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit)}
 
     def handle(self, *args, **options):
         """
@@ -258,16 +309,16 @@ class Command(BaseCommand):
         """
         feeds_statuses = []
         if options['initial']:
-            fql_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN
+            post_number_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN
         else:
-            fql_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN
-        print 'Variable fql_limit set to: {0}.'.format(fql_limit)
+            post_number_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN
+        print 'Variable post_number_limit set to: {0}.'.format(post_number_limit)
 
         # Case no args - fetch all feeds
         if len(args) == 0:
             for feed in Facebook_Feed_Model.objects.all():
                 self.stdout.write('Working on feed: {0}.'.format(feed.pk))
-                feed_statuses = self.get_feed_statuses(feed, fql_limit)
+                feed_statuses = self.get_feed_statuses(feed, post_number_limit)
                 self.stdout.write('Successfully fetched feed: {0}.'.format(feed.pk))
                 for status in feed_statuses['statuses']:
                     self.insert_status_object_to_db(status, feed_statuses['feed_id'], options)
@@ -288,8 +339,9 @@ class Command(BaseCommand):
                 logger.warning(warning_msg)
                 raise CommandError('Feed "%s" does not exist' % feed_id)
 
-            feed_statuses = self.get_feed_statuses(feed, fql_limit)
-            for status in feed_statuses['statuses']:
+            feed_statuses = self.get_feed_statuses(feed, post_number_limit)
+            for status in feed_statuses['statuses']['data']:
+                print status.keys()
                 self.insert_status_object_to_db(status, feed_statuses['feed_id'], options)
             self.stdout.write('Successfully written feed: {0}.'.format(feed.id))
             info_msg = "Successfully updated feed: {0}.".format(feed_id)
