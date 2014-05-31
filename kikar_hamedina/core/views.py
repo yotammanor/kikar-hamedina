@@ -5,7 +5,7 @@ from IPython.lib.pretty import pprint
 import facebook
 from numpy import mean
 from django.core.exceptions import FieldError
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
@@ -223,14 +223,17 @@ class MemberView(StatusFilterUnifiedView):
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
-        query_set = Member.objects.get(
-            id=search_string).facebook_persona.get_main_feed.facebook_status_set.all().order_by(
-            '-published')
+        self.persona = get_object_or_404(Member, id=search_string).facebook_persona
+        if self.persona is None:
+            return []
+        query_set = self.persona.get_main_feed.facebook_status_set.all().order_by('-published')
         return query_set
 
     def get_context_data(self, **kwargs):
         context = super(MemberView, self).get_context_data(**kwargs)
         stats = dict()
+        if self.persona is None: # Member with no facebook persona
+            return context
         member_id = self.kwargs['id']
         feed = Facebook_Feed.objects.get(persona__object_id=member_id)
 
@@ -282,8 +285,8 @@ class PartyView(StatusFilterUnifiedView):
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
         all_members_for_party = Party.objects.get(id=search_string).current_members()
-        all_feeds_for_party = [Member.objects.get(id=member.id).facebook_persona.get_main_feed for member in
-                               all_members_for_party]
+        all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
+                               all_members_for_party if member.facebook_persona]
         query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]).order_by(
             '-published')
         return query_set

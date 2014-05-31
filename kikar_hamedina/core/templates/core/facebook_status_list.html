@@ -78,6 +78,11 @@
             {% for status in object_list %}
                 {% include "core/facebook_status.html" with status=status %}
             {% endfor %}
+            {% if not object_list %}
+                {% block noposts %}
+                    <p>לא נמצאו עדכונים</p>
+                {% endblock %}
+            {% endif %}
         </div>
         <div class="col-md-2">
             {% block sidebar %}
