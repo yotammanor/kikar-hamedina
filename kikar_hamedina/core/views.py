@@ -5,7 +5,7 @@ from IPython.lib.pretty import pprint
 import facebook
 from numpy import mean
 from django.core.exceptions import FieldError
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
@@ -17,7 +17,7 @@ from django.conf import settings
 from mks.models import Knesset
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
 from mks.models import Party, Member
-from kikar_hamedina.settings.base import CURRENT_KNESSET_NUMBER
+from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
 
 HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 
@@ -236,41 +236,41 @@ class MemberView(StatusFilterUnifiedView):
 
         # Statistical Data for member - PoC
 
-        statuses_for_member = Facebook_Status.objects.filter(feed__persona__object_id=member_id).order_by('-like_count')
-
-        df_statuses = statuses_for_member.to_dataframe('like_count', index='published')
-        mean_monthly_popularity_by_status_raw = df_statuses.resample('M', how='mean').to_dict()
-
-        mean_monthly_popularity_by_status_list_unsorted = [{'x': time.mktime(key.timetuple()) * 1000, 'y': value} for
-                                                           # *1000 - seconds->miliseconds
-                                                           key, value in
-                                                           mean_monthly_popularity_by_status_raw['like_count'].items()]
-        mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted,
-                                                               key=lambda x: x['x'])
-        mean_monthly_popularity_by_status = json.dumps(mean_monthly_popularity_by_status_list_sorted)
-        print mean_monthly_popularity_by_status
-        mean_like_count_all = mean([status.like_count for status in statuses_for_member])
-        mean_like_count_all_series = [{'x': time.mktime(key.timetuple()) * 1000, 'y': mean_like_count_all} for
-                                      # *1000 - seconds->miliseconds
-                                      key, value in
-                                      mean_monthly_popularity_by_status_raw['like_count'].items()]
-        mean_like_count_all_series_json = json.dumps(mean_like_count_all_series)
-
-        mean_like_count_last_month = mean([status.like_count for status in statuses_for_member.filter(
-            published__gte=timezone.now() - timezone.timedelta(days=30))])
-
-        tags_for_member = Tag.objects.filter(statuses__feed__persona__object_id=member_id).annotate(
-            number_of_posts=Count('statuses')).order_by(
-            '-number_of_posts')
-        tags_for_member_list = [{'label': tag.name, 'value': tag.number_of_posts} for tag in tags_for_member]
-        tags_for_member_json = json.dumps(tags_for_member_list)
-
-        stats['tags_for_member'] = tags_for_member_json
-        stats['mean_monthly_popularity_by_status'] = mean_monthly_popularity_by_status
-        # stats['total_monthly_post_frequency'] = total_monthly_post_frequency
-        stats['mean_like_count_all'] = mean_like_count_all_series_json
-
-        context['stats'] = stats
+        # statuses_for_member = Facebook_Status.objects.filter(feed__persona__object_id=member_id).order_by('-like_count')
+        #
+        # df_statuses = statuses_for_member.to_dataframe('like_count', index='published')
+        # mean_monthly_popularity_by_status_raw = df_statuses.resample('M', how='mean').to_dict()
+        #
+        # mean_monthly_popularity_by_status_list_unsorted = [{'x': time.mktime(key.timetuple()) * 1000, 'y': value} for
+        #                                                    # *1000 - seconds->miliseconds
+        #                                                    key, value in
+        #                                                    mean_monthly_popularity_by_status_raw['like_count'].items()]
+        # mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted,
+        #                                                        key=lambda x: x['x'])
+        # mean_monthly_popularity_by_status = json.dumps(mean_monthly_popularity_by_status_list_sorted)
+        # print mean_monthly_popularity_by_status
+        # mean_like_count_all = mean([status.like_count for status in statuses_for_member])
+        # mean_like_count_all_series = [{'x': time.mktime(key.timetuple()) * 1000, 'y': mean_like_count_all} for
+        #                               # *1000 - seconds->miliseconds
+        #                               key, value in
+        #                               mean_monthly_popularity_by_status_raw['like_count'].items()]
+        # mean_like_count_all_series_json = json.dumps(mean_like_count_all_series)
+        #
+        # mean_like_count_last_month = mean([status.like_count for status in statuses_for_member.filter(
+        #     published__gte=timezone.now() - timezone.timedelta(days=30))])
+        #
+        # tags_for_member = Tag.objects.filter(statuses__feed__persona__object_id=member_id).annotate(
+        #     number_of_posts=Count('statuses')).order_by(
+        #     '-number_of_posts')
+        # tags_for_member_list = [{'label': tag.name, 'value': tag.number_of_posts} for tag in tags_for_member]
+        # tags_for_member_json = json.dumps(tags_for_member_list)
+        #
+        # stats['tags_for_member'] = tags_for_member_json
+        # stats['mean_monthly_popularity_by_status'] = mean_monthly_popularity_by_status
+        # # stats['total_monthly_post_frequency'] = total_monthly_post_frequency
+        # stats['mean_like_count_all'] = mean_like_count_all_series_json
+        #
+        # context['stats'] = stats
 
         return context
 
@@ -438,6 +438,34 @@ def status_update(request, status_id):
         response_data['shares'] = status.share_count
         response_data['id'] = status.status_id
 
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+#A handler for add_tag_to_status ajax call from client
+def add_tag_to_status(request):
+
+    response_data = dict()
+    response_data['success'] = False
+    status_id=request.GET["id"]
+    response_data['id'] = status_id
+    tagName=request.GET["tag_str"]
+    strippedTagName = tagName.strip()
+    try:
+        if strippedTagName:
+            tag, created = Tag.objects.get_or_create(name=strippedTagName)
+            if created:
+                tag.name = strippedTagName
+                tag.is_for_main_display = True
+                tag.save()
+                # add status to tag statuses
+            tag.statuses.add(status_id)
+            tag.save()
+            response_data['tag'] = {'id':tag.id,'name':tag.name}
+        response_data['success'] = True
+    except:
+        print "ERROR AT ADDING STATUS TO TAG"
+        print status_id
+
+    finally:
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 

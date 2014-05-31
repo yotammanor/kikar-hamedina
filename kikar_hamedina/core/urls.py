@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag
 from mks.models import Party, Member
-from kikar_hamedina.settings.base import CURRENT_KNESSET_NUMBER
+from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
 from tastypie.api import Api
 from api import *
 
@@ -55,6 +55,7 @@ urlpatterns = patterns('',
                        url(r'^fblogin/$', views.login_page, name='fblogin'),
                        url(r'^fblogin/get-data/$', views.get_data_from_facebook, name='get-data-from-facebook'),
                        url(r'^status_update/(?P<status_id>\w+)/$', views.status_update),
+                       url(r'^add_tag_to_status/$', views.add_tag_to_status),
                        url(r'^search_bar/$', views.search_bar),
                        url(r'^api/',include(v1_api.urls)),
                        url(r'^status_permalink/(?P<slug>[-_\w]+)/$', views.FacebookStatusDetailView.as_view(), name='status-detail'),
