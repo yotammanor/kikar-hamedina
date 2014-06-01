@@ -14,6 +14,7 @@ from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.db.models import Count, Q, F
 from django.conf import settings
+from endless_pagination.views import AjaxListView
 from mks.models import Knesset
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
 from mks.models import Party, Member
@@ -24,6 +25,9 @@ HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
 NUMBER_OF_TAGS_TO_PRESENT = 3
+
+class StatusListView(AjaxListView):
+    page_template = "core/facebook_status_list.html"
 
 
 class HomepageView(ListView):
@@ -53,7 +57,7 @@ class HomepageView(ListView):
         return context
 
 
-class AllStatusesView(ListView):
+class AllStatusesView(StatusListView):
     model = Facebook_Status
     template_name = 'core/all_results.html'
     # paginate_by = 100
@@ -70,7 +74,7 @@ class AllStatusesView(ListView):
 
 
 #
-class SearchView(ListView):
+class SearchView(StatusListView):
     model = Facebook_Status
     # paginate_by = 10
     context_object_name = 'filtered_statuses'
@@ -175,15 +179,16 @@ class SearchView(ListView):
         return context
 
 
-class SearchGuiView(ListView):
+class SearchGuiView(StatusListView):
     model = Facebook_Status
     template_name = "core/searchgui.html"
 
 
-class StatusFilterUnifiedView(ListView):
+class StatusFilterUnifiedView(StatusListView):
     model = Facebook_Status
     # paginate_by = 10
     context_object_name = 'filtered_statuses'
+    page_template = "core/facebook_status_list.html"
 
     def get_queryset(self):
         variable_column = self.kwargs['variable_column']
@@ -220,6 +225,13 @@ class StatusFilterUnifiedView(ListView):
 class MemberView(StatusFilterUnifiedView):
     template_name = "core/member.html"
     parent_model = Member
+
+    def entry_index(request, template='myapp/entry_index.html'):
+        context = {
+            'entries': MemberView.objects.all(),
+        }
+        return render_to_response(
+            template, context, context_instance=RequestContext(request))
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
