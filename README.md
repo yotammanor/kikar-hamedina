@@ -11,9 +11,11 @@ Edit it to include your facebook details
 - FACEBOOK_APP_ID
 
 Install virtualbox: https://www.virtualbox.org/wiki/Downloads
+
 Install vagrant: https://www.vagrantup.com/downloads.html
 
 cd to kikar_hamedina root directory
+
 Run ``vagrant up`` - this can take about 25-30 minutes
 
 For a successful run you should see something like 'kikar start/running, process 10031' in the end.
