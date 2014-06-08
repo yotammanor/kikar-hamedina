@@ -1,58 +1,7 @@
-
-Installation Using Vagrant
-========================
-
-Clone the project into your local repository.
-
-Then Copy the file ``kikar_hamedina/kikar_hamedina/settings/deploy.py.template`` into ``kikar_hamedina/kikar_hamedina/settings/deploy.py``
-
-Edit it to include your facebook details
-- FACEBOOK_SECRET_KEY
-- FACEBOOK_APP_ID
-
-Install virtualbox: https://www.virtualbox.org/wiki/Downloads
-
-Install vagrant: https://www.vagrantup.com/downloads.html
-
-cd to kikar_hamedina root directory
-
-Run ``vagrant up`` - this can take about 25-30 minutes
-
-For a successful run you should see something like 'kikar start/running, process 10031' in the end.
-
-This means a virtual machine was successfully created by vagrant (it's an Ubuntu server) and a Django server is running on it on port 8000. The virtual machine and HTTP server are connected to the files on your environment so you can use you favorite text editor to change any project files and these will be reflected on the server (Django will apply changes automatically and reload the server).
-You can now access the server from your browser on http://localhost:8000/
-
-Using Vagrant After Installation
-===============================
-
-Virtual machine (vagrant) maintenance:
-
-``vagrant desroy`` - destroy virtual machine
-
-``vagrant up`` - create virtual machine or run it if it is down
-
-``vagrant reload --provision`` - re-run the startup script to get the machine and server up and running and apply changes that were made, update data from facebook etc.
-
-``vagrant global-status`` - see status of all machines
-
-``vagrant ssh <id>``  - ssh into machine
-
-After SSH'ing into the machine, you can see the server log in /var/log/upstart/kikar.log (e.g. ``sudo tail -F /var/log/upstart/kikar.log``)
+*** Dear Developer! Branch Master is not used for development, for updated readme file, switch to newmodel ***
 
 
-These commands can be used to manage the django server (these are standard Upstart commands):
-
-``sudo stop kikar``
-
-``sudo start kikar``
-
-``sudo restart kikar``
-
-``sudo status kika``
-
-
-Installation (Deprecated, but might still work)
+Installation
 ==============
 
 .. Set the following environment variables:
@@ -105,8 +54,7 @@ and enjoy the show.
 
 
 
-Editing data_fixture
-====================
+Editing data_fixture:
 
 At the main directory there's a sub-directory called data. Within it there are four csv files, for Party, Person, Feed, and Tag data, which can be edited.
 
