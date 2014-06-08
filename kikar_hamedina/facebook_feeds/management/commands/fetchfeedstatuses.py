@@ -11,8 +11,8 @@ from ...models import \
     Facebook_Feed as Facebook_Feed_Model, \
     Facebook_Status as Facebook_Status_Model, \
     User_Token as User_Token_Model, \
-    Facebook_Status_Attachment as Facebook_Status_Attachment_Model, \
-    Facebook_Status_Attachment_Media as Facebook_Status_Attachment_Media_Model
+    Facebook_Status_Attachment as Facebook_Status_Attachment_Model
+    # Facebook_Status_Attachment_Media as Facebook_Status_Attachment_Media_Model
 
 LENGTH_OF_EMPTY_ATTACHMENT_JSON = 21
 

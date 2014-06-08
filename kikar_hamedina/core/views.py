@@ -53,6 +53,17 @@ class HomepageView(ListView):
         return context
 
 
+class OnlyCommentsView(ListView):
+    model = Facebook_Status
+    template_name = 'core/all_results.html'
+
+    def get_queryset(self):
+        statuses = Facebook_Status.objects.all()
+        comments_ids = [status.id for status in statuses if status.is_comment]
+        comments = Facebook_Status.objects.filter(id__in=comments_ids).order_by('-like_count')
+        return comments
+
+
 class AllStatusesView(ListView):
     model = Facebook_Status
     template_name = 'core/all_results.html'

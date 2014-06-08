@@ -100,8 +100,8 @@ class Facebook_Status(models.Model):
     published = models.DateTimeField()
     updated = models.DateTimeField()
     status_type = models.CharField(null=True, default=None, max_length=128)
-    story = models.CharField(null=True, max_length=512)
-
+    story = models.TextField(null=True)
+    story_tags = models.TextField(null=True)
 
     objects = DataFrameManager()
 
@@ -124,6 +124,22 @@ class Facebook_Status(models.Model):
             else:
                 return False
         except:
+            return False
+
+    @property
+    def is_comment(self):
+        if self.story_tags:
+            story_tags_eval = eval(self.story_tags)
+            try:
+                for tag in story_tags_eval.values():
+                    for dic in tag:
+                        if Facebook_Feed.objects.filter(vendor_id=dic['id']):
+                            return False
+            except:
+                return True
+
+            return True
+        else:
             return False
 
 
@@ -166,40 +182,14 @@ class Facebook_Status_Attachment(models.Model):
     name = models.TextField(null=True)  #name
     caption = models.TextField(null=True)  #caption
     description = models.TextField(null=True)  #description
-    link = models.TextField(null=True)  #link
+    link = models.TextField(null=False)  #link
     facebook_object_id = models.CharField(unique=False, null=True, max_length=128)  # object_id (exists only for internal links)
-
-     #    'fields': "from, message, id, created_time, \
-     # updated_time, type, link, caption, picture, description, name,\
-     # status_type, story, object_id, properties, source, to, shares, \
-     # likes.summary(true).limit(1), comments.summary(true).limit(1)"}
+    type = models.CharField(null=True, choices=ATTACHMENT_MEDIA_TYPES, max_length=16)  #type
+    picture = models.TextField(null=True)  #picture
 
     @property
     def is_internal_link(self):
         return 'https://www.facebook.com/' in self.link
-
-    @property
-    def get_link(self):
-        if self.link:
-            return self.link
-        elif self.media.count() == 1:
-            return self.media.first().link
-        else:
-            return None
-
-
-class Facebook_Status_Attachment_Media(models.Model):
-    attachment = models.ForeignKey(Facebook_Status_Attachment, related_name='media')
-    type = models.CharField(null=True, choices=ATTACHMENT_MEDIA_TYPES, max_length=16)  #type
-    link = models.TextField(null=True)  #link
-    alt = models.TextField(null=True) #alt
-    picture = models.TextField(null=True)  #picture
-    thumbnail = models.TextField(null=True)  # src
-    owner_id = models.TextField(null=True)  # photo.owner
-
-    class Meta:
-        unique_together = ('attachment', 'link')
-
 
 class User_Token(models.Model):
     token = models.CharField(max_length=256, unique=True)

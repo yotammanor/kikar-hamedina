@@ -59,6 +59,7 @@ urlpatterns = patterns('',
                        url(r'^search_bar/$', views.search_bar),
                        url(r'^api/',include(v1_api.urls)),
                        url(r'^status_permalink/(?P<slug>[-_\w]+)/$', views.FacebookStatusDetailView.as_view(), name='status-detail'),
+                       url(r'^comments/', views.OnlyCommentsView.as_view(), name='comments'),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
