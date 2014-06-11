@@ -1,6 +1,6 @@
-{% extends "core/facebook_status_list.html" %}
+{% extends "core/facebook_statuses_page.html" %}
 
-{% block title %}Homepage{% endblock title %}
+{% block title %}{{ object.name }}{% endblock title %}
 
 {% block h1 %}
     <i class="fa fa-user"></i> {{ object.name }}
@@ -14,13 +14,20 @@
             <img src="{{ feed.pic_large }}" class="img-rounded" id="profile-photo">
         </p>
         <p>
-            <i class="fa fa-group"></i> {{ object.current_party.name }}
+            <i class="fa fa-group"></i>
+            <a href="{% url 'party' object.current_party.id %}">{{ object.current_party.name }}</a>
         </p>
+        {% if object.facebook_persona %}
+            <p>
+                <i class="fa fa-thumbs-up"></i>
+                {{ feed.current_fan_count|intcomma }}
+            </p>
+        {% endif %}
         <p>
-
-            <i class="fa fa-thumbs-up"></i>
-            {{ feed.current_fan_count|intcomma }}
-
+            <img src="/static/media/oknesset_icon.png" />
+            <a href="{{ object.ok_url }}">{{ object.name }}</a> /
+            <a href="{{ object.current_party.ok_url }}">{{ object.current_party.name }}</a>
+            באתר כנסת פתוחה
         </p>
 {#        <p>#}
 {#            <script type="text/javascript">#}
@@ -124,6 +131,22 @@
             {# TODO move to css file #}
 {#        </div>#}
     {% endwith %}
+{% endblock %}
+
+{% block noposts %}
+    {% if not object.facebook_persona %}
+        <p>
+            לא נמצא דף פייסבוק עבור {{ object.name }}.
+            {% if object.email %}
+                אפשר <a href="mailto:{{ object.email }}" target="_blank"
+                    >לשלוח {% if object.is_female %}לה{% else %}לו{% endif %} דוא״ל</a>.
+            {% endif %}
+        </p>
+        <p>
+            יש ל{{ object.name }} דף פייסבוק? <a href="mailto:suggestions@kikarhamedina.hasadna.org.il" target="_blank">ספרו לנו</a>!
+    {% else %}
+        <p>לא נמצאו עדכונים</p>
+    {% endif %}
 {% endblock %}
 
 {% block sidebar %}

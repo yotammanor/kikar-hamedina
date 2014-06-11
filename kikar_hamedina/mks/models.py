@@ -14,6 +14,8 @@ from mks.managers import (
     BetterManager, KnessetManager, CurrentKnessetMembersManager,
     CurrentKnessetPartyManager)
 
+OK_BASE_URL = "http://oknesset.org"
+
 GENDER_CHOICES = (
     (u'M', _('Male')),
     (u'F', _('Female')),
@@ -86,6 +88,10 @@ class Party(models.Model):
     def uri_template(self):
         # TODO: use the Site's url from django.contrib.site
         return "%s/api/party/%s/htmldiv/" % ('', self.id)
+
+    @property
+    def ok_url(self):
+        return OK_BASE_URL + "/party/" + str(self.id)
 
     def __unicode__(self):
         if self.is_current:
@@ -209,6 +215,10 @@ class Member(models.Model):
     average_monthly_committee_presence = models.FloatField(null=True, blank=True)
 
     backlinks_enabled = models.BooleanField(default=True)
+
+    @property
+    def ok_url(self):
+        return OK_BASE_URL + "/member/" + str(self.id)
 
     objects = BetterManager()
     current_knesset = CurrentKnessetMembersManager()
