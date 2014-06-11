@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django_pandas.managers import DataFrameManager
 # Create your models here.
+INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own', 'on their own']
 
 
 class Facebook_Persona(models.Model):
@@ -145,6 +146,8 @@ class Facebook_Status(models.Model):
                 #
                 return True
 
+            return True
+        elif [text for text in INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD if text in unicode(self.story)]:
             return True
         else:
             return False
