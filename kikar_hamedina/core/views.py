@@ -1,7 +1,6 @@
 import datetime, time
 import urllib2
 import json
-from IPython.lib.pretty import pprint
 import facebook
 from numpy import mean
 from django.core.exceptions import FieldError
@@ -76,47 +75,10 @@ class SearchView(ListView):
     context_object_name = 'filtered_statuses'
     template_name = "core/search.html"
 
-    # def get_queryset(self):
-    #
-    #     members = []
-    #     if 'members' in self.request.GET.keys():
-    #         members = [int(member_id) for member_id in self.request.GET['members'].split(',')]
-    #     if 'parties' in self.request.GET.keys():
-    #         parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
-    #         parties = Party.objects.filter(id__in=parties_ids)
-    #         for party in parties:
-    #             for member in party.current_members():
-    #                 if member.id not in members:
-    #                     members.append(member.id)
-    #
-    #     member_query = Member.objects.filter(id__in=members)
-    #     feeds = Facebook_Feed.objects.filter(persona__object_id__in=[member.id for member in member_query])
-    #     tags_ids = []
-    #     if 'tags' in self.request.GET.keys():
-    #         tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
-    #
-    #     query_Q = Q(feed__in=feeds) | Q(tags__in=tags_ids)
-    #
-    #     if 'search_str' in self.request.GET.keys():
-    #         search_str = self.request.GET['search_str']
-    #         query_str_Q = Q(content__contains=search_str)
-    #         search_words = search_str.strip().split(' ')
-    #         for word in search_words:
-    #             query_str_Q = Q(content__contains=word) | query_str_Q
-    #         query_Q = query_Q & query_str_Q
-    #
-    #     print query_Q
-    #     return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
-    #     print 'number of results: %d' % len(return_queryset)
-    #     return return_queryset
-
-    def get_context_data(self, **kwargs):
-        context = super(SearchView, self).get_context_data(**kwargs)
-
-        members = []
+    def get_parsed_request(self):
+        members_ids = []
         if 'members' in self.request.GET.keys():
-            members = [int(member_id) for member_id in self.request.GET['members'].split(',')]
-        context['members'] = Member.objects.filter(id__in=members)
+            members_ids = [int(member_id) for member_id in self.request.GET['members'].split(',')]
 
         parties_ids = []
         if 'parties' in self.request.GET.keys():
@@ -124,51 +86,57 @@ class SearchView(ListView):
             parties = Party.objects.filter(id__in=parties_ids)
             for party in parties:
                 for member in party.current_members():
-                    if member.id not in members:
-                        members.append(member.id)
-        context['parties'] = Party.objects.filter(id__in=parties_ids)
-
-        member_query = Member.objects.filter(id__in=members)
-        feeds = Facebook_Feed.objects.filter(persona__object_id__in=member_query)
+                    if member.id not in members_ids:
+                        members_ids.append(member.id)
 
         tags_ids = []
         if 'tags' in self.request.GET.keys():
             tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
+
+        words = []
+        if 'search_str' in self.request.GET.keys():
+            words = self.request.GET['search_str'].strip().split(' ')
+
+        return members_ids, parties_ids, tags_ids, words
+
+    def parse_q_object(self,members_ids,parties_ids,tags_ids,words):
+        member_query = Member.objects.filter(id__in=members_ids)
+        feeds = Facebook_Feed.objects.filter(persona__object_id__in=[member.id for member in member_query])
+
+        memebers_OR_parties_Q = Q()
+        if len(feeds) > 0:
+            memebers_OR_parties_Q = Q(feed__in=feeds)
+
+        search_str_Q = Q()
+        for word in words:
+            search_str_Q = Q(content__contains=word) | search_str_Q
+            search_str_Q = Q(tags__name__contains=word) | search_str_Q
+
+        query_Q = memebers_OR_parties_Q & search_str_Q
+        return query_Q
+
+    def get_queryset(self):
+        members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
+
+        query_Q = self.parse_q_object(members_ids,parties_ids,tags_ids,words)
+        return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
+        return return_queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchView, self).get_context_data(**kwargs)
+
+        members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
+        query_Q = self.parse_q_object(members_ids,parties_ids,tags_ids,words)
+
+        context['members'] = Member.objects.filter(id__in=members_ids)
+
+        context['parties'] = Party.objects.filter(id__in=parties_ids)
+
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
 
-        if feeds and tags_ids:
-            query_q_objecs = Q(feed__in=feeds) | Q(tags__in=tags_ids)
-        elif tags_ids:
-            query_q_objecs = Q(tags__in=tags_ids)
-        elif feeds:
-            query_q_objecs = Q(feed__in=feeds)
-        else:
-            query_q_objecs = None
+        context['search_str'] = words
 
-        query_q_words = None
-        search_str = None
-        if 'search_str' in self.request.GET.keys():
-            search_str = self.request.GET['search_str']
-            query_q_words = Q(content__contains=search_str)
-            search_words = search_str.strip().split(' ')
-            for word in search_words:
-                query_q_words = Q(content__contains=word) | query_q_words
-
-        if query_q_objecs and query_q_words:
-            query_q = query_q_objecs & query_q_words
-        elif query_q_words:
-            query_q = query_q_words
-        elif query_q_objecs:
-            query_q = query_q_objecs
-        else:
-            query_q = Q(content__contains='')
-
-        context['search_str'] = search_str
-
-        print query_q
-        return_queryset = Facebook_Status.objects.filter(query_q).order_by("-published")
-        print len(return_queryset)
-        self.queryset = return_queryset
+        return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -508,7 +476,5 @@ def search_bar(request):
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
-    print 'number of results:', response_data['number_of_results']
-    pprint(response_data)
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
