@@ -1176,6 +1176,90 @@
         }
     }, 
     {
+        "pk": "99", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "99", 
+            "object_id": "13", 
+            "content_type": [
+                "mks", 
+                "member"
+            ]
+        }
+    }, 
+    {
+        "pk": "100", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "100", 
+            "object_id": "754", 
+            "content_type": [
+                "mks", 
+                "member"
+            ]
+        }
+    }, 
+    {
+        "pk": "101", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "101", 
+            "object_id": "793", 
+            "content_type": [
+                "mks", 
+                "member"
+            ]
+        }
+    }, 
+    {
+        "pk": "102", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "102", 
+            "object_id": "861", 
+            "content_type": [
+                "mks", 
+                "member"
+            ]
+        }
+    }, 
+    {
+        "pk": "103", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "103", 
+            "object_id": "873", 
+            "content_type": [
+                "mks", 
+                "member"
+            ]
+        }
+    }, 
+    {
+        "pk": "104", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "104", 
+            "object_id": "789", 
+            "content_type": [
+                "mks", 
+                "member"
+            ]
+        }
+    }, 
+    {
+        "pk": "105", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "105", 
+            "object_id": "805", 
+            "content_type": [
+                "mks", 
+                "member"
+            ]
+        }
+    }, 
+    {
         "pk": "1", 
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
@@ -2055,6 +2139,69 @@
             "feed_type": "PP", 
             "vendor_id": "284775634985944", 
             "persona": "98"
+        }
+    }, 
+    {
+        "pk": "99", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "feed_type": "UP", 
+            "vendor_id": "100003905338146", 
+            "persona": "99"
+        }
+    }, 
+    {
+        "pk": "100", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "feed_type": "PP", 
+            "vendor_id": "140476896137364", 
+            "persona": "100"
+        }
+    }, 
+    {
+        "pk": "101", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "feed_type": "PP", 
+            "vendor_id": "102155496619137", 
+            "persona": "101"
+        }
+    }, 
+    {
+        "pk": "102", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "feed_type": "PP", 
+            "vendor_id": "169783729837746", 
+            "persona": "102"
+        }
+    }, 
+    {
+        "pk": "103", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "feed_type": "PP", 
+            "vendor_id": "364478330291286", 
+            "persona": "103"
+        }
+    }, 
+    {
+        "pk": "104", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "feed_type": "PP", 
+            "vendor_id": "208745552614504", 
+            "persona": "104"
+        }
+    }, 
+    {
+        "pk": "105", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "feed_type": "PP", 
+            "vendor_id": "381332725251346", 
+            "persona": "105"
         }
     }
 ]

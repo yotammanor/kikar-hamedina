@@ -59,7 +59,7 @@ class OnlyCommentsView(ListView):
 
     def get_queryset(self):
         statuses = Facebook_Status.objects.all()
-        comments_ids = [status.id for status in statuses if status.is_comment]
+        comments_ids = [status.id for status in statuses if status.set_is_comment]
         comments = Facebook_Status.objects.filter(id__in=comments_ids).order_by('-like_count')
         return comments
 
@@ -89,7 +89,7 @@ class SearchView(ListView):
 
     # def get_queryset(self):
     #
-    #     members = []
+    # members = []
     #     if 'members' in self.request.GET.keys():
     #         members = [int(member_id) for member_id in self.request.GET['members'].split(',')]
     #     if 'parties' in self.request.GET.keys():
@@ -227,7 +227,6 @@ class StatusFilterUnifiedView(ListView):
         context['object'] = self.parent_model.objects.get(**{search_field: object_id})
         return context
 
-
 class MemberView(StatusFilterUnifiedView):
     template_name = "core/member.html"
     parent_model = Member
@@ -247,13 +246,14 @@ class MemberView(StatusFilterUnifiedView):
 
         # Statistical Data for member - PoC
 
-        # statuses_for_member = Facebook_Status.objects.filter(feed__persona__object_id=member_id).order_by('-like_count')
+        # statuses_for_member = Facebook_Status.objects.filter(feed__persona__object_id=member_id)
+        # .order_by('-like_count')
         #
         # df_statuses = statuses_for_member.to_dataframe('like_count', index='published')
         # mean_monthly_popularity_by_status_raw = df_statuses.resample('M', how='mean').to_dict()
         #
         # mean_monthly_popularity_by_status_list_unsorted = [{'x': time.mktime(key.timetuple()) * 1000, 'y': value} for
-        #                                                    # *1000 - seconds->miliseconds
+        # # *1000 - seconds->miliseconds
         #                                                    key, value in
         #                                                    mean_monthly_popularity_by_status_raw['like_count'].items()]
         # mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted,
@@ -417,7 +417,7 @@ def get_data_from_facebook(request):
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
-#A handler for status_update ajax call from client
+# A handler for status_update ajax call from client
 def status_update(request, status_id):
     status = Facebook_Status.objects.get(status_id=status_id)
 
@@ -451,14 +451,14 @@ def status_update(request, status_id):
 
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+
 #A handler for add_tag_to_status ajax call from client
 def add_tag_to_status(request):
-
     response_data = dict()
     response_data['success'] = False
-    status_id=request.GET["id"]
+    status_id = request.GET["id"]
     response_data['id'] = status_id
-    tagName=request.GET["tag_str"]
+    tagName = request.GET["tag_str"]
     strippedTagName = tagName.strip()
     try:
         if strippedTagName:
@@ -470,7 +470,7 @@ def add_tag_to_status(request):
                 # add status to tag statuses
             tag.statuses.add(status_id)
             tag.save()
-            response_data['tag'] = {'id':tag.id,'name':tag.name}
+            response_data['tag'] = {'id': tag.id, 'name': tag.name}
         response_data['success'] = True
     except:
         print "ERROR AT ADDING STATUS TO TAG"

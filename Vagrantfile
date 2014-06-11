@@ -57,7 +57,7 @@ SECRET_KEY = '$(base64 /dev/urandom | head -c 50)'
       done
       # TODO: fix 'username is not a member of the user table.' error
       python manage.py fetchfeedproperties || true
-      python manage.py fetchfeedstatuses
+      python manage.py fetchfeedstatuses_v2
     EOS
   end
 

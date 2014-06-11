@@ -102,6 +102,7 @@ class Facebook_Status(models.Model):
     status_type = models.CharField(null=True, default=None, max_length=128)
     story = models.TextField(null=True)
     story_tags = models.TextField(null=True)
+    is_comment = models.BooleanField(default=False)
 
     objects = DataFrameManager()
 
@@ -127,15 +128,21 @@ class Facebook_Status(models.Model):
             return False
 
     @property
-    def is_comment(self):
+    def set_is_comment(self):
         if self.story_tags:
-            story_tags_eval = eval(self.story_tags)
+            # has a story with the style of <user> commented on <feed>'s status
+            print self.story_tags, type(self.story_tags)
+            story_tags_eval = eval(str(self.story_tags))
             try:
                 for tag in story_tags_eval.values():
                     for dic in tag:
                         if Facebook_Feed.objects.filter(vendor_id=dic['id']):
+                            # the metioned user is an mk
                             return False
+                    # else, the mentioned user is a regular person who commented on the post
+                    return True
             except:
+                #
                 return True
 
             return True

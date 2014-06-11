@@ -202,6 +202,8 @@ class Command(BaseCommand):
                 status.updated = current_time_of_update
                 status.story = story
                 status.story_tags = story_tags
+                status.is_comment = status.set_is_comment
+
                 # update attachment data
                 self.create_or_update_attachment(status, status_object_defaultdict)
             elif options['force-attachment-update']:
@@ -224,6 +226,9 @@ class Command(BaseCommand):
                                            status_type=type_of_status,
                                            story=story,
                                            story_tags=story_tags)
+
+            status.is_comment = status.set_is_comment
+
             if status_object_defaultdict['link']:
                 # There's an attachment
                 status.save()
