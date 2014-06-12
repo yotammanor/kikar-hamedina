@@ -2,6 +2,7 @@ from mks.models import Party, Member
 from facebook_feeds.models import Tag, Facebook_Status, Facebook_Feed, Feed_Popularity
 from django.db.models import F, Count
 from kikar_hamedina.settings import FACEBOOK_APP_ID, CURRENT_KNESSET_NUMBER
+from django.core.cache import cache
 
 
 NUMBER_OF_TOP_PARTIES_TO_BRING = 12
@@ -10,7 +11,13 @@ NUMBER_OF_TOP_TAGS_TO_BRING = 12
 
 
 def generic(request):
+    result = cache.get("generic_context")
+    if result is None:
+        result = get_context(request)
+        cache.set("generic_context", result, 600)
+    return result
 
+def get_context(request):
     members = Member.objects.filter(is_current=True)
     members_with_persona = [member for member in members if member.facebook_persona]
     members_with_feed = [member for member in members_with_persona if member.facebook_persona.feeds.all()]
