@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django_pandas.managers import DataFrameManager
 # Create your models here.
-INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own', 'on their own']
+INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own', 'on their own', 'on her own']
 
 
 class Facebook_Persona(models.Model):
