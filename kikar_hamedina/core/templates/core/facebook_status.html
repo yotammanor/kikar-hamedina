@@ -1,6 +1,6 @@
 {% verbatim %}
 <script id="add-tag-to-status-template" type="text/x-handlebars-template">
-    <a href="/tag/name/{{id}}">
+    <a href="/tag/name/{{name}}">
         <span class="label label-info">{{name}}</span>
     </a>
 </script>
@@ -56,7 +56,7 @@
             </div>
             <div class="col-md-8">
 
-                <strong style="display:{% if status.tags.count > 0 %}inherit{% else %}none{% endif %}">תגים: </strong>
+                <strong style="display:{% if status.tags.count > 0 %}inline{% else %}none{% endif %}">תגים: </strong>
 			<span id="{{ status.id }}-tags">
 			{% for tag in status.tags.all %}
                 <a href="{% url 'tag' 'name' tag.name %}">
