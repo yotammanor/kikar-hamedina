@@ -3,14 +3,13 @@ import urllib2
 import json
 from IPython.lib.pretty import pprint
 import facebook
-from numpy import mean
 from django.core.exceptions import FieldError
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.template.defaultfilters import slugify
+from django.template import RequestContext
 from django.utils import timezone
 from django.db.models import Count, Q, F
 from django.conf import settings
@@ -19,6 +18,7 @@ from mks.models import Knesset
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
 from mks.models import Party, Member
 from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
+
 
 HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 
@@ -199,6 +199,7 @@ class StatusFilterUnifiedView(StatusListView):
         search_field = self.kwargs.get('search_field', 'id')
         context['object'] = self.parent_model.objects.get(**{search_field: object_id})
         return context
+
 
 class MemberView(StatusFilterUnifiedView):
     template_name = "core/member.html"

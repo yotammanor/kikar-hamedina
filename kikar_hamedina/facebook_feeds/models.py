@@ -3,7 +3,9 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django_pandas.managers import DataFrameManager
-# Create your models here.
+
+from facebook_feeds.managers import Facebook_StatusManager
+
 INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own', 'on their own', 'on her own']
 
 
@@ -105,7 +107,8 @@ class Facebook_Status(models.Model):
     story_tags = models.TextField(null=True)
     is_comment = models.BooleanField(default=False)
 
-    objects = DataFrameManager()
+    objects = Facebook_StatusManager()
+    objects_default = DataFrameManager()
 
     def __unicode__(self):
         return self.status_id
