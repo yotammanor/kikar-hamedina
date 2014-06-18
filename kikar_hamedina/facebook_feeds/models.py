@@ -107,8 +107,8 @@ class Facebook_Status(models.Model):
     story_tags = models.TextField(null=True)
     is_comment = models.BooleanField(default=False)
 
-    objects = Facebook_StatusManager()
-    objects_default = DataFrameManager()
+    objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
+    objects_default = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
 
     def __unicode__(self):
         return self.status_id
