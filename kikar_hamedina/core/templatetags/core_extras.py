@@ -12,4 +12,4 @@ def link(status):
 @register.filter(name='embed_link')
 def link(status):
     """Returns the embed link for a post"""
-    return '%s/posts/%s' % (status.feed.page_url, status.status_id.split('_')[1])
+    return '%s/posts/%s' % (status.feed.link, status.status_id.split('_')[1])

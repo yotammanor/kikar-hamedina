@@ -47,8 +47,12 @@ def insert_to_csv(chosen_dict):
         csv_data.writerow({k: unicode(v).encode('utf-8') for k, v in flat_dict.items()})
     output_file.close()
 
-for json_dict in all_dicts:
-    insert_to_csv(json_dict)
+for i, json_dict in enumerate(all_dicts):
+    print '%d of %d' % (i+1, len(all_dicts))
+    if json_dict:
+        insert_to_csv(json_dict)
+    else:
+        print 'json file empty'
 
 print len(facebook_persona_dict), \
     len(facebook_feed_dict), \

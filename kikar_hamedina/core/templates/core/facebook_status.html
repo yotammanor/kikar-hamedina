@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-lg-1">
                 <a href="{% url 'member' status.feed.persona.content_object.id %}">
-                    <img src="{{ status.feed.pic_square }}" class="profile-photo img-rounded">
+                    <img src="{{ status.feed.picture }}" class="profile-photo img-rounded">
                 </a>
             </div>
             <div class="col-lg-9">
@@ -88,7 +88,7 @@
                                          data-width="466">
                                         <div class="fb-xfbml-parse-ignore">
                                             <a href="{{ status | embed_link }}">פוסט</a> מאת <a
-                                                href="{{ status.feed.page_url }}">{{ status.feed.persona.content_object.name }}</a>.
+                                                href="{{ status.feed.link }}">{{ status.feed.persona.content_object.name }}</a>.
                                         </div>
 
                                     </div>

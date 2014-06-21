@@ -27,6 +27,8 @@ class Facebook_Feed(models.Model):
     FEED_TYPES = (
         ('PP', 'Public Page'),
         ('UP', 'User Profile'),
+        ('NA', 'Unavailable Profile'),
+        ('DP', 'Deprecated Profile'),
     )
 
     persona = models.ForeignKey('Facebook_Persona', related_name='feeds')
@@ -34,9 +36,9 @@ class Facebook_Feed(models.Model):
     username = models.TextField(null=True, default=None)
     birthday = models.TextField(null=True)
     name = models.TextField(null=True)
-    page_url = models.URLField(null=True, max_length=2000)
-    pic_large = models.URLField(null=True, max_length=2000)
-    pic_square = models.URLField(null=True, max_length=2000)
+    link = models.URLField(null=True, max_length=2000)
+    picture = models.URLField(null=True, max_length=2000)
+    # pic_square = models.URLField(null=True, max_length=2000)
     feed_type = models.CharField(null=False, max_length=2, choices=FEED_TYPES, default='PP')
     # Public Page Only
     about = models.TextField(null=True, default='')
@@ -72,11 +74,10 @@ class Feed_Popularity(models.Model):
 
     def __unicode__(self):
         return unicode(self.feed) + " " + str(self.date_of_creation)
-               # strftime("%Y_%M_%D_%H:%m:%s", self.date_of_creation)
+        # strftime("%Y_%M_%D_%H:%m:%s", self.date_of_creation)
 
 
 class Facebook_Status(models.Model):
-
     TYPE_CHOICES = (
         (11, 'Group created'),
         (12, 'Event created'),
@@ -108,7 +109,7 @@ class Facebook_Status(models.Model):
     is_comment = models.BooleanField(default=False)
 
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
-    objects_default = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
+    objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
 
     def __unicode__(self):
         return self.status_id
@@ -190,19 +191,20 @@ ATTACHMENT_MEDIA_TYPES = (
 
 
 class Facebook_Status_Attachment(models.Model):
-
     status = models.OneToOneField(Facebook_Status, related_name='attachment')
-    name = models.TextField(null=True)  #name
-    caption = models.TextField(null=True)  #caption
-    description = models.TextField(null=True)  #description
-    link = models.TextField(null=False)  #link
-    facebook_object_id = models.CharField(unique=False, null=True, max_length=128)  # object_id (exists only for internal links)
-    type = models.CharField(null=True, choices=ATTACHMENT_MEDIA_TYPES, max_length=16)  #type
-    picture = models.TextField(null=True)  #picture
+    name = models.TextField(null=True)  # name
+    caption = models.TextField(null=True)  # caption
+    description = models.TextField(null=True)  # description
+    link = models.TextField(null=False)  # link
+    facebook_object_id = models.CharField(unique=False, null=True,
+                                          max_length=128)  # object_id (exists only for internal links)
+    type = models.CharField(null=True, choices=ATTACHMENT_MEDIA_TYPES, max_length=16)  # type
+    picture = models.TextField(null=True)  # picture
 
     @property
     def is_internal_link(self):
         return 'https://www.facebook.com/' in self.link
+
 
 class User_Token(models.Model):
     token = models.CharField(max_length=256, unique=True)

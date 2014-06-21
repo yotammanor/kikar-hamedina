@@ -1461,7 +1461,7 @@
         "pk": "23", 
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
-            "feed_type": "PP", 
+            "feed_type": "PP",
             "vendor_id": "129931940492158", 
             "persona": "23"
         }
@@ -1867,7 +1867,7 @@
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
             "feed_type": "PP", 
-            "vendor_id": "1411524072449420", 
+            "vendor_id": "1411524072449425",
             "persona": "70"
         }
     }, 

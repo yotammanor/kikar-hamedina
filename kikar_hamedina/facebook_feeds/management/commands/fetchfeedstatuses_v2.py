@@ -125,7 +125,7 @@ class Command(BaseCommand):
             attachment.picture = attachment_defaultdict['picture']
             attachment.save()
         else:
-        # if has no link field - then there's no attachment, and it must be deleted
+            # if has no link field - then there's no attachment, and it must be deleted
             print 'deleting attachment'
             attachment.delete()
 
@@ -138,11 +138,12 @@ class Command(BaseCommand):
             attachment, created = Facebook_Status_Attachment_Model.objects.get_or_create(
                 status=status)
             print 'I have an attachment. Created now: %s; Length of data in field link: %d; field picture: %d;  id: %s' % (
-                created, len(status_object_defaultdict['link']), len(str(status_object_defaultdict['picture'])), status.status_id)
+                created, len(status_object_defaultdict['link']), len(str(status_object_defaultdict['picture'])),
+                status.status_id)
             self.update_status_attachment(attachment, status_object_defaultdict)
         else:
             print 'i don''t have an attachment; Link field: %s; Picture field: %s; id: %s' % (
-                str(status_object_defaultdict['link']), str(status_object_defaultdict['picture']),  status.status_id)
+                str(status_object_defaultdict['link']), str(status_object_defaultdict['picture']), status.status_id)
 
     def insert_status_object_to_db(self, status_object, feed_id, options):
         """
@@ -190,7 +191,9 @@ class Command(BaseCommand):
 
         try:
             # If post_id already exists in DB
-            status = Facebook_Status_Model.objects.get(status_id=status_object['id'])
+            status = Facebook_Status_Model.objects_no_filters.get(
+                status_id=status_object['id'])  # use objects_default manages to get statuses that are comments as well.
+
             if status.updated < current_time_of_update:
                 # If post_id exists but of earlier update time, fields are updated.
                 print 'update status'
@@ -240,17 +243,20 @@ class Command(BaseCommand):
     def get_feed_statuses(self, feed, post_number_limit):
         """
         Returns a Dict object of feed ID. and retrieved status objects.
-                """
+        """
         if feed.feed_type == 'PP':
-            # Set facebook graph access tokens as app access token
-            self.graph.access_token = facebook.get_app_access_token(
-                settings.FACEBOOK_APP_ID,
-                settings.FACEBOOK_SECRET_KEY
-            )
+            try:
+                # Set facebook graph access token to most up-to-date user token in db
+                token = User_Token_Model.objects.first()
+                self.graph.access_token = token.token
+            except:
+                # Fallback: Set facebook graph access token to app access token
+                self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                        settings.FACEBOOK_SECRET_KEY)
             return {'feed_id': feed.id,
                     'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit)}
 
-        else:  # feed_type == 'UP' - User Profile
+        elif feed.feed_type == 'UP':  # feed_type == 'UP' - User Profile
             # Set facebook graph access token to user access token
             token = User_Token_Model.objects.filter(feeds__id=feed.id).order_by('-date_of_creation').first()
             if not token:
@@ -261,6 +267,10 @@ class Command(BaseCommand):
                 self.graph.access_token = token.token
                 return {'feed_id': feed.id,
                         'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit)}
+        else:  # Deprecated or malfunctioning profile ('NA', 'DP')
+            print 'Profile %s is of type %s, skipping.' % (feed.id, feed.feed_type)
+            return {'feed_id': feed.id,
+                    'statuses': []}
 
     def handle(self, *args, **options):
         """
