@@ -48,6 +48,7 @@ SECRET_KEY = '$(base64 /dev/urandom | head -c 50)'
       set -e
       cd /vagrant/kikar_hamedina/
       python manage.py syncdb --noinput
+      python manage.py createsuperuser --username admin
       python manage.py dumpdata --indent=2 auth > initial_data.json
       for m in core persons mks links facebook_feeds video; do
         python manage.py migrate $m
@@ -55,9 +56,8 @@ SECRET_KEY = '$(base64 /dev/urandom | head -c 50)'
       for f in data_fixture_planet data_fixture_mks data_fixture_facebook_feeds; do
         python manage.py loaddata ${f}.json
       done
-      # TODO: fix 'username is not a member of the user table.' error
       python manage.py fetchfeedproperties || true
-      python manage.py fetchfeedstatuses_v2
+      python manage.py fetchfeedstatuses
     EOS
   end
 
