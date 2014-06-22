@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def update_statuses_for_feed(feed):
-        statuses_for_feed = Facebook_Status.objects.filter(feed=feed)
+        statuses_for_feed = Facebook_Status.objects_no_filters.filter(feed=feed)
         for status in statuses_for_feed:
             status.is_comment = status.set_is_comment
             status.save()
