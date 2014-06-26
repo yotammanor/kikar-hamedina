@@ -673,7 +673,7 @@
         "pk": "70", 
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
-            "vendor_id": "1411524072449420", 
+            "vendor_id": "1411524072449425", 
             "requires_user_token": true, 
             "feed_type": "PP", 
             "persona": "70"
