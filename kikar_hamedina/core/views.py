@@ -305,7 +305,7 @@ class FacebookStatusDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
-        context['member'] = Member.objects.get(id=context['object'].feed.facbook_persona.object_id)
+        context['member'] = Member.objects.get(id=context['object'].feed.persona.object_id)
         return context
 
 
