@@ -22,6 +22,9 @@ class Facebook_Persona(models.Model):
         except:
             return None  # TODO: What should we return here when no main feed is defined/ no feeds exist?
 
+    def __unicode__(self):
+        return "Facebook_Persona: " + self.content_type + " " + str(self.object_id)
+
 
 class Facebook_Feed(models.Model):
     FEED_TYPES = (
@@ -38,8 +41,9 @@ class Facebook_Feed(models.Model):
     name = models.TextField(null=True)
     link = models.URLField(null=True, max_length=2000)
     picture = models.URLField(null=True, max_length=2000)
-    # pic_square = models.URLField(null=True, max_length=2000)
     feed_type = models.CharField(null=False, max_length=2, choices=FEED_TYPES, default='PP')
+    requires_user_token = models.BooleanField(default=False, null=False)
+
     # Public Page Only
     about = models.TextField(null=True, default='')
     website = models.URLField(null=True, max_length=2000)

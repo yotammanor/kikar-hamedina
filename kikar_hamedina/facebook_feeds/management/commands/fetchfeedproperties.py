@@ -137,18 +137,14 @@ class Command(BaseCommand):
 
             data_dict = {'feed_id': feed.id, 'data': self.fetch_user_profile_object_by_feed_id(feed.vendor_id)}
             pprint(data_dict)
-            # 'profile_fields': "id,name,        picture,about,birthday,website,link,                        first_name,last_name"
-            # 'page_fields': "id,name,username,picture,about,birthday,website,link,likes,talking_about_count"
             # Transform data to fit existing public page
-
             data_dict['data']['username'] = ''.join(
                 (data_dict['data']['first_name'], data_dict['data']['last_name'])).lower()
-            # print(data_dict['data']['username'])
             data_dict['data']['likes'] = 0
             data_dict['data']['talking_about_count'] = 0
             data_dict['data']['about'] = ''
-
             return data_dict
+
         elif feed.feed_type == 'PP':  # 'PP - Public Page'
             try:
                 # Set facebook graph access token to most up-to-date user token in db
@@ -158,8 +154,16 @@ class Command(BaseCommand):
                 # Fallback: Set facebook graph access token to app access token
                 self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                         settings.FACEBOOK_SECRET_KEY)
+                if feed.requires_user_token:
+                    # If the Feed is set to require a user-token, and none exist in our db, the feed is skipped.
+                    print 'feed %d requires user token, skipping.' % feed.id
+                    data_dict = {'feed_id': feed.id, 'data': {}}
+                    return data_dict
+
+            # Get the data using the pre-set token
             data_dict = {'feed_id': feed.id, 'data': self.fetch_public_page_object_by_feed_id(feed.vendor_id)}
             return data_dict
+
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
             print 'Profile %s is of type %s, skipping.' % (feed.id, feed.feed_type)
             data_dict = {'feed_id': feed.id, 'data': {}}

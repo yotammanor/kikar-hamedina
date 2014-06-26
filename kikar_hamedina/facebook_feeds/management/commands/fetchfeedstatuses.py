@@ -249,10 +249,18 @@ class Command(BaseCommand):
                 # Set facebook graph access token to most up-to-date user token in db
                 token = User_Token_Model.objects.first()
                 self.graph.access_token = token.token
+
             except:
                 # Fallback: Set facebook graph access token to app access token
                 self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                         settings.FACEBOOK_SECRET_KEY)
+                if feed.requires_user_token:
+                    # If the Feed is set to require a user-token, and none exist in our db, the feed is skipped.
+                    print 'feed %d requires user token, skipping.' % feed.id
+                    data_dict = {'feed_id': feed.id, 'statuses': []}
+                    return data_dict
+
+                    # Get the data using the pre-set token
             return {'feed_id': feed.id,
                     'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit)}
 
@@ -269,8 +277,7 @@ class Command(BaseCommand):
                         'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit)}
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
             print 'Profile %s is of type %s, skipping.' % (feed.id, feed.feed_type)
-            return {'feed_id': feed.id,
-                    'statuses': []}
+            return {'feed_id': feed.id, 'statuses': []}
 
     def handle(self, *args, **options):
         """

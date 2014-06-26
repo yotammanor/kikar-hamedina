@@ -12,6 +12,8 @@ facebook_persona_csv = csv.DictReader(open(
     'data_from_json_facebook_feeds.facebook_persona.csv', 'r'))
 tag_csv = csv.DictReader(open('data_from_json_facebook_feeds.tag.csv', 'r'))
 
+all_csv = [facebook_feed_csv, facebook_persona_csv, tag_csv]
+
 
 def turn_csv_to_dict(dict_reader_object):
     list_of_dicts_for_insertion = []
@@ -21,7 +23,7 @@ def turn_csv_to_dict(dict_reader_object):
         full_dict['model'] = row.pop('model')
         fields_dict = dict()
         for key, value in row.items():
-            if key == 'content_type':
+            if key == 'content_type' or key == 'requires_user_token':
                 fields_dict[key] = eval(value)
             else:
                 fields_dict[key] = value
@@ -33,9 +35,19 @@ def turn_csv_to_dict(dict_reader_object):
 
 
 def main():
-    all_facebook_feeds_data_for_insertion = turn_csv_to_dict(facebook_persona_csv) + \
-        turn_csv_to_dict(facebook_feed_csv)  # + \
-        # turn_csv_to_dict(tag_csv)
+    all_facebook_feeds_data_for_insertion = []
+
+    # turn_csv_to_dict(facebook_persona_csv) + \
+    # turn_csv_to_dict(facebook_feed_csv)  # + \
+    # # turn_csv_to_dict(tag_csv)
+
+    for i, csv_data in enumerate(all_csv):
+        print '%d of %d' % (i+1, len(all_csv))
+        if csv_data:
+            new_dict = turn_csv_to_dict(csv_data)
+            all_facebook_feeds_data_for_insertion += new_dict
+        else:
+            print 'csv data is empty'
 
     print 'creating facebook_feeds data fixture'
     pprint(all_facebook_feeds_data_for_insertion)
