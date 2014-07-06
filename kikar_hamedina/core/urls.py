@@ -6,6 +6,7 @@ from mks.models import Party, Member
 from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
 from tastypie.api import Api
 from api import *
+from stats import StatsMemberResource, StatsPartyResource
 
 
 v1_api = Api(api_name='v1')
@@ -15,6 +16,8 @@ v1_api.register(KnessetResource())
 v1_api.register(Facebook_StatusResource())
 v1_api.register(Facebook_FeedResource())
 v1_api.register(TagResource())
+v1_api.register(StatsMemberResource())
+v1_api.register(StatsPartyResource())
 
 urlpatterns = patterns('',
                        url(r'^$', views.HomepageView.as_view(), name='index'),

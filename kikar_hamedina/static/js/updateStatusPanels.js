@@ -2,7 +2,7 @@
 $(document).ready(function () {
     $(".status-panel").each(function (index) {
         status_id = $(this).data("statusid");
-        url = "/status_update/" + status_id
+        url = "/status_update/" + status_id + "/"
         $.ajax({
             url: url,
             contentType: "application/json",
