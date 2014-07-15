@@ -8,8 +8,8 @@ TEMPLATE_STRING_IF_INVALID = "INVALID EXPRESSION: %s"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'kikar_hamedina',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'kikar_hamedinai.db',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': 'localhost'

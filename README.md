@@ -19,9 +19,10 @@ Installation
 To Set up DB run the following:
 
 ``python manage.py syncdb --migrate``
+``python manage.py runserver``
 
-
-To insert initial data into the db, do as follows:
+This is all very nice, but there's no data :-( To insert initial data
+into the db, CTRL-C the server abd run:
 
 ``python manage.py loaddata data_fixture_planet.json``
 ``python manage.py loaddata data_fixture_mks.json``
