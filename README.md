@@ -18,8 +18,7 @@ Installation
 
 To Set up DB run the following:
 
-1. ``python manage.py syncdb`` - You should get a message that says 'core' tables not being synced.
-2. ``python manage.py migrate core`` - This will create core tables in the db, using south migrations.
+``python manage.py syncdb --migrate``
 
 
 To insert initial data into the db, do as follows:
