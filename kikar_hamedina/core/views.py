@@ -68,7 +68,7 @@ class OnlyCommentsView(ListView):
         return comments
 
 
-class AllStatusesView(ListView):
+class AllStatusesView(StatusListView):
     model = Facebook_Status
     template_name = 'core/all_results.html'
     # paginate_by = 100
