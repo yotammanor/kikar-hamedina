@@ -173,7 +173,7 @@ class StatsMemberResource(Resource):
     popular_statuses_last_month = fields.ListField(attribute='popular_statuses_last_month', null=True)
 
     class Meta:
-        resource_name = 'stats/member'
+        resource_name = 'insights/member'
         object_class = MemberStats
 
     def detail_uri_kwargs(self, bundle_or_obj):
@@ -207,7 +207,7 @@ class StatsPartyResource(Resource):
     popular_member_last_month = fields.ToOneField(MemberResource, attribute='popular_member_last_month', null=True)
 
     class Meta:
-        resource_name = 'stats/party'
+        resource_name = 'insights/party'
         object_class = PartyStats
 
     def detail_uri_kwargs(self, bundle_or_obj):

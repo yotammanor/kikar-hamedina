@@ -6,7 +6,7 @@ from mks.models import Party, Member
 from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
 from tastypie.api import Api
 from api import *
-from stats import StatsMemberResource, StatsPartyResource
+from insights import StatsMemberResource, StatsPartyResource
 
 
 v1_api = Api(api_name='v1')
