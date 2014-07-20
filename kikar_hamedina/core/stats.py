@@ -3,6 +3,7 @@ from hashlib import sha1
 from dateutil.relativedelta import relativedelta
 
 import pandas
+import numpy
 import tastypie
 from tastypie import fields
 from tastypie.resources import Resource, Bundle
@@ -38,6 +39,10 @@ def get_times():
 def dataframe_to_lists(dataframe):
     return [list(row) for row in dataframe.values]
 
+def normalize(num):
+    return None if numpy.isnan(num) else num
+
+
 class StatsEngine(object):
     def __init__(self):
         week_ago, month_ago = get_times()
@@ -57,12 +62,10 @@ class StatsEngine(object):
         return len(self.feeds_statuses(self.month_statuses, feed_ids))
 
     def mean_status_likes_last_week(self, feed_ids):
-        # TODO: only for specific statys_type ?
-        return self.feeds_statuses(self.week_statuses, feed_ids)['like_count'].mean()
+        return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['like_count'].mean())
 
     def mean_status_likes_last_month(self, feed_ids):
-        # TODO: only for specific statys_type ?
-        return self.feeds_statuses(self.month_statuses, feed_ids)['like_count'].mean()
+        return normalize(self.feeds_statuses(self.month_statuses, feed_ids)['like_count'].mean())
 
     def popular_statuses_last_week(self, feed_ids, num=3):
         ordered = self.feeds_statuses(self.week_statuses, feed_ids).sort('like_count', ascending=False)

@@ -22,6 +22,14 @@
                 <i class="fa fa-thumbs-up"></i>
                 {{ feed.current_fan_count|intcomma }}
             </p>
+            <p id="insights" style="display: none">
+                <b>בחודש האחרון:</b>
+                <span id="ins_n_month">-</span> סטטוסים,
+                <span id="ins_mean_likes_month">-</span> לייקים בממוצע
+                <b style="padding-right: 2em">בשבוע האחרון:</b>
+                <span id="ins_n_week">-</span> סטטוסים,
+                <span id="ins_mean_likes_week">-</span> לייקים בממוצע
+            </p>
         {% endif %}
         <p>
             <img src="/static/media/oknesset_icon.png" />
@@ -156,4 +164,20 @@
                     href="{% url 'member' member.id %}">{{ member.name }}</a></li>
         {% endfor %}
     </ul>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $('#insights').toggle(true);
+    function int2str(num) { return $.isNumeric(num) ? num : 0; }
+    function float2str(num) { return $.isNumeric(num) ? num.toFixed(1) : 0; }
+    $.getJSON('/api/v1/stats/member/{{ object.id }}/?format=json', function( data ) {
+        $("#ins_n_month").text(int2str(data.n_statuses_last_month));
+        $("#ins_mean_likes_month").text(float2str(data.mean_status_likes_last_month));
+        $("#ins_n_week").text(int2str(data.n_statuses_last_week));
+        $("#ins_mean_likes_week").text(float2str(data.mean_status_likes_last_week));
+        $('#insights').toggle(true);
+        return;
+    });
+    </script>
 {% endblock %}
