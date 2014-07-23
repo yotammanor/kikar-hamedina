@@ -73,7 +73,7 @@ pk,model,requires_user_token,feed_type,vendor_id,persona
 72,facebook_feeds.facebook_feed,False,PP,442386732471209,72
 73,facebook_feeds.facebook_feed,False,PP,171840676187709,73
 74,facebook_feeds.facebook_feed,False,PP,581740021875450,74
-75,facebook_feeds.facebook_feed,False,PP,290348144398550,75
+75,facebook_feeds.facebook_feed,True,PP,290348144398550,75
 76,facebook_feeds.facebook_feed,False,PP,408249422571187,76
 77,facebook_feeds.facebook_feed,False,PP,243941715737870,77
 78,facebook_feeds.facebook_feed,False,PP,485996514776399,78

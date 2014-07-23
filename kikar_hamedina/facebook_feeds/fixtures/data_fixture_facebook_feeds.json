@@ -744,7 +744,7 @@
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
             "vendor_id": "290348144398550", 
-            "requires_user_token": false, 
+            "requires_user_token": true, 
             "feed_type": "PP", 
             "persona": "75"
         }
