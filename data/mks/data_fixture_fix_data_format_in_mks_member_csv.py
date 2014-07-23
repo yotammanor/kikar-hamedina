@@ -4,10 +4,17 @@ from csv import DictReader, DictWriter
 import time
 from pprint import pprint
 
+LIST_OF_UNFOUND_BLOG_IDS = [
+    '5',
+    '42',
+    '18',
+
+]
+
 csv_file = open('data_from_json_mks.member.csv', mode='r')
 csv_reader = DictReader(csv_file)
 csv_list = [row for row in csv_reader]
-csv_file_output = open('data_from_json_mks.member_fixed.csv', mode='wb')
+csv_file_output = open('data_from_json_mks.member.csv', mode='wb')
 
 fixed_csv_list = list()
 for row in csv_list:
@@ -27,6 +34,17 @@ for row in csv_list:
                 print time_value_fixed
                 new_value = time_value_fixed
         new_row[key] = new_value
+
+        if key == 'user':
+            print value
+            new_value = 'None'
+        new_row[key] = new_value
+
+        if key == 'blog' and str(value) in LIST_OF_UNFOUND_BLOG_IDS:
+            new_value = 'None'
+
+        new_row[key] = new_value
+
     fixed_csv_list.append(new_row)
 pprint(fixed_csv_list[0])
 fieldnames = [key for key, value in csv_list[0].items()]
