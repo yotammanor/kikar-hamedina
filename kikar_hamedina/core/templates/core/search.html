@@ -14,7 +14,10 @@
     תגיות: {{ tags|length }}
     {% endif %}
     {% if search_str %}
-    מילות חיפוש: {{ search_str }}
+         מילות חיפוש:
+        {% for search_str_split in search_str %}
+             {{ search_str_split }}
+        {% endfor %}
     {% endif %}
 {% endblock %}
 

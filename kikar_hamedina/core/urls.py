@@ -60,7 +60,7 @@ urlpatterns = patterns('',
                        url(r'^status_update/(?P<status_id>\w+)/$', views.status_update),
                        url(r'^add_tag_to_status/$', views.add_tag_to_status),
                        url(r'^search_bar/$', views.search_bar),
-                       url(r'^api/',include(v1_api.urls)),
+                       url(r'^api/', include(v1_api.urls)),
                        url(r'^status_permalink/(?P<slug>[-_\w]+)/$', views.FacebookStatusDetailView.as_view(), name='status-detail'),
                        url(r'^comments/', views.OnlyCommentsView.as_view(), name='comments'),
 )
