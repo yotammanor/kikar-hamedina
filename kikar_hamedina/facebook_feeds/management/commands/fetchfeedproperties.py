@@ -20,13 +20,28 @@ FACEBOOK_API_VERSION = 'v2.0'
 class Command(BaseCommand):
     args = '<person_id>'
     help = 'Fetches a person'
+
+    option_insist = make_option('-n',
+                                '--insist',
+                                action='store_true',
+                                dest='is_insist',
+                                default=False,
+                                help='Exception from GraphAPI will result in skipping instead of crashing.'
+    )
+
+    option_list_helper = list()
+    for x in BaseCommand.option_list:
+        option_list_helper.append(x)
+    option_list_helper.append(option_insist)
+    option_list = tuple(option_list_helper)
+
     graph = facebook.GraphAPI()
 
-    def fetch_user_profile_object_by_feed_id(self, feed_id):
+    def fetch_user_profile_object_by_feed_id(self, feed_id, is_insist):
         """
         Receives a feed_id for a facebook
         Returns a facebook-sdk fql query, with all status objects published by the page itself.
-        """
+                """
         api_request = "{0}".format(feed_id)
         args_for_request = {'version': FACEBOOK_API_VERSION,
                             'fields': "id,name,picture,website,about,link,first_name,last_name,birthday"}
@@ -46,14 +61,25 @@ class Command(BaseCommand):
             WHERE
                 uid = {0}""".format(feed_id)
         # '508516607','107836625941364'
-        user_profile_properties = self.graph.request(path=api_request, args=args_for_request)
+
+        try:
+            user_profile_properties = self.graph.request(path=api_request, args=args_for_request)
+        except facebook.GraphAPIError:
+            if is_insist:
+                print "There's a GraphAPI error, but I'm going on anyway."
+                # TODO: Log and report by email!
+                user_profile_properties = {}
+            else:
+                print "Your circuit's dead there's something wrong!"
+                raise
+
         return user_profile_properties
 
-    def fetch_public_page_object_by_feed_id(self, feed_id):
+    def fetch_public_page_object_by_feed_id(self, feed_id, is_insist):
         """
         Receives a feed_id for a facebook
         Returns a facebook-sdk fql query, with all status objects published by the page itself.
-        """
+                """
 
         api_request = "{0}".format(feed_id)
         args_for_request = {'version': FACEBOOK_API_VERSION,
@@ -77,7 +103,16 @@ class Command(BaseCommand):
                     WHERE
                         page_id={0}""".format(feed_id)
         print api_request, args_for_request
-        public_page_properties = self.graph.request(path=api_request, args=args_for_request)
+        try:
+            public_page_properties = self.graph.request(path=api_request, args=args_for_request)
+        except facebook.GraphAPIError:
+            if is_insist:
+                print "There's a GraphAPI error, but I'm going on anyway."
+                # TODO: Log and report by email!
+                public_page_properties = {}
+            else:
+                print "Your circuit's dead there's something wrong!"
+                raise
         print public_page_properties
         return public_page_properties
 
@@ -122,10 +157,10 @@ class Command(BaseCommand):
             raise
 
 
-    def get_feed_data(self, feed):
+    def get_feed_data(self, feed, is_insist):
         """
         Returns a Dict object of feed ID. and retrieved feed data.
-        """
+                """
         if feed.feed_type == 'UP':  # User Profile
             # Set facebook graph access token to user access token
             token = User_Token_Model.objects.all().order_by('-date_of_creation').first()
@@ -138,7 +173,8 @@ class Command(BaseCommand):
                 return data_dict
                 # print Exception('No User Access Token was found in the database!')  # TODO:Write as a real exception
 
-            data_dict = {'feed_id': feed.id, 'data': self.fetch_user_profile_object_by_feed_id(feed.vendor_id)}
+            data_dict = {'feed_id': feed.id, 'data': self.fetch_user_profile_object_by_feed_id(feed.vendor_id,
+                                                                                               is_insist)}
             pprint(data_dict)
             # Transform data to fit existing public page
             data_dict['data']['username'] = ''.join(
@@ -164,7 +200,8 @@ class Command(BaseCommand):
                     return data_dict
 
             # Get the data using the pre-set token
-            data_dict = {'feed_id': feed.id, 'data': self.fetch_public_page_object_by_feed_id(feed.vendor_id)}
+            data_dict = {'feed_id': feed.id, 'data': self.fetch_public_page_object_by_feed_id(feed.vendor_id,
+                                                                                              is_insist)}
             return data_dict
 
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
@@ -179,6 +216,8 @@ class Command(BaseCommand):
         Receives either one feed ID and retrieves the relevant page's data, and updates them in the db,
         or no feed ID and therefore retrieves data for all the feeds.
         """
+
+        is_insist = options['is_insist']
 
         list_of_feeds = list()
         # Case no args - fetch all feeds
@@ -203,7 +242,7 @@ class Command(BaseCommand):
         for feed in list_of_feeds:
             self.stdout.write('Working on feed: {0}.'.format(feed.pk))
             # get feed properties fro, facebook
-            feed_data = self.get_feed_data(feed)
+            feed_data = self.get_feed_data(feed, is_insist)
             # update fetched dat to feed in database
             if feed_data['data']:
                 self.update_feed_data_to_db(feed_data['data'], feed_data['feed_id'])
