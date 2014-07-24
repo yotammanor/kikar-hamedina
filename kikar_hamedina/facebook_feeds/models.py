@@ -128,7 +128,7 @@ class Facebook_Status(models.Model):
         Returns a link to this post.
         """
         split_status_id = self.status_id.split('_')
-        return 'https://www.facebook.com/%d/posts/%d' % (split_status_id[0], split_status_id[1])
+        return 'https://www.facebook.com/%s/posts/%s' % (split_status_id[0], split_status_id[1])
 
     @property
     def has_attachment(self):
