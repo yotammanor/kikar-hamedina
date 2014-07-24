@@ -15,6 +15,12 @@ def generic(request):
     if result is None:
         result = get_context(request)
         cache.set("generic_context", result, 600)
+
+    # Tags info isn't cached as it needs to be updated dynamically
+    result['navTags'] = (Tag.objects.filter(is_for_main_display=True)
+                        .annotate(number_of_posts=Count('statuses'))
+                        .order_by('-number_of_posts')[:NUMBER_OF_TOP_TAGS_TO_BRING])
+
     return result
 
 def get_context(request):
@@ -34,8 +40,5 @@ def get_context(request):
         'navMembers': [x['member'] for x in sorted_list_of_members][:NUMBER_OF_TOP_POLITICIANS_TO_BRING],
         'navParties': Party.objects.filter(knesset__number=CURRENT_KNESSET_NUMBER)
                     .order_by('-number_of_members')[:NUMBER_OF_TOP_PARTIES_TO_BRING],
-        'navTags': Tag.objects.filter(is_for_main_display=True)
-                    .annotate(number_of_posts=Count('statuses'))
-                    .order_by('-number_of_posts')[:NUMBER_OF_TOP_TAGS_TO_BRING],
         'facebook_app_id': FACEBOOK_APP_ID,
     }
