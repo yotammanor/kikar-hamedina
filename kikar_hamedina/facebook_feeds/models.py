@@ -6,7 +6,11 @@ from django_pandas.managers import DataFrameManager
 
 from facebook_feeds.managers import Facebook_StatusManager
 
-INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own', 'on their own', 'on her own']
+INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
+                                               'on their own',
+                                               'on her own',
+                                               'likes a link',
+                                               ]
 
 
 class Facebook_Persona(models.Model):
