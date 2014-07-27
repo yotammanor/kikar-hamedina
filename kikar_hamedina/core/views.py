@@ -18,7 +18,7 @@ from mks.models import Knesset
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
 from mks.models import Party, Member
 from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
-
+from facebook import GraphAPIError
 
 HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 
@@ -387,12 +387,18 @@ def get_data_from_facebook(request):
     user_profile_feeds = Facebook_Feed.objects.filter(feed_type='UP')
     # user_profile_feeds = ['508516607', '509928464']  # Used for testing
     relevant_feeds = []
-    print 'working on %d user_profile feeds.' % len(user_profile_feeds)
-    for feed in user_profile_feeds:
-        statuses = graph.get_connections(feed.vendor_id, 'statuses')
-        if statuses['data']:
-            print 'feed %s returns at least one result.' % feed
-            relevant_feeds.append(feed)
+    print 'checking %d user_profile feeds.' % len(user_profile_feeds)
+    for i, feed in enumerate(user_profile_feeds):
+        print 'working on %d of %d, vendor_id: %s.' % (i+1, len(user_profile_feeds), feed.vendor_id)
+        try:
+            statuses = graph.get_connections(feed.vendor_id, 'statuses')
+            if statuses['data']:
+                print 'feed %s returns at least one result.' % feed
+                relevant_feeds.append(feed)
+        except GraphAPIError:
+            print 'token not working for feed %s' % feed.vendor_id
+            continue
+    print 'working on %d of %d user_profile feeds.' % (len(relevant_feeds), len(user_profile_feeds))
     for feed in relevant_feeds:
         token.feeds.add(feed)
     print 'adding %d feeds to token' % len(relevant_feeds)
