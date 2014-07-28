@@ -105,3 +105,4 @@ pk,model,requires_user_token,feed_type,vendor_id,persona
 104,facebook_feeds.facebook_feed,False,PP,208745552614504,104
 105,facebook_feeds.facebook_feed,False,PP,381332725251346,105
 106,facebook_feeds.facebook_feed,False,PP,368992579826185,106
+107,facebook_feeds.facebook_feed,False,PP,789005101144982,107
