@@ -3,6 +3,7 @@ from optparse import make_option
 from collections import defaultdict
 from django.conf import settings
 import logging
+from unidecode import unidecode
 from django.core.management.base import BaseCommand, CommandError
 
 
@@ -14,12 +15,18 @@ class Command(BaseCommand):
         option_list_helper.append(x)
     option_list = tuple(option_list_helper)
 
-    @staticmethod
-    def update_statuses_for_feed(feed):
+    def update_single_status(self, status):
+
+        value_of_is_comment = status.set_is_comment
+        print 'setting value to', value_of_is_comment
+        status.is_comment = value_of_is_comment
+        status.save(update_fields=['is_comment'])
+
+    def update_statuses_for_feed(self, feed):
         statuses_for_feed = Facebook_Status.objects_no_filters.filter(feed=feed)
+
         for status in statuses_for_feed:
-            status.is_comment = status.set_is_comment
-            status.save()
+            self.update_single_status(status)
 
     def handle(self, *args, **options):
         """

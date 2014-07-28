@@ -1,3 +1,4 @@
+from unidecode import unidecode
 from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
@@ -144,6 +145,20 @@ class Facebook_Status(models.Model):
 
     @property
     def set_is_comment(self):
+        """
+        A Method for deciding whether a status is a comment or not, according to the method's logic.
+        Returns True or False.
+        """
+        # Some formatting and printing
+        if self.story:
+            story_string = unidecode(self.story)
+        else:
+            story_string = ''
+
+        print 'status db id:', self.id
+        print 'story string:', story_string
+
+        # Check for non-mk users mentioned within status's story tags
         if self.story_tags:
             # has a story with the style of <user> commented on <feed>'s status
             print self.story_tags, type(self.story_tags)
@@ -151,19 +166,32 @@ class Facebook_Status(models.Model):
             try:
                 for tag in story_tags_eval.values():
                     for dic in tag:
-                        if Facebook_Feed.objects.filter(vendor_id=dic['id']):
-                            # the metioned user is an mk
-                            return False
-                    # else, the mentioned user is a regular person who commented on the post
-                    return True
+                        feed_in_tag = Facebook_Feed.objects.filter(vendor_id=dic['id'])
+                        if not feed_in_tag:
+                            # the mentioned user is not an mk
+                            print 'True'
+                            return True
             except:
-                #
+                print 'True'
                 return True
 
+            print 'True'
             return True
-        elif [text for text in INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD if text in unicode(self.story)]:
+
+        # Check for strings indicative of comment activity
+        found_text = []
+        for text in INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD:
+            # print 'trying', text
+            if text in story_string:
+                # print 'found'
+                found_text.append(text)
+            # else:
+                # print 'not found'
+        if found_text:
+            print 'True'
             return True
         else:
+            print 'False'
             return False
 
 
