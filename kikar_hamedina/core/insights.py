@@ -156,7 +156,7 @@ class Stats(object):
         return self.party_list
 
 
-@cached(seconds=600)
+@cached(seconds=3600)
 def get_stats():
     return Stats()
 
