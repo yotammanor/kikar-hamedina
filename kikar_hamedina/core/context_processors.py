@@ -3,11 +3,13 @@ from facebook_feeds.models import Tag, Facebook_Status, Facebook_Feed, Feed_Popu
 from django.db.models import F, Count
 from kikar_hamedina.settings import FACEBOOK_APP_ID, CURRENT_KNESSET_NUMBER
 from django.core.cache import cache
+import datetime, time
 
 
 NUMBER_OF_TOP_PARTIES_TO_BRING = 12
 NUMBER_OF_TOP_POLITICIANS_TO_BRING = 12
 NUMBER_OF_TOP_TAGS_TO_BRING = 12
+TAGS_FROM_LAST_DAYS = 7
 
 
 def generic(request):
@@ -17,11 +19,13 @@ def generic(request):
         cache.set("generic_context", result, 600)
 
     # Tags info isn't cached as it needs to be updated dynamically
-    result['navTags'] = (Tag.objects.filter(is_for_main_display=True)
-                        .annotate(number_of_posts=Count('statuses'))
-                        .order_by('-number_of_posts')[:NUMBER_OF_TOP_TAGS_TO_BRING])
+    result['navTags'] = (Tag.objects.filter(is_for_main_display=True, statuses__published__gte=(
+        datetime.date.today() - datetime.timedelta(days=TAGS_FROM_LAST_DAYS)))
+                         .annotate(number_of_posts=Count('statuses'))
+                         .order_by('-number_of_posts')[:NUMBER_OF_TOP_TAGS_TO_BRING])
 
     return result
+
 
 def get_context(request):
     members = Member.objects.filter(is_current=True)
@@ -39,6 +43,6 @@ def get_context(request):
     return {
         'navMembers': [x['member'] for x in sorted_list_of_members][:NUMBER_OF_TOP_POLITICIANS_TO_BRING],
         'navParties': Party.objects.filter(knesset__number=CURRENT_KNESSET_NUMBER)
-                    .order_by('-number_of_members')[:NUMBER_OF_TOP_PARTIES_TO_BRING],
+                          .order_by('-number_of_members')[:NUMBER_OF_TOP_PARTIES_TO_BRING],
         'facebook_app_id': FACEBOOK_APP_ID,
     }

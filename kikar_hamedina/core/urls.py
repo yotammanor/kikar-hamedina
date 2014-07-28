@@ -26,7 +26,7 @@ urlpatterns = patterns('',
                            kwargs={'context_object': 'index'},
                            name='all-statuses'),
                        url(r'^untagged/$', views.AllStatusesView.as_view(
-                           queryset=Facebook_Status.objects.filter(tags=None).order_by('-published')),
+                           queryset=Facebook_Status.objects.filter(tags=None, feed__persona__object_id__isnull=False).order_by('-published')),
                            kwargs={'context_object': 'untagged'},
                            name='untagged'),
                        url(r'^add-tag/(?P<id>\d+)/$', views.add_tag,

@@ -26,6 +26,9 @@ NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
 NUMBER_OF_TAGS_TO_PRESENT = 3
 
+TAGS_FROM_LAST_DAYS = 7
+
+
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
@@ -35,7 +38,9 @@ class HomepageView(ListView):
     template_name = 'core/homepage.html'
 
     def get_queryset(self):
-        queryset = Tag.objects.filter(is_for_main_display=True).annotate(number_of_posts=Count('statuses')).order_by(
+        queryset = Tag.objects.filter(is_for_main_display=True, statuses__published__gte=(
+            datetime.date.today() - datetime.timedelta(days=TAGS_FROM_LAST_DAYS))).annotate(
+            number_of_posts=Count('statuses')).order_by(
             '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
         return queryset
 
@@ -55,8 +60,8 @@ class HomepageView(ListView):
                                    :NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY]
         context['wrote_about_tag'] = wrote_about_tag
         return context
-    
-    
+
+
 class OnlyCommentsView(ListView):
     model = Facebook_Status
     template_name = 'core/all_results.html'
@@ -82,6 +87,7 @@ class AllStatusesView(StatusListView):
             id__in=[feed.persona.object_id for feed in feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
+
 
 #
 class SearchView(StatusListView):
@@ -114,7 +120,7 @@ class SearchView(StatusListView):
 
         return members_ids, parties_ids, tags_ids, words
 
-    def parse_q_object(self,members_ids,parties_ids,tags_ids,words):
+    def parse_q_object(self, members_ids, parties_ids, tags_ids, words):
         member_query = Member.objects.filter(id__in=members_ids)
         feeds = Facebook_Feed.objects.filter(persona__object_id__in=[member.id for member in member_query])
 
@@ -133,7 +139,7 @@ class SearchView(StatusListView):
     def get_queryset(self):
         members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
 
-        query_Q = self.parse_q_object(members_ids,parties_ids,tags_ids,words)
+        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
         return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
         return return_queryset
 
@@ -141,7 +147,7 @@ class SearchView(StatusListView):
         context = super(SearchView, self).get_context_data(**kwargs)
 
         members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
-        query_Q = self.parse_q_object(members_ids,parties_ids,tags_ids,words)
+        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
 
         context['members'] = Member.objects.filter(id__in=members_ids)
 
@@ -223,7 +229,7 @@ class MemberView(StatusFilterUnifiedView):
     def get_context_data(self, **kwargs):
         context = super(MemberView, self).get_context_data(**kwargs)
         stats = dict()
-        if self.persona is None: # Member with no facebook persona
+        if self.persona is None:  # Member with no facebook persona
             return context
         member_id = self.kwargs['id']
         feed = Facebook_Feed.objects.get(persona__object_id=member_id)
@@ -238,8 +244,8 @@ class MemberView(StatusFilterUnifiedView):
         #
         # mean_monthly_popularity_by_status_list_unsorted = [{'x': time.mktime(key.timetuple()) * 1000, 'y': value} for
         # # *1000 - seconds->miliseconds
-        #                                                    key, value in
-        #                                                    mean_monthly_popularity_by_status_raw['like_count'].items()]
+        # key, value in
+        # mean_monthly_popularity_by_status_raw['like_count'].items()]
         # mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted,
         #                                                        key=lambda x: x['x'])
         # mean_monthly_popularity_by_status = json.dumps(mean_monthly_popularity_by_status_list_sorted)
@@ -389,7 +395,7 @@ def get_data_from_facebook(request):
     relevant_feeds = []
     print 'checking %d user_profile feeds.' % len(user_profile_feeds)
     for i, feed in enumerate(user_profile_feeds):
-        print 'working on %d of %d, vendor_id: %s.' % (i+1, len(user_profile_feeds), feed.vendor_id)
+        print 'working on %d of %d, vendor_id: %s.' % (i + 1, len(user_profile_feeds), feed.vendor_id)
         try:
             statuses = graph.get_connections(feed.vendor_id, 'statuses')
             if statuses['data']:
@@ -442,7 +448,7 @@ def status_update(request, status_id):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
-#A handler for add_tag_to_status ajax call from client
+# A handler for add_tag_to_status ajax call from client
 def add_tag_to_status(request):
     response_data = dict()
     response_data['success'] = False
@@ -470,7 +476,7 @@ def add_tag_to_status(request):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
-#A handler for the search bar request from the client
+# A handler for the search bar request from the client
 def search_bar(request):
     searchText = request.GET['text']
 
