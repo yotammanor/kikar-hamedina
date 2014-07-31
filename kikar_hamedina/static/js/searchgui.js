@@ -34,10 +34,15 @@ $(document).ready(function() {
 			url += "tags="+tag_ids+"&"
 		}
 
-		search_str_ids = searchTerms['search_str'].join(',')
+		search_str_ids = '"'+searchTerms['search_str'].join('","')+'"'
+        console.log(search_str_ids)
 		if (search_str_ids.length > 0) {
 			url += "search_str="+search_str_ids+"&"
 		}
+        console.log(url)
+        var operator = $("input:radio[name=selected-operator]:checked").val()
+//        console.log(operator).delay(5000)
+        url += "tags_and_search_str_operator="+operator
 
 		window.location.replace(encodeURI(url))
 	})

@@ -1,6 +1,7 @@
 import datetime, time
 import urllib2
 import json
+from operator import or_, and_
 from IPython.lib.pretty import pprint
 import facebook
 from django.core.exceptions import FieldError
@@ -122,7 +123,8 @@ class SearchView(StatusListView):
         # keywords searched for, comma separated
         words = []
         if 'search_str' in self.request.GET.keys():
-            words = [word for word in self.request.GET['search_str'].strip().split(',')]
+            search_str_stripped = self.request.GET['search_str'].strip()[1:-1]  # removes quotes from beginning and end.
+            words = [word for word in search_str_stripped.split('","')]
 
         print 'parsed request:', members_ids, parties_ids, tags_ids, words
         return members_ids, parties_ids, tags_ids, words
@@ -140,20 +142,19 @@ class SearchView(StatusListView):
         tags_Q = Q()
         if tags_ids:
             tags_to_queries = [Q(tags__id=tag_id) for tag_id in tags_ids]
-            print 'tags_to_queries:', tags_to_queries
+            print 'tags_to_queries:', len(tags_to_queries)
             for query_for_single_tag in tags_to_queries:
-                print query_for_single_tag
+                # print 'Now adding query:', query_for_single_tag
                 if not tags_Q:
-                    print 'here1'
                     # the first query overrides the empty concatenated query
                     tags_Q = query_for_single_tag
                 else:
-                    print 'here2'
                     # the rest are concatenated with OR
                     tags_Q = query_for_single_tag | tags_Q
         else:
             tags_Q = Q()
 
+        print 'tags_Q:', tags_Q
 
         # keywords - searched both in content and in tags of posts.
         search_str_Q = Q()
@@ -165,27 +166,25 @@ class SearchView(StatusListView):
                 search_str_Q = Q(content__contains=word) | search_str_Q
                 search_str_Q = Q(tags__name__contains=word) | search_str_Q
 
-        # tags query and keyword query concatenated. Logic default is OR between queries
+        # tags query and keyword query concatenated. Logic is set according to request input
 
-        # print 'tags_Q:', tags_Q, bool(tags_Q)
-        # print 'search_str_Q:', search_str_Q, bool(search_str_Q)
+        request_operator = self.request.GET['tags_and_search_str_operator']
+        print 'selected_operator:', request_operator
+        if request_operator == 'or_operator':
+            selected_operator = or_
+        else:
+            selected_operator = and_
 
+        # Handle joining of empty queries
         search_str_with_tags_Q = Q()
         if tags_Q and search_str_Q:
-            search_str_with_tags_Q = tags_Q | search_str_Q
+            search_str_with_tags_Q = selected_operator(tags_Q, search_str_Q)
         elif tags_Q:
             search_str_with_tags_Q = tags_Q
         elif search_str_Q:
             search_str_with_tags_Q = search_str_Q
 
-        search_str_AND_tags_Q = tags_Q & search_str_Q
-        search_str_OR_tags_Q = tags_Q | search_str_Q
-
-
-        print 'AND option:', search_str_AND_tags_Q
-        print 'OR option:', search_str_OR_tags_Q
-        print 'using OR (hard coded)'
-
+        print 'search_str_with_tags_Q:', search_str_with_tags_Q
         print '\n'
         # print 'members_or_parties:', memebers_OR_parties_Q, bool(memebers_OR_parties_Q)
         # print 'keywords_or_tags:', search_str_with_tags_Q, bool(search_str_with_tags_Q)
