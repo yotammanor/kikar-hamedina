@@ -13,6 +13,8 @@ INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'likes a link',
                                                'likes a photo',
                                                'likes a video',
+                                               'commented on this',
+
                                                ]
 
 

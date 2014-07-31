@@ -97,10 +97,14 @@ class SearchView(StatusListView):
     template_name = "core/search.html"
 
     def get_parsed_request(self):
+        print 'request:', self.request.GET
+
+        # adds all member ids explicitly searched for.
         members_ids = []
         if 'members' in self.request.GET.keys():
             members_ids = [int(member_id) for member_id in self.request.GET['members'].split(',')]
 
+        # adds to member_ids all members belonging to parties explicitly searched for.
         parties_ids = []
         if 'parties' in self.request.GET.keys():
             parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
@@ -110,36 +114,98 @@ class SearchView(StatusListView):
                     if member.id not in members_ids:
                         members_ids.append(member.id)
 
+        # tags searched for.
         tags_ids = []
         if 'tags' in self.request.GET.keys():
             tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
 
+        # keywords searched for, comma separated
         words = []
         if 'search_str' in self.request.GET.keys():
-            words = self.request.GET['search_str'].strip().split(' ')
+            words = [word for word in self.request.GET['search_str'].strip().split(',')]
 
+        print 'parsed request:', members_ids, parties_ids, tags_ids, words
         return members_ids, parties_ids, tags_ids, words
 
     def parse_q_object(self, members_ids, parties_ids, tags_ids, words):
         member_query = Member.objects.filter(id__in=members_ids)
         feeds = Facebook_Feed.objects.filter(persona__object_id__in=[member.id for member in member_query])
 
+        # all members asked for (through member search of party search), with OR between them.
         memebers_OR_parties_Q = Q()
-        if len(feeds) > 0:
+        if feeds:
             memebers_OR_parties_Q = Q(feed__in=feeds)
 
+        # tags - search for all tags specified by their id
+        tags_Q = Q()
+        if tags_ids:
+            tags_to_queries = [Q(tags__id=tag_id) for tag_id in tags_ids]
+            print 'tags_to_queries:', tags_to_queries
+            for query_for_single_tag in tags_to_queries:
+                print query_for_single_tag
+                if not tags_Q:
+                    print 'here1'
+                    # the first query overrides the empty concatenated query
+                    tags_Q = query_for_single_tag
+                else:
+                    print 'here2'
+                    # the rest are concatenated with OR
+                    tags_Q = query_for_single_tag | tags_Q
+        else:
+            tags_Q = Q()
+
+
+        # keywords - searched both in content and in tags of posts.
         search_str_Q = Q()
         for word in words:
-            search_str_Q = Q(content__contains=word) | search_str_Q
-            search_str_Q = Q(tags__name__contains=word) | search_str_Q
+            if not search_str_Q:
+                search_str_Q = Q(content__contains=word)
+                search_str_Q = Q(tags__name__contains=word) | search_str_Q
+            else:
+                search_str_Q = Q(content__contains=word) | search_str_Q
+                search_str_Q = Q(tags__name__contains=word) | search_str_Q
 
-        query_Q = memebers_OR_parties_Q & search_str_Q
+        # tags query and keyword query concatenated. Logic default is OR between queries
+
+        # print 'tags_Q:', tags_Q, bool(tags_Q)
+        # print 'search_str_Q:', search_str_Q, bool(search_str_Q)
+
+        search_str_with_tags_Q = Q()
+        if tags_Q and search_str_Q:
+            search_str_with_tags_Q = tags_Q | search_str_Q
+        elif tags_Q:
+            search_str_with_tags_Q = tags_Q
+        elif search_str_Q:
+            search_str_with_tags_Q = search_str_Q
+
+        search_str_AND_tags_Q = tags_Q & search_str_Q
+        search_str_OR_tags_Q = tags_Q | search_str_Q
+
+
+        print 'AND option:', search_str_AND_tags_Q
+        print 'OR option:', search_str_OR_tags_Q
+        print 'using OR (hard coded)'
+
+        print '\n'
+        # print 'members_or_parties:', memebers_OR_parties_Q, bool(memebers_OR_parties_Q)
+        # print 'keywords_or_tags:', search_str_with_tags_Q, bool(search_str_with_tags_Q)
+
+        query_Q = Q()
+        if memebers_OR_parties_Q and search_str_with_tags_Q:
+            query_Q = memebers_OR_parties_Q & search_str_with_tags_Q
+        elif memebers_OR_parties_Q:
+            query_Q = memebers_OR_parties_Q
+        elif search_str_with_tags_Q:
+            query_Q = search_str_with_tags_Q
+
+        print 'query to be executed:', query_Q
         return query_Q
 
     def get_queryset(self):
         members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
 
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
+        print 'get_queryset_executed:', query_Q
         return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
         return return_queryset
 
@@ -156,6 +222,9 @@ class SearchView(StatusListView):
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
 
         context['search_str'] = words
+
+        context['search_title'] = 'my search'
+
 
         return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
         context['number_of_results'] = return_queryset.count()
@@ -247,7 +316,7 @@ class MemberView(StatusFilterUnifiedView):
         # key, value in
         # mean_monthly_popularity_by_status_raw['like_count'].items()]
         # mean_monthly_popularity_by_status_list_sorted = sorted(mean_monthly_popularity_by_status_list_unsorted,
-        #                                                        key=lambda x: x['x'])
+        # key=lambda x: x['x'])
         # mean_monthly_popularity_by_status = json.dumps(mean_monthly_popularity_by_status_list_sorted)
         # print mean_monthly_popularity_by_status
         # mean_like_count_all = mean([status.like_count for status in statuses_for_member])
