@@ -3,6 +3,7 @@ import urllib2
 import json
 from operator import or_, and_
 from IPython.lib.pretty import pprint
+from django.utils.datastructures import MultiValueDictKeyError
 import facebook
 from django.core.exceptions import FieldError
 from django.shortcuts import render, render_to_response, get_object_or_404
@@ -20,6 +21,8 @@ from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Toke
 from mks.models import Party, Member
 from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
 from facebook import GraphAPIError
+
+DEFAULT_OPERATOR = 'or_operator'
 
 HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 
@@ -167,8 +170,11 @@ class SearchView(StatusListView):
                 search_str_Q = Q(tags__name__contains=word) | search_str_Q
 
         # tags query and keyword query concatenated. Logic is set according to request input
+        try:
+            request_operator = self.request.GET['tags_and_search_str_operator']
+        except MultiValueDictKeyError:
+            request_operator = DEFAULT_OPERATOR
 
-        request_operator = self.request.GET['tags_and_search_str_operator']
         print 'selected_operator:', request_operator
         if request_operator == 'or_operator':
             selected_operator = or_
