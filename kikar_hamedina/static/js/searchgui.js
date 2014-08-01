@@ -14,37 +14,43 @@ $(document).ready(function() {
 
 	$("#searchgui-go-button").click(function() {
 		console.log("hERE")
-		searchTerms = {'member':[],'party':[],'tag':[],'search_str':[]}
-		$(".result-info").each(function() {
-			type = $(this).data('type')
-			id = $(this).data('id')
-			searchTerms[type].push(id)
-		})
-		url = "/search/?"
-		member_ids = searchTerms['member'].join(',')
-		if (member_ids.length > 0) {
-			url += "members="+member_ids+"&"
-		}
-		party_ids = searchTerms['party'].join(',')
-		if (party_ids.length > 0) {
-			url += "parties="+party_ids+"&"
-		}
-		tag_ids = searchTerms['tag'].join(',')
-		if (tag_ids.length > 0) {
-			url += "tags="+tag_ids+"&"
-		}
 
-		search_str_ids = '"'+searchTerms['search_str'].join('","')+'"'
-        console.log(search_str_ids)
-		if (search_str_ids.length > 0) {
-			url += "search_str="+search_str_ids+"&"
-		}
-        console.log(url)
-        var operator = $("input:radio[name=selected-operator]:checked").val()
-//        console.log(operator).delay(5000)
-        url += "tags_and_search_str_operator="+operator
 
-		window.location.replace(encodeURI(url))
+        if ($(".result-info").length > 0) {
+            searchTerms = {'member': [], 'party': [], 'tag': [], 'search_str': []}
+            $(".result-info").each(function () {
+                type = $(this).data('type')
+                id = $(this).data('id')
+                searchTerms[type].push(id)
+            })
+            url = "/search/?"
+            member_ids = searchTerms['member'].join(',')
+            if (member_ids.length > 0) {
+                url += "members=" + member_ids + "&"
+            }
+            party_ids = searchTerms['party'].join(',')
+            if (party_ids.length > 0) {
+                url += "parties=" + party_ids + "&"
+            }
+            tag_ids = searchTerms['tag'].join(',')
+            if (tag_ids.length > 0) {
+                url += "tags=" + tag_ids + "&"
+            }
+
+            search_str_ids = '"' + searchTerms['search_str'].join('","') + '"'
+            console.log(search_str_ids)
+            if (search_str_ids.length > 0) {
+                url += "search_str=" + search_str_ids + "&"
+            }
+            console.log(url)
+            var operator = $("input:radio[name=selected-operator]:checked").val()
+            //        console.log(operator).delay(5000)
+            url += "tags_and_search_str_operator=" + operator
+
+            window.location.replace(encodeURI(url))
+        } else {
+            $("#searchgui-text-input").attr("placeholder",'צריך לחפש משהו בשביל למצוא משהו')
+        }
 	})
 
 	$("#searchgui-add-word").click(function() {
