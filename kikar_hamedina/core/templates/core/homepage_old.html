@@ -1,0 +1,76 @@
+{% extends "layouts/generic-template.html" %}
+
+{% block title %}עמוד ראשי{% endblock title %}
+
+{% block h1 %}
+כיכר המדינה
+{% endblock %}
+{% block details %}
+<div class="h4">
+    הנושאים החמים
+</div>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        {% for tag, feed_list in wrote_about_tag.items %}
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <i class="fa fa-comments-o"></i>
+                        </div>
+                        <div class="col-md-2">
+                            <a class="link-on-blue" href="{% url 'tag' 'name' tag.name %}">{{ tag.name | truncatechars:32 }}</a>
+                        </div>
+                        <div class="col-md-1">
+                            {{ tag.number_of_posts }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    {% for feed in feed_list %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-sm-3">
+                                <a href="{% url 'member' feed.persona.content_object.id %}">
+                                    <img src="{{ feed.picture }}"
+                                    class="profile-photo img-rounded">
+                                </a>
+                            </div>
+                            <div class="col-sm-9">
+                                <a href="{% url 'member' feed.persona.content_object.id %}">
+                                    {{ feed.persona.content_object.name }}
+                                </a>
+                                <br>
+                                <a href="{% url 'party' feed.persona.content_object.current_party.id %}">
+                                    {{ feed.persona.content_object.current_party.name }}
+                                </a>
+                            </div>
+                        </div><br><br><br>
+                    </div>
+                    {% endfor %}
+
+                </div>
+                <div class="panel-footer">
+                    <a href="{% url 'tag' 'name' tag.name %}"> קרא עוד</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{#{% block sidebar %}#}
+{#    <ul class="list-group">#}
+{#        <li class="list-group-item list-group-item-heading"><b> כתבו לאחרונה </b></li>#}
+{#        {% for member in side_bar_list.all %}#}
+{#            <li class="list-group-item">#}
+{#                <a href="{% url 'member' member.id %}">{{ member.name }}</a>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#{% endblock %}#}

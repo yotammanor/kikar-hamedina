@@ -1,67 +1,113 @@
+{#<script type="text/javascript">#}
+{#$(document).ready(function () {#}
+{#    alert('here');#}
+{#    $("#details-container").hide();#}
+{#});#}
+{#</script>#}
+
+
 {% extends "layouts/generic-template.html" %}
 
-{% block title %}עמוד ראשי{% endblock title %}
+{% block title %}כיכר המדינה : עמוד ראשי{% endblock title %}
 
-{% block h1 %}
-כיכר המדינה
+{% block context-header %}
+
 {% endblock %}
-{% block details %}
-<div class="h4">
-    הנושאים החמים
-</div>
-{% endblock %}
+
+{% load core_extras %}
+
+{#{% block h1 %}#}
+{#    העמוד הראשי החדש#}
+{#{% endblock %}#}
+{#{% block details %}#}
+{#    <div class="h4">#}
+{#        הנושאים החמים#}
+{#    </div>#}
+{#{% endblock %}#}
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        {% for tag, feed_list in wrote_about_tag.items %}
-        <div class="col-md-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-md-1">
-                            <i class="fa fa-comments-o"></i>
-                        </div>
-                        <div class="col-md-2">
-                            <a class="link-on-blue" href="{% url 'tag' 'name' tag.name %}">{{ tag.name | truncatechars:32 }}</a>
-                        </div>
-                        <div class="col-md-1">
-                            {{ tag.number_of_posts }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-body">
-                    {% for feed in feed_list %}
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-sm-3">
-                                <a href="{% url 'member' feed.persona.content_object.id %}">
-                                    <img src="{{ feed.picture }}"
-                                    class="profile-photo img-rounded">
-                                </a>
-                            </div>
-                            <div class="col-sm-9">
-                                <a href="{% url 'member' feed.persona.content_object.id %}">
-                                    {{ feed.persona.content_object.name }}
-                                </a>
-                                <br>
-                                <a href="{% url 'party' feed.persona.content_object.current_party.id %}">
-                                    {{ feed.persona.content_object.current_party.name }}
-                                </a>
-                            </div>
-                        </div><br><br><br>
-                    </div>
-                    {% endfor %}
-
-                </div>
-                <div class="panel-footer">
-                    <a href="{% url 'tag' 'name' tag.name %}"> קרא עוד</a>
-                </div>
+    <div class="container main-page-frame">
+        <div class="main-page-frame col-lg-12">
+            <img src="{{ STATIC_URL }}media/kikar_hamedina_logo.png">
+        </div>
+        <div class="main-page-frame col-lg-12">
+            <h1>עוקבים אחרי חברי הכנסת שלנו ברשתות החברתיות</h1>
+        </div>
+        <div class="main-page-frame col-lg-12">
+            <br>
+        </div>
+        <div class="main-page-frame container">
+            <div class="main-page-frame col-lg-1">
+                <br>
+            </div>
+            <div class="col-lg-10 main-page-frame">
+                <h3>כיום, {{ number_of_mks }} חברי כנסת פעילים בפייסבוק באופן קבוע. אנחנו אוספים את כל מה שהם כותבים,
+                    במטרה לעזור לציבור ולך להבין לעקוב אחרי השיחה.</h3>
+            </div>
+            <div class="main-page-frame col-lg-1">
+                <br>
             </div>
         </div>
-        {% endfor %}
+        <div class="main-page-frame col-lg-12">
+            <br>
+        </div>
+        <div class="container main-page-frame">
+            <div class="col-lg-1 main-page-frame">
+                <br>
+            </div>
+            <div class="col-lg-10">
+                <div class="main-page-frame main-page-frame-links">
+                    <h4><b>תוהה מה אפשר למצוא אצלנו? אפשר לדעת, למשל: </b></h4>
+                </div>
+                <div class="main-page-frame main-page-frame-links">
+                    <h4><i class="fa fa-thumbs-o-up"></i> מה כתבו ב-<a
+                            href="{% url 'all-statuses' %}">{{ statuses_last_day }}</a> הפוסטים החדשים שפורסמו
+                        היום?
+                    </h4>
+                </div>
+                <div class="main-page-frame main-page-frame-links">
+                    <h4><i class="fa fa-thumbs-o-up"></i> על מה מדברים במפלגת <a
+                            href={% url 'party' featured_party.id %}>{{ featured_party.name }} </a>
+                        בימים אלו?</h4>
+                </div>
+                <div class="main-page-frame main-page-frame-links">
+                    <h4><i class="fa fa-thumbs-o-up"></i> אילו חברי כנסת השתמשו לאחרונה במילה <a
+                            href='{% url 'search' %}?{{ featured_search.search_value }}'>{{ featured_search.search_name }}</a>?
+                    </h4>
+                </div>
+                <div class="main-page-frame main-page-frame-links">
+                    <h4><i class="fa fa-thumbs-o-up"></i> מה גרם ל<a
+                            href='{% url "member" top_growth.member.id %}'>{{ top_growth.member.name }}</a> לזכות בעלייה
+                        של {{ top_growth.dif | percent }} במספר התומכים בשבוע האחרון?
+                    </h4>
+                </div>
+                <div class="main-page-frame main-page-frame-links">
+                    <h4><i class="fa fa-thumbs-o-up"></i> ועוד הרבה, רק צריך <a href="{% url 'search-gui' %}">לחפש</a>!
+                    </h4>
+                </div>
+            </div>
+            <div class="col-lg-1 main-page-frame">
+                <br>
+            </div>
+        </div>
+        <div class="main-page-frame col-lg-12 main-page-frame">
+            <br>
+        </div>
+        <div class="main-page-frame col-lg-12">
+            <br>
+            חיפשת משהו ולא מצאת? נתקלת בתקלה? יש לך רעיון מדליק לאיך לשפר את האתר? <a
+                href="mailto:yotammanor@gmail.com">נשמח לשמוע</a>!
+        </div>
+        <div class="main-page-frame col-lg-12">
+            <br>
+            <br>
+            <br>
+            אתר זה הוא  "חשמביר" של
+            <div id="hasadna-logo"><a href="http://www.hasadna.org.il" rel="nofollow"><img
+                    src="http://www.hasadna.org.il/wp-content/themes/sadna2012/images/sadna-logo.png"
+                    id="hasadna-logo-img" alt=""><span>הסדנא לידע ציבורי <span
+                    class="small">(ע"ר)</span></span></a></div>
+        </div>
     </div>
-</div>
 {% endblock %}
 
 {#{% block sidebar %}#}

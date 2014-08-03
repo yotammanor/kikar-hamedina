@@ -21,6 +21,7 @@ v1_api.register(StatsPartyResource())
 
 urlpatterns = patterns('',
                        url(r'^$', views.HomepageView.as_view(), name='index'),
+                       url(r'^old/$', views.OldHomepageView.as_view(), name='old-index'),
                        url(r'^all-statuses/$',
                            views.AllStatusesView.as_view(queryset=Facebook_Status.objects.order_by('-published')),
                            kwargs={'context_object': 'index'},

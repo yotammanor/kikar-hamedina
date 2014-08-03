@@ -5,7 +5,7 @@ from operator import or_, and_
 from IPython.lib.pretty import pprint
 from django.utils.datastructures import MultiValueDictKeyError
 import facebook
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -34,14 +34,102 @@ TAGS_FROM_LAST_DAYS = 7
 
 NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
 
+MIN_FAN_COUNT_FOR_REL_COMPARISON = 50000
+
 
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
 
+def popularity_dif(feed, days_back):
+    dif_dict = {'fan_count_dif_nominal': 0,
+                'fan_count_dif_growth_rate': 0,
+                'last_popularity_count': 0,
+                'date_of_value': datetime.date.today(),
+    }
+    feed_current_count = feed.current_fan_count
+    try:
+        last_popularity = Feed_Popularity.objects.filter(feed=feed,
+                                                         date_of_creation__gte=(
+                                                             datetime.date.today() - datetime.timedelta(
+                                                                 days=days_back))).order_by('date_of_creation')[0]
+
+        date_of_value = last_popularity.date_of_creation
+        fan_count_dif_nominal = feed_current_count - last_popularity.fan_count
+        if last_popularity.fan_count != 0:
+            fan_count_dif_growth_rate = float(fan_count_dif_nominal) / last_popularity.fan_count
+        else:
+            fan_count_dif_growth_rate = 0.0
+        # print 'data for feed: %s, from: %s to %s, dif: %s, per: %s' % (
+        #     feed.username, last_popularity.fan_count, feed_current_count, fan_count_dif_nominal,
+        #     fan_count_dif_growth_rate)
+
+        dif_dict['fan_count_dif_nominal'] = fan_count_dif_nominal
+        dif_dict['last_popularity_count'] = last_popularity.fan_count
+        dif_dict['date_of_value'] = date_of_value
+        dif_dict['fan_count_dif_growth_rate'] = fan_count_dif_growth_rate
+
+    except:
+        print 'Failed for some reason, data retrieved is incorrect'
+        pass
+
+    return dif_dict
+
+
+def get_largest_fan_count_difference(days_back, comparison_type,
+                                     min_fan_count_for_rel_comparison=MIN_FAN_COUNT_FOR_REL_COMPARISON):
+    current_feeds = Facebook_Feed.objects.filter(feed_type='PP',
+                                                 persona__object_id__in=[member.id for member in
+                                                                         Member.objects.filter(is_current=True)])
+
+    max_change = {'feed': None, 'dif': 0, 'day': datetime.date.today()}
+    for feed in current_feeds:
+        dif_dict = popularity_dif(feed, days_back)
+        if comparison_type == 'abs':
+            change_value = dif_dict['fan_count_dif_nominal']
+        elif comparison_type == 'rel':
+            if feed.current_fan_count <= min_fan_count_for_rel_comparison:
+                change_value = float(0)  # to small to compete in a relational context
+            else:
+                change_value = dif_dict['fan_count_dif_growth_rate']
+        if abs(change_value) > abs(max_change['dif']):
+            max_change['feed'] = feed
+            max_change['dif'] = change_value
+            max_change['day'] = dif_dict['date_of_value']
+        else:
+            pass
+
+    return max_change
+
+
 class HomepageView(ListView):
-    model = Tag
     template_name = 'core/homepage.html'
+    model = Facebook_Status
+
+    def get_context_data(self, **kwargs):
+        context = super(HomepageView, self).get_context_data(**kwargs)
+        new_statuses_last_day = Facebook_Status.objects.filter(published__gte=(
+            datetime.date.today() - datetime.timedelta(days=1))).count()
+        context['statuses_last_day'] = new_statuses_last_day
+        members = Member.objects.filter(is_current=True)
+        members_with_persona = [member for member in members if member.facebook_persona]
+        members_with_feed = [member for member in members_with_persona if member.facebook_persona.feeds.all()]
+        context['number_of_mks'] = len(members_with_feed)
+        context['featured_party'] = Party.objects.get(id=16)
+        context['featured_search'] = {'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
+                                      'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
+        max_change = get_largest_fan_count_difference(26, 'rel', MIN_FAN_COUNT_FOR_REL_COMPARISON)
+        max_change['member'] = Member.objects.get(persona=max_change['feed'].persona)
+        context['top_growth'] = max_change
+        return context
+
+
+        # return render(request, 'core/homepage_new.html')
+
+
+class OldHomepageView(ListView):
+    model = Tag
+    template_name = 'core/homepage_old.html'
 
     def get_queryset(self):
         queryset = Tag.objects.filter(is_for_main_display=True, statuses__published__gte=(
@@ -51,7 +139,7 @@ class HomepageView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super(HomepageView, self).get_context_data(**kwargs)
+        context = super(OldHomepageView, self).get_context_data(**kwargs)
         wrote_about_tag = dict()
         for tag in context['object_list']:
             list_of_writers = Facebook_Feed.objects.filter(facebook_status__tags__id=tag.id).distinct()
@@ -309,6 +397,8 @@ class MemberView(StatusFilterUnifiedView):
         member_id = self.kwargs['id']
         feed = Facebook_Feed.objects.get(persona__object_id=member_id)
 
+        dif_dict = popularity_dif(feed, 7)
+        context['change_in_popularity'] = dif_dict
         # Statistical Data for member - PoC
 
         # statuses_for_member = Facebook_Status.objects.filter(feed__persona__object_id=member_id)
@@ -328,16 +418,16 @@ class MemberView(StatusFilterUnifiedView):
         # mean_like_count_all = mean([status.like_count for status in statuses_for_member])
         # mean_like_count_all_series = [{'x': time.mktime(key.timetuple()) * 1000, 'y': mean_like_count_all} for
         # # *1000 - seconds->miliseconds
-        #                               key, value in
-        #                               mean_monthly_popularity_by_status_raw['like_count'].items()]
+        # key, value in
+        # mean_monthly_popularity_by_status_raw['like_count'].items()]
         # mean_like_count_all_series_json = json.dumps(mean_like_count_all_series)
         #
         # mean_like_count_last_month = mean([status.like_count for status in statuses_for_member.filter(
-        #     published__gte=timezone.now() - timezone.timedelta(days=30))])
+        # published__gte=timezone.now() - timezone.timedelta(days=30))])
         #
         # tags_for_member = Tag.objects.filter(statuses__feed__persona__object_id=member_id).annotate(
-        #     number_of_posts=Count('statuses')).order_by(
-        #     '-number_of_posts')
+        # number_of_posts=Count('statuses')).order_by(
+        # '-number_of_posts')
         # tags_for_member_list = [{'label': tag.name, 'value': tag.number_of_posts} for tag in tags_for_member]
         # tags_for_member_json = json.dumps(tags_for_member_list)
         #
@@ -583,7 +673,7 @@ def search_bar(request):
         response_data['number_of_results'] += 1
 
     parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER).order_by('name')[
-        :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+              :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
     for party in parties:
         newResult = dict()
         newResult['id'] = party.id
