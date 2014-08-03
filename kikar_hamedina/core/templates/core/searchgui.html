@@ -33,57 +33,71 @@
 {% endblock %}
 
 {% block content %}
+    <div class="col-sm-2">
 
-    <div class="col-sm-3">
-        <div class="list-group">
-            <li class="list-group-item" id="searchgui-go-button">
-                חפש!
-            </li>
-            <li class="list-group-item">
-                <div class="input-group">
-                    <input type="text" class="form-control" id="searchgui-text-input" placeholder="חפש חבר כנסת, מפלגה, נושא, או מילים">
+    </div>
+    <div class="col-sm-8">
+        <div class="col-sm-12">
+            <div class="list-group">
+                <li class="list-group-item">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchgui-text-input"
+                               placeholder="חפש חבר כנסת, מפלגה, נושא, או מילים">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="searchgui-add-word" data-word-num="1">הוסף מילה
+                        <button class="btn btn-default" type="button" id="searchgui-add-word" data-word-num="1">הוסף
+                            מילה
                         </button>
                     </span>
-                </div>
-                <div class="input-group">
-                    <input type="radio" class="form-inline" id="searchgui-selected-operator-or"
-                             name="selected-operator" value="or_operator" checked> או
-                    <input type="radio" class="form-inline" id="searchgui-selected-operator-and"
-                           name="selected-operator" value="and_operator"> וגם <br>
-                            (מילים ותגיות כחיתוך או איחוד)
-                </div>
-            </li>
-            <span id="searchgui-search-words"></span>
-            <li class="list-group-item active">
-                תוצאות
-			<span class="badge">
-				<span class="glyphicon glyphicon-trash"></span>
-			</span>
-            </li>
+
+                    <span class="input-group-btn" id="searchgui-go-button">
+                       <button class="btn btn-success"><i class="fa fa-search"></i></button>
+                    </span>
+                    </div>
+                    <div class="input-group" id="searchgui-operator-input">
+                        <input type="radio" class="form-inline" id="searchgui-selected-operator-or"
+                               name="selected-operator" value="or_operator" checked> או
+                        <input type="radio" class="form-inline" id="searchgui-selected-operator-and"
+                               name="selected-operator" value="and_operator"> וגם <br>
+                        (מילים ותגיות כחיתוך או איחוד)
+                    </div>
+
+                </li>
+                <span id="searchgui-search-words"></span>
+            </div>
+        </div>
+        <div class="col-sm-12">
+{#            <li class="list-group-item alert-info" id="list-of-search_str-title">#}
+{#                הצעות#}
+{#                <span class="badge">#}
+{#                    <span class="glyphicon glyphicon-trash"></span>#}
+{#                </span>#}
+{#            </li>#}
             <span id="search-gui-result-list"></span>
         </div>
-    </div>
-    <div class="col-sm-3">
-        <div class="list-group">
-            <li class="list-group-item active">חברי כנסת</li>
-            <span id="search-gui-member-added-list"></span>
+        <div class="col-sm-12">
+            <div class="list-group">
+                <li class="list-group-item active" id="list-of-member-title">חברי כנסת</li>
+                <span id="search-gui-member-added-list"></span>
+            </div>
         </div>
-    </div>
 
-    <div class="col-sm-3">
-        <div class="list-group">
-            <li class="list-group-item active">מפלגות</li>
-            <span id="search-gui-party-added-list"></span>
+        <div class="col-sm-12">
+            <div class="list-group">
+                <li class="list-group-item active" id="list-of-party-title">מפלגות</li>
+                <span id="search-gui-party-added-list"></span>
+            </div>
         </div>
-    </div>
 
-    <div class="col-sm-3">
-        <div class="list-group">
-            <li class="list-group-item active">תגים</li>
-            <span id="search-gui-tag-added-list"></span>
+        <div class="col-sm-12">
+            <div class="list-group">
+                <li class="list-group-item active" id="list-of-tag-title">תגים</li>
+                <span id="search-gui-tag-added-list"></span>
+            </div>
         </div>
+
+    </div>
+    <div class="col-sm-2">
+
     </div>
 
 {% endblock %}

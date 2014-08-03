@@ -32,6 +32,8 @@ NUMBER_OF_TAGS_TO_PRESENT = 3
 
 TAGS_FROM_LAST_DAYS = 7
 
+NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
+
 
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
@@ -230,7 +232,6 @@ class SearchView(StatusListView):
 
         context['search_title'] = 'my search'
 
-
         return_queryset = Facebook_Status.objects.filter(query_Q).order_by("-published")
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
@@ -326,7 +327,7 @@ class MemberView(StatusFilterUnifiedView):
         # print mean_monthly_popularity_by_status
         # mean_like_count_all = mean([status.like_count for status in statuses_for_member])
         # mean_like_count_all_series = [{'x': time.mktime(key.timetuple()) * 1000, 'y': mean_like_count_all} for
-        #                               # *1000 - seconds->miliseconds
+        # # *1000 - seconds->miliseconds
         #                               key, value in
         #                               mean_monthly_popularity_by_status_raw['like_count'].items()]
         # mean_like_count_all_series_json = json.dumps(mean_like_count_all_series)
@@ -561,7 +562,8 @@ def search_bar(request):
         print "NO STRING"
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-    members = Member.objects.filter(name__contains=searchText, is_current=True)
+    members = Member.objects.filter(name__contains=searchText, is_current=True).order_by('name')[
+              :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
     for member in members:
         newResult = dict()
         newResult['id'] = member.id
@@ -571,7 +573,7 @@ def search_bar(request):
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
-    tags = Tag.objects.filter(name__contains=searchText)
+    tags = Tag.objects.filter(name__contains=searchText).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
     for tag in tags:
         newResult = dict()
         newResult['id'] = tag.id
@@ -580,7 +582,8 @@ def search_bar(request):
         response_data['results'].append(newResult)
         response_data['number_of_results'] += 1
 
-    parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER)
+    parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER).order_by('name')[
+        :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
     for party in parties:
         newResult = dict()
         newResult['id'] = party.id

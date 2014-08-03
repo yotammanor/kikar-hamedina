@@ -60,3 +60,24 @@ body {
 .link-on-blue:hover {
 	color: white;
 }
+
+#list-of-member-title {
+    display: none;
+}
+
+
+#list-of-party-title {
+    display: none;
+}
+
+#list-of-tag-title {
+    display: none;
+}
+
+/*#list-of-search_str-title {*/
+	/*display: none;*/
+/*}*/
+
+#searchgui-operator-input {
+    display: none;
+}
