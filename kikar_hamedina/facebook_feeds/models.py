@@ -67,7 +67,13 @@ class Facebook_Feed(models.Model):
 
     @property
     def get_current_fan_count(self):
-        return Feed_Popularity.objects.filter(feed=self).latest('date_of_creation').fan_count
+        popularity = 0
+        if self.feed_type == 'PP':
+            try:
+                popularity = Feed_Popularity.objects.filter(feed=self).latest('date_of_creation').fan_count
+            except Feed_Popularity.DoesNotExist:
+                pass
+        return popularity
 
     current_fan_count = get_current_fan_count
 

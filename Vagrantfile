@@ -48,7 +48,8 @@ SECRET_KEY = '$(base64 /dev/urandom | head -c 50)'
       set -e
       cd /vagrant/kikar_hamedina/
       python manage.py syncdb --noinput
-      python manage.py dumpdata --indent=2 auth > initial_data.json
+      [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
+      python manage.py dumpdata --indent=2 auth > ../devOps/user_backup.json
       for m in core persons mks links facebook_feeds video; do
         python manage.py migrate $m
       done
