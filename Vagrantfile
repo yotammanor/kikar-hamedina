@@ -43,7 +43,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       cd /vagrant/kikar_hamedina/
       python manage.py syncdb --noinput
       [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
-      python manage.py dumpdata --indent=2 auth > ../devOps/user_backup.json
+      python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
       for m in core persons mks links facebook_feeds video; do
         python manage.py migrate $m
       done

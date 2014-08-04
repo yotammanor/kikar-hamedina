@@ -122,7 +122,7 @@ class HomepageView(ListView):
         context['featured_party'] = Party.objects.get(id=16)
         context['featured_search'] = {'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
                                       'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
-        max_change = get_largest_fan_count_difference(0, 'rel', MIN_FAN_COUNT_FOR_REL_COMPARISON)
+        max_change = get_largest_fan_count_difference(30, 'rel', MIN_FAN_COUNT_FOR_REL_COMPARISON)
         max_change['member'] = Member.objects.get(persona=max_change['feed'].persona)
         context['top_growth'] = max_change
         return context
@@ -398,7 +398,7 @@ class MemberView(StatusFilterUnifiedView):
         member_id = self.kwargs['id']
         feed = Facebook_Feed.objects.get(persona__object_id=member_id)
 
-        dif_dict = popularity_dif(feed, 7)
+        dif_dict = popularity_dif(feed, 30)
         context['change_in_popularity'] = dif_dict
         # Statistical Data for member - PoC
 
