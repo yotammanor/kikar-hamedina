@@ -57,18 +57,6 @@ class Command(BaseCommand):
         Receives a feed_id for a facebook
         Returns a facebook-sdk fql query, with all status objects published by the page itself.
                 """
-        select_self_published_status_query = """
-                SELECT
-                    post_id, message,
-                    created_time, like_info, comment_info,
-                    share_count, updated_time, attachment,
-                    type, parent_post_id, permalink, description
-                FROM
-                    stream
-                WHERE
-                    source_id IN ({0}) AND actor_id IN ({0})
-                LIMIT {1}""".format(feed_id, post_number_limit)
-
         api_request_path = "{0}/posts".format(feed_id)
         args_for_request = {'limit': post_number_limit,
                             'version': FACEBOOK_API_VERSION,

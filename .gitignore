@@ -8,5 +8,6 @@ devOps/client_secrets.json
 .vagrant/
 kikar_hamedina/kikar_hamedina/settings/deploy.py
 kikar_hamedina/kikar_hamedina/settings/key.py
+local_settings.py
 
 kikar_hamedina/initial_data.json

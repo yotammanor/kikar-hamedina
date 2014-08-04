@@ -19,16 +19,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     shell.inline = <<-EOS
       set -e
 
-      # Create basic settings
-      echo "# Auto generated code - do not edit
-SECRET_KEY = '$(base64 /dev/urandom | head -c 50)'
-" > /vagrant/kikar_hamedina/kikar_hamedina/settings/key.py
-
-      # Create posresql 'admin' user
-      sudo -u postgres psql -c "DROP DATABASE IF EXISTS kikar_hamedina"
-      sudo -u postgres psql -c "DROP ROLE IF EXISTS admin"
-      sudo -u postgres psql -c "CREATE USER admin WITH PASSWORD '123456'"
-      sudo -u postgres psql -c "CREATE DATABASE kikar_hamedina TEMPLATE=template0 ENCODING='UTF8' LC_CTYPE='en_US.utf8' LC_COLLATE='en_US.UTF-8'"
+      sudo -u postgres psql -c "DROP DATABASE IF EXISTS kikar"
+      sudo -u postgres psql -c "DROP ROLE IF EXISTS kikar"
+      sudo -u postgres psql -c "CREATE USER kikar WITH PASSWORD 'kikar'"
+      sudo -u postgres psql -c "CREATE DATABASE kikar TEMPLATE=template0 ENCODING='UTF8' LC_CTYPE='en_US.utf8' LC_COLLATE='en_US.UTF-8'"
     EOS
   end
 

@@ -1,6 +1,6 @@
 {% load endless %}
 {% paginate object_list %}
 {% for status in object_list %}
-    {% include "core/facebook_status.html" with status=status %}
+    {% include "core/facebook_status.html" %}
 {% endfor %}
 {% show_more "טען עדכונים נוספים" "טוען..." %}

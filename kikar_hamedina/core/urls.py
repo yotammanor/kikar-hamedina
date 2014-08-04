@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag
 from mks.models import Party, Member
-from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
+from django.conf import settings
 from tastypie.api import Api
 from api import *
 from insights import StatsMemberResource, StatsPartyResource
@@ -21,6 +21,7 @@ v1_api.register(StatsPartyResource())
 
 urlpatterns = patterns('',
                        url(r'^$', views.HomepageView.as_view(), name='index'),
+                       # TODO: rename to `hot` to covr hot topics
                        url(r'^old/$', views.OldHomepageView.as_view(), name='old-index'),
                        url(r'^all-statuses/$',
                            views.AllStatusesView.as_view(queryset=Facebook_Status.objects.order_by('-published')),
@@ -51,7 +52,7 @@ urlpatterns = patterns('',
                            views.AllMembers.as_view(queryset=Member.objects.filter(is_current=True)),
                            name='all-members'),
                        url(r'^parties/$', views.AllParties.as_view(
-                           queryset=Party.objects.filter(knesset__number=CURRENT_KNESSET_NUMBER)),
+                           queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-parties'),
                        url(r'^tags/$', views.AllTags.as_view(queryset=Tag.objects.all()),
                            name='all-tags'),

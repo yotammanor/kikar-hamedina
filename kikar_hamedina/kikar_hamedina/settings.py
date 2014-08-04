@@ -2,7 +2,7 @@
 import os
 from os.path import dirname, abspath, join
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 
 sub_path = lambda *x: os.path.join(PROJECT_ROOT, *x)
 
@@ -23,7 +23,7 @@ STATICFILES_DIRS = (
 # Configuring TEMPLATE_DIRS
 TEMPLATE_DIRS = sub_path("templates")
 
-ALLOWED_HOSTS = []
+SECRET_KEY = 'yz2HiIDgrCDeHSfJSXIep3FeEQunsUhnC3P9ehGZ/KHVhLXNCZ'
 
 # Application definition
 
@@ -88,9 +88,9 @@ WSGI_APPLICATION = 'kikar_hamedina.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'kikar_hamedina',
-        'USER': 'postgres',
-        'PASSWORD': '123456',
+        'NAME': 'kikar',
+        'USER': 'kikar',
+        'PASSWORD': 'kikar',
         'HOST': 'localhost'
     }
 }
@@ -167,3 +167,8 @@ LOGGING = {
         },
     }
 }
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass

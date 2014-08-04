@@ -3,7 +3,9 @@ Installation Using Vagrant
 
 Clone the project into your local repository.
 
-Then Copy the file ``kikar_hamedina/kikar_hamedina/settings/deploy.py.template`` into ``kikar_hamedina/kikar_hamedina/settings/deploy.py``
+Then Copy the file
+``kikar_hamedina/kikar_hamedina/local_settings.py.template`` into
+``kikar_hamedina/kikar_hamedina/local_settingsoy.py``
 
 Edit it to include your facebook details
 - FACEBOOK_SECRET_KEY
