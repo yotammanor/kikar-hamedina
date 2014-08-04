@@ -1,6 +1,6 @@
 body {
-  padding-top: 50px; /* size of the nav bar */
-  /*background-color: #DDF1FF;*/
+    padding-top: 50px; /* size of the nav bar */
+    /*background-color: #DDF1FF;*/
     font-family: "Alef", Arial, Sans-Serif;
 }
 
@@ -12,11 +12,9 @@ body {
     height: 29px;
 }
 
-
 .profile-photo {
-	align-items: right;
+    align-items: right;
 }
-
 
 /*
 .logo-photo:hover {
@@ -24,7 +22,7 @@ body {
 }
 */
 .navbar-options {
-	margin-top: 9px;
+    margin-top: 9px;
 }
 
 /*
@@ -38,15 +36,15 @@ body {
 }
 
 #name-row-container {
-	height: 20px;
+    height: 20px;
 }
 
 #panel-expanded-footer {
-	background-color: #555555;
+    background-color: #555555;
 }
 
-#profile-photo{
-	max-height: 300px;
+#profile-photo {
+    max-height: 300px;
 }
 
 /*#politicians-dropdown-menu {
@@ -54,9 +52,53 @@ body {
 } */
 
 .link-on-blue {
-	color: white;
+    color: white;
 }
 
 .link-on-blue:hover {
-	color: white;
+    color: white;
+}
+
+#list-of-member-title {
+    display: none;
+}
+
+#list-of-party-title {
+    display: none;
+}
+
+#list-of-tag-title {
+    display: none;
+}
+
+/*#list-of-search_str-title {*/
+/*display: none;*/
+/*}*/
+
+#searchgui-operator-input {
+    display: none;
+}
+
+.main-page-frame {
+    /*background-color: cadetblue;*/
+    /*border-style: solid;*/
+    /*border-color: #000000;*/
+    /*border-width: 1px;*/
+    /*align-content: center;*/
+    /*align-items: center;*/
+    text-align: center;
+    padding: 0;
+}
+
+.main-page-frame-links {
+    padding: 0;
+    text-align: right;
+}
+
+#difference-in-fan-count {
+    color: darkgrey;
+}
+
+#hasadna-logo-img {
+    height: 20px;
 }

@@ -1,7 +1,6 @@
 import datetime
 import os, traceback, datetime
 
-
 try:
 	from dropbox import client as dropbox_client
 	from dropbox import rest, session
@@ -108,14 +107,14 @@ def main():
 	sess.set_token(client_secrets.get("access_key"),client_secrets.get("access_secret"))
 	# create the client object
 	client = dropbox_client.DropboxClient(sess)
-	nameOfFile = datetime.datetime.today().strftime("%Y%m%d") + "-db-backup.gz"
-	try:
-		with open(nameOfFile): pass #check existance of while
-		print "Uploading started..."
-		print client.put_file("/db_backup/" + nameOfFile, open(nameOfFile))
-		print "Uploading completed..."
-		print "Removing yesterday's backup"
 
+	try:
+		with open(datetime.datetime.today().strftime("%Y%m%d") + "-db-backup"): pass #check existance of while
+		print "Uploading started..."
+		print client.put_file("/db_backup/" + datetime.datetime.today().strftime("%Y%m%d") + "-db-backup", open(datetime.datetime.today().strftime("%Y%m%d") + "-db-backup"))
+		print "Uploading completed..."
+
+		print "Removing yesterday's backup"
 		yesterday = datetime.datetime.now() - datetime.timedelta(hours=24)
 		command = "rm "+str(yesterday)+".gz"
 		os.system(command)

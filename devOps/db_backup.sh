@@ -3,11 +3,11 @@
 # save it to a tar file
 export PGPASSWORD="123456"
 pg_dump --username=postgres -h localhost kikar_hamedina > $(date "+%Y%m%d-db-backup")
+
 gzip $(date "+%Y%m%d-db-backup")
 # upload the DB backup to Dropbox
 python upload_backup_to_dropbox.py
 rm $(date --date="yesterday" "+%Y%m%d-db-backup.gz")
-
 
 #To resotre run this command with <newdbname> and <filename> supplemented.
 # <filename> must be accessible

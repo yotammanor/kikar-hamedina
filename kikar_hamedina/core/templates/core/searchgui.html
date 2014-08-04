@@ -1,6 +1,6 @@
 
 
-{% extends "core/facebook_status_list.html" %}
+{% extends "core/facebook_statuses_page.html" %}
 
 {% block scripts %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/searchgui.js"></script>
@@ -12,69 +12,92 @@
 {% block handlebar_templates %}
     {% verbatim %}
     <script id="search-gui-result-list-item-template" type="text/x-handlebars-template">
-<a href="#" class="list-group-item" id="{{type}}{{id}}" data-name="{{name}}" data-type="{{type}}" data-id="{{id}}" data-icon="{{icon}}">
-<span class="badge"><i class="fa fa-{{icon}}"></i></span>
-<span class="badge hidden-badge"><span class="glyphicon glyphicon-arrow-left"></span></span>
-{{name}}
-</a>
-</script>
+        <a href="#" class="list-group-item" id="{{type}}{{id}}" data-name="{{name}}" data-type="{{type}}"
+           data-id="{{id}}" data-icon="{{icon}}">
+            <span class="badge"><i class="fa fa-{{icon}}"></i></span>
+            <span class="badge hidden-badge"><span class="glyphicon glyphicon-arrow-left"></span></span>
+            {{name}}
+        </a>
+    </script>
 
     <script id="search-gui-added-list-item-template" type="text/x-handlebars-template">
-<a href="#" class="list-group-item" id="{{type}}{{id}}">
-<span class="badge"><i class="fa fa-{{icon}}"></i></span>
-<span class="badge hidden-badge result-info" data-id="{{id}}" data-type="{{type}}" data-name="{{name}}"><span class="glyphicon glyphicon-remove"></span></span>
-{{name}}
-</a>
-</script>
+        <a href="#" class="list-group-item" id="{{type}}{{id}}">
+            <span class="badge"><i class="fa fa-{{icon}}"></i></span>
+            <span class="badge hidden-badge result-info" data-id="{{id}}" data-type="{{type}}"
+                  data-name="{{name}}"><span class="glyphicon glyphicon-remove"></span></span>
+            {{name}}
+        </a>
+    </script>
 
     {% endverbatim %}
 {% endblock %}
 
 {% block content %}
+    <div class="col-sm-2">
 
-    <div class="col-sm-3">
-        <div class="list-group">
-            <li class="list-group-item" id="searchgui-go-button">
-                חפש!
-            </li>
-            <li class="list-group-item">
-                <div class="input-group">
-                    <input type="text" class="form-control" id="searchgui-text-input">
-				<span class="input-group-btn">
-					<button class="btn btn-default" type="button" id="searchgui-add-word" data-word-num="1">הוסף מילה
-                    </button>
-				</span>
-                </div>
-            </li>
-            <span id="searchgui-search-words"></span>
-            <li class="list-group-item active">
-                תוצאות
-			<span class="badge">
-				<span class="glyphicon glyphicon-trash"></span>
-			</span>
-            </li>
+    </div>
+    <div class="col-sm-8">
+        <div class="col-sm-12">
+            <div class="list-group">
+                <li class="list-group-item">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchgui-text-input"
+                               placeholder='חפש חבר כנסת, מפלגה, נושא מתויג, או פשוט מילים שח"כים אומרים'>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="searchgui-add-word" data-word-num="1">הוסף
+                            מילה
+                        </button>
+                    </span>
+
+                    <span class="input-group-btn" id="searchgui-go-button">
+                       <button class="btn btn-success"><i class="fa fa-search"></i></button>
+                    </span>
+                    </div>
+                    <div class="input-group" id="searchgui-operator-input">
+                        <input type="radio" class="form-inline" id="searchgui-selected-operator-or"
+                               name="selected-operator" value="or_operator" checked> או
+                        <input type="radio" class="form-inline" id="searchgui-selected-operator-and"
+                               name="selected-operator" value="and_operator"> וגם <br>
+                        (מילים ו/או גם תגיות חייבות להופיע)
+                    </div>
+
+                </li>
+                <span id="searchgui-search-words"></span>
+            </div>
+        </div>
+        <div class="col-sm-12">
+{#            <li class="list-group-item alert-info" id="list-of-search_str-title">#}
+{#                הצעות#}
+{#                <span class="badge">#}
+{#                    <span class="glyphicon glyphicon-trash"></span>#}
+{#                </span>#}
+{#            </li>#}
             <span id="search-gui-result-list"></span>
         </div>
-    </div>
-    <div class="col-sm-3">
-        <div class="list-group">
-            <li class="list-group-item active">חברי כנסת</li>
-            <span id="search-gui-member-added-list"></span>
+        <div class="col-sm-12">
+            <div class="list-group">
+                <li class="list-group-item active" id="list-of-member-title">חברי כנסת</li>
+                <span id="search-gui-member-added-list"></span>
+            </div>
         </div>
-    </div>
 
-    <div class="col-sm-3">
-        <div class="list-group">
-            <li class="list-group-item active">מפלגות</li>
-            <span id="search-gui-party-added-list"></span>
+        <div class="col-sm-12">
+            <div class="list-group">
+                <li class="list-group-item active" id="list-of-party-title">מפלגות</li>
+                <span id="search-gui-party-added-list"></span>
+            </div>
         </div>
-    </div>
 
-    <div class="col-sm-3">
-        <div class="list-group">
-            <li class="list-group-item active">תגים</li>
-            <span id="search-gui-tag-added-list"></span>
+        <div class="col-sm-12">
+            <div class="list-group">
+                <li class="list-group-item active" id="list-of-tag-title">תגים</li>
+                <span id="search-gui-tag-added-list"></span>
+            </div>
         </div>
+
+    </div>
+    <div class="col-sm-2">
+
     </div>
 
 {% endblock %}

@@ -8,11 +8,13 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 
 from planet.models import Blog
-from facebook_feeds.models import Facebook_Feed
+from facebook_feeds.models import Facebook_Persona
 
 from mks.managers import (
     BetterManager, KnessetManager, CurrentKnessetMembersManager,
     CurrentKnessetPartyManager)
+
+OK_BASE_URL = "http://oknesset.org"
 
 GENDER_CHOICES = (
     (u'M', _('Male')),
@@ -86,6 +88,10 @@ class Party(models.Model):
     def uri_template(self):
         # TODO: use the Site's url from django.contrib.site
         return "%s/api/party/%s/htmldiv/" % ('', self.id)
+
+    @property
+    def ok_url(self):
+        return OK_BASE_URL + "/party/" + str(self.id)
 
     def __unicode__(self):
         if self.is_current:
@@ -210,11 +216,19 @@ class Member(models.Model):
 
     backlinks_enabled = models.BooleanField(default=True)
 
+    @property
+    def ok_url(self):
+        return OK_BASE_URL + "/member/" + str(self.id)
+
     objects = BetterManager()
     current_knesset = CurrentKnessetMembersManager()
 
     #added by kikar-hamedina
-    feeds = generic.GenericRelation(Facebook_Feed)
+    persona = generic.GenericRelation(Facebook_Persona)
+
+    @property
+    def facebook_persona(self):
+        return self.persona.select_related().first()
 
     class Meta:
         ordering = ['name']

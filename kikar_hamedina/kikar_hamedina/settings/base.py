@@ -1,15 +1,6 @@
 
 import os
 from os.path import dirname, abspath, join
-from django.core.exceptions import ImproperlyConfigured
-
-# return variable environment value or raise ImproperlyConfigured exception
-def get_env_variable(var_name):
-    try:
-        return os.environ[var_name]
-    except KeyError:
-        error_msg = 'Set the %s environment variable' % var_name
-        raise ImproperlyConfigured(error_msg)
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir))
 
@@ -31,15 +22,6 @@ STATICFILES_DIRS = (
 
 # Configuring TEMPLATE_DIRS
 TEMPLATE_DIRS = sub_path("templates")
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_variable('SECRET_KEY')
-
-
-# SECURITY WARNING: keep the facebook app secret key used in production secret!
-FACEBOOK_SECRET_KEY = get_env_variable('FACEBOOK_SECRET_KEY')
-
-FACEBOOK_APP_ID = get_env_variable('FACEBOOK_APP_ID')
 
 ALLOWED_HOSTS = []
 
@@ -69,7 +51,9 @@ INSTALLED_APPS = (
     'core',
     'django.contrib.humanize',
     'endless_pagination',
-    'dumpdata_chunks'
+    'dumpdata_chunks',
+    'django_pandas',
+    'tastypie',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -141,3 +125,45 @@ SESSION_COOKIE_NAME = "myplanetid"
 
 
 CURRENT_KNESSET_NUMBER = 19
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s - %(asctime)s - %(message)s'
+        },
+    },
+    'handlers': {
+        'scrapeFile': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+            'formatter': 'simple'
+        },
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['scrapeFile'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}
