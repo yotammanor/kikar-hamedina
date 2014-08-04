@@ -22,8 +22,9 @@ from mks.models import Party, Member
 from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
 from facebook import GraphAPIError
 
-DEFAULT_OPERATOR = 'or_operator'
+DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
 
+# TODO: refactor the next constant to use the pattern above
 HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
@@ -41,6 +42,7 @@ class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
 
+#TODO: make it a method of FacebookFeed
 def popularity_dif(feed, days_back):
     dif_dict = {'fan_count_dif_nominal': 0,
                 'fan_count_dif_growth_rate': 0,
@@ -76,12 +78,14 @@ def popularity_dif(feed, days_back):
     return dif_dict
 
 
+#TODO: make it a method of FacebookFeedManager
 def get_largest_fan_count_difference(days_back, comparison_type,
                                      min_fan_count_for_rel_comparison=MIN_FAN_COUNT_FOR_REL_COMPARISON):
     current_feeds = Facebook_Feed.objects.filter(feed_type='PP',
                                                  persona__object_id__in=[member.id for member in
                                                                          Member.objects.filter(is_current=True)])
 
+#    import pdb; pdb.set_trace()
     max_change = {'feed': None, 'dif': 0, 'day': datetime.date.today()}
     for feed in current_feeds:
         dif_dict = popularity_dif(feed, days_back)
@@ -118,13 +122,10 @@ class HomepageView(ListView):
         context['featured_party'] = Party.objects.get(id=16)
         context['featured_search'] = {'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
                                       'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
-        max_change = get_largest_fan_count_difference(26, 'rel', MIN_FAN_COUNT_FOR_REL_COMPARISON)
+        max_change = get_largest_fan_count_difference(0, 'rel', MIN_FAN_COUNT_FOR_REL_COMPARISON)
         max_change['member'] = Member.objects.get(persona=max_change['feed'].persona)
         context['top_growth'] = max_change
         return context
-
-
-        # return render(request, 'core/homepage_new.html')
 
 
 class OldHomepageView(ListView):
