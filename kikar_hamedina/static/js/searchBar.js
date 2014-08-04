@@ -33,17 +33,22 @@ $(document).ready(function () {
         }
     });
     $("#search-bar-submit").click(function () {
-        var inputText = $("#navbar-search-box").val()
-        var url = $("#search-bar-submit").data('target')
-        alert(url)
-        var fixed_url = url+'?search_str="'+ inputText +'"'
-        alert(fixed_url)
-
-        window.location.assign(encodeURI(fixed_url))
-
+        add_quotes($("#search-bar-submit").data('target'));
+    });
+    $(document).keypress(function (e) {
+        if (e.which == 13) {
+            add_quotes($("#search-bar-submit").data('target'));
+        }
     });
 })
 
+function add_quotes(SearchURI) {
+    var inputText = $("#navbar-search-box").val()
+    var url = SearchURI
+    var fixed_url = url + '?search_str="' + inputText + '"'
+    alert(fixed_url)
+    window.location.assign(encodeURI(fixed_url))
+}
 
 
 

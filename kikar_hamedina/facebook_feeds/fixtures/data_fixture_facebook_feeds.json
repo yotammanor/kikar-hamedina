@@ -2142,7 +2142,7 @@
         "model": "facebook_feeds.facebook_persona", 
         "fields": {
             "main_feed": "90", 
-            "object_id": "985", 
+            "object_id": "895",
             "content_type": [
                 "mks", 
                 "member"
