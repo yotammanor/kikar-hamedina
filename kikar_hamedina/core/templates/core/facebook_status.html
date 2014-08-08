@@ -49,6 +49,9 @@
 			<span>
 				<b>שיתפו: </b> <span id="{{ status.status_id }}-shares">{{ status.share_count|intcomma }}</span>.
 			</span>
+            <span class="hidden-updating-spinner" id="status-metrics-is-updating-indicator-{{ status.status_id }}">
+                <i class="fa fa-spinner fa-spin"></i>
+            </span>
             </div>
             <div class="col-md-8">
 

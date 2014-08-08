@@ -102,3 +102,7 @@ body {
 #hasadna-logo-img {
     height: 20px;
 }
+
+.hidden-updating-spinner {
+    display: none;
+}

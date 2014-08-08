@@ -3,8 +3,8 @@ import urllib2
 import json
 from operator import or_, and_
 from IPython.lib.pretty import pprint
+
 from django.utils.datastructures import MultiValueDictKeyError
-import facebook
 from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
@@ -15,14 +15,18 @@ from django.template import RequestContext
 from django.utils import timezone
 from django.db.models import Count, Q, F
 from django.conf import settings
+
+import facebook
 from endless_pagination.views import AjaxListView
-from mks.models import Knesset
+
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
+from facebook_feeds.management.commands import updatestatus
 from mks.models import Party, Member
-from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
 from facebook import GraphAPIError
 
 DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
+
+CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
 
 # TODO: refactor the next constant to use the pattern above
 HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
@@ -42,7 +46,7 @@ class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
 
-#TODO: make it a method of FacebookFeed
+# TODO: make it a method of FacebookFeed
 def popularity_dif(feed, days_back):
     dif_dict = {'fan_count_dif_nominal': 0,
                 'fan_count_dif_growth_rate': 0,
@@ -85,7 +89,7 @@ def get_largest_fan_count_difference(days_back, comparison_type,
                                                  persona__object_id__in=[member.id for member in
                                                                          Member.objects.filter(is_current=True)])
 
-#    import pdb; pdb.set_trace()
+    #    import pdb; pdb.set_trace()
     max_change = {'feed': None, 'dif': 0, 'day': datetime.date.today()}
     for feed in current_feeds:
         dif_dict = popularity_dif(feed, days_back)
@@ -583,19 +587,18 @@ def get_data_from_facebook(request):
 def status_update(request, status_id):
     status = Facebook_Status.objects.get(status_id=status_id)
 
-    url = "https://graph.facebook.com/"
-    url += str(status.status_id)
-    url += "?access_token=" + facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
-    url += "&fields=shares,likes.limit(1).summary(true),comments.limit(1).summary(true)"
-
     try:
-        responseText = urllib2.urlopen(url).read()
-        responseJson = json.loads(responseText)
+
+        update_status_command = updatestatus.Command()
+        update_status_command.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                                 settings.FACEBOOK_SECRET_KEY)
+
+        status_response_dict = update_status_command.fetch_status_object_data(status_id)
 
         response_data = dict()
-        response_data['likes'] = responseJson['likes']['summary']['total_count']
-        response_data['comments'] = responseJson['comments']['summary']['total_count']
-        response_data['shares'] = responseJson['shares']['count']
+        response_data['likes'] = status_response_dict['likes']['summary']['total_count']
+        response_data['comments'] = status_response_dict['comments']['summary']['total_count']
+        response_data['shares'] = status_response_dict['shares']['count']
         response_data['id'] = status.status_id
         try:
             status.like_count = int(response_data['likes'])
