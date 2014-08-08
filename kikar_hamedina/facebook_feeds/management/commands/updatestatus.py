@@ -25,7 +25,7 @@ class Command(BaseCommand):
     option_force_update = make_option('-f',
                                       '--force-update',
                                       action='store_true',
-                                      dest='initial',
+                                      dest='force-update',
                                       default=False,
                                       help='Force update of status.')
 
@@ -183,7 +183,7 @@ class Command(BaseCommand):
 
         try:
 
-            if status_object.updated < current_time_of_update:
+            if (status_object.updated < current_time_of_update) or options['force-update']:
                 # If post_id exists but of earlier update time, fields are updated.
                 print 'update status_object'
                 status_object.content = message
@@ -199,7 +199,7 @@ class Command(BaseCommand):
                 # update attachment data
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
             elif options['force-attachment-update']:
-                # force update of attachment, regardless of time
+                # force update of attachment only, regardless of time
                 status_object.save()
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
                 # If post_id exists but of equal or later time (unlikely, but may happen), disregard
