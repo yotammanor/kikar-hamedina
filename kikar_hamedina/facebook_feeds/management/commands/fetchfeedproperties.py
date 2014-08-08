@@ -124,8 +124,8 @@ class Command(BaseCommand):
                 feed.birthday = feed_dict['birthday']
                 feed.name = feed_dict['name']
                 feed.link = feed_dict['link']
-                feed.picture = feed_dict['picture']['data']['url']
-                # feed.pic_square = feed_dict['pic_square']
+                feed.picture_square = feed_dict['picture']['data']['url']
+                feed.picture_large = feed_dict['pic_large']
                 feed.username = feed_dict['username']
                 feed.website = feed_dict['website']
                 # save feed object.

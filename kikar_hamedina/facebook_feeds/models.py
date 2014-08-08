@@ -49,7 +49,8 @@ class Facebook_Feed(models.Model):
     birthday = models.TextField(null=True)
     name = models.TextField(null=True)
     link = models.URLField(null=True, max_length=2000)
-    picture = models.URLField(null=True, max_length=2000)
+    picture_square = models.URLField(null=True, max_length=2000)
+    picture_large = models.URLField(null=True, max_length=2000)
     feed_type = models.CharField(null=False, max_length=2, choices=FEED_TYPES, default='PP')
     requires_user_token = models.BooleanField(default=False, null=False)
 

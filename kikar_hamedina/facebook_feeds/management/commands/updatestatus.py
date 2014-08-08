@@ -298,8 +298,9 @@ class Command(BaseCommand):
         else:
             raise CommandError('Please enter a valid status id')
         # Iterate over list_of_statuses
-        for i, status in enumerate(list_of_statuses):
-            self.stdout.write('Working on status {0} of {1}: {2}.'.format(i+1, len(list_of_statuses), status.status_id))
+        sliced_list_of_statuses = list_of_statuses
+        for i, status in enumerate(sliced_list_of_statuses):
+            self.stdout.write('Working on status {0} of {1}: {2}.'.format(i+1, len(sliced_list_of_statuses), status.status_id))
             status_data = self.fetch_status_data(status)
             self.stdout.write('Successfully fetched status: {0}.'.format(status.pk))
             if status_data:

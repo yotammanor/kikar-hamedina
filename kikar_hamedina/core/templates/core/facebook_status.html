@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-lg-1">
                 <a href="{% url 'member' status.feed.persona.object_id %}">
-                    <img src="{{ status.feed.picture }}" class="profile-photo img-rounded">
+                    <img src="{{ status.feed.picture_square }}" class="profile-photo img-rounded">
                 </a>
             </div>
             <div class="col-lg-9">
@@ -23,11 +23,26 @@
                         <h4>{{ status.feed.persona.content_object.name }}</h4>
                     </a>
                 </div>
-                <div class="row" id="date-row-container">
-                    <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">
-                        <h6>{{ status.published | naturaltime }}</h6>
-                    </a>
+                <div class="row" id="party-row-container">
+                    <h6>
+                        <a class="link-on-blue" href="{% url 'party' status.feed.persona.content_object.current_party.id %}">
+{#                            <h6>#}
+                                {{ status.feed.persona.content_object.current_party.name }}
+{#                            </h6>#}
+                        </a>
+                         |
+                        <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">
+{#                            <h6>#}
+                                {{ status.published | naturaltime }}
+{#                            </h6>#}
+                        </a>
+                    </h6>
                 </div>
+{#                <div class="row" id="date-row-container">#}
+{#                    <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">#}
+{#                        <h6>{{ status.published | naturaltime }}</h6>#}
+{#                    </a>#}
+{#                </div>#}
             </div>
         </div>
     </div>
@@ -41,13 +56,13 @@
         <div class="row">
             <div class="col-md-4">
 			<span>
-				<b>אהבו: </b> <span id="{{ status.status_id }}-likes">{{ status.like_count|intcomma }}</span>.
+				<b>אהבו: </b> <span id="{{ status.status_id }}-likes">{{ status.like_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
 			</span>
 			<span>
-				<b>הגיבו: </b> <span id="{{ status.status_id }}-comments">{{ status.comment_count|intcomma }}</span>.
+				<b>הגיבו: </b> <span id="{{ status.status_id }}-comments">{{ status.comment_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
 			</span>
 			<span>
-				<b>שיתפו: </b> <span id="{{ status.status_id }}-shares">{{ status.share_count|intcomma }}</span>.
+				<b>שיתפו: </b> <span id="{{ status.status_id }}-shares">{{ status.share_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
 			</span>
             <span class="hidden-updating-spinner" id="status-metrics-is-updating-indicator-{{ status.status_id }}">
                 <i class="fa fa-spinner fa-spin"></i>
