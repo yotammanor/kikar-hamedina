@@ -14,7 +14,7 @@ from facebook import GraphAPIError
 from facebook_feeds.models import Facebook_Status, User_Token, Facebook_Status_Attachment
 
 
-FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.0')
+FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.1')
 NUMBER_OF_TRIES_FOR_REQUEST = 3
 LENGTH_OF_EMPTY_ATTACHMENT_JSON = 21
 
@@ -282,7 +282,7 @@ class Command(BaseCommand):
         list_of_statuses = list()
         # Case no args - fetch all feeds
         if len(args) == 0:
-            list_of_statuses = [status for status in Facebook_Status.objects_no_filters.all()]
+            list_of_statuses = [status for status in Facebook_Status.objects_no_filters.all().order_by('-published')]
         # Case arg exists - fetch status by id supplied
         elif len(args) == 1:
             status_id = args[0]

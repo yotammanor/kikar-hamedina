@@ -14,7 +14,7 @@ from ...models import \
     User_Token as User_Token_Model, \
     Facebook_Status_Attachment as Facebook_Status_Attachment_Model
 
-FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.0')
+FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.1')
 
 NUMBER_OF_TRIES_FOR_REQUEST = 3
 

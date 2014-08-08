@@ -1,4 +1,5 @@
 import datetime
+import sys
 from optparse import make_option
 from collections import defaultdict
 from pprint import pprint
@@ -44,35 +45,31 @@ class Command(BaseCommand):
                 """
         api_request = "{0}".format(feed_id)
         args_for_request = {'version': FACEBOOK_API_VERSION,
-                            'fields': "id,name,picture,website,about,link,first_name,last_name,birthday"}
+                            'fields': "id,name,picture.type(square).fields(url),website,about,link,first_name,last_name,birthday"}
 
-        # username deprecated for user_profile
-        select_user_profile_query = """
-            SELECT
-                name,
-                uid,
-                birthday_date,
-                profile_url,
-                pic_square,
-                pic_big,
-                username
-            FROM
-                user
-            WHERE
-                uid = {0}""".format(feed_id)
+
+        args_for_large_pic_request = {'version': FACEBOOK_API_VERSION,
+                                      'fields': 'picture.type(large).fields(url)'}
         # '508516607','107836625941364'
 
         try:
             user_profile_properties = self.graph.request(path=api_request, args=args_for_request)
+            large_pic_response = self.graph.request(path=api_request, args=args_for_large_pic_request)
         except facebook.GraphAPIError:
             if is_insist:
                 print "There's a GraphAPI error, but I'm going on anyway."
                 # TODO: Log and report by email!
                 user_profile_properties = {}
+                large_pic_response = {'picture': {'data': {'url': ''}}}
+
             else:
                 print "Your circuit's dead there's something wrong!"
                 raise
-
+        try:
+            user_profile_properties['pic_large'] = large_pic_response['picture']['data']['url']
+        except KeyError:
+            print 'problem with large_pic_response_dict'
+            sys.exc_info()
         return user_profile_properties
 
     def fetch_public_page_object_by_feed_id(self, feed_id, is_insist):
@@ -83,36 +80,29 @@ class Command(BaseCommand):
 
         api_request = "{0}".format(feed_id)
         args_for_request = {'version': FACEBOOK_API_VERSION,
-                            'fields': "id,name,username,picture,about,birthday,website,link,likes,talking_about_count"}
+                            'fields': "id,name,username,picture.type(square).fields(url),about,birthday,website,link,likes,talking_about_count"}
 
-        select_public_page_info_query = """
-                    SELECT
-                        about,
-                        birthday,
-                        fan_count,
-                        name,
-                        page_id,
-                        page_url,
-                        pic_large,
-                        pic_square,
-                        talking_about_count,
-                        username,
-                        website
-                    FROM
-                        page
-                    WHERE
-                        page_id={0}""".format(feed_id)
+        args_for_large_pic_request = {'version': FACEBOOK_API_VERSION,
+                                      'fields': 'picture.type(large).fields(url)'}
+
         print api_request, args_for_request
         try:
             public_page_properties = self.graph.request(path=api_request, args=args_for_request)
+            large_pic_response = self.graph.request(path=api_request, args=args_for_large_pic_request)
         except facebook.GraphAPIError:
             if is_insist:
                 print "There's a GraphAPI error, but I'm going on anyway."
                 # TODO: Log and report by email!
                 public_page_properties = {}
+                large_pic_response = {'picture': {'data': {'url': ''}}}
             else:
                 print "Your circuit's dead there's something wrong!"
                 raise
+        try:
+            public_page_properties['pic_large'] = large_pic_response['picture']['data']['url']
+        except KeyError:
+            print 'problem with large_pic_response_dict'
+            sys.exc_info()
         print public_page_properties
         return public_page_properties
 
