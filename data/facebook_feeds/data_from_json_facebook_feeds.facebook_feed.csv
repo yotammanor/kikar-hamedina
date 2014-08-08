@@ -63,7 +63,7 @@ pk,model,feed_type,vendor_id,persona,requires_user_token
 62,facebook_feeds.facebook_feed,PP,408265492578926,62,False
 63,facebook_feeds.facebook_feed,PP,270198837993,63,False
 64,facebook_feeds.facebook_feed,PP,127130297401833,64,False
-66,facebook_feeds.facebook_feed,UP,100000237185239,66,True
+66,facebook_feeds.facebook_feed,PP,729097460481331,66,False
 68,facebook_feeds.facebook_feed,UP,508516607,68,True
 69,facebook_feeds.facebook_feed,UP,574847197,69,True
 70,facebook_feeds.facebook_feed,PP,1411524072449425,70,True
@@ -83,7 +83,7 @@ pk,model,feed_type,vendor_id,persona,requires_user_token
 82,facebook_feeds.facebook_feed,PP,449192681816875,82,False
 83,facebook_feeds.facebook_feed,PP,422665717788216,83,True
 84,facebook_feeds.facebook_feed,PP,132157380175824,84,False
-85,facebook_feeds.facebook_feed,UP,100006484366057,85,True
+85,facebook_feeds.facebook_feed,PP,623230457774334,85,False
 86,facebook_feeds.facebook_feed,PP,300710030028377,86,False
 87,facebook_feeds.facebook_feed,PP,341448679281672,87,False
 88,facebook_feeds.facebook_feed,PP,168317476568320,88,False
