@@ -1,4 +1,6 @@
+import datetime
 from unidecode import unidecode
+
 from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
@@ -79,6 +81,59 @@ class Facebook_Feed(models.Model):
     current_fan_count = get_current_fan_count
 
 
+    def popularity_dif(self, days_back):
+
+        dif_dict = {'fan_count_dif_nominal': 0,
+                    'fan_count_dif_growth_rate': 0.0,
+                    'fan_count_at_requested_date': 0,
+                    'is_interpolated': False,
+                    'date_of_value': datetime.date.today()}
+
+        dif_dict_default = dif_dict.copy()
+
+        is_interpolated = False
+
+        feed_current_count = self.current_fan_count
+        asked_for_date_of_value = timezone.now() - datetime.timedelta(days=days_back)
+
+        try:
+            popularity_history_timeseries = self.feed_popularity_set.to_timeseries('fan_count', index='date_of_creation')
+            first_value = popularity_history_timeseries.iloc[-1].name.to_pydatetime()
+            last_value = popularity_history_timeseries.iloc[0].name.to_pydatetime()
+
+            if (asked_for_date_of_value < first_value) or \
+                    (asked_for_date_of_value > last_value) or \
+                    (popularity_history_timeseries.count().fan_count <= 1):
+                # if history starts after date of request, or there isn't enough data, don't extrapolate.
+                fan_count_at_requested_date = 0
+
+            else:
+                resampled_history_raw = popularity_history_timeseries.resample('D')
+                if resampled_history_raw.loc[asked_for_date_of_value.date()].isnull().fan_count:
+                    # if requested date's data is missing - interpolate from existing data
+                    is_interpolated = True
+                    resampled_history_interpolated = resampled_history_raw.interpolate()
+                    fan_count_at_requested_date = resampled_history_interpolated.loc[asked_for_date_of_value.date()].fan_count
+                else:
+                    fan_count_at_requested_date = resampled_history_raw.loc[asked_for_date_of_value.date()].fan_count
+
+            fan_count_dif_nominal = int(feed_current_count) - fan_count_at_requested_date
+            if fan_count_at_requested_date != 0:
+                fan_count_dif_growth_rate = float(fan_count_dif_nominal) / fan_count_at_requested_date
+            else:
+                fan_count_dif_growth_rate = 0.0
+
+            dif_dict['fan_count_dif_nominal'] = fan_count_dif_nominal
+            dif_dict['fan_count_at_requested_date'] = fan_count_at_requested_date
+            dif_dict['date_of_value'] = asked_for_date_of_value
+            dif_dict['is_interpolated'] = is_interpolated
+            dif_dict['fan_count_dif_growth_rate'] = fan_count_dif_growth_rate
+
+            return dif_dict
+        except IndexError:
+            return dif_dict_default
+
+
 class Feed_Popularity(models.Model):
     feed = models.ForeignKey('Facebook_Feed')
     date_of_creation = models.DateTimeField(default=timezone.now())
@@ -88,6 +143,8 @@ class Feed_Popularity(models.Model):
     # UserProfile Only
     followers_count = models.IntegerField(default=0)
     friends_count = models.IntegerField(default=0)
+
+    objects = DataFrameManager()
 
     class Meta:
         ordering = ['-date_of_creation']
@@ -164,13 +221,13 @@ class Facebook_Status(models.Model):
         else:
             story_string = ''
 
-        print 'status db id:', self.id
-        print 'story string:', story_string
+        # print 'status db id:', self.id
+        # print 'story string:', story_string
 
         # Check for non-mk users mentioned within status's story tags
         if self.story_tags:
             # has a story with the style of <user> commented on <feed>'s status
-            print self.story_tags, type(self.story_tags)
+            # print self.story_tags, type(self.story_tags)
             story_tags_eval = eval(str(self.story_tags))
             try:
                 for tag in story_tags_eval.values():
@@ -178,13 +235,13 @@ class Facebook_Status(models.Model):
                         feed_in_tag = Facebook_Feed.objects.filter(vendor_id=dic['id'])
                         if not feed_in_tag:
                             # the mentioned user is not an mk
-                            print 'True'
+                            # print 'True'
                             return True
             except:
-                print 'True'
+                # print 'True'
                 return True
 
-            print 'True'
+            # print 'True'
             return True
 
         # Check for strings indicative of comment activity
@@ -197,10 +254,10 @@ class Facebook_Status(models.Model):
             # else:
                 # print 'not found'
         if found_text:
-            print 'True'
+            # print 'True'
             return True
         else:
-            print 'False'
+            # print 'False'
             return False
 
 

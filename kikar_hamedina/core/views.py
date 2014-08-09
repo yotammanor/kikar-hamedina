@@ -24,6 +24,8 @@ from facebook_feeds.management.commands import updatestatus
 from mks.models import Party, Member
 from facebook import GraphAPIError
 
+POPULARITY_DIF_DAYS_BACK = getattr(settings, 'POPULARITY_DIF_DAYS_BACK', 30)
+
 DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
 
 CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
@@ -46,42 +48,6 @@ class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
 
-# TODO: make it a method of FacebookFeed
-def popularity_dif(feed, days_back):
-    dif_dict = {'fan_count_dif_nominal': 0,
-                'fan_count_dif_growth_rate': 0,
-                'last_popularity_count': 0,
-                'date_of_value': datetime.date.today(),
-    }
-    feed_current_count = feed.current_fan_count
-    try:
-        last_popularity = Feed_Popularity.objects.filter(feed=feed,
-                                                         date_of_creation__gte=(
-                                                             datetime.date.today() - datetime.timedelta(
-                                                                 days=days_back))).order_by('date_of_creation')[0]
-
-        date_of_value = last_popularity.date_of_creation
-        fan_count_dif_nominal = feed_current_count - last_popularity.fan_count
-        if last_popularity.fan_count != 0:
-            fan_count_dif_growth_rate = float(fan_count_dif_nominal) / last_popularity.fan_count
-        else:
-            fan_count_dif_growth_rate = 0.0
-        # print 'data for feed: %s, from: %s to %s, dif: %s, per: %s' % (
-        #     feed.username, last_popularity.fan_count, feed_current_count, fan_count_dif_nominal,
-        #     fan_count_dif_growth_rate)
-
-        dif_dict['fan_count_dif_nominal'] = fan_count_dif_nominal
-        dif_dict['last_popularity_count'] = last_popularity.fan_count
-        dif_dict['date_of_value'] = date_of_value
-        dif_dict['fan_count_dif_growth_rate'] = fan_count_dif_growth_rate
-
-    except:
-        print 'Failed for some reason, data retrieved is incorrect'
-        pass
-
-    return dif_dict
-
-
 #TODO: make it a method of FacebookFeedManager
 def get_largest_fan_count_difference(days_back, comparison_type,
                                      min_fan_count_for_rel_comparison=MIN_FAN_COUNT_FOR_REL_COMPARISON):
@@ -92,7 +58,7 @@ def get_largest_fan_count_difference(days_back, comparison_type,
     #    import pdb; pdb.set_trace()
     max_change = {'feed': None, 'dif': 0, 'day': datetime.date.today()}
     for feed in current_feeds:
-        dif_dict = popularity_dif(feed, days_back)
+        dif_dict = feed.popularity_dif(days_back)
         if comparison_type == 'abs':
             change_value = dif_dict['fan_count_dif_nominal']
         elif comparison_type == 'rel':
@@ -402,7 +368,7 @@ class MemberView(StatusFilterUnifiedView):
         member_id = self.kwargs['id']
         feed = Facebook_Feed.objects.get(persona__object_id=member_id)
 
-        dif_dict = popularity_dif(feed, 30)
+        dif_dict = feed.popularity_dif(POPULARITY_DIF_DAYS_BACK)
         context['change_in_popularity'] = dif_dict
         # Statistical Data for member - PoC
 
@@ -609,9 +575,9 @@ def status_update(request, status_id):
             return HttpResponse(json.dumps(response_data), content_type="application/json")
     finally:
         response_data = dict()
-        response_data['likes'] = status.like_count
-        response_data['comments'] = status.comment_count
-        response_data['shares'] = status.share_count
+        response_data['likes'] = "{:,}".format(status.like_count)
+        response_data['comments'] = "{:,}".format(status.comment_count)
+        response_data['shares'] = "{:,}".format(status.share_count)
         response_data['id'] = status.status_id
 
         return HttpResponse(json.dumps(response_data), content_type="application/json")

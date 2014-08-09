@@ -24,7 +24,7 @@
                 {{ feed.current_fan_count|floatformat:1|intcomma|slice:":-2" }}
                 <span id="difference-in-fan-count">({% if change_in_popularity.fan_count_dif_nominal > 0 %}
                     +{% endif %}{{ change_in_popularity.fan_count_dif_growth_rate | percent }}
-                    בחודש האחרון)</span>
+                    בחודש האחרון{% if change_in_popularity.is_interpolated %}, בקירוב{% endif %})</span>
             </p>
             <i class="fa fa-bar-chart-o"></i>
             <span class="hidden-updating-spinner" id="insights-loading">
