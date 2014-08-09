@@ -283,35 +283,44 @@ class Command(BaseCommand):
         # Case no args - fetch all feeds
         if len(args) == 0:
             list_of_statuses = [status for status in Facebook_Status.objects_no_filters.all().order_by('-published')]
+
         # Case arg exists - fetch status by id supplied
         elif len(args) == 1:
             status_id = args[0]
             try:
                 status = Facebook_Status.objects_no_filters.get(status_id=status_id)
                 list_of_statuses.append(status)
+
             except Facebook_Status.DoesNotExist:
                 warning_msg = "Status #({0}) does not exist.".format(status_id)
                 logger = logging.getLogger('django')
                 logger.warning(warning_msg)
                 raise CommandError('Status "%s" does not exist' % status_id)
+
         # Case invalid args
         else:
             raise CommandError('Please enter a valid status id')
+
         # Iterate over list_of_statuses
         sliced_list_of_statuses = list_of_statuses
+
         for i, status in enumerate(sliced_list_of_statuses):
             self.stdout.write('Working on status {0} of {1}: {2}.'.format(i+1, len(sliced_list_of_statuses), status.status_id))
             status_data = self.fetch_status_data(status)
             self.stdout.write('Successfully fetched status: {0}.'.format(status.pk))
+
             if status_data:
                 self.update_status_object_in_db(options, status_object=status, retrieved_status_data=status_data)
                 self.stdout.write('Successfully written status: {0}.'.format(status.pk))
                 info_msg = "Successfully updated status: {0}.".format(status.pk)
+
             else:
                 self.stdout.write('No data was retrieved for status: {0}.'.format(status.id))
                 info_msg = "Did not successfully update status: {0}.".format(status.pk)
+
             logger = logging.getLogger('django')
             logger.info(info_msg)
+
         info_msg = "Successfully saved all statuses to db"
         logger = logging.getLogger('django')
         logger.info(info_msg)
