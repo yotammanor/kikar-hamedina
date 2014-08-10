@@ -23,7 +23,7 @@ def turn_csv_to_dict(dict_reader_object):
         full_dict['model'] = row.pop('model')
         fields_dict = dict()
         for key, value in row.items():
-            if key == 'content_type' or key == 'requires_user_token':
+            if key == 'content_type' or key == 'requires_user_token' or key == 'is_current':
                 fields_dict[key] = eval(value)
             else:
                 fields_dict[key] = value

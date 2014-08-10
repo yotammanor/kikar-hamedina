@@ -5,6 +5,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "423544607732681", 
+            "is_current": true, 
             "persona": "1", 
             "requires_user_token": false
         }
@@ -15,6 +16,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "237683826350051", 
+            "is_current": true, 
             "persona": "2", 
             "requires_user_token": false
         }
@@ -25,6 +27,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "34775063966", 
+            "is_current": true, 
             "persona": "3", 
             "requires_user_token": false
         }
@@ -35,6 +38,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "37665519437", 
+            "is_current": true, 
             "persona": "4", 
             "requires_user_token": false
         }
@@ -45,6 +49,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "112791015410812", 
+            "is_current": true, 
             "persona": "5", 
             "requires_user_token": false
         }
@@ -55,6 +60,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "118410851589072", 
+            "is_current": true, 
             "persona": "6", 
             "requires_user_token": false
         }
@@ -65,6 +71,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "335399036546914", 
+            "is_current": true, 
             "persona": "7", 
             "requires_user_token": false
         }
@@ -75,6 +82,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "230709873674802", 
+            "is_current": true, 
             "persona": "8", 
             "requires_user_token": false
         }
@@ -85,6 +93,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "128211737213526", 
+            "is_current": false, 
             "persona": "9", 
             "requires_user_token": false
         }
@@ -95,6 +104,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "213793465311034", 
+            "is_current": true, 
             "persona": "10", 
             "requires_user_token": false
         }
@@ -105,6 +115,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "285742004879697", 
+            "is_current": true, 
             "persona": "11", 
             "requires_user_token": false
         }
@@ -115,6 +126,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "161648040544835", 
+            "is_current": true, 
             "persona": "12", 
             "requires_user_token": false
         }
@@ -125,6 +137,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "294986783934161", 
+            "is_current": true, 
             "persona": "13", 
             "requires_user_token": false
         }
@@ -135,6 +148,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "107836625941364", 
+            "is_current": true, 
             "persona": "14", 
             "requires_user_token": false
         }
@@ -145,6 +159,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "310448006908", 
+            "is_current": true, 
             "persona": "15", 
             "requires_user_token": false
         }
@@ -155,6 +170,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "616484361701607", 
+            "is_current": true, 
             "persona": "16", 
             "requires_user_token": false
         }
@@ -165,6 +181,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "295104730523499", 
+            "is_current": true, 
             "persona": "17", 
             "requires_user_token": false
         }
@@ -175,6 +192,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "297207456997968", 
+            "is_current": true, 
             "persona": "18", 
             "requires_user_token": false
         }
@@ -185,6 +203,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "457794627605948", 
+            "is_current": true, 
             "persona": "19", 
             "requires_user_token": false
         }
@@ -195,6 +214,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "396697410351933", 
+            "is_current": true, 
             "persona": "20", 
             "requires_user_token": false
         }
@@ -205,6 +225,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "142479632494944", 
+            "is_current": true, 
             "persona": "21", 
             "requires_user_token": false
         }
@@ -215,6 +236,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "115028251920872", 
+            "is_current": true, 
             "persona": "22", 
             "requires_user_token": false
         }
@@ -225,6 +247,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "129931940492158", 
+            "is_current": true, 
             "persona": "23", 
             "requires_user_token": true
         }
@@ -235,6 +258,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "66398526339", 
+            "is_current": true, 
             "persona": "24", 
             "requires_user_token": false
         }
@@ -245,6 +269,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "371426819606751", 
+            "is_current": true, 
             "persona": "25", 
             "requires_user_token": false
         }
@@ -255,6 +280,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "174411199282819", 
+            "is_current": true, 
             "persona": "26", 
             "requires_user_token": false
         }
@@ -265,6 +291,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "336333819807014", 
+            "is_current": true, 
             "persona": "27", 
             "requires_user_token": false
         }
@@ -275,6 +302,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "432953930099972", 
+            "is_current": true, 
             "persona": "28", 
             "requires_user_token": false
         }
@@ -285,6 +313,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "612784452070209", 
+            "is_current": true, 
             "persona": "29", 
             "requires_user_token": false
         }
@@ -295,6 +324,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "268108602075", 
+            "is_current": true, 
             "persona": "30", 
             "requires_user_token": false
         }
@@ -305,6 +335,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "402936269773132", 
+            "is_current": true, 
             "persona": "31", 
             "requires_user_token": false
         }
@@ -315,6 +346,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "102997256411052", 
+            "is_current": true, 
             "persona": "32", 
             "requires_user_token": false
         }
@@ -325,6 +357,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "256097767800645", 
+            "is_current": true, 
             "persona": "33", 
             "requires_user_token": false
         }
@@ -335,6 +368,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "318718848205174", 
+            "is_current": true, 
             "persona": "34", 
             "requires_user_token": false
         }
@@ -345,6 +379,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "302282753147898", 
+            "is_current": true, 
             "persona": "35", 
             "requires_user_token": false
         }
@@ -355,6 +390,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "270537533068364", 
+            "is_current": true, 
             "persona": "36", 
             "requires_user_token": false
         }
@@ -365,6 +401,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "408819395854150", 
+            "is_current": true, 
             "persona": "37", 
             "requires_user_token": false
         }
@@ -375,6 +412,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "212884635505254", 
+            "is_current": true, 
             "persona": "38", 
             "requires_user_token": false
         }
@@ -385,6 +423,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "429433447128257", 
+            "is_current": true, 
             "persona": "39", 
             "requires_user_token": false
         }
@@ -395,6 +434,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "154570404606299", 
+            "is_current": true, 
             "persona": "40", 
             "requires_user_token": false
         }
@@ -405,6 +445,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "281431865311442", 
+            "is_current": true, 
             "persona": "41", 
             "requires_user_token": false
         }
@@ -415,6 +456,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "369855119713388", 
+            "is_current": true, 
             "persona": "42", 
             "requires_user_token": false
         }
@@ -425,6 +467,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "167657276622943", 
+            "is_current": true, 
             "persona": "43", 
             "requires_user_token": false
         }
@@ -435,6 +478,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "128834187134576", 
+            "is_current": true, 
             "persona": "44", 
             "requires_user_token": false
         }
@@ -445,6 +489,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "386001744772337", 
+            "is_current": true, 
             "persona": "45", 
             "requires_user_token": false
         }
@@ -455,6 +500,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "520086018021432", 
+            "is_current": true, 
             "persona": "46", 
             "requires_user_token": false
         }
@@ -465,6 +511,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "123439757700947", 
+            "is_current": true, 
             "persona": "47", 
             "requires_user_token": false
         }
@@ -475,6 +522,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "371855757456", 
+            "is_current": true, 
             "persona": "48", 
             "requires_user_token": false
         }
@@ -485,6 +533,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "156632191145120", 
+            "is_current": true, 
             "persona": "49", 
             "requires_user_token": false
         }
@@ -495,6 +544,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "207139259326193", 
+            "is_current": true, 
             "persona": "50", 
             "requires_user_token": false
         }
@@ -505,6 +555,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "162319074217", 
+            "is_current": true, 
             "persona": "51", 
             "requires_user_token": false
         }
@@ -515,6 +566,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "178433145502975", 
+            "is_current": true, 
             "persona": "52", 
             "requires_user_token": false
         }
@@ -525,6 +577,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "433095953410548", 
+            "is_current": true, 
             "persona": "53", 
             "requires_user_token": false
         }
@@ -535,6 +588,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "201172239926506", 
+            "is_current": true, 
             "persona": "54", 
             "requires_user_token": false
         }
@@ -545,6 +599,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "454865187905717", 
+            "is_current": true, 
             "persona": "55", 
             "requires_user_token": false
         }
@@ -555,6 +610,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "507647555954176", 
+            "is_current": true, 
             "persona": "56", 
             "requires_user_token": false
         }
@@ -565,6 +621,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "212853068767680", 
+            "is_current": true, 
             "persona": "57", 
             "requires_user_token": false
         }
@@ -575,6 +632,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "394242203948130", 
+            "is_current": true, 
             "persona": "58", 
             "requires_user_token": false
         }
@@ -585,6 +643,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "503855396298871", 
+            "is_current": true, 
             "persona": "59", 
             "requires_user_token": false
         }
@@ -595,6 +654,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "404314496289809", 
+            "is_current": true, 
             "persona": "60", 
             "requires_user_token": false
         }
@@ -605,6 +665,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "291524437542463", 
+            "is_current": true, 
             "persona": "61", 
             "requires_user_token": false
         }
@@ -615,6 +676,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "408265492578926", 
+            "is_current": true, 
             "persona": "62", 
             "requires_user_token": false
         }
@@ -625,6 +687,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "270198837993", 
+            "is_current": false, 
             "persona": "63", 
             "requires_user_token": false
         }
@@ -635,6 +698,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "127130297401833", 
+            "is_current": true, 
             "persona": "64", 
             "requires_user_token": false
         }
@@ -645,6 +709,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "729097460481331", 
+            "is_current": true, 
             "persona": "66", 
             "requires_user_token": false
         }
@@ -655,6 +720,7 @@
         "fields": {
             "feed_type": "UP", 
             "vendor_id": "508516607", 
+            "is_current": true, 
             "persona": "68", 
             "requires_user_token": true
         }
@@ -665,6 +731,7 @@
         "fields": {
             "feed_type": "UP", 
             "vendor_id": "574847197", 
+            "is_current": true, 
             "persona": "69", 
             "requires_user_token": true
         }
@@ -675,6 +742,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "1411524072449425", 
+            "is_current": true, 
             "persona": "70", 
             "requires_user_token": true
         }
@@ -685,6 +753,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "155726207778990", 
+            "is_current": true, 
             "persona": "65", 
             "requires_user_token": false
         }
@@ -695,6 +764,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "173196886046831", 
+            "is_current": true, 
             "persona": "67", 
             "requires_user_token": false
         }
@@ -705,6 +775,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "437496349633977", 
+            "is_current": true, 
             "persona": "71", 
             "requires_user_token": false
         }
@@ -715,6 +786,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "442386732471209", 
+            "is_current": true, 
             "persona": "72", 
             "requires_user_token": false
         }
@@ -725,6 +797,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "171840676187709", 
+            "is_current": true, 
             "persona": "73", 
             "requires_user_token": false
         }
@@ -735,6 +808,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "581740021875450", 
+            "is_current": true, 
             "persona": "74", 
             "requires_user_token": false
         }
@@ -745,6 +819,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "290348144398550", 
+            "is_current": true, 
             "persona": "75", 
             "requires_user_token": true
         }
@@ -755,6 +830,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "408249422571187", 
+            "is_current": true, 
             "persona": "76", 
             "requires_user_token": false
         }
@@ -765,6 +841,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "243941715737870", 
+            "is_current": true, 
             "persona": "77", 
             "requires_user_token": false
         }
@@ -775,6 +852,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "485996514776399", 
+            "is_current": true, 
             "persona": "78", 
             "requires_user_token": false
         }
@@ -785,6 +863,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "137409609701165", 
+            "is_current": true, 
             "persona": "79", 
             "requires_user_token": false
         }
@@ -795,6 +874,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "143037549058436", 
+            "is_current": true, 
             "persona": "80", 
             "requires_user_token": false
         }
@@ -805,6 +885,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "344375515658579", 
+            "is_current": true, 
             "persona": "81", 
             "requires_user_token": false
         }
@@ -815,6 +896,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "449192681816875", 
+            "is_current": true, 
             "persona": "82", 
             "requires_user_token": false
         }
@@ -825,6 +907,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "422665717788216", 
+            "is_current": true, 
             "persona": "83", 
             "requires_user_token": true
         }
@@ -835,6 +918,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "132157380175824", 
+            "is_current": true, 
             "persona": "84", 
             "requires_user_token": false
         }
@@ -845,6 +929,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "623230457774334", 
+            "is_current": true, 
             "persona": "85", 
             "requires_user_token": false
         }
@@ -855,6 +940,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "300710030028377", 
+            "is_current": true, 
             "persona": "86", 
             "requires_user_token": false
         }
@@ -865,6 +951,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "341448679281672", 
+            "is_current": true, 
             "persona": "87", 
             "requires_user_token": false
         }
@@ -875,6 +962,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "168317476568320", 
+            "is_current": true, 
             "persona": "88", 
             "requires_user_token": false
         }
@@ -885,6 +973,7 @@
         "fields": {
             "feed_type": "UP", 
             "vendor_id": "1441382008", 
+            "is_current": true, 
             "persona": "89", 
             "requires_user_token": true
         }
@@ -895,6 +984,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "617957021581571", 
+            "is_current": true, 
             "persona": "90", 
             "requires_user_token": false
         }
@@ -905,6 +995,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "320611771336201", 
+            "is_current": true, 
             "persona": "91", 
             "requires_user_token": false
         }
@@ -915,6 +1006,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "404224689637000", 
+            "is_current": true, 
             "persona": "92", 
             "requires_user_token": false
         }
@@ -925,6 +1017,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "430857016971866", 
+            "is_current": true, 
             "persona": "93", 
             "requires_user_token": false
         }
@@ -935,6 +1028,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "377452172353770", 
+            "is_current": true, 
             "persona": "94", 
             "requires_user_token": false
         }
@@ -945,6 +1039,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "438831352866459", 
+            "is_current": true, 
             "persona": "95", 
             "requires_user_token": false
         }
@@ -955,6 +1050,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "399245190165586", 
+            "is_current": true, 
             "persona": "96", 
             "requires_user_token": false
         }
@@ -965,6 +1061,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "547699061929908", 
+            "is_current": true, 
             "persona": "97", 
             "requires_user_token": false
         }
@@ -975,6 +1072,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "284775634985944", 
+            "is_current": true, 
             "persona": "98", 
             "requires_user_token": false
         }
@@ -985,6 +1083,7 @@
         "fields": {
             "feed_type": "UP", 
             "vendor_id": "100003905338146", 
+            "is_current": false, 
             "persona": "99", 
             "requires_user_token": true
         }
@@ -995,6 +1094,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "140476896137364", 
+            "is_current": true, 
             "persona": "100", 
             "requires_user_token": false
         }
@@ -1005,6 +1105,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "102155496619137", 
+            "is_current": true, 
             "persona": "101", 
             "requires_user_token": false
         }
@@ -1015,6 +1116,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "169783729837746", 
+            "is_current": true, 
             "persona": "102", 
             "requires_user_token": false
         }
@@ -1025,6 +1127,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "364478330291286", 
+            "is_current": true, 
             "persona": "103", 
             "requires_user_token": false
         }
@@ -1035,6 +1138,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "208745552614504", 
+            "is_current": true, 
             "persona": "104", 
             "requires_user_token": false
         }
@@ -1045,6 +1149,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "381332725251346", 
+            "is_current": true, 
             "persona": "105", 
             "requires_user_token": false
         }
@@ -1055,6 +1160,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "368992579826185", 
+            "is_current": true, 
             "persona": "106", 
             "requires_user_token": false
         }
@@ -1065,6 +1171,7 @@
         "fields": {
             "feed_type": "PP", 
             "vendor_id": "789005101144982", 
+            "is_current": true, 
             "persona": "107", 
             "requires_user_token": false
         }
