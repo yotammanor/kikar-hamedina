@@ -11,8 +11,10 @@
 {% block title %}כיכר המדינה : עמוד ראשי{% endblock title %}
 
 {% block context-header %}
-<div class="alert alert-info" role="alert"><strong>This Site is under construction!</strong>
-    <br> Draw conclusions from the data at your own risk! </div>
+<div class="alert alert-info alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+  <strong>האתר עדיין בתהליכי בנייה!</strong> יתכנו פערים וטעויות במידע המוצג באתר, לתשומת ליבך.
+</div>
 {% endblock %}
 
 {% load core_extras %}
