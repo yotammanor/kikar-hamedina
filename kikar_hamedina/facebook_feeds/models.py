@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django_pandas.managers import DataFrameManager
 
-from facebook_feeds.managers import Facebook_StatusManager
+from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
 
 INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'on their own',
@@ -55,12 +55,16 @@ class Facebook_Feed(models.Model):
     picture_large = models.URLField(null=True, max_length=2000)
     feed_type = models.CharField(null=False, max_length=2, choices=FEED_TYPES, default='PP')
     requires_user_token = models.BooleanField(default=False, null=False)
+    is_current = models.BooleanField(default=True, null=False)
 
     # Public Page Only
     about = models.TextField(null=True, default='')
     website = models.URLField(null=True, max_length=2000)
 
     objects = DataFrameManager()
+
+    current_feeds = Facebook_FeedManager()
+
 
     class Meta:
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
