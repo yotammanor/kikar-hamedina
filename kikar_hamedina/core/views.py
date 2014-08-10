@@ -11,9 +11,10 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.base import View
 from django.template import RequestContext
 from django.utils import timezone
-from django.db.models import Count, Q, F
+from django.db.models import Count, Q, Max, F
 from django.conf import settings
 
 import facebook
@@ -46,6 +47,24 @@ NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
 MIN_FAN_COUNT_FOR_REL_COMPARISON = 50000
 
 
+class NoDefaultProvided(object):
+    pass
+
+
+def getattrd(obj, name, default=NoDefaultProvided):
+    """
+    Same as getattr(), but allows dot notation lookup
+    Discussed in:
+    http://stackoverflow.com/questions/11975781
+    """
+    try:
+        return reduce(getattr, name.split("."), obj)
+    except AttributeError, e:
+        if default != NoDefaultProvided:
+            return default
+        raise
+
+
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
@@ -74,7 +93,7 @@ class HomepageView(ListView):
         return context
 
 
-class OldHomepageView(ListView):
+class HotTopicsView(ListView):
     model = Tag
     template_name = 'core/homepage_old.html'
 
@@ -86,7 +105,7 @@ class OldHomepageView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super(OldHomepageView, self).get_context_data(**kwargs)
+        context = super(HotTopicsView, self).get_context_data(**kwargs)
         wrote_about_tag = dict()
         for tag in context['object_list']:
             list_of_writers = Facebook_Feed.objects.filter(facebook_status__tags__id=tag.id).distinct()
@@ -100,6 +119,93 @@ class OldHomepageView(ListView):
             wrote_about_tag[tag] = [feed['feed'] for feed in sorted_list_of_writers][
                                    :NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY]
         context['wrote_about_tag'] = wrote_about_tag
+        return context
+
+
+class BillboardsView(ListView):
+    template_name = 'core/billboards_list.html'
+    model = Facebook_Feed
+
+    def get_queryset(self, **kwargs):
+        return Facebook_Feed.current_feeds.first()
+
+    def create_billboard_data_dict_list(self, value_format, data_set, data_name_attr, data_value_int_attr):
+        data_dict_list = [
+            {'name': getattrd(object_instance, data_name_attr),
+             'value_int': float(getattrd(object_instance, data_value_int_attr)),
+             'value_formatted': value_format.format(getattrd(object_instance, data_value_int_attr)),
+            }
+            for object_instance in data_set
+        ]
+
+        return data_dict_list
+
+    def create_billboard_dict(self,
+                              title,
+                              header_name,
+                              header_value_formatted,
+                              value_format,
+                              data_set,
+                              data_name_attr,
+                              data_value_float_attr,
+                              top_num_of_values,
+                              is_sorted_reversed=True):
+        billboard_dict = {
+            'title': title,
+            'headers': {
+                'name': header_name,
+                'value_formatted': header_value_formatted,
+            },
+            'data': self.create_billboard_data_dict_list(value_format, data_set, data_name_attr, data_value_float_attr)
+        }
+
+        billboard_dict['data'] = sorted(billboard_dict['data'], key=lambda x: x['value_int'],
+                                        reverse=is_sorted_reversed)[
+                                 :top_num_of_values]
+
+        return billboard_dict
+
+    def get_context_data(self, **kwargs):
+        context = super(BillboardsView, self).get_context_data(**kwargs)
+
+        billboard_1 = self.create_billboard_dict(title='popularity',
+                                                 header_name='Name',
+                                                 header_value_formatted='current_fan_count',
+                                                 value_format="{:,}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='current_fan_count',
+        )
+
+        billboard_2 = self.create_billboard_dict(title='popularity_growth',
+                                                 header_name='Name',
+                                                 header_value_formatted='growth popularity',
+                                                 value_format="{:.2%}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='popularity_dif_week_growth_rate',
+        )
+
+        billboard_3 = self.create_billboard_dict(title='popularity_growth_nominal',
+                                                 header_name='Name',
+                                                 header_value_formatted='growth in popularity (likes',
+                                                 value_format="{:,.0f}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='popularity_dif_week_nominal',
+        )
+
+        context['list_of_billboards'] = []
+        context['list_of_billboards'].append(billboard_1)
+        context['list_of_billboards'].append(billboard_2)
+        context['list_of_billboards'].append(billboard_3)
+
         return context
 
 

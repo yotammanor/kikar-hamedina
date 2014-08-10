@@ -1,6 +1,7 @@
 import datetime
 from unidecode import unidecode
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
@@ -45,6 +46,8 @@ class Facebook_Feed(models.Model):
         ('DP', 'Deprecated Profile'),
     )
 
+    DEFAULT_DAYS_BACK_FOR_POPULARITY_DIF = getattr(settings, 'DEFAULT_DAYS_BACK_FOR_POPULARITY_DIF', 7)
+
     persona = models.ForeignKey('Facebook_Persona', related_name='feeds')
     vendor_id = models.TextField(null=True)
     username = models.TextField(null=True, default=None)
@@ -83,7 +86,6 @@ class Facebook_Feed(models.Model):
         return popularity
 
     current_fan_count = get_current_fan_count
-
 
     def popularity_dif(self, days_back):
 
@@ -137,6 +139,13 @@ class Facebook_Feed(models.Model):
         except IndexError:
             return dif_dict_default
 
+    @property
+    def popularity_dif_week_nominal(self, days_back=DEFAULT_DAYS_BACK_FOR_POPULARITY_DIF):
+        return self.popularity_dif(days_back)['fan_count_dif_nominal']
+
+    @property
+    def popularity_dif_week_growth_rate(self, days_back=DEFAULT_DAYS_BACK_FOR_POPULARITY_DIF):
+        return self.popularity_dif(days_back)['fan_count_dif_growth_rate']
 
 class Feed_Popularity(models.Model):
     feed = models.ForeignKey('Facebook_Feed')
