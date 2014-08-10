@@ -24,6 +24,8 @@ from facebook_feeds.management.commands import updatestatus
 from mks.models import Party, Member
 from facebook import GraphAPIError
 
+DEFAULT_POPULARITY_DIF_COMPARISON_TYPE = getattr(settings, 'DEFAULT_POPULARITY_DIF_COMPARISON_TYPE', 'rel')
+
 POPULARITY_DIF_DAYS_BACK = getattr(settings, 'POPULARITY_DIF_DAYS_BACK', 30)
 
 DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
@@ -48,34 +50,6 @@ class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
 
-#TODO: make it a method of FacebookFeedManager
-def get_largest_fan_count_difference(days_back, comparison_type,
-                                     min_fan_count_for_rel_comparison=MIN_FAN_COUNT_FOR_REL_COMPARISON):
-    current_feeds = Facebook_Feed.objects.filter(feed_type='PP',
-                                                 persona__object_id__in=[member.id for member in
-                                                                         Member.objects.filter(is_current=True)])
-
-    #    import pdb; pdb.set_trace()
-    max_change = {'feed': None, 'dif': 0, 'day': datetime.date.today()}
-    for feed in current_feeds:
-        dif_dict = feed.popularity_dif(days_back)
-        if comparison_type == 'abs':
-            change_value = dif_dict['fan_count_dif_nominal']
-        elif comparison_type == 'rel':
-            if feed.current_fan_count <= min_fan_count_for_rel_comparison:
-                change_value = float(0)  # to small to compete in a relational context
-            else:
-                change_value = dif_dict['fan_count_dif_growth_rate']
-        if abs(change_value) > abs(max_change['dif']):
-            max_change['feed'] = feed
-            max_change['dif'] = change_value
-            max_change['day'] = dif_dict['date_of_value']
-        else:
-            pass
-
-    return max_change
-
-
 class HomepageView(ListView):
     template_name = 'core/homepage.html'
     model = Facebook_Status
@@ -92,7 +66,9 @@ class HomepageView(ListView):
         context['featured_party'] = Party.objects.get(id=16)
         context['featured_search'] = {'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
                                       'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
-        max_change = get_largest_fan_count_difference(30, 'rel', MIN_FAN_COUNT_FOR_REL_COMPARISON)
+        max_change = Facebook_Feed.current_feeds.get_largest_fan_count_difference(POPULARITY_DIF_DAYS_BACK,
+                                                                                  DEFAULT_POPULARITY_DIF_COMPARISON_TYPE,
+                                                                                  MIN_FAN_COUNT_FOR_REL_COMPARISON)
         max_change['member'] = Member.objects.get(persona=max_change['feed'].persona)
         context['top_growth'] = max_change
         return context
