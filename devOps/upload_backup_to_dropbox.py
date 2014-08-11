@@ -9,35 +9,31 @@ except ImportError:
     print "Dropbox module not installed\nInstall it with:\n\tpip install dropbox"
     exit()
 
-def main():
 
+def main():
     try:
-        PGPASSWORD= os.environ['PGPASSWORD']
+        PGPASSWORD = os.environ['PGPASSWORD']
     except KeyError, e:
         print "The environment variable PGPASSWORD is not set"
         return
 
     try:
-        PGUSER= os.environ['PGUSER']
+        PGUSER = os.environ['PGUSER']
     except KeyError, e:
         print "The environment variable PGUSER is not set"
         return
 
     try:
-        PGDATABASE= os.environ['PGDATABASE']
+        PGDATABASE = os.environ['PGDATABASE']
     except KeyError, e:
         print "The environment variable PGDATABASE is not set"
         return
 
-
-
-
     command = "export PGPASSWORD=%s\npg_dump --username=%s -h localhost %s" % (PGPASSWORD, PGUSER, PGDATABASE)
-    command += ' > '+str(datetime.date.today())
+    command += ' > ' + str(datetime.date.today())
     os.system(command)
-    command = "gzip "+str(datetime.date.today())
+    command = "gzip " + str(datetime.date.today())
     os.system(command)
-
 
     try:
         DROPBOX_APP_KEY = os.environ['DROPBOX_APP_KEY']
@@ -64,11 +60,10 @@ def main():
         return
 
     try:
-        DB_BACKUP_ERROR_NOTIFY= os.environ['DB_BACKUP_ERROR_NOTIFY']
+        DB_BACKUP_ERROR_NOTIFY = os.environ['DB_BACKUP_ERROR_NOTIFY']
     except KeyError, e:
         print "The environment variable DROPBOX_ACCESS_SECRET is not set"
         return
-
 
     try:
         if len(DROPBOX_APP_KEY) and len(DROPBOX_APP_SECRET):
@@ -81,14 +76,14 @@ def main():
     except KeyError, e:
         raise e
 
-    sess = session.DropboxSession(DROPBOX_APP_KEY, DROPBOX_APP_SECRET, "dropbox") # created the session object
+    sess = session.DropboxSession(DROPBOX_APP_KEY, DROPBOX_APP_SECRET, "dropbox")  # created the session object
 
     try:
         if len(DROPBOX_ACCESS_KEY) and len(DROPBOX_ACCESS_SECRET):
             # authorized
             pass
         else:
-            request_token = sess.obtain_request_token() # obtain the request token
+            request_token = sess.obtain_request_token()  # obtain the request token
             url = sess.build_authorize_url(request_token)
             # Make the user sign in and authorize this token
             print "url:", url
@@ -105,30 +100,30 @@ def main():
         raise e
 
     # pass the key and the secret
-    sess.set_token(client_secrets.get("access_key"),client_secrets.get("access_secret"))
+    sess.set_token(client_secrets.get("access_key"), client_secrets.get("access_secret"))
     # create the client object
     client = dropbox_client.DropboxClient(sess)
     nameOfFile = datetime.datetime.today().strftime("%Y%m%d") + "-db-backup.gz"
     try:
-        with open(nameOfFile): pass #check existance of while
+        with open(nameOfFile):
+            pass  # check existance of while
         print "Uploading started..."
         print client.put_file("/db_backup/" + nameOfFile, open(nameOfFile))
         print "Uploading completed..."
         print "Removing yesterday's backup"
 
         yesterday = datetime.datetime.now() - datetime.timedelta(hours=24)
-        command = "rm "+str(yesterday)+".gz"
+        command = "rm " + str(yesterday) + ".gz"
         os.system(command)
         print "Done removing"
     except IOError:
         content = traceback.format_exc()
         subject = "Kikar: Error on upload of DB backup to Dropbox"
         addresses = DB_BACKUP_ERROR_NOTIFY
-        command = "echo \""+content+"\" | mail -s \""+subject+"\" +\""+addresses+"\""
+        command = "echo \"" + content + "\" | mail -s \"" + subject + "\" +\"" + addresses + "\""
         os.system(command)
         print "DB backup file does not exists"
     return
-
 
 
 if __name__ == '__main__':

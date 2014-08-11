@@ -1,6 +1,6 @@
-{% extends "core/facebook_status_list.html" %}
+{% extends "core/facebook_statuses_page.html" %}
 
-{% block title %}חיפוש: {{ name }}{% endblock title %}
+{% block title %}חיפוש: {{ search_title }}{% endblock title %}
 
 {% block h1 %}
     <i class="fa fa-search"></i></br>
@@ -14,7 +14,10 @@
     תגיות: {{ tags|length }}
     {% endif %}
     {% if search_str %}
-    מילות חיפוש: {{ search_str }}
+         מילות חיפוש:
+        {% for search_str_split in search_str %}
+            {{ search_str_split }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
     {% endif %}
 {% endblock %}
 

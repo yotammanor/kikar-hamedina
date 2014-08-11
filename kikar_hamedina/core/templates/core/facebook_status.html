@@ -1,0 +1,148 @@
+{% verbatim %}
+<script id="add-tag-to-status-template" type="text/x-handlebars-template">
+    <a href="/tag/name/{{name}}">
+        <span class="label label-info">{{name}}</span>
+    </a>
+</script>
+{% endverbatim %}
+
+{% load humanize %}
+{% load core_extras %}
+<div class="panel panel-primary status-panel" data-statusid="{{ status.status_id }}"
+     data-token="{{ access_token }}">
+    <div class="panel-heading col-lg-12">
+        <div class="row">
+            <div class="col-lg-1">
+                <a href="{% url 'member' status.feed.persona.object_id %}">
+                    <img src="{{ status.feed.picture_square }}" class="profile-photo img-rounded">
+                </a>
+            </div>
+            <div class="col-lg-9">
+                <div class="row" id="name-row-container">
+                    <a class="link-on-blue" href="{% url 'member' status.feed.persona.object_id %}">
+                        <h4>{{ status.feed.persona.content_object.name }}</h4>
+                    </a>
+                </div>
+                <div class="row" id="party-row-container">
+                    <h6>
+                        <a class="link-on-blue" href="{% url 'party' status.feed.persona.content_object.current_party.id %}">
+{#                            <h6>#}
+                                {{ status.feed.persona.content_object.current_party.name }}
+{#                            </h6>#}
+                        </a>
+                         |
+                        <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">
+{#                            <h6>#}
+                                {{ status.published | naturaltime }}
+{#                            </h6>#}
+                        </a>
+                    </h6>
+                </div>
+{#                <div class="row" id="date-row-container">#}
+{#                    <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">#}
+{#                        <h6>{{ status.published | naturaltime }}</h6>#}
+{#                    </a>#}
+{#                </div>#}
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        {% if status.story %}
+            <p style="color:gray" dir="ltr"> {{ status.story }}</p>
+        {% endif %}
+
+        <p>{{ status.content | linebreaks }}</p>
+
+        <div class="row">
+            <div class="col-md-4">
+			<span>
+				<b>אהבו: </b> <span id="{{ status.status_id }}-likes">{{ status.like_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
+			</span>
+			<span>
+				<b>הגיבו: </b> <span id="{{ status.status_id }}-comments">{{ status.comment_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
+			</span>
+			<span>
+				<b>שיתפו: </b> <span id="{{ status.status_id }}-shares">{{ status.share_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
+			</span>
+            <span class="hidden-updating-spinner" id="status-metrics-is-updating-indicator-{{ status.status_id }}">
+                <i class="fa fa-spinner fa-spin"></i>
+            </span>
+            </div>
+            <div class="col-md-8">
+
+                <strong style="display:{% if status.tags.count > 0 %}inline{% else %}none{% endif %}">תגים: </strong>
+			<span id="{{ status.id }}-tags">
+			{% for tag in status.tags.all %}
+                <a href="{% url 'tag' 'name' tag.name %}">
+                    <span class="label label-info">{{ tag.name }}</span>
+                </a>
+            {% endfor %}
+			</span>
+
+                <div class="pull-left">
+                    <a href="{{ status | link }}" class="btn btn-info btn-xs" target="_blank">הפוסט ב-<i
+                            class="fa fa-facebook-square"></i> </a>
+
+                    <!-- Button trigger modal -->
+                    <button class="btn btn-primary btn-xs" data-toggle="modal"
+                            data-target="#{{ status.status_id }}_modal">
+                        {% if status.has_attachment %}
+                            <i class="fa fa-paperclip"></i>
+                        {% else %}
+                            <i>&nbsp;&nbsp;</i>
+                        {% endif %}
+                        צפה בפוסט
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
+                         role="dialog"
+                         aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body text-center">
+
+                                    <div class="fb-post" data-href="{{ status | embed_link }}"
+                                         data-width="466">
+                                        <div class="fb-xfbml-parse-ignore">
+                                            <a href="{{ status | embed_link }}">פוסט</a> מאת <a
+                                                href="{{ status.feed.link }}">{{ status.feed.persona.content_object.name }}</a>.
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default"
+                                                data-dismiss="modal">
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
+                    </div>
+                </div>
+            </div>
+
+            {% if user.is_authenticated %}
+                <div class="col-sm-12" data-statusid="{{ status.id }}">
+                    <hr>
+                    <!-- 	<form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
+	role="form"> -->
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="sr-only" for="add-tag">Add tag</label>
+                        <input type="text" class="form-control add-tag-input" id="add-tag"
+                               name="tag" autocomplete="off"
+                               placeholder="תכניס תג (comma separated)" data-role="tagsinput">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary add-tag-button">הוסף תיוגים</button>
+                    <!-- </form> -->
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

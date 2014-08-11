@@ -4,7 +4,7 @@ ipython
 django-extensions==1.2.5
 djangorestframework==2.3.10
 facebook-sdk==0.4.0
-psycopg2==2.5.1
+psycopg2==2.5.3
 python-mimeparse==0.1.4
 six==1.4.1
 wsgiref==0.1.2
@@ -16,5 +16,10 @@ requests==2.1.0
 unidecode==0.04.14
 django-testutils
 dropbox==2.0.0
+numpy==1.8.1
+pandas==0.13.1
+django-pandas==0.1.0
+python-dateutil==1.5
+django-tastypie==0.9.15
 
 -r oknesset.txt

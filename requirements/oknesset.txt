@@ -7,7 +7,7 @@
 # mimms - Video download
 # poppler - required only for simple/management/parse_government_bill,
 # kikar-hamedina - leftout: Django==1.5.5 (We work on 1.6.1)
-# Also: ipython, south - appear in our base.txt requirement, gunicorn - in vps.txt
+# Also: ipython, south, python-dateutil, django-tastypie  - appear in our base.txt requirement, gunicorn - in vps.txt
 
 PIL
 django-pagination==1.0.7
@@ -19,10 +19,8 @@ feedparser
 gdata
 django-social-auth>=0.7.19
 oauth==1.0.1
-python-dateutil==1.5
 python-memcached==1.48
 -e git://github.com/openid/python-openid.git#egg=python-openid
-django-tastypie==0.9.15
 django-ratings
 -e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
 -e git://github.com/hasadna/django-activity-stream.git@c56a07921b8c796fce35bda6feab4610fdf64e5d#egg=django-activity-stream

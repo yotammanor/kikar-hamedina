@@ -9,7 +9,6 @@ gzip $(date "+%Y%m%d-db-backup")
 python upload_backup_to_dropbox.py
 rm $(date --date="yesterday" "+%Y%m%d-db-backup.gz")
 
-
 #To resotre run this command with <newdbname> and <filename> supplemented.
 # <filename> must be accessible
 # <newdbname> must be entirely empty

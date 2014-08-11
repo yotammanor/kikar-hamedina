@@ -1,28 +1,169 @@
-{% extends "core/facebook_status_list.html" %}
+{% extends "core/facebook_statuses_page.html" %}
 
-{% block title %}Homepage{% endblock title %}
+{% block title %}{{ object.name }}{% endblock title %}
 
 {% block h1 %}
     <i class="fa fa-user"></i> {{ object.name }}
 {% endblock %}
 
 {% block details %}
-    {% with object.feeds.all|first as feed %}
+    {% with object.facebook_persona.get_main_feed as feed %}
         {% load humanize %}
+        {% load core_extras %}
         <p>
 
-            <img src="{{ feed.pic_large }}" class="img-rounded" id="profile-photo">
+            <img src="{{ feed.picture_large }}" class="img-rounded" id="profile-photo">
         </p>
         <p>
-            <i class="fa fa-group"></i> {{ object.current_party.name }}
+            <i class="fa fa-group"></i>
+            <a href="{% url 'party' object.current_party.id %}">{{ object.current_party.name }}</a>
         </p>
+        {% if object.facebook_persona %}
+            <p>
+                <i class="fa fa-thumbs-up"></i>
+                {{ feed.current_fan_count|floatformat:1|intcomma|slice:":-2" }}
+                <span id="difference-in-fan-count">({% if change_in_popularity.fan_count_dif_nominal > 0 %}
+                    +{% endif %}{{ change_in_popularity.fan_count_dif_growth_rate | percent }}
+                    בחודש האחרון{% if change_in_popularity.is_interpolated %}, בקירוב{% endif %})</span>
+            </p>
+            <i class="fa fa-bar-chart-o"></i>
+            <span class="hidden-updating-spinner" id="insights-loading">
+                טוען נתונים נוספים... <i class="fa fa-spinner fa-spin"></i>
+            </span>
+            <span id="insights" style="display: none" data-objectid="{{ object.id }}">
+                <b>בחודש האחרון:</b>
+                <span id="ins_n_month">-</span> סטטוסים,
+                <span id="ins_mean_likes_month">-</span> לייקים בממוצע
+                <b style="padding-right: 2em">בשבוע האחרון:</b>
+                <span id="ins_n_week">-</span> סטטוסים,
+                <span id="ins_mean_likes_week">-</span> לייקים בממוצע
+            </span>
+        {% endif %}
         <p>
-
-            <i class="fa fa-thumbs-up"></i>
-            {{ feed.current_fan_count|intcomma }}
-
+            <img src="/static/media/oknesset_icon.png"/>
+            <a href="{{ object.ok_url }}">{{ object.name }}</a> /
+            <a href="{{ object.current_party.ok_url }}">{{ object.current_party.name }}</a>
+            באתר כנסת פתוחה
         </p>
+        {#        <p>#}
+        {#            <script type="text/javascript">#}
+        {#                nv.addGraph(function () {#}
+        {#                    var chart = nv.models.lineChart()#}
+        {#                                    .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.#}
+        {#                                    .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!#}
+        {#                                    .transitionDuration(350)  //how fast do you want the lines to transition?#}
+        {#                                    .showLegend(true)       //Show the legend, allowing users to turn on/off line series.#}
+        {#                                    .showYAxis(true)        //Show the y-axis#}
+        {#                                    .showXAxis(true)        //Show the x-axis#}
+        {#                            ;#}
+        {##}
+        {#                    chart.xAxis     //Chart x-axis settings#}
+        {#                            .axisLabel('Time')#}
+        {#                            .tickFormat(function (data) {#}
+        {#                                return d3.time.format('%x')(new Date(data))#}
+        {#                            });#}
+        {##}
+        {#                    chart.yAxis     //Chart y-axis settings#}
+        {#                            .axisLabel('Average Post Likes')#}
+        {#                            .tickFormat(d3.format('.02f'));#}
+        {##}
+        {#                    /* Done setting the chart up? Time to render it!*/#}
+        {#                    var myData = renderPopularityData();   //You need data...#}
+        {##}
+        {#                    d3.select('#chart-popularity svg')    //Select the <svg> element you want to render the chart in.#}
+        {#                            .datum(myData)         //Populate the <svg> element with chart data...#}
+        {#                            .call(chart);          //Finally, render the chart!#}
+        {##}
+        {#                    //Update the chart when window resizes.#}
+        {#                    nv.utils.windowResize(function () {#}
+        {#                        chart.update()#}
+        {#                    });#}
+        {#                    return chart;#}
+        {#                });#}
+        {##}
+        {#                /*********/#}
+        {#                function renderPopularityData() {#}
+        {#                    var popularity = "{{ stats.mean_monthly_popularity_by_status | escapejs }}";#}
+        {#                    var popularity_json = JSON.parse(popularity);#}
+        {#                    alert(popularity_json[0]);#}
+        {##}
+        {#                    var mean_popularity = "{{ stats.mean_like_count_all | escapejs }}";#}
+        {#                    var mean_popularity_json = JSON.parse(mean_popularity);#}
+        {#                    return    [#}
+        {#                        {#}
+        {#                            values: popularity_json,#}
+        {#                            key: 'Monthly Likes',#}
+        {#                            color: '#ff7f0e'#}
+        {#                        },#}
+        {#                        {#}
+        {#                            values: mean_popularity_json,#}
+        {#                            key: 'Average Total Likes',#}
+        {#                            color: '#ff0044'#}
+        {#                        }#}
+        {##}
+        {#                    ]#}
+        {#                }#}
+        {#            </script>#}
+        {##}
+        {#        </p>#}
+        {#        <div id="chart-popularity">#}
+        {#            <svg></svg>#}
+        {##}
+        {#        </div>#}
+        {#        <script type="text/javascript">#}
+        {#            var tagData = renderTagData();#}
+        {#            nv.addGraph(function () {#}
+        {#                var chart = nv.models.pieChart()#}
+        {#                        .x(function (d) {#}
+        {#                            return d.label#}
+        {#                        })#}
+        {#                        .y(function (d) {#}
+        {#                            return d.value#}
+        {#                        })#}
+        {#                        .showLabels(true);#}
+        {##}
+        {#                d3.select("#chart-tags svg")#}
+        {#                        .datum(tagData)#}
+        {#                        .transition().duration(1200)#}
+        {#                        .call(chart);#}
+        {##}
+        {#                return chart;#}
+        {#            });#}
+        {##}
+        {#            /* Tag Pie Chart */#}
+        {#            function renderTagData() {#}
+        {#                var tag_data = "{{ stats.tags_for_member | escapejs }}";#}
+        {##}
+        {#                var tag_json = JSON.parse(tag_data);#}
+        {#                alert(tag_json[0]);#}
+        {##}
+        {#                return  tag_json;#}
+        {#            }#}
+        {#            ;#}
+        {##}
+        {#        </script>#}
+        {#        <div id="chart-tags">#}
+        {#            <svg width="250" height="250"></svg>#}
+        {# TODO move to css file #}
+        {#        </div>#}
     {% endwith %}
+{% endblock %}
+
+{% block noposts %}
+    {% if not object.facebook_persona %}
+        <p>
+            לא נמצא דף פייסבוק עבור {{ object.name }}.
+            {% if object.email %}
+                אפשר <a href="mailto:{{ object.email }}" target="_blank"
+                    >לשלוח {% if object.is_female %}לה{% else %}לו{% endif %} דוא״ל</a>.
+            {% endif %}
+        </p>
+        <p>
+            יש ל{{ object.name }} דף פייסבוק? <a href="mailto:suggestions@kikarhamedina.hasadna.org.il" target="_blank">ספרו
+            לנו</a>!
+            {% else %}
+        <p>לא נמצאו עדכונים</p>
+    {% endif %}
 {% endblock %}
 
 {% block sidebar %}
@@ -33,3 +174,8 @@
         {% endfor %}
     </ul>
 {% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/updateInsightsForMember.js"></script>
+{% endblock %}
+
