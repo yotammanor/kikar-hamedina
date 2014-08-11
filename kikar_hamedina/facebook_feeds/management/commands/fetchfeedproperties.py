@@ -111,6 +111,8 @@ class Command(BaseCommand):
         Returns a Dict object of feed ID. and retrieved feed data.
         """
         if feed.feed_type == 'UP':  # User Profile
+	    data_dict = {'feed_id': feed.id, 'data': {}}
+            return data_dict
             # Set facebook graph access token to user access token
             token = User_Token_Model.objects.all().order_by('-date_of_creation').first()
             if token:
@@ -118,7 +120,6 @@ class Command(BaseCommand):
                 self.graph.access_token = token.token
             else:
                 print Exception('No User Access Token was found in the database!')  #TODO:Write as a real exception
-
             data_dict = {'feed_id': feed.id, 'data': self.fetch_user_profile_object_by_feed_id(feed.vendor_id)}
             pprint(data_dict)
             # Transform data to fit existing public page
