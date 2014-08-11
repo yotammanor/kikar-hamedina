@@ -87,7 +87,7 @@ class Facebook_Feed(models.Model):
 
     current_fan_count = get_current_fan_count
 
-    def popularity_dif(self, days_back):
+    def popularity_dif(self, days_back, return_value='all_dict'):
 
         dif_dict = {'fan_count_dif_nominal': 0,
                     'fan_count_dif_growth_rate': 0.0,
@@ -134,10 +134,18 @@ class Facebook_Feed(models.Model):
             dif_dict['date_of_value'] = asked_for_date_of_value
             dif_dict['is_interpolated'] = is_interpolated
             dif_dict['fan_count_dif_growth_rate'] = fan_count_dif_growth_rate
-
-            return dif_dict
         except IndexError:
-            return dif_dict_default
+            dif_dict = dif_dict_default
+
+        finally:
+            if return_value == 'all_dict':
+                return dif_dict
+            else:
+                try:
+                    return dif_dict[return_value]
+                except KeyError:
+                    return dif_dict
+
 
     @property
     def popularity_dif_week_nominal(self, days_back=DEFAULT_DAYS_BACK_FOR_POPULARITY_DIF):

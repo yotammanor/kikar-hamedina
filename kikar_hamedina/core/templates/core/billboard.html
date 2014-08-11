@@ -14,7 +14,8 @@
         <tr>
             <th>{{ forloop.counter }}</th>
             <th>{{ object.name }}</th>
-            <th>{{ object.value_formatted }}</th>
+            <th><a href={% url billboard.link_uri_name object.value_reference_link %}>{{ object.value_formatted }}</a></th>
+
         </tr>
     {% endfor %}
     </tbody>

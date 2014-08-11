@@ -24,6 +24,7 @@ from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Toke
 from facebook_feeds.management.commands import updatestatus
 from mks.models import Party, Member
 from facebook import GraphAPIError
+from core.insights import StatsEngine
 
 DEFAULT_POPULARITY_DIF_COMPARISON_TYPE = getattr(settings, 'DEFAULT_POPULARITY_DIF_COMPARISON_TYPE', 'rel')
 
@@ -126,17 +127,53 @@ class BillboardsView(ListView):
     template_name = 'core/billboards_list.html'
     model = Facebook_Feed
 
+    stats = StatsEngine()
+
     def get_queryset(self, **kwargs):
         return Facebook_Feed.current_feeds.first()
 
-    def create_billboard_data_dict_list(self, value_format, data_set, data_name_attr, data_value_int_attr):
-        data_dict_list = [
-            {'name': getattrd(object_instance, data_name_attr),
-             'value_int': float(getattrd(object_instance, data_value_int_attr)),
-             'value_formatted': value_format.format(getattrd(object_instance, data_value_int_attr)),
-            }
-            for object_instance in data_set
-        ]
+    def create_billboard_data_dict_list(self,
+                                        value_format,
+                                        data_set,
+                                        data_name_attr,
+                                        data_value_int_attr,
+                                        calc_type,
+                                        arguments_for_function,
+                                        link_value_attr):
+
+        if calc_type == 'function':
+            data_dict_list = [
+                {'name': getattrd(object_instance, data_name_attr),
+                 'value_int': float(getattrd(object_instance, data_value_int_attr)(**arguments_for_function) or 0),
+                 'value_formatted': value_format.format(
+                     getattrd(object_instance, data_value_int_attr)(**arguments_for_function) or 0),
+                 'value_reference_link': getattrd(object_instance, link_value_attr),
+                }
+                for object_instance in data_set
+            ]
+
+        elif calc_type == 'stats':
+
+            stats_method = getattrd(self.stats, data_value_int_attr)
+
+            data_dict_list = [
+                {'name': getattrd(object_instance, data_name_attr),
+                 'value_int': float(stats_method([object_instance.id]) or 0),
+                 'value_formatted': value_format.format(stats_method([object_instance.id]) or 0),
+                 'value_reference_link': getattrd(object_instance, link_value_attr),
+                }
+                for object_instance in data_set
+            ]
+        else:
+            # calc_type == 'attribute':
+            data_dict_list = [
+                {'name': getattrd(object_instance, data_name_attr),
+                 'value_int': float(getattrd(object_instance, data_value_int_attr)),
+                 'value_formatted': value_format.format(getattrd(object_instance, data_value_int_attr)),
+                 'value_reference_link': getattrd(object_instance, link_value_attr),
+                }
+                for object_instance in data_set
+            ]
 
         return data_dict_list
 
@@ -144,11 +181,15 @@ class BillboardsView(ListView):
                               title,
                               header_name,
                               header_value_formatted,
+                              link_uri_name,
                               value_format,
                               data_set,
                               data_name_attr,
                               data_value_float_attr,
                               top_num_of_values,
+                              calc_type,
+                              link_value_attr,
+                              arguments_for_function=None,
                               is_sorted_reversed=True):
         billboard_dict = {
             'title': title,
@@ -156,7 +197,14 @@ class BillboardsView(ListView):
                 'name': header_name,
                 'value_formatted': header_value_formatted,
             },
-            'data': self.create_billboard_data_dict_list(value_format, data_set, data_name_attr, data_value_float_attr)
+            'link_uri_name': link_uri_name,
+            'data': self.create_billboard_data_dict_list(value_format,
+                                                         data_set,
+                                                         data_name_attr,
+                                                         data_value_float_attr,
+                                                         calc_type,
+                                                         arguments_for_function,
+                                                         link_value_attr),
         }
 
         billboard_dict['data'] = sorted(billboard_dict['data'], key=lambda x: x['value_int'],
@@ -171,40 +219,119 @@ class BillboardsView(ListView):
         billboard_1 = self.create_billboard_dict(title='popularity',
                                                  header_name='Name',
                                                  header_value_formatted='current_fan_count',
+                                                 link_uri_name='member',
                                                  value_format="{:,}",
                                                  top_num_of_values=10,
                                                  is_sorted_reversed=True,
                                                  data_set=Facebook_Feed.current_feeds.all(),
                                                  data_name_attr='persona.content_object.name',
                                                  data_value_float_attr='current_fan_count',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='attribute',
+                                                 arguments_for_function=None,
         )
 
         billboard_2 = self.create_billboard_dict(title='popularity_growth',
                                                  header_name='Name',
                                                  header_value_formatted='growth popularity',
+                                                 link_uri_name='member',
                                                  value_format="{:.2%}",
                                                  top_num_of_values=10,
                                                  is_sorted_reversed=True,
-                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_set=Facebook_Feed.current_feeds.filter(feed_type='PP'),
                                                  data_name_attr='persona.content_object.name',
-                                                 data_value_float_attr='popularity_dif_week_growth_rate',
+                                                 data_value_float_attr='popularity_dif',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='function',
+                                                 arguments_for_function={'days_back': 7,
+                                                                         'return_value': 'fan_count_dif_growth_rate'},
         )
 
         billboard_3 = self.create_billboard_dict(title='popularity_growth_nominal',
                                                  header_name='Name',
-                                                 header_value_formatted='growth in popularity (likes',
+                                                 header_value_formatted='growth in popularity (likes)',
+                                                 link_uri_name='member',
                                                  value_format="{:,.0f}",
                                                  top_num_of_values=10,
                                                  is_sorted_reversed=True,
                                                  data_set=Facebook_Feed.current_feeds.all(),
                                                  data_name_attr='persona.content_object.name',
-                                                 data_value_float_attr='popularity_dif_week_nominal',
+                                                 data_value_float_attr='popularity_dif',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='function',
+                                                 arguments_for_function={'days_back': 7,
+                                                                         'return_value': 'fan_count_dif_nominal'},
         )
+
+        billboard_4 = self.create_billboard_dict(title='num_of_statuses',
+                                                 header_name='Name',
+                                                 header_value_formatted='number of statuses last month',
+                                                 link_uri_name='member',
+                                                 value_format="{:,.0f}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='n_statuses_last_month',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='stats',
+                                                 arguments_for_function=None,
+        )
+
+        billboard_5 = self.create_billboard_dict(title='num_of_statuses',
+                                                 header_name='Name',
+                                                 header_value_formatted='mean_status_likes_last_month',
+                                                 link_uri_name='member',
+                                                 value_format="{:,.0f}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='mean_status_likes_last_month',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='stats',
+                                                 arguments_for_function=None,
+        )
+
+        # billboard_6 = self.create_billboard_dict(title='Most popular status',
+        #                                          header_name='Name',
+        #                                          header_value_formatted='likes for most popular status',
+        #                                          value_format="{:,.0f}",
+        #                                          top_num_of_values=10,
+        #                                          is_sorted_reversed=True,
+        #                                          data_set=self.stats.popular_statuses_last_month(
+        #                                              [feed.id for feed in Facebook_Feed.current_feeds.all()], 10),
+        #                                          data_name_attr='persona.content_object.name',
+        #                                          data_value_float_attr='mean_status_likes_last_month',
+        #                                          calc_type='stats',
+        #                                          arguments_for_function=None,
+        # )
+
+        billboard_6 = {
+            'title': 'Most popular status this Month',
+            'headers': {
+                'name': 'Name',
+                'value_formatted': 'likes for most popular status'
+            },
+            'link_uri_name': 'status-detail',
+            'data': [
+                {'name': Facebook_Status.objects.get(id=result_array[0]).feed.persona.content_object.name,
+                 'value_int': float(result_array[1]),
+                 'value_formatted': "{:,.0f}".format(result_array[1]),
+                 'value_reference_link': Facebook_Status.objects.get(id=result_array[0]).status_id,
+                }
+                for result_array in self.stats.popular_statuses_last_month(
+                    [feed.id for feed in Facebook_Feed.current_feeds.all()], 10)
+            ]
+        }
 
         context['list_of_billboards'] = []
         context['list_of_billboards'].append(billboard_1)
         context['list_of_billboards'].append(billboard_2)
         context['list_of_billboards'].append(billboard_3)
+        context['list_of_billboards'].append(billboard_4)
+        context['list_of_billboards'].append(billboard_5)
+        context['list_of_billboards'].append(billboard_6)
 
         return context
 
