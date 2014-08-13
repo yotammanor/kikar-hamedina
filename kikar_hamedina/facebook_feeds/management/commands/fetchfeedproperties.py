@@ -146,12 +146,13 @@ class Command(BaseCommand):
             print 'Error: {0} is missing from db'.format(feed_id)
             raise
 
-
     def get_feed_data(self, feed, is_insist):
         """
         Returns a Dict object of feed ID. and retrieved feed data.
                 """
         if feed.feed_type == 'UP':  # User Profile
+            # data_dict = {'feed_id': feed.id, 'data': {}}
+            # return data_dict
             # Set facebook graph access token to user access token
             token = User_Token_Model.objects.all().order_by('-date_of_creation').first()
             if token:
