@@ -1,3 +1,9 @@
+"""
+Insights from Facebook data about parties, members served via tastypie API.
+
+Implementation includes loading data from the DB, performing statistical
+calculations and connecting the results to the tastypie API framework.
+"""
 from functools import wraps
 from hashlib import sha1
 from dateutil.relativedelta import relativedelta
@@ -17,6 +23,10 @@ from api import MemberResource, PartyResource, Facebook_StatusResource
 
 
 def cached(seconds=600):
+    """Time-based caching decorator
+    Caches the result of calling the decorated function with specific arguments
+    for a given number of seconds (default 10 minutes).
+    """
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -30,6 +40,7 @@ def cached(seconds=600):
     return decorator
 
 def get_times():
+    """Return timestamp list: [<midnight a week ago>, <midnight a month ago>]"""
     now = timezone.localtime(timezone.now())
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
     week_ago = today - relativedelta(days=7)
@@ -40,10 +51,18 @@ def dataframe_to_lists(dataframe):
     return [list(row) for row in dataframe.values]
 
 def normalize(num):
+    """Normalize numpy number - currently just converts 'NaN' to None"""
     return None if numpy.isnan(num) else num
 
 
 class StatsEngine(object):
+    """Class for performing statistic calculations
+
+    On creation it loads all needed data (currently date and like-count for all
+    statuses in the previous month). It can then return the result of different
+    calculations.
+    Calculations are usually done for statuses included in a list of feeds.
+    """
     def __init__(self):
         week_ago, month_ago = get_times()
         # Note - without like_count!=NULL pandas thinks the column type is object and not number
@@ -53,6 +72,8 @@ class StatsEngine(object):
         self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
 
     def feeds_statuses(self, statuses, feed_ids):
+        """Helper function for that gets a list of statuses and selects only
+        the ones that belong to one of the feeds in the given feed list"""
         return statuses[statuses['feed'].isin(feed_ids)]
 
     def n_statuses_last_week(self, feed_ids):
@@ -84,6 +105,14 @@ class StatsEngine(object):
         return ordered.index[0] if len(ordered) > 0 else None
 
 class MemberStats(object):
+    """A class to hold insights of a member
+
+    Uses a StatsEngine to calculate all fields in the constructor. Fields
+    correspond to the ones defined StatsMemberResource. If fields are not
+    calculated (e.g. if the member doesn't have a Facebook persona) - they are
+    normally taken as None by the StatsMemberResource class (for fields defined
+    with 'null=True')
+    """
     def __init__(self, member=None, engine=None):
         self.member = member
         if member is not None and engine is not None:
@@ -106,6 +135,14 @@ class MemberStats(object):
 
 
 class PartyStats(object):
+    """A class to hold insights of a party
+
+    Uses a StatsEngine to calculate all fields in the constructor. Fields
+    correspond to the ones defined StatsPartyResource. If fields are not
+    calculated (e.g. if no party member has a Facebook persona) - they are
+    normally taken as None by the StatsPartyResource class (for fields defined
+    with 'null=True')
+    """
     def __init__(self, party=None, engine=None):
         self.party = party
         if party is not None and engine is not None:
@@ -132,6 +169,12 @@ class PartyStats(object):
 
 
 class Stats(object):
+    """Container for stats of all parties and members
+
+    The constructor creates a StatsEngine and uses it to generates stats for
+    all objects. Stats are held both as a dict (for random access) and a list
+    (for ordered accesses).
+    """
     def __init__(self):
         print timezone.now(), "Reading stats data..."
         self.engine = StatsEngine()
@@ -158,10 +201,16 @@ class Stats(object):
 
 @cached(seconds=3600)
 def get_stats():
+    """Retrieve all stats with internal caching"""
     return Stats()
 
 
 class StatsMemberResource(Resource):
+    """Implement tastypie interface for members and thus an HTTP API.
+
+    Declares field (name, type and whether None is allowed) and some tastypie
+    overrides.
+    """
     member = fields.ForeignKey(MemberResource, 'member', null=True, blank=True)
 
     like_count = fields.IntegerField(attribute='like_count', null=True)
@@ -173,21 +222,27 @@ class StatsMemberResource(Resource):
     popular_statuses_last_month = fields.ListField(attribute='popular_statuses_last_month', null=True)
 
     class Meta:
-        resource_name = 'insights/member'
-        object_class = MemberStats
+        """tastypie meta class"""
+        resource_name = 'insights/member' # API URL definition
+        object_class = MemberStats # Class with member data
 
     def detail_uri_kwargs(self, bundle_or_obj):
+        """tastypie function for defining retrieval parameters (key)"""
         obj = bundle_or_obj.obj if isinstance(bundle_or_obj, Bundle) else bundle_or_obj
         return {'pk': obj.member.id }
 
     def get_object_list(self, request):
+        """tastypie function for retrieving list of all objects"""
         return get_stats().get_all_member_stats()
 
     def obj_get_list(self, bundle, **kwargs):
+        """tastypie function for retrieving list of objects (can implement
+        filtering)"""
         # TODO: filtering
         return self.get_object_list(bundle.request)
 
     def obj_get(self, bundle, **kwargs):
+        """tastypie function for retrieving an object from key"""
         obj = get_stats().get_member_stats(int(kwargs['pk']))
         if obj is None:
             raise tastypie.exceptions.NotFound
@@ -195,6 +250,12 @@ class StatsMemberResource(Resource):
 
 
 class StatsPartyResource(Resource):
+    """Implement tastypie interface for parties and thus an HTTP API.
+
+    Declares field (name, type and whether None is allowed) and some tastypie
+    overrides.
+    """
+
     party = fields.ForeignKey(PartyResource, 'party', null=True, blank=True)
 
     n_statuses_last_week = fields.IntegerField(attribute='n_statuses_last_week', null=True)
@@ -207,21 +268,27 @@ class StatsPartyResource(Resource):
     popular_member_last_month = fields.ToOneField(MemberResource, attribute='popular_member_last_month', null=True)
 
     class Meta:
-        resource_name = 'insights/party'
-        object_class = PartyStats
+        """tastypie meta class"""
+        resource_name = 'insights/party' # API URL definition
+        object_class = PartyStats # Class with member data
 
     def detail_uri_kwargs(self, bundle_or_obj):
+        """tastypie function for defining retrieval parameters (key)"""
         obj = bundle_or_obj.obj if isinstance(bundle_or_obj, Bundle) else bundle_or_obj
         return {'pk': obj.party.id }
 
     def get_object_list(self, request):
-        return get_stats().get_all_party_stats()
+        """tastypie function for retrieving list of all objects"""
+       return get_stats().get_all_party_stats()
 
     def obj_get_list(self, bundle, **kwargs):
+        """tastypie function for retrieving list of objects (can implement
+        filtering)"""
         # TODO: filtering
         return self.get_object_list(bundle.request)
 
     def obj_get(self, bundle, **kwargs):
+        """tastypie function for retrieving an object from key"""
         obj = get_stats().get_party_stats(int(kwargs['pk']))
         if obj is None:
             raise tastypie.exceptions.NotFound
