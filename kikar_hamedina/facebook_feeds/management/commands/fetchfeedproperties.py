@@ -146,7 +146,6 @@ class Command(BaseCommand):
             print 'Error: {0} is missing from db'.format(feed_id)
             raise
 
-
     def get_feed_data(self, feed, is_insist):
         """
         Returns a Dict object of feed ID. and retrieved feed data.
@@ -165,7 +164,8 @@ class Command(BaseCommand):
                 return data_dict
                 # print Exception('No User Access Token was found in the database!')  # TODO:Write as a real exception
 
-            data_dict = {'feed_id': feed.id, 'data': self.fetch_user_profile_object_by_feed_id(feed.vendor_id, is_insist)}
+            data_dict = {'feed_id': feed.id, 'data': self.fetch_user_profile_object_by_feed_id(feed.vendor_id,
+                                                                                               is_insist)}
             pprint(data_dict)
             # Transform data to fit existing public page
             data_dict['data']['username'] = ''.join(

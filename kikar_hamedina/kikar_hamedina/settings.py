@@ -146,7 +146,7 @@ LOGGING = {
             'filename': 'debug.log',
             'formatter': 'simple'
         },
-        'console':{
+        'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
