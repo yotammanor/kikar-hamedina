@@ -4,6 +4,7 @@ import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+
 from mks.models import Member
 from facebook_feeds.models import Facebook_Feed
 
@@ -45,7 +46,7 @@ class Command(BaseCommand):
             # Feed unattached to mk is set to be non-current by default
             is_current_value = False
 
-        print 'is_current_value for feed %s is set to: %s' %(feed, is_current_value)
+        print 'is_current_value for feed %s is set to: %s' % (feed, is_current_value)
         return is_current_value
 
     def handle(self, *args, **options):

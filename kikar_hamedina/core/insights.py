@@ -2,8 +2,8 @@ from functools import wraps
 from hashlib import sha1
 from dateutil.relativedelta import relativedelta
 
-import pandas
-import numpy
+import pandas as pd
+import numpy as np
 import tastypie
 from tastypie import fields
 from tastypie.resources import Resource, Bundle
@@ -20,14 +20,26 @@ def cached(seconds=600):
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-                key = sha1(repr((f.__module__, f.__name__, args, kwargs))).hexdigest()
-                result = cache.get(key)
-                if result is None:
-                    result = f(*args, **kwargs)
+            key = sha1(repr((f.__module__, f.__name__, args, kwargs))).hexdigest()
+            print 'read from cache.'
+            print key
+            result = cache.get(key)
+            if result is None:
+                print 'cache is none'
+                result = f(*args, **kwargs)
+                if key in cache:
+                    print 'set to cache.'
                     cache.set(key, result, seconds)
-                return result
+                else:
+                    print 'add to cache.'
+                    print result
+                    cache.add(key, result, seconds)
+            return result
+
         return wrapper
+
     return decorator
+
 
 def get_times():
     now = timezone.localtime(timezone.now())
@@ -36,11 +48,13 @@ def get_times():
     month_ago = today - relativedelta(months=1)
     return week_ago, month_ago
 
+
 def dataframe_to_lists(dataframe):
     return [list(row) for row in dataframe.values]
 
+
 def normalize(num):
-    return None if numpy.isnan(num) else num
+    return None if np.isnan(num) else num
 
 
 class StatsEngine(object):
@@ -48,8 +62,12 @@ class StatsEngine(object):
         week_ago, month_ago = get_times()
         # Note - without like_count!=NULL pandas thinks the column type is object and not number
         month_statuses = Facebook_Status.objects.filter(published__gte=month_ago, like_count__isnull=False)
-        fields = ['id', 'feed', 'published', 'like_count']
-        self.month_statuses = month_statuses.to_dataframe(fields=fields)
+
+        # TODO: Should we rewrite to include isnull values and fillna == 0 or -1?
+
+        field_names = ['id', 'feed', 'published', 'like_count']
+        recs = np.core.records.fromrecords(month_statuses.values_list(*field_names), names=field_names)
+        self.month_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
         self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
 
     def feeds_statuses(self, statuses, feed_ids):
@@ -76,12 +94,15 @@ class StatsEngine(object):
         return dataframe_to_lists(ordered[:num][['id', 'like_count']])
 
     def popular_feed_last_week(self, feed_ids):
-        ordered = self.feeds_statuses(self.week_statuses, feed_ids).groupby('feed')['like_count'].mean().order(ascending=False)
+        ordered = self.feeds_statuses(self.week_statuses, feed_ids).groupby('feed')['like_count'].mean().order(
+            ascending=False)
         return ordered.index[0] if len(ordered) > 0 else None
 
     def popular_feed_last_month(self, feed_ids):
-        ordered = self.feeds_statuses(self.month_statuses, feed_ids).groupby('feed')['like_count'].mean().order(ascending=False)
+        ordered = self.feeds_statuses(self.month_statuses, feed_ids).groupby('feed')['like_count'].mean().order(
+            ascending=False)
         return ordered.index[0] if len(ordered) > 0 else None
+
 
 class MemberStats(object):
     def __init__(self, member=None, engine=None):
@@ -178,7 +199,7 @@ class StatsMemberResource(Resource):
 
     def detail_uri_kwargs(self, bundle_or_obj):
         obj = bundle_or_obj.obj if isinstance(bundle_or_obj, Bundle) else bundle_or_obj
-        return {'pk': obj.member.id }
+        return {'pk': obj.member.id}
 
     def get_object_list(self, request):
         return get_stats().get_all_member_stats()
@@ -212,7 +233,7 @@ class StatsPartyResource(Resource):
 
     def detail_uri_kwargs(self, bundle_or_obj):
         obj = bundle_or_obj.obj if isinstance(bundle_or_obj, Bundle) else bundle_or_obj
-        return {'pk': obj.party.id }
+        return {'pk': obj.party.id}
 
     def get_object_list(self, request):
         return get_stats().get_all_party_stats()
