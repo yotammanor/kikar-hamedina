@@ -8,8 +8,8 @@ from functools import wraps
 from hashlib import sha1
 from dateutil.relativedelta import relativedelta
 
-import pandas
-import numpy
+import pandas as pd
+import numpy as np
 import tastypie
 from tastypie import fields
 from tastypie.resources import Resource, Bundle
@@ -37,7 +37,9 @@ def cached(seconds=600):
                     cache.set(key, result, seconds)
                 return result
         return wrapper
+
     return decorator
+
 
 def get_times():
     """Return timestamp list: [<midnight a week ago>, <midnight a month ago>]"""
@@ -47,12 +49,14 @@ def get_times():
     month_ago = today - relativedelta(months=1)
     return week_ago, month_ago
 
+
 def dataframe_to_lists(dataframe):
     return [list(row) for row in dataframe.values]
 
+
 def normalize(num):
     """Normalize numpy number - currently just converts 'NaN' to None"""
-    return None if numpy.isnan(num) else num
+    return None if np.isnan(num) else num
 
 
 class StatsEngine(object):
@@ -67,8 +71,12 @@ class StatsEngine(object):
         week_ago, month_ago = get_times()
         # Note - without like_count!=NULL pandas thinks the column type is object and not number
         month_statuses = Facebook_Status.objects.filter(published__gte=month_ago, like_count__isnull=False)
-        fields = ['id', 'feed', 'published', 'like_count']
-        self.month_statuses = month_statuses.to_dataframe(fields=fields)
+
+        # TODO: Should we rewrite to include isnull values and fillna == 0 or -1?
+
+        field_names = ['id', 'feed', 'published', 'like_count']
+        recs = np.core.records.fromrecords(month_statuses.values_list(*field_names), names=field_names)
+        self.month_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
         self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
 
     def feeds_statuses(self, statuses, feed_ids):
@@ -97,12 +105,15 @@ class StatsEngine(object):
         return dataframe_to_lists(ordered[:num][['id', 'like_count']])
 
     def popular_feed_last_week(self, feed_ids):
-        ordered = self.feeds_statuses(self.week_statuses, feed_ids).groupby('feed')['like_count'].mean().order(ascending=False)
+        ordered = self.feeds_statuses(self.week_statuses, feed_ids).groupby('feed')['like_count'].mean().order(
+            ascending=False)
         return ordered.index[0] if len(ordered) > 0 else None
 
     def popular_feed_last_month(self, feed_ids):
-        ordered = self.feeds_statuses(self.month_statuses, feed_ids).groupby('feed')['like_count'].mean().order(ascending=False)
+        ordered = self.feeds_statuses(self.month_statuses, feed_ids).groupby('feed')['like_count'].mean().order(
+            ascending=False)
         return ordered.index[0] if len(ordered) > 0 else None
+
 
 class MemberStats(object):
     """A class to hold insights of a member
@@ -229,7 +240,7 @@ class StatsMemberResource(Resource):
     def detail_uri_kwargs(self, bundle_or_obj):
         """tastypie function for defining retrieval parameters (key)"""
         obj = bundle_or_obj.obj if isinstance(bundle_or_obj, Bundle) else bundle_or_obj
-        return {'pk': obj.member.id }
+        return {'pk': obj.member.id}
 
     def get_object_list(self, request):
         """tastypie function for retrieving list of all objects"""
@@ -270,16 +281,16 @@ class StatsPartyResource(Resource):
     class Meta:
         """tastypie meta class"""
         resource_name = 'insights/party' # API URL definition
-        object_class = PartyStats # Class with member data
+        object_class = PartyStats  # Class with member data
 
     def detail_uri_kwargs(self, bundle_or_obj):
         """tastypie function for defining retrieval parameters (key)"""
         obj = bundle_or_obj.obj if isinstance(bundle_or_obj, Bundle) else bundle_or_obj
-        return {'pk': obj.party.id }
+        return {'pk': obj.party.id}
 
     def get_object_list(self, request):
         """tastypie function for retrieving list of all objects"""
-       return get_stats().get_all_party_stats()
+        return get_stats().get_all_party_stats()
 
     def obj_get_list(self, bundle, **kwargs):
         """tastypie function for retrieving list of objects (can implement
