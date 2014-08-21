@@ -27,8 +27,11 @@
                     בחודש האחרון{% if change_in_popularity.is_interpolated %}, בקירוב{% endif %})</span>
             </p>
             <i class="fa fa-bar-chart-o"></i>
-            <span class="hidden-updating-spinner" id="insights-loading">
-                טוען נתונים נוספים... <i class="fa fa-spinner fa-spin"></i>
+            <span>
+                <span class="hidden-object" id="insights-loading">
+                    טוען נתונים נוספים... <i class="fa fa-spinner fa-spin"></i>
+                </span>
+                <i class="hidden-object fa fa-exclamation" id="insights-errror-indicator"></i>
             </span>
             <span id="insights" style="display: none" data-objectid="{{ object.id }}">
                 <b>בחודש האחרון:</b>

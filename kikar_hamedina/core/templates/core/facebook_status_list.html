@@ -1,7 +1,9 @@
 {% load endless %}
-{% paginate object_list %}
 
-{% for status in object_list %}
+
+{% paginate 5,10 object_list as objects_in_page %}
+
+{% for status in objects_in_page %}
     {% include "core/facebook_status.html" %}
 {% endfor %}
 
