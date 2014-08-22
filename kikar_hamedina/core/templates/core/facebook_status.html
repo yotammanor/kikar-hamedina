@@ -8,8 +8,7 @@
 
 {% load humanize %}
 {% load core_extras %}
-<div class="panel panel-primary status-panel" data-statusid="{{ status.status_id }}"
-     data-token="{{ access_token }}">
+<div class="panel panel-primary status-panel" data-statusid="{{ status.status_id }}">
     <div class="panel-heading col-lg-12">
         <div class="row">
             <div class="col-lg-1">
@@ -64,8 +63,9 @@
 			<span>
 				<b>שיתפו: </b> <span id="{{ status.status_id }}-shares">{{ status.share_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
 			</span>
-            <span class="hidden-updating-spinner" id="status-metrics-is-updating-indicator-{{ status.status_id }}">
-                <i class="fa fa-spinner fa-spin"></i>
+            <span>
+                <i class="hidden-object fa fa-spinner fa-spin" id="status-metrics-is-updating-indicator-{{ status.status_id }}" ></i>
+                <i class="hidden-object fa fa-exclamation" id="status-metrics-is-error-indicator-{{ status.status_id }}" ></i>
             </span>
             </div>
             <div class="col-md-8">

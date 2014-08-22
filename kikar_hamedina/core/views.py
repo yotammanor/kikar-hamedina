@@ -8,7 +8,7 @@ from IPython.lib.pretty import pprint
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.shortcuts import render, render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -295,9 +295,9 @@ class BillboardsView(ListView):
         )
 
         # billboard_6 = self.create_billboard_dict(title='Most popular status',
-        #                                          header_name='Name',
-        #                                          header_value_formatted='likes for most popular status',
-        #                                          value_format="{:,.0f}",
+        # header_name='Name',
+        # header_value_formatted='likes for most popular status',
+        # value_format="{:,.0f}",
         #                                          top_num_of_values=10,
         #                                          is_sorted_reversed=True,
         #                                          data_set=self.stats.popular_statuses_last_month(
@@ -763,34 +763,50 @@ def get_data_from_facebook(request):
 def status_update(request, status_id):
     status = Facebook_Status.objects.get(status_id=status_id)
 
+    response = HttpResponse(content_type="application/json")
+    response_data = dict()
+    response_data['id'] = status.status_id
+
     try:
 
         update_status_command = updatestatus.Command()
         update_status_command.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                                  settings.FACEBOOK_SECRET_KEY)
-
         status_response_dict = update_status_command.fetch_status_object_data(status_id)
 
-        response_data = dict()
-        response_data['likes'] = status_response_dict['likes']['summary']['total_count']
-        response_data['comments'] = status_response_dict['comments']['summary']['total_count']
-        response_data['shares'] = status_response_dict['shares']['count']
-        response_data['id'] = status.status_id
+        response_data['likes'] = getattr(getattr(getattr(status_response_dict, 'likes', None), 'summary', None),
+                                         'total_count', None)
+        response_data['comments'] = getattr(getattr(getattr(status_response_dict, 'comments', None), 'summary', None),
+                                            'total_count', None)
+        response_data['shares'] = getattr(getattr(status_response_dict, 'shares', None), 'count', None)
         try:
             status.like_count = int(response_data['likes'])
             status.comment_count = int(response_data['comments'])
             status.share_count = int(response_data['shares'])
             status.save()
+            # print 'saved data to db'
         finally:
-            return HttpResponse(json.dumps(response_data), content_type="application/json")
-    finally:
-        response_data = dict()
-        response_data['likes'] = "{:,}".format(status.like_count)
-        response_data['comments'] = "{:,}".format(status.comment_count)
-        response_data['shares'] = "{:,}".format(status.share_count)
-        response_data['id'] = status.status_id
+            format_int_or_null = lambda x: 0 if not x else "{:,}".format(x)
 
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+            response_data['likes'] = format_int_or_null(status.like_count)
+            response_data['comments'] = format_int_or_null(status.comment_count)
+            response_data['shares'] = format_int_or_null(status.share_count)
+            response_data['id'] = status.status_id
+            response.status_code = 200
+
+    except KeyError as e:
+        response.status_code = 500
+
+    except GraphAPIError as e:
+        response.status_code = 504
+
+    except ValueError as e:
+        raise e
+
+    finally:
+        # print 'response is:', response_data
+        response.content = json.dumps(response_data)
+        return response
 
 
 # A handler for add_tag_to_status ajax call from client
