@@ -765,6 +765,7 @@ def status_update(request, status_id):
 
     response = HttpResponse(content_type="application/json")
     response_data = dict()
+    response_data['id'] = status.status_id
 
     try:
 
@@ -778,7 +779,6 @@ def status_update(request, status_id):
         response_data['comments'] = getattr(getattr(getattr(status_response_dict, 'comments', None), 'summary', None),
                                             'total_count', None)
         response_data['shares'] = getattr(getattr(status_response_dict, 'shares', None), 'count', None)
-        response_data['id'] = status.status_id
         try:
             status.like_count = int(response_data['likes'])
             status.comment_count = int(response_data['comments'])
@@ -786,32 +786,25 @@ def status_update(request, status_id):
             status.save()
             # print 'saved data to db'
         finally:
-            default_none = lambda x: '' if not x else "{:,}".format(x)
+            format_int_or_null = lambda x: 0 if not x else "{:,}".format(x)
 
-            response_data['likes'] = default_none(status.like_count)
-            response_data['comments'] = default_none(status.comment_count)
-            response_data['shares'] = default_none(status.share_count)
+            response_data['likes'] = format_int_or_null(status.like_count)
+            response_data['comments'] = format_int_or_null(status.comment_count)
+            response_data['shares'] = format_int_or_null(status.share_count)
             response_data['id'] = status.status_id
             response.status_code = 200
 
     except KeyError as e:
-        print 'KeyError raised.'
-        response_data = dict()
-        response_data['id'] = status.status_id
-        print 'response is:', json.dumps(response_data)
-        # http_response = HttpResponseServerError(content_type='application/json')
         response.status_code = 500
 
     except GraphAPIError as e:
-        print 'GraphAPIError raised.'
-        response.status_code = 500
+        response.status_code = 504
 
     except ValueError as e:
-        print e
         raise e
 
     finally:
-        print 'response is:', response_data
+        # print 'response is:', response_data
         response.content = json.dumps(response_data)
         return response
 
