@@ -154,7 +154,21 @@ class Command(BaseCommand):
             # data_dict = {'feed_id': feed.id, 'data': {}}
             # return data_dict
             # Set facebook graph access token to user access token
-            token = User_Token_Model.objects.all().order_by('-date_of_creation').first()
+            token = None
+            if feed.tokens.all():
+
+                token = feed.tokens.order_by('-date_of_creation').first()
+
+            elif feed.requires_user_token:
+                print feed.tokens.all()
+                print 'feed requires user token'
+                pass
+            elif User_Token_Model.objects.all():
+                print 'feed does not require a particular user token.'
+                token = User_Token_Model.objects.all().order_by('-date_of_creation').first()
+
+            print 'token is: %s.' % token
+
             if token:
                 print 'token is: %s' % token.token
                 self.graph.access_token = token.token
