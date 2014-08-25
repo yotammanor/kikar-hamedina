@@ -28,6 +28,7 @@ SECRET_KEY = 'yz2HiIDgrCDeHSfJSXIep3FeEQunsUhnC3P9ehGZ/KHVhLXNCZ'
 # Application definition
 
 INSTALLED_APPS = (
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,12 +38,20 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
+    'django.contrib.humanize',
+    # 3rd Party apps
     'rest_framework',
     'django_extensions',
     'south',
+    'endless_pagination',
     'pagination',
+    'django_pandas',
+    'dumpdata_chunks',
+    'tastypie',
+    'haystack',
     'tagging',
     'planet',
+    # Our apps
     'persons',
     'knesset',
     'links',
@@ -50,11 +59,6 @@ INSTALLED_APPS = (
     'mks',
     'facebook_feeds',
     'core',
-    'django.contrib.humanize',
-    'endless_pagination',
-    'dumpdata_chunks',
-    'django_pandas',
-    'tastypie',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -124,6 +128,15 @@ TEMPLATE_LOADERS = (
 
 LANGUAGE_COOKIE_NAME = "he"
 SESSION_COOKIE_NAME = "myplanetid"
+
+# Replaced by local_settings
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        # 'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',  # Used when Solr isn't installed.
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr',
+    },
+}
 
 
 CURRENT_KNESSET_NUMBER = 19
