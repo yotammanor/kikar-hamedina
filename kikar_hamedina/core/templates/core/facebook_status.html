@@ -6,6 +6,16 @@
 </script>
 {% endverbatim %}
 
+{% verbatim %}
+<script id="add-tag-result-tag-list-item-template" type="text/x-handlebars-template" >
+	<li class="result-container">
+		<!--<a href="/add_tag_to_status/?id={{id}}&tag_str={{name}}">-->
+			<button class="result-main-text btn add-tag-from-list"><span class="glyphicon glyphicon-tag"></span>  {{name}}</button>
+		<!--</a>-->
+	</li>
+</script>
+{% endverbatim %}
+
 {% load humanize %}
 {% load core_extras %}
 <div class="panel panel-primary status-panel" data-statusid="{{ status.status_id }}">
@@ -132,15 +142,28 @@
                     <!-- 	<form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
 	role="form"> -->
                     {% csrf_token %}
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label class="sr-only" for="add-tag">Add tag</label>
                         <input type="text" class="form-control add-tag-input" id="add-tag"
-                               name="tag" autocomplete="off"
-                               placeholder="תכניס תג (comma separated)" data-role="tagsinput">
-                    </div>
+                               name="tag" autocomplete="off" data-toggle="dropdown"
+                               placeholder="הכנס תג (comma separated)"
+                               >
+                    </div>-->
 
-                    <button type="submit" class="btn btn-primary add-tag-button">הוסף תיוגים</button>
+
+					<div class="form-group" id="add-tag-dropdown">
+						<input id="add-tag-{{ status.status_id }}" type="text" name="tag" 
+							   class="form-control add-tag-input" autocomplete="off"
+							   placeholder="הכנס תג (comma separated)" data-toggle="dropdown">
+						<ul id="add-tag-list" class="dropdown-menu">
+						</ul>
+					</div>
+
+
+                    <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">הוסף תיוגים</button>
                     <!-- </form> -->
+
+                    
                 </div>
             {% endif %}
         </div>
