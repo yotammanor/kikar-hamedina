@@ -106,3 +106,7 @@ body {
 .hidden-object {
     display: none;
 }
+
+.highlighted {
+    background-color: #ffff00;
+}

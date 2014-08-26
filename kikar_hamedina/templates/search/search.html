@@ -1,5 +1,4 @@
 {% extends 'layouts/generic-template.html' %}
-
 {% block content %}
     <h2>Search</h2>
 
@@ -14,24 +13,40 @@
             </tr>
         </table>
 
+
+
+
         {% if query %}
-            <h3>Results</h3>
-
-            {% for result in page.object_list %}
-                <p>
-                    <a href="{% url 'status-detail' result.object.status_id %}">{{ result.object.feed.persona.content_object.name }}&nbsp;{{ result.object.content }}</a>
-                </p>
-            {% empty %}
-                <p>No results found.</p>
+            {{ page.paginator.count }}
+            {% load endless %}
+            {% paginate 5,10 page.object_list as objects_in_page %}
+            {% for result in objects_in_page %}
+                {% with result.object as status %}
+{#                    {{ object.published }} </br>#}
+{#                    {% highlight result.object.content with query %}#}
+                    {% include 'search/facebook_status.html' %}
+                {% endwith %}
             {% endfor %}
+            {% show_more "טען עדכונים נוספים" "<span><i class='fa fa-spinner fa-spin'></i> טוען</span>"|escape %}
 
-            {% if page.has_previous or page.has_next %}
-                <div>
-                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
-                    |
-                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
-                </div>
-            {% endif %}
+
+{#            <h3>Results</h3>#}
+{#  #}
+{#            {% for result in page.object_list %}#}
+{#                <p>#}
+{#                    <a href="{% url 'status-detail' result.object.status_id %}">{{ result.object.feed.persona.content_object.name }}&nbsp;{{ result.object.content }}</a>#}
+{#                </p>#}
+{#            {% empty %}#}
+{#                <p>No results found.</p>#}
+{#            {% endfor %}#}
+{##}
+{#            {% if page.has_previous or page.has_next %}#}
+{#                <div>#}
+{#                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}#}
+{#                    |#}
+{#                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}#}
+{#                </div>#}
+{#            {% endif %}#}
         {% else %}
             {# Show some example queries to run, maybe query syntax, something else? #}
         {% endif %}

@@ -1,0 +1,126 @@
+{% extends "layouts/generic-template.html" %}
+
+{% block title %}Homepage{% endblock title %}
+
+{% block h1 %}
+    עמוד ראשי
+{% endblock %}
+
+{% block content %}
+
+    {% load humanize %}
+    {% load core_extras %}
+
+
+    <div id="fb-root"></div>
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '{{ facebook_app_id }}',
+                status: true,
+                xfbml: true
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//connect.facebook.net/en_US/all.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <!-- For autocomplete for tagging. Can be moved somewhere else -->
+    <!-- TODO: availableTags -->
+    <script>
+        $(function () {
+            var availableTags = [
+                "ActionScript",
+                "AppleScript",
+                "Asp",
+                "BASIC",
+                "C",
+                "C++",
+                "Clojure",
+                "COBOL",
+                "ColdFusion",
+                "Erlang",
+                "Fortran",
+                "Groovy",
+                "Haskell",
+                "Java",
+                "JavaScript",
+                "Lisp",
+                "Perl",
+                "PHP",
+                "Python",
+                "Ruby",
+                "Scala",
+                "Scheme"
+            ];
+            $(".add-tag").autocomplete({
+                source: availableTags
+            });
+        });
+    </script>
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+    <script>
+        $.endlessPaginate({
+            paginateOnScroll: true,
+            paginateOnScrollMargin: 1000,
+            paginateOnScrollChunkSize: 10,
+            onCompleted: function(context, fragment) {
+                console.log('URL:', context.url);
+                var new_statuses = $.grep($(fragment), function (elem) {
+                    return $(elem).is(".status-panel")
+                });
+                $(new_statuses).each(function(index){
+                    status_id = $(this).data("statusid");
+                    update_status_url = "/status_update/" + status_id + "/"
+                    $("#status-metrics-is-updating-indicator-" + status_id).removeClass("hidden-object");
+                    $.ajax({
+                        url: update_status_url,
+                        contentType: "application/json",
+                        success: function (data) {
+                            $("#" + data['id'] + "-likes").text(data['likes'])
+                            $("#" + data['id'] + "-comments").text(data['comments'])
+                            $("#" + data['id'] + "-shares").text(data['shares'])
+                            $("#status-metrics-is-updating-indicator-" + data['id']).addClass("hidden-object")
+                        },
+                        error: function (data) {
+                            $("#status-metrics-is-updating-indicator-" + data['id']).addClass("hidden-object");
+                            $("#status-metrics-is-error-indicator-" + data['id']).removeClass("hidden-object");
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+
+
+    <div class="row">
+        <div class="col-md-9 panel-group">
+            {% include "core/facebook_status_list.html" with object_list=object_list %}
+        </div>
+        <div class="col-md-2">
+            {% block sidebar %}
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות
+                        האחרונות: </b></li>
+                    {% for member in side_bar_list.all %}
+                        <li class="list-group-item">
+                            <a href="{% url 'member' member.id %}">{{ member.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endblock sidebar %}
+        </div>
+    </div>
+{% endblock %}
+
