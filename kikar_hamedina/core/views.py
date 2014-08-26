@@ -1,28 +1,39 @@
-import datetime, time
+import datetime
+import time
 import urllib2
 import json
 from operator import or_, and_
 from IPython.lib.pretty import pprint
+
 from django.utils.datastructures import MultiValueDictKeyError
-import facebook
 from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.shortcuts import render, render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.base import View
 from django.template import RequestContext
 from django.utils import timezone
-from django.db.models import Count, Q, F
+from django.db.models import Count, Q, Max, F
 from django.conf import settings
+
+import facebook
 from endless_pagination.views import AjaxListView
-from mks.models import Knesset
+
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
+from facebook_feeds.management.commands import updatestatus
 from mks.models import Party, Member
-from kikar_hamedina.settings import CURRENT_KNESSET_NUMBER
 from facebook import GraphAPIError
+from core.insights import StatsEngine
+
+DEFAULT_POPULARITY_DIF_COMPARISON_TYPE = getattr(settings, 'DEFAULT_POPULARITY_DIF_COMPARISON_TYPE', 'rel')
+
+POPULARITY_DIF_DAYS_BACK = getattr(settings, 'POPULARITY_DIF_DAYS_BACK', 30)
 
 DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
+
+CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
 
 # TODO: refactor the next constant to use the pattern above
 HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
@@ -38,72 +49,26 @@ NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
 MIN_FAN_COUNT_FOR_REL_COMPARISON = 50000
 
 
+class NoDefaultProvided(object):
+    pass
+
+
+def getattrd(obj, name, default=NoDefaultProvided):
+    """
+    Same as getattr(), but allows dot notation lookup
+    Discussed in:
+    http://stackoverflow.com/questions/11975781
+    """
+    try:
+        return reduce(getattr, name.split("."), obj)
+    except AttributeError, e:
+        if default != NoDefaultProvided:
+            return default
+        raise
+
+
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
-
-
-#TODO: make it a method of FacebookFeed
-def popularity_dif(feed, days_back):
-    dif_dict = {'fan_count_dif_nominal': 0,
-                'fan_count_dif_growth_rate': 0,
-                'last_popularity_count': 0,
-                'date_of_value': datetime.date.today(),
-    }
-    feed_current_count = feed.current_fan_count
-    try:
-        last_popularity = Feed_Popularity.objects.filter(feed=feed,
-                                                         date_of_creation__gte=(
-                                                             datetime.date.today() - datetime.timedelta(
-                                                                 days=days_back))).order_by('date_of_creation')[0]
-
-        date_of_value = last_popularity.date_of_creation
-        fan_count_dif_nominal = feed_current_count - last_popularity.fan_count
-        if last_popularity.fan_count != 0:
-            fan_count_dif_growth_rate = float(fan_count_dif_nominal) / last_popularity.fan_count
-        else:
-            fan_count_dif_growth_rate = 0.0
-        # print 'data for feed: %s, from: %s to %s, dif: %s, per: %s' % (
-        #     feed.username, last_popularity.fan_count, feed_current_count, fan_count_dif_nominal,
-        #     fan_count_dif_growth_rate)
-
-        dif_dict['fan_count_dif_nominal'] = fan_count_dif_nominal
-        dif_dict['last_popularity_count'] = last_popularity.fan_count
-        dif_dict['date_of_value'] = date_of_value
-        dif_dict['fan_count_dif_growth_rate'] = fan_count_dif_growth_rate
-
-    except:
-        print 'Failed for some reason, data retrieved is incorrect'
-        pass
-
-    return dif_dict
-
-
-#TODO: make it a method of FacebookFeedManager
-def get_largest_fan_count_difference(days_back, comparison_type,
-                                     min_fan_count_for_rel_comparison=MIN_FAN_COUNT_FOR_REL_COMPARISON):
-    current_feeds = Facebook_Feed.objects.filter(feed_type='PP',
-                                                 persona__object_id__in=[member.id for member in
-                                                                         Member.objects.filter(is_current=True)])
-
-#    import pdb; pdb.set_trace()
-    max_change = {'feed': None, 'dif': 0, 'day': datetime.date.today()}
-    for feed in current_feeds:
-        dif_dict = popularity_dif(feed, days_back)
-        if comparison_type == 'abs':
-            change_value = dif_dict['fan_count_dif_nominal']
-        elif comparison_type == 'rel':
-            if feed.current_fan_count <= min_fan_count_for_rel_comparison:
-                change_value = float(0)  # to small to compete in a relational context
-            else:
-                change_value = dif_dict['fan_count_dif_growth_rate']
-        if abs(change_value) > abs(max_change['dif']):
-            max_change['feed'] = feed
-            max_change['dif'] = change_value
-            max_change['day'] = dif_dict['date_of_value']
-        else:
-            pass
-
-    return max_change
 
 
 class HomepageView(ListView):
@@ -122,13 +87,15 @@ class HomepageView(ListView):
         context['featured_party'] = Party.objects.get(id=16)
         context['featured_search'] = {'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
                                       'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
-        max_change = get_largest_fan_count_difference(0, 'rel', MIN_FAN_COUNT_FOR_REL_COMPARISON)
+        max_change = Facebook_Feed.current_feeds.get_largest_fan_count_difference(POPULARITY_DIF_DAYS_BACK,
+                                                                                  DEFAULT_POPULARITY_DIF_COMPARISON_TYPE,
+                                                                                  MIN_FAN_COUNT_FOR_REL_COMPARISON)
         max_change['member'] = Member.objects.get(persona=max_change['feed'].persona)
         context['top_growth'] = max_change
         return context
 
 
-class OldHomepageView(ListView):
+class HotTopicsView(ListView):
     model = Tag
     template_name = 'core/homepage_old.html'
 
@@ -140,7 +107,7 @@ class OldHomepageView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super(OldHomepageView, self).get_context_data(**kwargs)
+        context = super(HotTopicsView, self).get_context_data(**kwargs)
         wrote_about_tag = dict()
         for tag in context['object_list']:
             list_of_writers = Facebook_Feed.objects.filter(facebook_status__tags__id=tag.id).distinct()
@@ -154,6 +121,219 @@ class OldHomepageView(ListView):
             wrote_about_tag[tag] = [feed['feed'] for feed in sorted_list_of_writers][
                                    :NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY]
         context['wrote_about_tag'] = wrote_about_tag
+        return context
+
+
+class BillboardsView(ListView):
+    template_name = 'core/billboards_list.html'
+    model = Facebook_Feed
+
+    stats = StatsEngine()
+
+    def get_queryset(self, **kwargs):
+        return Facebook_Feed.current_feeds.first()
+
+    def create_billboard_data_dict_list(self,
+                                        value_format,
+                                        data_set,
+                                        data_name_attr,
+                                        data_value_int_attr,
+                                        calc_type,
+                                        arguments_for_function,
+                                        link_value_attr):
+
+        if calc_type == 'function':
+            data_dict_list = [
+                {'name': getattrd(object_instance, data_name_attr),
+                 'value_int': float(getattrd(object_instance, data_value_int_attr)(**arguments_for_function) or 0),
+                 'value_formatted': value_format.format(
+                     getattrd(object_instance, data_value_int_attr)(**arguments_for_function) or 0),
+                 'value_reference_link': getattrd(object_instance, link_value_attr),
+                }
+                for object_instance in data_set
+            ]
+
+        elif calc_type == 'stats':
+
+            stats_method = getattrd(self.stats, data_value_int_attr)
+
+            data_dict_list = [
+                {'name': getattrd(object_instance, data_name_attr),
+                 'value_int': float(stats_method([object_instance.id]) or 0),
+                 'value_formatted': value_format.format(stats_method([object_instance.id]) or 0),
+                 'value_reference_link': getattrd(object_instance, link_value_attr),
+                }
+                for object_instance in data_set
+            ]
+        else:
+            # calc_type == 'attribute':
+            data_dict_list = [
+                {'name': getattrd(object_instance, data_name_attr),
+                 'value_int': float(getattrd(object_instance, data_value_int_attr)),
+                 'value_formatted': value_format.format(getattrd(object_instance, data_value_int_attr)),
+                 'value_reference_link': getattrd(object_instance, link_value_attr),
+                }
+                for object_instance in data_set
+            ]
+
+        return data_dict_list
+
+    def create_billboard_dict(self,
+                              title,
+                              header_name,
+                              header_value_formatted,
+                              link_uri_name,
+                              value_format,
+                              data_set,
+                              data_name_attr,
+                              data_value_float_attr,
+                              top_num_of_values,
+                              calc_type,
+                              link_value_attr,
+                              arguments_for_function=None,
+                              is_sorted_reversed=True):
+        billboard_dict = {
+            'title': title,
+            'headers': {
+                'name': header_name,
+                'value_formatted': header_value_formatted,
+            },
+            'link_uri_name': link_uri_name,
+            'data': self.create_billboard_data_dict_list(value_format,
+                                                         data_set,
+                                                         data_name_attr,
+                                                         data_value_float_attr,
+                                                         calc_type,
+                                                         arguments_for_function,
+                                                         link_value_attr),
+        }
+
+        billboard_dict['data'] = sorted(billboard_dict['data'], key=lambda x: x['value_int'],
+                                        reverse=is_sorted_reversed)[
+                                 :top_num_of_values]
+
+        return billboard_dict
+
+    def get_context_data(self, **kwargs):
+        context = super(BillboardsView, self).get_context_data(**kwargs)
+
+        billboard_1 = self.create_billboard_dict(title='popularity',
+                                                 header_name='Name',
+                                                 header_value_formatted='current_fan_count',
+                                                 link_uri_name='member',
+                                                 value_format="{:,}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='current_fan_count',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='attribute',
+                                                 arguments_for_function=None,
+        )
+
+        billboard_2 = self.create_billboard_dict(title='popularity_growth',
+                                                 header_name='Name',
+                                                 header_value_formatted='growth popularity',
+                                                 link_uri_name='member',
+                                                 value_format="{:.2%}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.filter(feed_type='PP'),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='popularity_dif',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='function',
+                                                 arguments_for_function={'days_back': 7,
+                                                                         'return_value': 'fan_count_dif_growth_rate'},
+        )
+
+        billboard_3 = self.create_billboard_dict(title='popularity_growth_nominal',
+                                                 header_name='Name',
+                                                 header_value_formatted='growth in popularity (likes)',
+                                                 link_uri_name='member',
+                                                 value_format="{:,.0f}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='popularity_dif',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='function',
+                                                 arguments_for_function={'days_back': 7,
+                                                                         'return_value': 'fan_count_dif_nominal'},
+        )
+
+        billboard_4 = self.create_billboard_dict(title='num_of_statuses',
+                                                 header_name='Name',
+                                                 header_value_formatted='number of statuses last month',
+                                                 link_uri_name='member',
+                                                 value_format="{:,.0f}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='n_statuses_last_month',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='stats',
+                                                 arguments_for_function=None,
+        )
+
+        billboard_5 = self.create_billboard_dict(title='num_of_statuses',
+                                                 header_name='Name',
+                                                 header_value_formatted='mean_status_likes_last_month',
+                                                 link_uri_name='member',
+                                                 value_format="{:,.0f}",
+                                                 top_num_of_values=10,
+                                                 is_sorted_reversed=True,
+                                                 data_set=Facebook_Feed.current_feeds.all(),
+                                                 data_name_attr='persona.content_object.name',
+                                                 data_value_float_attr='mean_status_likes_last_month',
+                                                 link_value_attr='persona.object_id',
+                                                 calc_type='stats',
+                                                 arguments_for_function=None,
+        )
+
+        # billboard_6 = self.create_billboard_dict(title='Most popular status',
+        # header_name='Name',
+        # header_value_formatted='likes for most popular status',
+        # value_format="{:,.0f}",
+        #                                          top_num_of_values=10,
+        #                                          is_sorted_reversed=True,
+        #                                          data_set=self.stats.popular_statuses_last_month(
+        #                                              [feed.id for feed in Facebook_Feed.current_feeds.all()], 10),
+        #                                          data_name_attr='persona.content_object.name',
+        #                                          data_value_float_attr='mean_status_likes_last_month',
+        #                                          calc_type='stats',
+        #                                          arguments_for_function=None,
+        # )
+
+        billboard_6 = {
+            'title': 'Most popular status this Month',
+            'headers': {
+                'name': 'Name',
+                'value_formatted': 'likes for most popular status'
+            },
+            'link_uri_name': 'status-detail',
+            'data': [
+                {'name': Facebook_Status.objects.get(id=result_array[0]).feed.persona.content_object.name,
+                 'value_int': float(result_array[1]),
+                 'value_formatted': "{:,.0f}".format(result_array[1]),
+                 'value_reference_link': Facebook_Status.objects.get(id=result_array[0]).status_id,
+                }
+                for result_array in self.stats.popular_statuses_last_month(
+                    [feed.id for feed in Facebook_Feed.current_feeds.all()], 10)
+            ]
+        }
+
+        context['list_of_billboards'] = []
+        context['list_of_billboards'].append(billboard_1)
+        context['list_of_billboards'].append(billboard_2)
+        context['list_of_billboards'].append(billboard_3)
+        context['list_of_billboards'].append(billboard_4)
+        context['list_of_billboards'].append(billboard_5)
+        context['list_of_billboards'].append(billboard_6)
+
         return context
 
 
@@ -398,7 +578,7 @@ class MemberView(StatusFilterUnifiedView):
         member_id = self.kwargs['id']
         feed = Facebook_Feed.objects.get(persona__object_id=member_id)
 
-        dif_dict = popularity_dif(feed, 7)
+        dif_dict = feed.popularity_dif(POPULARITY_DIF_DAYS_BACK)
         context['change_in_popularity'] = dif_dict
         # Statistical Data for member - PoC
 
@@ -583,35 +763,50 @@ def get_data_from_facebook(request):
 def status_update(request, status_id):
     status = Facebook_Status.objects.get(status_id=status_id)
 
-    url = "https://graph.facebook.com/"
-    url += str(status.status_id)
-    url += "?access_token=" + facebook.get_app_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
-    url += "&fields=shares,likes.limit(1).summary(true),comments.limit(1).summary(true)"
+    response = HttpResponse(content_type="application/json")
+    response_data = dict()
+    response_data['id'] = status.status_id
 
     try:
-        responseText = urllib2.urlopen(url).read()
-        responseJson = json.loads(responseText)
 
-        response_data = dict()
-        response_data['likes'] = responseJson['likes']['summary']['total_count']
-        response_data['comments'] = responseJson['comments']['summary']['total_count']
-        response_data['shares'] = responseJson['shares']['count']
-        response_data['id'] = status.status_id
+        update_status_command = updatestatus.Command()
+        update_status_command.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                                 settings.FACEBOOK_SECRET_KEY)
+        status_response_dict = update_status_command.fetch_status_object_data(status_id)
+
+        response_data['likes'] = getattr(getattr(getattr(status_response_dict, 'likes', None), 'summary', None),
+                                         'total_count', None)
+        response_data['comments'] = getattr(getattr(getattr(status_response_dict, 'comments', None), 'summary', None),
+                                            'total_count', None)
+        response_data['shares'] = getattr(getattr(status_response_dict, 'shares', None), 'count', None)
         try:
             status.like_count = int(response_data['likes'])
             status.comment_count = int(response_data['comments'])
             status.share_count = int(response_data['shares'])
             status.save()
+            # print 'saved data to db'
         finally:
-            return HttpResponse(json.dumps(response_data), content_type="application/json")
-    finally:
-        response_data = dict()
-        response_data['likes'] = status.like_count
-        response_data['comments'] = status.comment_count
-        response_data['shares'] = status.share_count
-        response_data['id'] = status.status_id
+            format_int_or_null = lambda x: 0 if not x else "{:,}".format(x)
 
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+            response_data['likes'] = format_int_or_null(status.like_count)
+            response_data['comments'] = format_int_or_null(status.comment_count)
+            response_data['shares'] = format_int_or_null(status.share_count)
+            response_data['id'] = status.status_id
+            response.status_code = 200
+
+    except KeyError as e:
+        response.status_code = 500
+
+    except GraphAPIError as e:
+        response.status_code = 504
+
+    except ValueError as e:
+        raise e
+
+    finally:
+        # print 'response is:', response_data
+        response.content = json.dumps(response_data)
+        return response
 
 
 # A handler for add_tag_to_status ajax call from client

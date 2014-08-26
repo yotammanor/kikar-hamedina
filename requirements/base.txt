@@ -4,7 +4,7 @@ ipython
 django-extensions==1.2.5
 djangorestframework==2.3.10
 facebook-sdk==0.4.0
-psycopg2==2.5.1
+psycopg2==2.5.3
 python-mimeparse==0.1.4
 six==1.4.1
 wsgiref==0.1.2

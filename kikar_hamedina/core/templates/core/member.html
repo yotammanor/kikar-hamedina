@@ -9,10 +9,10 @@
 {% block details %}
     {% with object.facebook_persona.get_main_feed as feed %}
         {% load humanize %}
-        {%  load core_extras %}
+        {% load core_extras %}
         <p>
 
-            <img src="{{ feed.picture }}" class="img-rounded" id="profile-photo">
+            <img src="{{ feed.picture_large }}" class="img-rounded" id="profile-photo">
         </p>
         <p>
             <i class="fa fa-group"></i>
@@ -22,18 +22,25 @@
             <p>
                 <i class="fa fa-thumbs-up"></i>
                 {{ feed.current_fan_count|floatformat:1|intcomma|slice:":-2" }}
-                <span id="difference-in-fan-count">({% if change_in_popularity.fan_count_dif_nominal > 0 %}+{% endif %}{{ change_in_popularity.fan_count_dif_growth_rate | percent}}
-                    בשבוע האחרון)</span>
+                <span id="difference-in-fan-count">({% if change_in_popularity.fan_count_dif_nominal > 0 %}
+                    +{% endif %}{{ change_in_popularity.fan_count_dif_growth_rate | percent }}
+                    בחודש האחרון{% if change_in_popularity.is_interpolated %}, בקירוב{% endif %})</span>
             </p>
-            <p id="insights" style="display: none">
-                <i class="fa fa-bar-chart-o"></i>
+            <i class="fa fa-bar-chart-o"></i>
+            <span>
+                <span class="hidden-object" id="insights-loading">
+                    טוען נתונים נוספים... <i class="fa fa-spinner fa-spin"></i>
+                </span>
+                <i class="hidden-object fa fa-exclamation" id="insights-error"></i>
+            </span>
+            <span id="insights" style="display: none" data-objectid="{{ object.id }}">
                 <b>בחודש האחרון:</b>
                 <span id="ins_n_month">-</span> סטטוסים,
                 <span id="ins_mean_likes_month">-</span> לייקים בממוצע
                 <b style="padding-right: 2em">בשבוע האחרון:</b>
                 <span id="ins_n_week">-</span> סטטוסים,
                 <span id="ins_mean_likes_week">-</span> לייקים בממוצע
-            </p>
+            </span>
         {% endif %}
         <p>
             <img src="/static/media/oknesset_icon.png"/>
@@ -172,21 +179,6 @@
 {% endblock %}
 
 {% block scripts %}
-    <script type="text/javascript">
-        $('#insights').toggle(true);
-        function int2str(num) {
-            return $.isNumeric(num) ? num : 0;
-        }
-        function float2str(num) {
-            return $.isNumeric(num) ? num.toFixed(1) : 0;
-        }
-        $.getJSON('/api/v1/insights/member/{{ object.id }}/?format=json', function (data) {
-            $("#ins_n_month").text(int2str(data.n_statuses_last_month));
-            $("#ins_mean_likes_month").text(float2str(data.mean_status_likes_last_month));
-            $("#ins_n_week").text(int2str(data.n_statuses_last_week));
-            $("#ins_mean_likes_week").text(float2str(data.mean_status_likes_last_week));
-            $('#insights').toggle(true);
-            return;
-        });
-    </script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/updateInsightsForMember.js"></script>
 {% endblock %}
+

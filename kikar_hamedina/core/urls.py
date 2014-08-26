@@ -22,11 +22,12 @@ v1_api.register(StatsPartyResource())
 urlpatterns = patterns('',
                        url(r'^$', views.HomepageView.as_view(), name='index'),
                        # TODO: rename to `hot` to covr hot topics
-                       url(r'^old/$', views.OldHomepageView.as_view(), name='old-index'),
+                       url(r'^hot-topics/$', views.HotTopicsView.as_view(), name='hot-topics'),
                        url(r'^all-statuses/$',
                            views.AllStatusesView.as_view(queryset=Facebook_Status.objects.order_by('-published')),
                            kwargs={'context_object': 'index'},
                            name='all-statuses'),
+                       url(r'^billboards/$', views.BillboardsView.as_view(), name='billboards'),
                        url(r'^untagged/$', views.AllStatusesView.as_view(
                            queryset=Facebook_Status.objects.filter(tags=None, feed__persona__object_id__isnull=False).order_by('-published')),
                            kwargs={'context_object': 'untagged'},

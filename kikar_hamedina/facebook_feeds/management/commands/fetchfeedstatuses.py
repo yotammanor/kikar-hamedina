@@ -14,7 +14,7 @@ from ...models import \
     User_Token as User_Token_Model, \
     Facebook_Status_Attachment as Facebook_Status_Attachment_Model
 
-FACEBOOK_API_VERSION = 'v2.0'
+FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.1')
 
 NUMBER_OF_TRIES_FOR_REQUEST = 3
 
@@ -82,7 +82,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def insert_status_attachment(status, status_object_defaultdict):
-        print 'insert attachment'
+        # print 'insert attachment'
         attachment_defaultdict = defaultdict(str, status_object_defaultdict)
         attachment = Facebook_Status_Attachment_Model(
             status=status,
@@ -100,7 +100,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def update_status_attachment(attachment, status_object_defaultdict):
-        print 'update attachment'
+        # print 'update attachment'
         attachment_defaultdict = defaultdict(str, status_object_defaultdict)
         if attachment_defaultdict['link']:
             # Update relevant attachment fields
@@ -114,24 +114,25 @@ class Command(BaseCommand):
             attachment.save()
         else:
             # if has no link field - then there's no attachment, and it must be deleted
-            print 'deleting attachment'
+            # print 'deleting attachment'
             attachment.delete()
 
     def create_or_update_attachment(self, status, status_object_defaultdict):
         """
         If attachment exists, create or update all relevant fields.
         """
-        print 'create_or_update attachment'
+        # print 'create_or_update attachment'
         if status_object_defaultdict['link']:
             attachment, created = Facebook_Status_Attachment_Model.objects.get_or_create(
                 status=status)
-            print 'I have an attachment. Created now: %s; Length of data in field link: %d; field picture: %d;  id: %s' % (
-                created, len(status_object_defaultdict['link']), len(str(status_object_defaultdict['picture'])),
-                status.status_id)
+            # print 'I have an attachment. Created now: %s; Length of data in field link: %d; field picture: %d;  id: %s' % (
+            #     created, len(status_object_defaultdict['link']), len(str(status_object_defaultdict['picture'])),
+            #     status.status_id)
             self.update_status_attachment(attachment, status_object_defaultdict)
         else:
-            print 'i don''t have an attachment; Link field: %s; Picture field: %s; id: %s' % (
-                str(status_object_defaultdict['link']), str(status_object_defaultdict['picture']), status.status_id)
+            pass
+            # print 'i don''t have an attachment; Link field: %s; Picture field: %s; id: %s' % (
+            #     str(status_object_defaultdict['link']), str(status_object_defaultdict['picture']), status.status_id)
 
     def insert_status_object_to_db(self, status_object, feed_id, options):
         """
