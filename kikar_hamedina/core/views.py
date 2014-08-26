@@ -279,7 +279,7 @@ class BillboardsView(ListView):
                                                  arguments_for_function=None,
         )
 
-        billboard_5 = self.create_billboard_dict(title='num_of_statuses',
+        billboard_5 = self.create_billboard_dict(title='mean_status_likes_last_month',
                                                  header_name='Name',
                                                  header_value_formatted='mean_status_likes_last_month',
                                                  link_uri_name='member',
