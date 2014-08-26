@@ -1,5 +1,7 @@
 $(document).ready(function () {
-
+	$(".add-tag-from-list").click(function () {
+		console.log("adding tag")
+	});
 	$(".add-tag-button").click(function () {
 		console.log("adding tag")
 		id = $(this).parent().data("statusid")
@@ -55,7 +57,7 @@ $(document).ready(function () {
 //                	$('.dropdown-menu').html('')
                     for (var i = 0; i < data['number_of_results']; i++) {
                         var result = data['results'][i]
-                		console.log(result)
+                        console.log(result)
                         if (result['type'] == "tag") {
                             var source = $("#add-tag-result-tag-list-item-template").html()
                         }
@@ -67,13 +69,12 @@ $(document).ready(function () {
                         $('#add-tag-dropdown').addClass("open")
                     }
                 },
-				error: function(data) {
-					console.log("BADDDDD ERROR!!")
-					console.log(data)
-				}
+                error: function(data) {
+                    console.log("BADDDDD ERROR!!")
+                    console.log(data)
+                }
 
             });
         }
-        
     });
 })
