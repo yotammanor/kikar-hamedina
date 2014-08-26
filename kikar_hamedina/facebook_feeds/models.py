@@ -59,6 +59,7 @@ class Facebook_Feed(models.Model):
     feed_type = models.CharField(null=False, max_length=2, choices=FEED_TYPES, default='PP')
     requires_user_token = models.BooleanField(default=False, null=False)
     is_current = models.BooleanField(default=True, null=False)
+    current_fan_count = models.IntegerField(default=0, null=False)
 
     # Public Page Only
     about = models.TextField(null=True, default='')
@@ -85,7 +86,6 @@ class Facebook_Feed(models.Model):
                 pass
         return popularity
 
-    current_fan_count = get_current_fan_count
 
     def popularity_dif(self, days_back, return_value='all_dict'):
 
