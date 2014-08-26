@@ -1,0 +1,2618 @@
+[
+{
+    "pk": 1, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d1\u05d8\u05d7\u05d5\u05df", 
+        "statuses": []
+    }
+},
+{
+    "pk": 2, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e5", 
+        "statuses": []
+    }
+},
+{
+    "pk": 3, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05db\u05dc\u05db\u05dc\u05d4", 
+        "statuses": []
+    }
+},
+{
+    "pk": 4, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d1\u05e8\u05d9\u05d0\u05d5\u05ea", 
+        "statuses": []
+    }
+},
+{
+    "pk": 5, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e1\u05d1\u05d9\u05d1\u05d4", 
+        "statuses": []
+    }
+},
+{
+    "pk": 6, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e8\u05d5\u05d5\u05d7\u05d4", 
+        "statuses": []
+    }
+},
+{
+    "pk": 7, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e1\u05e4\u05d5\u05e8\u05d8", 
+        "statuses": []
+    }
+},
+{
+    "pk": 8, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d0\u05d9\u05e9\u05d9", 
+        "statuses": []
+    }
+},
+{
+    "pk": 9, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05e8\u05d1\u05d5\u05ea", 
+        "statuses": []
+    }
+},
+{
+    "pk": 10, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05d3\u05e2", 
+        "statuses": []
+    }
+},
+{
+    "pk": 11, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e1\u05e4\u05d3", 
+        "statuses": []
+    }
+},
+{
+    "pk": 12, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05e8\u05e4", 
+        "statuses": [
+            23150
+        ]
+    }
+},
+{
+    "pk": 13, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05d5\u05dc\u05d0\u05e8\u05d3", 
+        "statuses": [
+            803
+        ]
+    }
+},
+{
+    "pk": 14, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d9\u05d5\u05dd \u05d4\u05e9\u05d5\u05d0\u05d4 \u05d4\u05d1\u05d9\u05e0\u05dc\u05d0\u05d5\u05de\u05d9", 
+        "statuses": [
+            23307, 
+            23142, 
+            23144, 
+            23376, 
+            23148, 
+            23164, 
+            23141, 
+            23161, 
+            23166, 
+            23138
+        ]
+    }
+},
+{
+    "pk": 15, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05e9\u05d0 \u05d5\u05de\u05ea\u05df", 
+        "statuses": [
+            63
+        ]
+    }
+},
+{
+    "pk": 16, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05d3\u05d9\u05e0\u05d4 \u05d3\u05d5 \u05dc\u05d0\u05d5\u05de\u05d9\u05ea", 
+        "statuses": [
+            23283
+        ]
+    }
+},
+{
+    "pk": 17, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05d0\u05d9\u05e1\u05d5\u05e8 \u05e4\u05e8\u05e1\u05d5\u05dd \u05e1\u05d9\u05d2\u05e8\u05d9\u05d5\u05ea", 
+        "statuses": [
+            23382
+        ]
+    }
+},
+{
+    "pk": 18, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d9\u05d5\u05dd \u05d4\u05de\u05e9\u05e4\u05d7\u05d4", 
+        "statuses": [
+            23319, 
+            23361, 
+            23375, 
+            23374
+        ]
+    }
+},
+{
+    "pk": 19, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05e8\u05e9\u05ea \u05d4\u05de\u05d5\u05e8\u05d4 \u05d0\u05d3\u05dd \u05d5\u05e8\u05d8\u05d4", 
+        "statuses": [
+            23445, 
+            23268, 
+            23372, 
+            8696, 
+            23576, 
+            23299, 
+            23457, 
+            23403, 
+            23360, 
+            23308, 
+            23355, 
+            23286, 
+            8204, 
+            23349, 
+            23467, 
+            23527, 
+            23602
+        ]
+    }
+},
+{
+    "pk": 21, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": false, 
+        "name": "\u05db\u05dc\u05dc\u05d9", 
+        "statuses": [
+            23518, 
+            23994, 
+            23754, 
+            23510, 
+            23511, 
+            23759, 
+            23590, 
+            23362, 
+            24045, 
+            24044, 
+            23596, 
+            24040, 
+            23440, 
+            23616, 
+            24049, 
+            24048, 
+            23857, 
+            23856, 
+            23697, 
+            24258, 
+            24259, 
+            23699, 
+            24255, 
+            24251, 
+            24078, 
+            24070, 
+            23297, 
+            23293, 
+            23605, 
+            23482, 
+            23762, 
+            23479, 
+            23478, 
+            24050, 
+            24051, 
+            23277, 
+            24055, 
+            23562, 
+            24047, 
+            23689, 
+            23591, 
+            24263, 
+            24260, 
+            23681, 
+            23967, 
+            24088, 
+            23282, 
+            23285, 
+            23673, 
+            25059, 
+            23679, 
+            23771, 
+            24188, 
+            25053, 
+            25050, 
+            23309, 
+            23244, 
+            24276, 
+            23682, 
+            24272, 
+            23579, 
+            23300, 
+            23572, 
+            24279, 
+            23269, 
+            24025, 
+            24024, 
+            24027, 
+            23979, 
+            24020, 
+            24022, 
+            23973, 
+            23970, 
+            24029, 
+            23977, 
+            23974, 
+            23975, 
+            23662, 
+            23663, 
+            23669, 
+            23666, 
+            23665, 
+            23495, 
+            23496, 
+            23490, 
+            23252, 
+            24203, 
+            23416, 
+            24205, 
+            23410, 
+            23704, 
+            23707, 
+            23706, 
+            23547, 
+            23700, 
+            23544, 
+            24036, 
+            24037, 
+            24034, 
+            24035, 
+            24030, 
+            24031, 
+            23721, 
+            23862, 
+            23863, 
+            23381, 
+            24288, 
+            24202, 
+            23387, 
+            24281, 
+            24280, 
+            24283, 
+            24282, 
+            24284, 
+            23708, 
+            23326, 
+            23324, 
+            23551, 
+            23658, 
+            23654, 
+            23653, 
+            23651, 
+            24212, 
+            23626, 
+            24089, 
+            24211, 
+            23627, 
+            24083, 
+            23959, 
+            24081, 
+            24219, 
+            24084, 
+            23797, 
+            23794, 
+            23540, 
+            24007, 
+            24006, 
+            24008, 
+            23817, 
+            24290, 
+            24296, 
+            23649, 
+            23523, 
+            24091, 
+            23526, 
+            23641, 
+            23645, 
+            23431, 
+            23430, 
+            23435, 
+            23722, 
+            24200, 
+            24224, 
+            24223, 
+            24222, 
+            23801, 
+            24226, 
+            24072, 
+            23715, 
+            24179, 
+            23429, 
+            23532, 
+            23736, 
+            23537, 
+            24190, 
+            23539, 
+            23347, 
+            23834, 
+            23639, 
+            23638, 
+            23635, 
+            23427, 
+            24234, 
+            23421, 
+            23838, 
+            24061, 
+            24278, 
+            24063, 
+            24062, 
+            24065, 
+            23742, 
+            23745, 
+            23744, 
+            23508, 
+            23749, 
+            23504, 
+            23761, 
+            23502, 
+            23501, 
+            23356, 
+            23989, 
+            23988, 
+            23583, 
+            23825, 
+            23828, 
+            23829, 
+            23454, 
+            23985, 
+            24171, 
+            24248, 
+            24245, 
+            24244, 
+            24247, 
+            24074
+        ]
+    }
+},
+{
+    "pk": 23, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d0\u05d9\u05e1\u05d5\u05e8 \u05d0\u05e4\u05dc\u05d9\u05d4 \u05e2\u05dc \u05d1\u05e1\u05d9\u05e1 \u05de\u05e7\u05d5\u05dd \u05de\u05d2\u05d5\u05e8\u05d9\u05dd", 
+        "statuses": [
+            23393
+        ]
+    }
+},
+{
+    "pk": 24, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d5\u05d5\u05d9\u05db\u05d5\u05d7 \u05e0\u05ea\u05e0\u05d9\u05d4\u05d5 \u05d1\u05e0\u05d8", 
+        "statuses": [
+            23237, 
+            23278, 
+            23284, 
+            23294, 
+            23257, 
+            23273, 
+            23271, 
+            23383, 
+            23289, 
+            23253
+        ]
+    }
+},
+{
+    "pk": 25, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05e8\u05e9\u05ea \u05d4\u05e9\u05d1\u05d5\u05e2 \u05ea\u05e8\u05d5\u05de\u05d4", 
+        "statuses": [
+            23365, 
+            23377, 
+            23368
+        ]
+    }
+},
+{
+    "pk": 26, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05d5\u05db\u05e0\u05d9\u05ea \u05d4\u05de\u05e1\u05d2\u05e8\u05ea \u05e9\u05dc \u05e7\u05e8\u05d9", 
+        "statuses": [
+            23558, 
+            23369, 
+            23634
+        ]
+    }
+},
+{
+    "pk": 27, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05e8\u05e1\u05d5\u05de\u05ea \u05e1\u05e7\u05e8\u05dc\u05d8 \u05d2\u05d5\u05d4\u05e0\u05e1\u05d5\u05df", 
+        "statuses": [
+            23366, 
+            23552, 
+            23348, 
+            23357
+        ]
+    }
+},
+{
+    "pk": 28, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d2\u05d1\u05e2\u05ea \u05e2\u05de\u05dc", 
+        "statuses": [
+            23622, 
+            23542, 
+            23543, 
+            23549, 
+            23363, 
+            23521
+        ]
+    }
+},
+{
+    "pk": 29, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": false, 
+        "name": "\u05e4\u05d5\u05e1\u05d8 \u05d1\u05e2\u05e8\u05d1\u05d9\u05ea", 
+        "statuses": [
+            23371, 
+            24264, 
+            23405, 
+            25029, 
+            24242, 
+            24011, 
+            23860, 
+            23853, 
+            23782, 
+            24033, 
+            24177, 
+            24291, 
+            24172, 
+            23969, 
+            23621, 
+            23418, 
+            23455, 
+            23311, 
+            24032, 
+            24058, 
+            23272, 
+            23728, 
+            23352, 
+            23250, 
+            24052, 
+            23238, 
+            23760, 
+            25043, 
+            24068, 
+            23884, 
+            23524, 
+            23880, 
+            23290, 
+            24297, 
+            23399, 
+            24298, 
+            23770, 
+            23241, 
+            23798, 
+            24253, 
+            23993, 
+            24009, 
+            24257, 
+            24004, 
+            23695, 
+            23471, 
+            24026, 
+            23691, 
+            23854, 
+            23630, 
+            23304, 
+            23712, 
+            23247, 
+            23574, 
+            23577, 
+            23364, 
+            23672, 
+            24181, 
+            25026, 
+            23281, 
+            23739, 
+            24215, 
+            23758, 
+            23468, 
+            23553, 
+            23992, 
+            23675, 
+            23463, 
+            23750, 
+            24231
+        ]
+    }
+},
+{
+    "pk": 30, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e6\u05e2\u05ea \u05d7\u05d5\u05e7 \u05de\u05d2\u05d1\u05dc\u05d5\u05ea \u05e2\u05dc \u05d7\u05d6\u05e8\u05ea\u05d5 \u05e9\u05dc \u05e2\u05d1\u05e8\u05d9\u05d9\u05df \u05de\u05d9\u05df \u05dc\u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e0\u05e4\u05d2\u05e2\u05ea", 
+        "statuses": [
+            23358
+        ]
+    }
+},
+{
+    "pk": 31, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e0\u05d7\u05d5\u05ea \u05d1\u05d0\u05e8\u05e0\u05d5\u05e0\u05d4 \u05d1\u05d9\u05e8\u05d5\u05e9\u05dc\u05d9\u05dd", 
+        "statuses": [
+            23327
+        ]
+    }
+},
+{
+    "pk": 32, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05d7\u05e9\u05d1 \u05dc\u05db\u05dc \u05d9\u05dc\u05d3", 
+        "statuses": [
+            23254, 
+            23322
+        ]
+    }
+},
+{
+    "pk": 33, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05e1\u05de\u05da \u05e7\u05e8\u05d9", 
+        "statuses": [
+            23981, 
+            23310, 
+            23280, 
+            23852, 
+            23321, 
+            23991
+        ]
+    }
+},
+{
+    "pk": 34, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05d6\u05db\u05d9\u05e8 \u05d7\u05d5\u05e7 \u05d4\u05e4\u05d5\u05e0\u05d3\u05e7\u05d0\u05d5\u05ea", 
+        "statuses": [
+            23318
+        ]
+    }
+},
+{
+    "pk": 35, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d2\u05d9\u05d5\u05e1 \u05d7\u05e8\u05d3\u05d9\u05dd \u05dc\u05e6\u05d4\u05dc", 
+        "statuses": [
+            23647, 
+            23316
+        ]
+    }
+},
+{
+    "pk": 36, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05e9\u05e4\u05d8 \u05d3\u05e4\u05e0\u05d9 \u05dc\u05d9\u05e3", 
+        "statuses": [
+            23315, 
+            23620, 
+            23143, 
+            23610, 
+            23624, 
+            23613, 
+            23615, 
+            23619, 
+            23099
+        ]
+    }
+},
+{
+    "pk": 37, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05e7\u05d9\u05e4\u05d5\u05ea \u05d1\u05d5\u05d5\u05e2\u05d3\u05ea \u05d4\u05e9\u05e8\u05d9\u05dd \u05dc\u05d7\u05e7\u05d9\u05e7\u05d4", 
+        "statuses": [
+            23711, 
+            23701, 
+            23738, 
+            23302, 
+            23753
+        ]
+    }
+},
+{
+    "pk": 38, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d0\u05d6\u05d4\u05e8\u05ea \u05e7\u05e8\u05d9", 
+        "statuses": [
+            23409, 
+            23453, 
+            23987, 
+            23441, 
+            23398, 
+            23425, 
+            23434, 
+            23628, 
+            23397, 
+            23402, 
+            23548, 
+            23417, 
+            23407, 
+            23420, 
+            23531, 
+            23476, 
+            23449
+        ]
+    }
+},
+{
+    "pk": 39, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05d9\u05e6\u05d5\u05d9 \u05d4\u05d4\u05ea\u05e0\u05d7\u05dc\u05d5\u05d9\u05d5\u05ea \u05d1\u05e2\u05e7\u05d1\u05d5\u05ea \u05d4\u05d4\u05e7\u05e4\u05d0\u05d4", 
+        "statuses": [
+            23423, 
+            23422, 
+            23705, 
+            23412, 
+            23415, 
+            23386
+        ]
+    }
+},
+{
+    "pk": 40, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e2\u05d1\u05e8\u05ea \u05db\u05e1\u05e4\u05d9\u05dd \u05de\u05de\u05e9\u05e8\u05d3 \u05d4\u05e9\u05d9\u05db\u05d5\u05df \u05dc\u05d1\u05d9\u05d8\u05d7\u05d5\u05df", 
+        "statuses": [
+            23320
+        ]
+    }
+},
+{
+    "pk": 41, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e6\u05de\u05e6\u05d5\u05dd \u05d7\u05d5\u05d1\u05ea \u05dc\u05d9\u05de\u05d5\u05d3\u05d9 \u05d4\u05e2\u05e8\u05d1\u05d9\u05ea", 
+        "statuses": [
+            23292, 
+            23295
+        ]
+    }
+},
+{
+    "pk": 42, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d0\u05dc\u05d9\u05de\u05d5\u05ea \u05e0\u05d2\u05d3 \u05e0\u05e9\u05d9\u05dd", 
+        "statuses": [
+            23401, 
+            23296, 
+            23301
+        ]
+    }
+},
+{
+    "pk": 43, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e7\u05de\u05e4\u05d9\u05d9\u05df \u05de\u05dc\u05d7\u05de\u05d4 \u05d1\u05d0\u05e4\u05dc\u05d9\u05d4 \u05d5\u05d1\u05d2\u05d6\u05e2\u05e0\u05d5\u05ea", 
+        "statuses": [
+            23535, 
+            23305, 
+            23288
+        ]
+    }
+},
+{
+    "pk": 44, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05d9\u05e7\u05d5\u05d7 \u05e2\u05dc \u05d4\u05d2\u05d6 \u05d4\u05d8\u05d1\u05e2\u05d9", 
+        "statuses": [
+            23287
+        ]
+    }
+},
+{
+    "pk": 45, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05e7\u05d9\u05e7\u05d4 \u05d1\u05e0\u05d5\u05e9\u05d0 \u05e8\u05db\u05d9\u05e9\u05ea \u05d3\u05d9\u05e8\u05d5\u05ea \u05d7\u05d3\u05e9\u05d5\u05ea", 
+        "statuses": [
+            23255, 
+            23259, 
+            23443, 
+            23312
+        ]
+    }
+},
+{
+    "pk": 46, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05d4\u05e1\u05e8\u05d8\u05d5\u05e0\u05d9\u05dd", 
+        "statuses": [
+            23276
+        ]
+    }
+},
+{
+    "pk": 47, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05d4\u05de\u05e9\u05ea\u05de\u05d8\u05d9\u05dd", 
+        "statuses": [
+            23275
+        ]
+    }
+},
+{
+    "pk": 48, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e7\u05d1\u05d5\u05e8\u05d4 \u05e6\u05d1\u05d0\u05d9\u05ea", 
+        "statuses": [
+            23303
+        ]
+    }
+},
+{
+    "pk": 49, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e2\u05dc\u05d0\u05ea \u05de\u05d7\u05d9\u05e8\u05d9 \u05d4\u05e9\u05d9\u05e0\u05d5\u05e2", 
+        "statuses": [
+            23270
+        ]
+    }
+},
+{
+    "pk": 50, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05d4\u05d3\u05d9\u05d5\u05e8 \u05d4\u05e6\u05d9\u05d1\u05d5\u05e8\u05d9", 
+        "statuses": [
+            23263, 
+            24080
+        ]
+    }
+},
+{
+    "pk": 51, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05d1\u05e7\u05e9\u05d9 \u05de\u05e7\u05dc\u05d8", 
+        "statuses": [
+            23249, 
+            23265
+        ]
+    }
+},
+{
+    "pk": 52, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d0\u05d9\u05e1\u05d5\u05e8 \u05d3\u05d9\u05d5\u05df \u05d1\u05ea\u05e0\u05d0\u05d9 \u05d4\u05e2\u05e1\u05e7\u05d4", 
+        "statuses": [
+            23256
+        ]
+    }
+},
+{
+    "pk": 53, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d2\u05d1\u05dc\u05ea \u05d8\u05d9\u05e4\u05d5\u05dc\u05d9 \u05e4\u05e8\u05d9\u05d5\u05df", 
+        "statuses": [
+            23262
+        ]
+    }
+},
+{
+    "pk": 54, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d2\u05d9\u05d5\u05e1 \u05d1\u05e0\u05d5\u05ea \u05d3\u05ea\u05d9\u05d5\u05ea", 
+        "statuses": [
+            23251
+        ]
+    }
+},
+{
+    "pk": 55, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05e1\u05d9\u05de\u05d5\u05df \u05de\u05d6\u05d5\u05df \u05d0\u05e8\u05d5\u05d6 \u05de\u05e8\u05d0\u05e9 \u05d5\u05de\u05db\u05dc\u05d9 \u05de\u05e9\u05e7\u05d4", 
+        "statuses": [
+            23248
+        ]
+    }
+},
+{
+    "pk": 56, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05d7\u05e7\u05e8 \u05de\u05e8\u05db\u05d6 \u05d0\u05d3\u05d5\u05d5\u05d4 \u05e4\u05e2\u05e8\u05d9\u05dd \u05d7\u05d1\u05e8\u05ea\u05d9\u05d9\u05dd", 
+        "statuses": [
+            23328, 
+            23235, 
+            23246, 
+            23245
+        ]
+    }
+},
+{
+    "pk": 57, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d5\u05e8\u05d3\u05ea \u05de\u05d7\u05d9\u05e8\u05d9 \u05d4\u05d3\u05d9\u05d5\u05e8", 
+        "statuses": [
+            23456, 
+            23291, 
+            23446, 
+            23849, 
+            24243, 
+            23437, 
+            23432, 
+            23433, 
+            23517, 
+            24067, 
+            24254, 
+            23529, 
+            23555, 
+            23534, 
+            23465, 
+            23600, 
+            23519
+        ]
+    }
+},
+{
+    "pk": 58, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05d4\u05de\u05e9\u05d9\u05dc\u05d5\u05ea", 
+        "statuses": [
+            23243, 
+            25020, 
+            23999, 
+            23773, 
+            25040, 
+            25062
+        ]
+    }
+},
+{
+    "pk": 59, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05d9\u05e6\u05d5\u05d9 \u05d9\u05d4\u05d5\u05d3\u05d9 \u05d0\u05e8\u05e6\u05d5\u05ea \u05e2\u05e8\u05d1", 
+        "statuses": [
+            23400, 
+            23564
+        ]
+    }
+},
+{
+    "pk": 60, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e2\u05d9\u05d3\u05d5\u05d3 \u05d9\u05e6\u05d9\u05e8\u05ea \u05de\u05e7\u05d5\u05de\u05d5\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4 \u05d7\u05d3\u05e9\u05d9\u05dd \u05d1\u05d9\u05e8\u05d5\u05e9\u05dc\u05d9\u05dd", 
+        "statuses": [
+            23411
+        ]
+    }
+},
+{
+    "pk": 61, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05d4\u05ea\u05de\u05dc\u05d5\u05d2\u05d9\u05dd \u05dc\u05d9\u05d5\u05e6\u05e8\u05d9\u05dd", 
+        "statuses": [
+            23452, 
+            23458
+        ]
+    }
+},
+{
+    "pk": 62, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05e2\u05d5\u05d1\u05d3\u05d9 \u05d4\u05d2\u05d8\u05d0\u05d5\u05ea \u05d4\u05d2\u05e8\u05de\u05e0\u05d9", 
+        "statuses": [
+            23448
+        ]
+    }
+},
+{
+    "pk": 63, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e7\u05de\u05ea \u05d4\u05d5\u05e1\u05d8\u05dc \u05dc\u05d0\u05e0\u05e9\u05d9\u05dd \u05e2\u05dd \u05de\u05d5\u05d2\u05d1\u05dc\u05d5\u05d9\u05d5\u05ea \u05d1\u05d0\u05d5\u05e8 \u05e2\u05e7\u05d9\u05d1\u05d0", 
+        "statuses": [
+            23466, 
+            23497, 
+            23459
+        ]
+    }
+},
+{
+    "pk": 64, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d0\u05dc\u05d9\u05de\u05d5\u05ea \u05db\u05dc\u05e4\u05d9 \u05d9\u05dc\u05d3\u05d9\u05dd", 
+        "statuses": [
+            23642, 
+            23442
+        ]
+    }
+},
+{
+    "pk": 65, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e4\u05e8\u05d8\u05ea \u05e9\u05d9\u05e8\u05d5\u05ea \u05d4\u05ea\u05e2\u05e1\u05d5\u05e7\u05d4", 
+        "statuses": [
+            23439
+        ]
+    }
+},
+{
+    "pk": 66, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05de\u05d4\u05e4\u05db\u05d4 \u05d1\u05db\u05e9\u05e8\u05d5\u05ea", 
+        "statuses": [
+            24039, 
+            23461
+        ]
+    }
+},
+{
+    "pk": 67, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05d4\u05de\u05d6\u05d5\u05e0\u05d5\u05ea", 
+        "statuses": [
+            23601, 
+            23447, 
+            23438, 
+            23505
+        ]
+    }
+},
+{
+    "pk": 68, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e2\u05d1\u05d5\u05d3\u05d4 \u05de\u05d5\u05e2\u05d3\u05e4\u05ea \u05dc\u05d7\u05d9\u05d9\u05dc\u05d9\u05dd \u05de\u05e9\u05d5\u05d7\u05e8\u05e8\u05d9\u05dd", 
+        "statuses": [
+            23436
+        ]
+    }
+},
+{
+    "pk": 69, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05d4\u05e4\u05db\u05ea \u05d4\u05db\u05e9\u05e8\u05d5\u05ea", 
+        "statuses": [
+            23516, 
+            23464
+        ]
+    }
+},
+{
+    "pk": 70, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e1\u05d3\u05e8 \u05de\u05d3\u05d9\u05e0\u05d9 \u05e2\u05dd \u05d4\u05e4\u05dc\u05e1\u05d8\u05d9\u05e0\u05d9\u05dd", 
+        "statuses": [
+            23617, 
+            23599, 
+            24204, 
+            24199, 
+            24249, 
+            23462
+        ]
+    }
+},
+{
+    "pk": 71, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05e8\u05e1 \u05de\u05e4\u05e2\u05dc \u05d7\u05d9\u05d9\u05dd \u05dc\u05d0\u05e8\u05d9\u05d0\u05dc \u05d6\u05d9\u05dc\u05d1\u05e8", 
+        "statuses": [
+            23595, 
+            23538, 
+            23492, 
+            23493, 
+            23498, 
+            23515, 
+            23480, 
+            24028, 
+            23514, 
+            23512, 
+            23469, 
+            23486, 
+            23470, 
+            23472, 
+            23473
+        ]
+    }
+},
+{
+    "pk": 72, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d3\u05e9\u05d5\u05ea \u05de\u05e7\u05d5\u05de\u05d9\u05d5\u05ea \u05d1\u05db\u05d1\u05dc\u05d9\u05dd \u05d5\u05d1\u05dc\u05d5\u05d5\u05d9\u05df", 
+        "statuses": [
+            23477
+        ]
+    }
+},
+{
+    "pk": 73, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d8\u05e8\u05d3\u05d5\u05ea \u05de\u05d9\u05e0\u05d9\u05d5\u05ea \u05d1\u05e6\u05d1\u05d0", 
+        "statuses": [
+            23475
+        ]
+    }
+},
+{
+    "pk": 74, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e2\u05dc\u05d0\u05ea \u05e9\u05db\u05e8 \u05d7\u05d1\u05e8\u05d9 \u05d4\u05db\u05e0\u05e1\u05ea", 
+        "statuses": [
+            23484
+        ]
+    }
+},
+{
+    "pk": 75, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d5\u05e8\u05d3\u05ea \u05d9\u05d5\u05e7\u05e8 \u05d4\u05de\u05d7\u05d9\u05d9\u05d4", 
+        "statuses": [
+            23509, 
+            24018, 
+            23584, 
+            23507
+        ]
+    }
+},
+{
+    "pk": 76, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e1\u05dd \u05d0\u05d5\u05e0\u05e1", 
+        "statuses": [
+            23506
+        ]
+    }
+},
+{
+    "pk": 77, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05d5\u05db\u05e0\u05d9\u05ea \u05d0\u05d1\u05d5 \u05de\u05d0\u05d6\u05df \u05dc\u05e9\u05dc\u05d5\u05dd", 
+        "statuses": [
+            23503, 
+            23491
+        ]
+    }
+},
+{
+    "pk": 78, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05d1\u05ea\u05d5\u05df \u05d1\u05d9\u05d5\u05dd \u05d4\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05d4\u05de\u05d5\u05e0\u05d9\u05e6\u05d9\u05e4\u05dc\u05d9\u05d5\u05ea", 
+        "statuses": [
+            23500, 
+            23499
+        ]
+    }
+},
+{
+    "pk": 79, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d0\u05db\u05d9\u05e4\u05ea \u05d7\u05e7\u05d9\u05e7\u05d4", 
+        "statuses": [
+            23533
+        ]
+    }
+},
+{
+    "pk": 80, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e0\u05d2\u05e9\u05ea \u05de\u05d5\u05e1\u05d3\u05d5\u05ea \u05d7\u05d9\u05e0\u05d5\u05da \u05dc\u05d9\u05dc\u05d3\u05d9\u05dd \u05e2\u05dd \u05de\u05d5\u05d2\u05d1\u05dc\u05d5\u05ea", 
+        "statuses": [
+            23546
+        ]
+    }
+},
+{
+    "pk": 81, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05ea\u05d9\u05d7\u05ea \u05e9\u05d5\u05e7 \u05d4\u05e8\u05db\u05d1\u05d9\u05dd \u05dc\u05ea\u05d7\u05e8\u05d5\u05ea", 
+        "statuses": [
+            23528
+        ]
+    }
+},
+{
+    "pk": 82, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05d1\u05e8\u05d9\u05ea \u05d4\u05d6\u05d5\u05d2\u05d9\u05d5\u05ea", 
+        "statuses": [
+            23550
+        ]
+    }
+},
+{
+    "pk": 83, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e7\u05e4\u05d0\u05ea \u05ea\u05e7\u05e6\u05d9\u05d1\u05d9\u05dd \u05dc\u05d9\u05e9\u05d9\u05d1\u05d5\u05ea", 
+        "statuses": [
+            23702, 
+            23633, 
+            23632, 
+            23716, 
+            23629, 
+            23545, 
+            23565, 
+            23603, 
+            23570, 
+            23557, 
+            23556
+        ]
+    }
+},
+{
+    "pk": 84, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e6\u05e2\u05ea \u05d7\u05d5\u05e7 \u05d4\u05d7\u05dc\u05ea \u05d4\u05d7\u05d5\u05e7 \u05d4\u05d9\u05e9\u05e8\u05d0\u05dc\u05d9 \u05e2\u05dc \u05db\u05dc \u05d4\u05d9\u05e9\u05d5\u05d1\u05d9\u05dd \u05d4\u05d9\u05d4\u05d5\u05d3\u05d9\u05d9\u05dd \u05d1\u05e9\u05d8\u05d7\u05d9 \u05d9\u05d4\u05d5\u05d3\u05d4 \u05d5\u05e9\u05d5\u05de\u05e8\u05d5\u05df", 
+        "statuses": [
+            23563, 
+            23723
+        ]
+    }
+},
+{
+    "pk": 85, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d4\u05e1\u05ea\u05d4 \u05d4\u05e4\u05dc\u05e1\u05d8\u05d9\u05e0\u05d9\u05ea", 
+        "statuses": [
+            23560
+        ]
+    }
+},
+{
+    "pk": 86, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05e7\u05e6\u05d5\u05d1 \u05d0\u05d5\u05e0\u05d9\u05d1\u05e8\u05e1\u05d9\u05d8\u05ea \u05d0\u05e8\u05d9\u05d0\u05dc", 
+        "statuses": [
+            23559
+        ]
+    }
+},
+{
+    "pk": 87, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e2\u05dc\u05d0\u05ea \u05e9\u05db\u05e8 \u05dc\u05e2\u05d5\u05d1\u05d3\u05d9 \u05e0\u05e7\u05d9\u05d5\u05df", 
+        "statuses": [
+            23588, 
+            23573, 
+            23571, 
+            23625, 
+            23618, 
+            23575
+        ]
+    }
+},
+{
+    "pk": 88, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e0\u05d9\u05e9\u05d5\u05d0\u05d9\u05dd \u05d7\u05d3 \u05de\u05d9\u05e0\u05d9\u05d9\u05dd", 
+        "statuses": [
+            23586
+        ]
+    }
+},
+{
+    "pk": 89, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e8\u05e9\u05d5\u05ea \u05d4\u05d4\u05d2\u05d1\u05dc\u05d9\u05dd \u05d4\u05e2\u05e1\u05e7\u05d9\u05d9\u05dd", 
+        "statuses": [
+            23585
+        ]
+    }
+},
+{
+    "pk": 90, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05d4\u05e4\u05d9\u05db\u05ea \u05e9\u05d9\u05e8\u05d5\u05ea\u05d9 \u05d4\u05d3\u05ea", 
+        "statuses": [
+            23733, 
+            23582
+        ]
+    }
+},
+{
+    "pk": 91, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e6\u05e2\u05ea \u05d7\u05d5\u05e7 \u05dc\u05d4\u05d7\u05de\u05e8\u05ea \u05e2\u05e0\u05d9\u05e9\u05d4 \u05e2\u05dc \u05e4\u05dc\u05d9\u05e9\u05d4 \u05dc\u05e9\u05d8\u05d7 \u05d7\u05e7\u05dc\u05d0\u05d9", 
+        "statuses": [
+            23567
+        ]
+    }
+},
+{
+    "pk": 92, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e4\u05e8\u05d3\u05ea \u05d7\u05d1\u05e8\u05d5\u05ea \u05d4\u05d0\u05e9\u05e8\u05d0\u05d9 \u05de\u05d4\u05d1\u05e0\u05e7\u05d9\u05dd", 
+        "statuses": [
+            23580, 
+            23568
+        ]
+    }
+},
+{
+    "pk": 93, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05d0\u05d1\u05e7 \u05d1\u05ea\u05d5\u05e4\u05e2\u05ea \u05ea\u05d2 \u05de\u05d7\u05d9\u05e8", 
+        "statuses": [
+            23587
+        ]
+    }
+},
+{
+    "pk": 94, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d9\u05d9\u05d1\u05d5\u05d0 \u05e2\u05d5\u05d1\u05d3\u05d9\u05dd \u05d6\u05e8\u05d9\u05dd", 
+        "statuses": [
+            23581
+        ]
+    }
+},
+{
+    "pk": 95, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d9\u05d5\u05e1\u05d9 \u05d5\u05e1\u05e8\u05de\u05df \u05e0\u05d5\u05d0\u05dd \u05d1\u05db\u05e0\u05e1 \u05d7\u05d9\u05e0\u05d5\u05da", 
+        "statuses": [
+            23676
+        ]
+    }
+},
+{
+    "pk": 96, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d3\u05d9\u05db\u05d5\u05d9 \u05d4\u05e7\u05d4\u05d9\u05dc\u05d4 \u05d4\u05d2\u05d0\u05d4 \u05d1\u05e8\u05d5\u05e1\u05d9\u05d4", 
+        "statuses": [
+            23655
+        ]
+    }
+},
+{
+    "pk": 97, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05e7\u05d9\u05e4\u05d5\u05ea \u05d1\u05d7\u05d8\u05d9\u05d1\u05d4 \u05dc\u05d4\u05ea\u05d9\u05d9\u05e9\u05d1\u05d5\u05ea", 
+        "statuses": [
+            23644
+        ]
+    }
+},
+{
+    "pk": 98, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d1\u05d9\u05d8\u05d5\u05dc \u05d4\u05d5\u05d5\u05e2\u05d3\u05d5\u05ea \u05dc\u05d4\u05e4\u05e1\u05e7\u05ea \u05d4\u05e8\u05d9\u05d5\u05df", 
+        "statuses": [
+            23636, 
+            23818, 
+            23819
+        ]
+    }
+},
+{
+    "pk": 99, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d1\u05e8\u05d9\u05d5\u05e0\u05d5\u05ea \u05e8\u05e9\u05ea", 
+        "statuses": [
+            23631
+        ]
+    }
+},
+{
+    "pk": 100, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d5\u05e6\u05d0\u05d5\u05ea \u05e2\u05dc \u05de\u05e2\u05d5\u05e0\u05d5\u05ea \u05e8\u05d0\u05e9 \u05d4\u05de\u05de\u05e9\u05dc\u05d4", 
+        "statuses": [
+            23614
+        ]
+    }
+},
+{
+    "pk": 101, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05de\u05d0\u05d2\u05e8 \u05d4\u05d1\u05d9\u05d5\u05de\u05d8\u05e8\u05d9", 
+        "statuses": [
+            23612
+        ]
+    }
+},
+{
+    "pk": 102, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05e7\u05d9\u05e4\u05d5\u05ea \u05d7\u05d9\u05d5\u05d1\u05d9 \u05db\u05e8\u05d8\u05d9\u05e1\u05d9 \u05d4\u05d0\u05e9\u05e8\u05d0\u05d9", 
+        "statuses": [
+            23609
+        ]
+    }
+},
+{
+    "pk": 103, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e8\u05e4\u05d5\u05e8\u05de\u05d4 \u05d1\u05e0\u05de\u05dc\u05d9\u05dd", 
+        "statuses": [
+            24265, 
+            23833, 
+            23606
+        ]
+    }
+},
+{
+    "pk": 104, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e8\u05e4\u05d5\u05e8\u05de\u05d4 \u05d1\u05ea\u05d0\u05d2\u05d9\u05d3\u05d9 \u05d4\u05de\u05d9\u05dd", 
+        "statuses": [
+            23611, 
+            23692
+        ]
+    }
+},
+{
+    "pk": 105, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e1\u05d7\u05e8 \u05d1\u05d1\u05e0\u05d9 \u05d0\u05d3\u05dd", 
+        "statuses": [
+            23598
+        ]
+    }
+},
+{
+    "pk": 106, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e0\u05d0\u05d5\u05dd \u05dc\u05d9\u05d1\u05e8\u05de\u05df \u05d1\u05de\u05d5\u05e2\u05d3\u05d5\u05df \u05d4\u05de\u05e1\u05d7\u05e8\u05d9 \u05d5\u05d4\u05ea\u05e2\u05e9\u05d9\u05d9\u05ea\u05d9", 
+        "statuses": [
+            23694, 
+            23696
+        ]
+    }
+},
+{
+    "pk": 107, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05e9\u05d1\u05e8 \u05e4\u05d9\u05e0\u05e0\u05e1\u05d9 \u05d1\u05d4\u05d3\u05e1\u05d4", 
+        "statuses": [
+            23804, 
+            23800, 
+            23685, 
+            23725, 
+            23980, 
+            23709, 
+            24000, 
+            23729, 
+            23748, 
+            23768, 
+            24191, 
+            23690, 
+            23693, 
+            23714, 
+            23718, 
+            23832, 
+            23755, 
+            23757, 
+            23756, 
+            23737, 
+            23741, 
+            23752
+        ]
+    }
+},
+{
+    "pk": 108, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05dc\u05d5\u05d5\u05d0\u05d4 \u05dc\u05e7\u05d5\u05e4\u05ea \u05d4\u05de\u05d3\u05d9\u05e0\u05d4 \u05de\u05db\u05e1\u05e4\u05d9 \u05d0\u05e8\u05e0\u05d5\u05e0\u05d4", 
+        "statuses": [
+            23698
+        ]
+    }
+},
+{
+    "pk": 109, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d1\u05d9\u05d8\u05d5\u05dc \u05d4\u05e1\u05e0\u05e7\u05e6\u05d9\u05d5\u05ea \u05e2\u05dc \u05d0\u05d9\u05e8\u05d0\u05df", 
+        "statuses": [
+            23720, 
+            24046
+        ]
+    }
+},
+{
+    "pk": 110, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05dc\u05d5\u05d2\u05d5 \u05d7\u05d3\u05e9 \u05dc\u05db\u05e0\u05e1\u05ea", 
+        "statuses": [
+            23751
+        ]
+    }
+},
+{
+    "pk": 111, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05d4\u05dc\u05d9\u05da \u05de\u05d9\u05e0\u05d5\u05d9 \u05d3\u05d9\u05e8\u05e7\u05d8\u05d5\u05e8\u05d9\u05dd \u05d1\u05d7\u05d1\u05e8\u05d5\u05ea \u05de\u05de\u05e9\u05dc\u05ea\u05d9\u05d5\u05ea", 
+        "statuses": [
+            23747
+        ]
+    }
+},
+{
+    "pk": 112, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05e8\u05e9\u05ea \u05e0\u05d9\u05e6\u05d1 \u05d0\u05e8\u05d1\u05d9\u05d1", 
+        "statuses": [
+            23746
+        ]
+    }
+},
+{
+    "pk": 113, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05de\u05d3\u05e2\u05df \u05d4\u05e8\u05d0\u05e9\u05d9", 
+        "statuses": [
+            23743
+        ]
+    }
+},
+{
+    "pk": 114, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d7\u05d5\u05e7 \u05dc\u05e9\u05d9\u05d5\u05d5\u05d9\u05d5\u05df \u05d1\u05e0\u05d8\u05dc", 
+        "statuses": [
+            24241, 
+            24246, 
+            24213, 
+            24220, 
+            23986, 
+            24208, 
+            24227, 
+            24228, 
+            24229, 
+            23763, 
+            23765, 
+            23767, 
+            24195, 
+            23740, 
+            24239, 
+            24064, 
+            24167, 
+            23792, 
+            24235, 
+            24218, 
+            24230, 
+            24214, 
+            24216, 
+            24209, 
+            24238, 
+            24206, 
+            24207
+        ]
+    }
+},
+{
+    "pk": 115, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e1\u05d9\u05db\u05d5\u05dc\u05d9\u05dd \u05de\u05de\u05d5\u05e7\u05d3\u05d9\u05dd", 
+        "statuses": [
+            23734
+        ]
+    }
+},
+{
+    "pk": 116, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e6\u05e2\u05ea \u05d7\u05d5\u05e7 \u05dc\u05d7\u05d9\u05d6\u05d5\u05e7 \u05d4\u05e2\u05e8\u05da \u05e9\u05dc \u05de\u05d3\u05d9\u05e0\u05ea \u05d9\u05e9\u05e8\u05d0\u05dc \u05db\u05de\u05d3\u05d9\u05e0\u05ea \u05d4\u05dc\u05d0\u05d5\u05dd \u05d4\u05d9\u05d4\u05d5\u05d3\u05d9", 
+        "statuses": [
+            23732
+        ]
+    }
+},
+{
+    "pk": 117, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": false, 
+        "name": "\u05e7\u05e9\u05e8 \u05e2\u05dd \u05d4\u05d1\u05d5\u05d7\u05e8", 
+        "statuses": [
+            24286, 
+            24294, 
+            23927, 
+            24285, 
+            24232, 
+            24293, 
+            24271, 
+            24201, 
+            23788, 
+            23775, 
+            23774, 
+            23923, 
+            23783, 
+            23919, 
+            24217, 
+            23787, 
+            23784, 
+            23778
+        ]
+    }
+},
+{
+    "pk": 118, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d5\u05d3\u05dc\u05d9\u05dd", 
+        "statuses": [
+            23785
+        ]
+    }
+},
+{
+    "pk": 119, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d3\u05d9\u05d5\u05e8", 
+        "statuses": [
+            23785
+        ]
+    }
+},
+{
+    "pk": 120, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d5\u05ea\u05de\u05dc", 
+        "statuses": [
+            23785
+        ]
+    }
+},
+{
+    "pk": 121, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d3\u05d9\u05d5\u05e8 \u05d1\u05e8 \u05d4\u05e9\u05d2\u05d4", 
+        "statuses": [
+            23785
+        ]
+    }
+},
+{
+    "pk": 122, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d1\u05d8\u05d9\u05d7\u05d5\u05ea \u05d1\u05d3\u05e8\u05db\u05d9\u05dd", 
+        "statuses": [
+            23777
+        ]
+    }
+},
+{
+    "pk": 123, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05e9\u05e2 \u05de\u05d0\u05d5\u05e8\u05d2\u05df", 
+        "statuses": [
+            23781
+        ]
+    }
+},
+{
+    "pk": 124, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d6\u05db\u05d5\u05d9\u05d5\u05ea \u05e0\u05e9\u05d9\u05dd", 
+        "statuses": [
+            23774
+        ]
+    }
+},
+{
+    "pk": 125, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e2\u05dc\u05d0\u05ea \u05d0\u05d7\u05d5\u05d6 \u05d4\u05d7\u05e1\u05d9\u05de\u05d4", 
+        "statuses": [
+            23773
+        ]
+    }
+},
+{
+    "pk": 126, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05e7\u05d9\u05e7\u05d4", 
+        "statuses": [
+            23783
+        ]
+    }
+},
+{
+    "pk": 127, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e0\u05d9\u05e6\u05d5\u05dc\u05d9 \u05e9\u05d5\u05d0\u05d4", 
+        "statuses": [
+            23780
+        ]
+    }
+},
+{
+    "pk": 128, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e7\u05e9\u05d9\u05e9\u05d9\u05dd", 
+        "statuses": [
+            23776
+        ]
+    }
+},
+{
+    "pk": 129, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e2\u05d5\u05e0\u05d9", 
+        "statuses": [
+            23776
+        ]
+    }
+},
+{
+    "pk": 130, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e4\u05e9 \u05d4\u05de\u05d9\u05d3\u05e2", 
+        "statuses": [
+            23768
+        ]
+    }
+},
+{
+    "pk": 131, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e9\u05d9\u05d5\u05d5\u05d9\u05d5\u05df \u05d1\u05e0\u05d8\u05dc", 
+        "statuses": [
+            23933, 
+            23830, 
+            23930, 
+            23935, 
+            23937, 
+            23928, 
+            23929, 
+            23931, 
+            23922, 
+            23923, 
+            23920, 
+            23921, 
+            23926, 
+            23787, 
+            23924, 
+            23925
+        ]
+    }
+},
+{
+    "pk": 132, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d9\u05e9\u05d9\u05d1\u05d5\u05ea \u05d4\u05e1\u05d3\u05e8", 
+        "statuses": [
+            23923, 
+            23787
+        ]
+    }
+},
+{
+    "pk": 133, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e0\u05e9\u05d9\u05d0\u05d5\u05ea \u05d4\u05de\u05d3\u05d9\u05e0\u05d4", 
+        "statuses": [
+            23842
+        ]
+    }
+},
+{
+    "pk": 134, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05dc\u05d4\u05d8\u05d1", 
+        "statuses": [
+            23940, 
+            23839
+        ]
+    }
+},
+{
+    "pk": 135, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05dc\u05d8\u05d5\u05df \u05d4\u05d7\u05d5\u05e7", 
+        "statuses": [
+            23836
+        ]
+    }
+},
+{
+    "pk": 136, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d5\u05e2\u05d3\u05d9 \u05e2\u05d5\u05d1\u05d3\u05d9\u05dd", 
+        "statuses": [
+            23833
+        ]
+    }
+},
+{
+    "pk": 137, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e2\u05d1\u05d5\u05d3\u05d4 \u05de\u05d0\u05d5\u05e8\u05d2\u05e0\u05ea", 
+        "statuses": [
+            23823
+        ]
+    }
+},
+{
+    "pk": 138, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d2\u05d6\u05e2\u05e0\u05d5\u05ea", 
+        "statuses": [
+            23820
+        ]
+    }
+},
+{
+    "pk": 139, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05e0\u05d4\u05dc \u05ea\u05e7\u05d9\u05df", 
+        "statuses": [
+            23829
+        ]
+    }
+},
+{
+    "pk": 140, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05db\u05e8 \u05d7\u05d1\u05e8\u05d9 \u05d4\u05db\u05e0\u05e1\u05ea", 
+        "statuses": [
+            23822
+        ]
+    }
+},
+{
+    "pk": 141, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d3\u05ea \u05d5\u05de\u05d3\u05d9\u05e0\u05d4", 
+        "statuses": [
+            23837
+        ]
+    }
+},
+{
+    "pk": 142, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05e4\u05d5\u05d8\u05e8\u05d9 \u05e0\u05d2\u05d1 \u05d8\u05e7\u05e1\u05d8\u05d9\u05dc", 
+        "statuses": [
+            23858
+        ]
+    }
+},
+{
+    "pk": 143, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e0\u05d0\u05d5\u05dd \u05e0\u05e9\u05d9\u05d0 \u05d4\u05d0\u05d9\u05d7\u05d5\u05d3 \u05d4\u05d0\u05d9\u05e8\u05d5\u05e4\u05d9", 
+        "statuses": [
+            23879, 
+            23886, 
+            23881, 
+            23878, 
+            23964, 
+            23867, 
+            23866, 
+            23865, 
+            23874, 
+            24023, 
+            23869, 
+            23868, 
+            23870, 
+            23871, 
+            23883, 
+            23855
+        ]
+    }
+},
+{
+    "pk": 144, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05d7\u05d1\u05d5\u05e8\u05d4 \u05d1\u05e8\u05db\u05d1\u05d5\u05ea", 
+        "statuses": [
+            23859
+        ]
+    }
+},
+{
+    "pk": 145, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d0\u05e8\u05db\u05ea \u05e9\u05d9\u05e8\u05d5\u05ea \u05e6\u05d1\u05d0\u05d9 \u05dc\u05e0\u05e9\u05d9\u05dd", 
+        "statuses": [
+            23851
+        ]
+    }
+},
+{
+    "pk": 146, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05dc\u05ea\u05e4\u05e7\u05d9\u05d3 \u05d9\u05d5\u05e9\u05d1 \u05e8\u05d0\u05e9 \u05d4\u05d4\u05e1\u05ea\u05d3\u05e8\u05d5\u05ea", 
+        "statuses": [
+            23848
+        ]
+    }
+},
+{
+    "pk": 147, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d0\u05e7\u05d6\u05d9\u05d8\u05d9\u05dd \u05d1\u05d4\u05d9\u05d9 \u05d8\u05e7", 
+        "statuses": [
+            24240, 
+            23963, 
+            23847
+        ]
+    }
+},
+{
+    "pk": 148, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e4\u05e8\u05d3\u05d4 \u05d1\u05e1\u05e4\u05e8\u05d9\u05d4 \u05d4\u05e2\u05d9\u05e8\u05d5\u05e0\u05d9\u05ea \u05d1\u05e8\u05db\u05e1\u05d9\u05dd", 
+        "statuses": [
+            23835
+        ]
+    }
+},
+{
+    "pk": 149, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d3\u05d9\u05d2 \u05d9\u05ea\u05e8 \u05d1\u05d9\u05dd \u05d4\u05ea\u05d9\u05db\u05d5\u05df", 
+        "statuses": [
+            23831
+        ]
+    }
+},
+{
+    "pk": 150, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e7\u05d1\u05dc\u05d4 \u05dc\u05d0\u05e8\u05d2\u05d5\u05df \u05d4\u05d1\u05e8\u05d9\u05ea \u05d4\u05e4\u05d0\u05e1\u05d9\u05e4\u05d9\u05ea", 
+        "statuses": [
+            23821, 
+            23811
+        ]
+    }
+},
+{
+    "pk": 151, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05d7\u05d5\u05d6\u05e8\u05d5\u05ea \u05d1\u05d1\u05d9\u05ea \u05e9\u05de\u05e9", 
+        "statuses": [
+            23814, 
+            23813
+        ]
+    }
+},
+{
+    "pk": 152, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05e8\u05e9\u05ea \u05d0\u05d9\u05e7\u05d9\u05d5\u05d8\u05e7", 
+        "statuses": [
+            23876, 
+            24252
+        ]
+    }
+},
+{
+    "pk": 153, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e6\u05e2\u05d3\u05d4 \u05dc\u05de\u05e2\u05dc\u05d4 \u05d0\u05d3\u05d5\u05de\u05d9\u05dd", 
+        "statuses": [
+            23941, 
+            23944, 
+            23915, 
+            23936
+        ]
+    }
+},
+{
+    "pk": 154, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e7\u05e6\u05d9\u05e8\u05ea \u05d0\u05d9\u05d1\u05e8\u05d9\u05dd \u05d1\u05e1\u05d9\u05df", 
+        "statuses": [
+            24014
+        ]
+    }
+},
+{
+    "pk": 155, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d2\u05dc \u05d7\u05d9\u05e1\u05d5\u05dc\u05d9\u05dd \u05e2\u05dc \u05e8\u05e7\u05e2 \u05e4\u05dc\u05d9\u05dc\u05d9", 
+        "statuses": [
+            24085, 
+            24086, 
+            24233, 
+            24082, 
+            24043, 
+            24266, 
+            24076, 
+            24015, 
+            24005, 
+            24021
+        ]
+    }
+},
+{
+    "pk": 156, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d2\u05d1\u05dc\u05ea \u05e9\u05db\u05e8 \u05dc\u05de\u05e4\u05e8\u05e7\u05d9 \u05d7\u05d1\u05e8\u05d5\u05ea", 
+        "statuses": [
+            24019
+        ]
+    }
+},
+{
+    "pk": 157, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e7\u05d9\u05d6\u05d5\u05d6 \u05d4\u05d5\u05e6\u05d0\u05d5\u05ea \u05e2\u05d1\u05e8 \u05e2\u05dc \u05d7\u05d9\u05e4\u05d5\u05e9\u05d9 \u05d2\u05d6 \u05d8\u05d1\u05e2\u05d9", 
+        "statuses": [
+            23990
+        ]
+    }
+},
+{
+    "pk": 158, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d6\u05db\u05d5\u05d9\u05d5\u05ea \u05d1\u05e2\u05dc\u05d9 \u05d7\u05d9\u05d9\u05dd", 
+        "statuses": [
+            23983
+        ]
+    }
+},
+{
+    "pk": 159, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d5\u05e7 \u05d4\u05e1\u05e4\u05e8\u05d9\u05dd", 
+        "statuses": [
+            23978
+        ]
+    }
+},
+{
+    "pk": 160, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05ea\u05e0\u05db\u05dc\u05d5\u05ea \u05d1\u05d0\u05e0\u05e9\u05d9\u05dd \u05e2\u05dd \u05de\u05d5\u05d2\u05d1\u05dc\u05d5\u05ea", 
+        "statuses": [
+            24221, 
+            24194, 
+            24090, 
+            24261
+        ]
+    }
+},
+{
+    "pk": 161, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05e8\u05dd \u05db\u05dc\u05db\u05dc\u05d9 \u05e2\u05dc \u05d9\u05e9\u05e8\u05d0\u05dc", 
+        "statuses": [
+            24066, 
+            24087
+        ]
+    }
+},
+{
+    "pk": 162, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05dc\u05d9\u05d8\u05d4 \u05d1\u05d2\u05d6 \u05d4\u05d8\u05d1\u05e2\u05d9", 
+        "statuses": [
+            24092
+        ]
+    }
+},
+{
+    "pk": 163, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05e4\u05e7\u05d9\u05d3 \u05d9\u05d5\u05e9\u05d1 \u05e8\u05d0\u05e9 \u05d5\u05e2\u05d3\u05ea \u05d7\u05d5\u05e5 \u05d5\u05d1\u05d8\u05d7\u05d5\u05df", 
+        "statuses": [
+            24075, 
+            24079
+        ]
+    }
+},
+{
+    "pk": 164, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05dc\u05e0\u05e9\u05d9\u05d0\u05d5\u05ea \u05d4\u05de\u05d3\u05d9\u05e0\u05d4", 
+        "statuses": [
+            24077
+        ]
+    }
+},
+{
+    "pk": 165, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05d9\u05e6\u05d5\u05d9 \u05dc\u05de\u05e4\u05d5\u05e0\u05d9 \u05d2\u05d5\u05e9 \u05e7\u05d8\u05d9\u05e3", 
+        "statuses": [
+            24056, 
+            24069
+        ]
+    }
+},
+{
+    "pk": 166, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d8\u05d1\u05d5\u05ea \u05de\u05e1 \u05dc\u05d4\u05ea\u05e0\u05d7\u05dc\u05d5\u05d9\u05d5\u05ea", 
+        "statuses": [
+            24057, 
+            24073
+        ]
+    }
+},
+{
+    "pk": 167, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05d8\u05d1\u05d5\u05ea \u05de\u05e1 \u05dc\u05d8\u05d1\u05e2", 
+        "statuses": [
+            24060
+        ]
+    }
+},
+{
+    "pk": 168, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e8\u05d9\u05d1\u05d5\u05e0\u05d5\u05ea \u05d9\u05e9\u05e8\u05d0\u05dc \u05d1\u05d4\u05e8 \u05d4\u05d1\u05d9\u05ea", 
+        "statuses": [
+            24225, 
+            24042, 
+            24054, 
+            24210
+        ]
+    }
+},
+{
+    "pk": 169, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05db\u05d9\u05e8\u05ea \u05ea\u05e0\u05d5\u05d1\u05d4 \u05dc\u05d7\u05d1\u05e8\u05d4 \u05e1\u05d9\u05e0\u05d9\u05ea", 
+        "statuses": [
+            24053
+        ]
+    }
+},
+{
+    "pk": 170, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05d9\u05e0\u05d5\u05d9 \u05d2\u05d9\u05dc \u05d4\u05d4\u05e6\u05d1\u05e2\u05d4 \u05dc\u05db\u05e0\u05e1\u05ea", 
+        "statuses": [
+            24041
+        ]
+    }
+},
+{
+    "pk": 171, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05e8\u05e9\u05ea \u05d0\u05e7\u05d9\u05d5\u05d8\u05e7", 
+        "statuses": [
+            24038
+        ]
+    }
+},
+{
+    "pk": 172, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05d2 \u05de\u05d7\u05d9\u05e8", 
+        "statuses": [
+            24193, 
+            24182
+        ]
+    }
+},
+{
+    "pk": 173, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d1\u05d9\u05dc\u05d4 \u05e6\u05e8\u05d4 \u05d1\u05dc\u05d5\u05d5\u05d9\u05df \u05d5\u05d1\u05db\u05d1\u05dc\u05d9\u05dd", 
+        "statuses": [
+            24173
+        ]
+    }
+},
+{
+    "pk": 174, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05ea\u05d9\u05e7\u05d5\u05df \u05d7\u05d5\u05e7 \u05d4\u05e9\u05de\u05d5\u05ea", 
+        "statuses": [
+            24299
+        ]
+    }
+},
+{
+    "pk": 175, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d4\u05e6\u05e2\u05ea \u05d7\u05d5\u05e7 \u05e4\u05d9\u05e0\u05d5\u05d9 \u05e4\u05d9\u05e6\u05d5\u05d9", 
+        "statuses": [
+            24295
+        ]
+    }
+},
+{
+    "pk": 176, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e2\u05e6\u05d5\u05de\u05d4 \u05dc\u05d4\u05d9\u05de\u05e0\u05e2 \u05de\u05d4\u05e7\u05e4\u05d0\u05ea \u05d1\u05e0\u05d9\u05d4", 
+        "statuses": [
+            24250
+        ]
+    }
+},
+{
+    "pk": 177, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e2\u05e8\u05d5\u05e5 \u05d9\u05d4\u05d5\u05d3\u05d9 \u05d9\u05e9\u05e8\u05d0\u05dc\u05d9 \u05d1\u05d8\u05dc\u05d5\u05d5\u05d9\u05d6\u05d9\u05d4", 
+        "statuses": [
+            24237
+        ]
+    }
+},
+{
+    "pk": 178, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e2\u05e0\u05d9\u05e9\u05d4 \u05dc\u05e1\u05e8\u05d1\u05e0\u05d9 \u05d2\u05d8", 
+        "statuses": [
+            24236
+        ]
+    }
+},
+{
+    "pk": 179, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e9\u05d9\u05dc\u05d5\u05d1 \u05d7\u05e8\u05d3\u05d9\u05dd \u05d1\u05de\u05e2\u05d2\u05dc \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4", 
+        "statuses": [
+            25063
+        ]
+    }
+},
+{
+    "pk": 180, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05de\u05e1\u05de\u05da \u05d4\u05d4\u05d1\u05e0\u05d5\u05ea \u05e9\u05dc \u05d4\u05e7\u05d5\u05d0\u05dc\u05d9\u05e6\u05d9\u05d4", 
+        "statuses": [
+            25055, 
+            25031, 
+            25036, 
+            25024, 
+            25034, 
+            25035, 
+            25027, 
+            25039, 
+            25025, 
+            25045, 
+            25054, 
+            25042, 
+            25041, 
+            25057, 
+            25022, 
+            25061, 
+            25048
+        ]
+    }
+},
+{
+    "pk": 181, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d0\u05e0\u05d9\u05d9\u05ea Klos C", 
+        "statuses": [
+            25051, 
+            25046, 
+            25052, 
+            25058, 
+            25060, 
+            25049
+        ]
+    }
+},
+{
+    "pk": 182, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e4\u05ea\u05d9\u05d7\u05ea \u05de\u05ea\u05d7\u05dd \u05e1\u05d9\u05e0\u05de\u05d4 \u05e1\u05d9\u05d8\u05d9 \u05d1\u05e9\u05d1\u05ea", 
+        "statuses": [
+            25056
+        ]
+    }
+},
+{
+    "pk": 183, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e0\u05d9\u05e6\u05d5\u05dc\u05d9 \u05d4\u05e9\u05d5\u05d0\u05d4", 
+        "statuses": [
+            26833
+        ]
+    }
+},
+{
+    "pk": 184, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e7\u05d9\u05e6\u05d5\u05e6\u05d9\u05dd \u05d1\u05e1\u05d2\u05dc \u05d4\u05d4\u05e9\u05db\u05dc\u05d4 \u05d4\u05d2\u05d1\u05d5\u05d4\u05d4", 
+        "statuses": [
+            33452
+        ]
+    }
+},
+{
+    "pk": 185, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05d7\u05d8\u05d9\u05e4\u05ea \u05d4\u05e0\u05e2\u05e8\u05d9\u05dd \u05d1\u05e9\u05d5\u05de\u05e8\u05d5\u05df", 
+        "statuses": [
+            34925, 
+            34909
+        ]
+    }
+},
+{
+    "pk": 186, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e2\u05e1\u05e7\u05d0\u05d5\u05ea \u05d7\u05d9\u05dc\u05d5\u05e4\u05d9 \u05e9\u05d1\u05d5\u05d9\u05d9\u05dd", 
+        "statuses": [
+            34487, 
+            34716, 
+            34369
+        ]
+    }
+},
+{
+    "pk": 187, 
+    "model": "facebook_feeds.tag", 
+    "fields": {
+        "is_for_main_display": true, 
+        "name": "\u05e6\u05d5\u05e7 \u05d0\u05d9\u05ea\u05df", 
+        "statuses": [
+            37414, 
+            37543
+        ]
+    }
+}
+]
