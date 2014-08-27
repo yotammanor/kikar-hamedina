@@ -49,8 +49,10 @@ $(document).ready(function () {
             }
             console.log(url)
             var operator = $("input:radio[name=selected-operator]:checked").val()
+
+            var order_by = $("input:radio[name=selected-order-by]:checked").val()
             //        console.log(operator).delay(5000)
-            url += "tags_and_search_str_operator=" + operator
+            url += "tags_and_search_str_operator=" + operator + "&order_by=" + order_by
             window.location.assign(encodeURI(url))
         } else {
             $("#searchgui-text-input").attr("placeholder", 'צריך לחפש משהו בשביל למצוא משהו')
