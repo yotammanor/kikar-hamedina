@@ -21,16 +21,23 @@ $(document).ready(function () {
     } else {
         order_by_param = vars['order_by'];
     }
-
+    var set_custom = true;
+    var order_by_custom = $('#order-by-custom');
+    order_by_custom.hide();
     $('#order-by-options').children().each(function () {
-        console.log($(this));
+//        console.log($(this));
         if ($(this).data('order-by') == order_by_param) {
             $(this).addClass('active');
+            set_custom = false;
             console.log('yes')
         } else {
             $(this).removeClass('active');
             console.log('no')
         }
-    })
+    });
+    if (set_custom == true) {
+        order_by_custom.show()
+        order_by_custom.addClass('active')
+    }
 
 });

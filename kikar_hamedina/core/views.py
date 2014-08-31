@@ -8,7 +8,7 @@ from IPython.lib.pretty import pprint
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.shortcuts import render, render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError, Http404
 from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -34,6 +34,9 @@ POPULARITY_DIF_DAYS_BACK = getattr(settings, 'POPULARITY_DIF_DAYS_BACK', 30)
 DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
 
 DEFAULT_STATUS_ORDER_BY = getattr(settings, 'DEFAULT_STATUS_ORDER_BY', '-published')
+
+allowed_fields_for_order_by = [field.name for field in Facebook_Status._meta.fields]
+ALLOWED_FIELDS_FOR_ORDER_BY = getattr(settings, 'ALLOWED_FIELDS_FOR_ORDER_BY', allowed_fields_for_order_by)
 
 CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
 
@@ -71,10 +74,18 @@ def getattrd(obj, name, default=NoDefaultProvided):
 
 
 def get_order_by(request):
+    """
+    This function receives a request, and parses order_by parameter, if exits into
+    an array of approved and validated order_by fields.
+    If fails, falls back to a default order-by (-published)
+    """
     try:
         order_by_str = request.GET['order_by']
-        order_by = order_by_str.split(',')
+        order_by = [x for x in order_by_str.split(',') if
+                    x.replace("-", "").split("__")[0] in ALLOWED_FIELDS_FOR_ORDER_BY]  # tests for feed__*
     except MultiValueDictKeyError:
+        order_by = [DEFAULT_STATUS_ORDER_BY]
+    if not order_by:
         order_by = [DEFAULT_STATUS_ORDER_BY]
     return order_by
 
@@ -310,8 +321,8 @@ class BillboardsView(ListView):
         # header_name='Name',
         # header_value_formatted='likes for most popular status',
         # value_format="{:,.0f}",
-        #                                          top_num_of_values=10,
-        #                                          is_sorted_reversed=True,
+        # top_num_of_values=10,
+        # is_sorted_reversed=True,
         #                                          data_set=self.stats.popular_statuses_last_month(
         #                                              [feed.id for feed in Facebook_Feed.current_feeds.all()], 10),
         #                                          data_name_attr='persona.content_object.name',
@@ -355,7 +366,8 @@ class OnlyCommentsView(ListView):
 
     def get_queryset(self):
         order_by = get_order_by(self.request)
-        query_set = Facebook_Status.objects_no_filters.filter(is_comment=True).order_by(*order_by)
+        query_set = Facebook_Status.objects_no_filters.filter(is_comment=True).order_by(*order_by)\
+            .order_by(*order_by)
         return query_set
 
 
@@ -614,14 +626,14 @@ class PartyView(StatusFilterUnifiedView):
     parent_model = Party
 
     def get_queryset(self, **kwargs):
-
         search_string = self.kwargs['id']
         order_by = get_order_by(self.request)
         all_members_for_party = Party.objects.get(id=search_string).current_members()
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
-        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party])\
+        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]) \
             .order_by(*order_by)
+
         return query_set
 
 
