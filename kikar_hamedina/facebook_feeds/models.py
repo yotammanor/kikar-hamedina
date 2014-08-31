@@ -69,7 +69,6 @@ class Facebook_Feed(models.Model):
 
     current_feeds = Facebook_FeedManager()
 
-
     class Meta:
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
 
@@ -85,7 +84,6 @@ class Facebook_Feed(models.Model):
             except Feed_Popularity.DoesNotExist:
                 pass
         return popularity
-
 
     def popularity_dif(self, days_back, return_value='all_dict'):
 
