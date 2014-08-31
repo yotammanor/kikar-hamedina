@@ -70,42 +70,17 @@
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
-    <script>
-        $.endlessPaginate({
-            paginateOnScroll: true,
-            paginateOnScrollMargin: 1000,
-            paginateOnScrollChunkSize: 10,
-            onCompleted: function(context, fragment) {
-                console.log('URL:', context.url);
-                var new_statuses = $.grep($(fragment), function (elem) {
-                    return $(elem).is(".status-panel")
-                });
-                $(new_statuses).each(function(index){
-                    status_id = $(this).data("statusid");
-                    update_status_url = "/status_update/" + status_id + "/"
-                    $("#status-metrics-is-updating-indicator-" + status_id).removeClass("hidden-object");
-                    $.ajax({
-                        url: update_status_url,
-                        contentType: "application/json",
-                        success: function (data) {
-                            $("#" + data['id'] + "-likes").text(data['likes'])
-                            $("#" + data['id'] + "-comments").text(data['comments'])
-                            $("#" + data['id'] + "-shares").text(data['shares'])
-                            $("#status-metrics-is-updating-indicator-" + data['id']).addClass("hidden-object")
-                        },
-                        error: function (data) {
-                            $("#status-metrics-is-updating-indicator-" + data['id']).addClass("hidden-object");
-                            $("#status-metrics-is-error-indicator-" + data['id']).removeClass("hidden-object");
-                        }
-                    });
-                });
-            }
-        });
-    </script>
+    <script src="{{ STATIC_URL }}js/styleOrderByLinks.js"></script>
+    <script src="{{ STATIC_URL }}js/updateStatusPanelsThroughEndlessPagination.js"></script>
 
 
     <div class="row">
         <div class="col-md-9 panel-group">
+            <ul class="nav nav-tabs" id="order-by-options">
+                <li data-order-by="-published"><a href="{{ request.path }}?order_by=-published">לפי תאריך</a></li>
+                <li data-order-by="-like_count"><a href="{{ request.path }}?order_by=-like_count">לפי מספר לייקים</a></li>
+                <li data-order-by="-comment_count"><a href="{{ request.path }}?order_by=-comment_count">לפי מספר תגובות</a></li>
+            </ul>
             {% include "core/facebook_status_list.html" with object_list=object_list %}
         </div>
         <div class="col-md-2">
