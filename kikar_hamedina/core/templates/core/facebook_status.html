@@ -1,3 +1,4 @@
+{# This is the template for an added tag. #}
 {% verbatim %}
 <script id="add-tag-to-status-template" type="text/x-handlebars-template">
     <a href="/tag/name/{{name}}">
@@ -6,15 +7,18 @@
 </script>
 {% endverbatim %}
 
+
+{# This is the template for status tag suggestions #}
 {% verbatim %}
-<script id="add-tag-result-tag-list-item-template" type="text/x-handlebars-template" >
-	<li class="result-container">
-		<!--<a href="/add_tag_to_status/?id={{id}}&tag_str={{name}}">-->
-			<button class="result-main-text btn add-tag-from-list"><span class="glyphicon glyphicon-tag"></span>  {{name}}</button>
-		<!--</a>-->
-	</li>
+<script id="add-tag-result-tag-list-item-template" type="text/x-handlebars-template">
+    <div class="add-tag-result-container">
+        <button class="result-main-text btn add-tag-from-list" data-tag-name="{{name}}"><span
+                class="glyphicon glyphicon-tag"></span> {{name}}
+        </button>
+    </div>
 </script>
 {% endverbatim %}
+
 
 {% load humanize %}
 {% load core_extras %}
@@ -34,24 +38,25 @@
                 </div>
                 <div class="row" id="party-row-container">
                     <h6>
-                        <a class="link-on-blue" href="{% url 'party' status.feed.persona.content_object.current_party.id %}">
-{#                            <h6>#}
-                                {{ status.feed.persona.content_object.current_party.name }}
-{#                            </h6>#}
+                        <a class="link-on-blue"
+                           href="{% url 'party' status.feed.persona.content_object.current_party.id %}">
+                            {#                            <h6>#}
+                            {{ status.feed.persona.content_object.current_party.name }}
+                            {#                            </h6>#}
                         </a>
-                         |
+                        |
                         <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">
-{#                            <h6>#}
-                                {{ status.published | naturaltime }}
-{#                            </h6>#}
+                            {#                            <h6>#}
+                            {{ status.published | naturaltime }}
+                            {#                            </h6>#}
                         </a>
                     </h6>
                 </div>
-{#                <div class="row" id="date-row-container">#}
-{#                    <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">#}
-{#                        <h6>{{ status.published | naturaltime }}</h6>#}
-{#                    </a>#}
-{#                </div>#}
+                {#                <div class="row" id="date-row-container">#}
+                {#                    <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">#}
+                {#                        <h6>{{ status.published | naturaltime }}</h6>#}
+                {#                    </a>#}
+                {#                </div>#}
             </div>
         </div>
     </div>
@@ -65,17 +70,22 @@
         <div class="row">
             <div class="col-md-4">
 			<span>
-				<b>אהבו: </b> <span id="{{ status.status_id }}-likes">{{ status.like_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
+				<b>אהבו: </b> <span
+                    id="{{ status.status_id }}-likes">{{ status.like_count|floatformat:1|intcomma|slice:":-2" }}</span>.
 			</span>
 			<span>
-				<b>הגיבו: </b> <span id="{{ status.status_id }}-comments">{{ status.comment_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
+				<b>הגיבו: </b> <span
+                    id="{{ status.status_id }}-comments">{{ status.comment_count|floatformat:1|intcomma|slice:":-2" }}</span>.
 			</span>
 			<span>
-				<b>שיתפו: </b> <span id="{{ status.status_id }}-shares">{{ status.share_count|floatformat:1|intcomma|slice:":-2"  }}</span>.
+				<b>שיתפו: </b> <span
+                    id="{{ status.status_id }}-shares">{{ status.share_count|floatformat:1|intcomma|slice:":-2" }}</span>.
 			</span>
             <span>
-                <i class="hidden-object fa fa-spinner fa-spin" id="status-metrics-is-updating-indicator-{{ status.status_id }}" ></i>
-                <i class="hidden-object fa fa-exclamation" id="status-metrics-is-error-indicator-{{ status.status_id }}" ></i>
+                <i class="hidden-object fa fa-spinner fa-spin"
+                   id="status-metrics-is-updating-indicator-{{ status.status_id }}"></i>
+                <i class="hidden-object fa fa-exclamation"
+                   id="status-metrics-is-error-indicator-{{ status.status_id }}"></i>
             </span>
             </div>
             <div class="col-md-8">
@@ -135,37 +145,27 @@
                     </div>
                 </div>
             </div>
-
+            <!-- Add tags option, visible to authenticated users only -->
             {% if user.is_authenticated %}
                 <div class="col-sm-12" data-statusid="{{ status.id }}">
                     <hr>
-                    <!-- 	<form class="form-inline" action="{% url 'add-tag' status.id %}" method="POST"
-	role="form"> -->
                     {% csrf_token %}
-                    <!--<div class="form-group">
-                        <label class="sr-only" for="add-tag">Add tag</label>
-                        <input type="text" class="form-control add-tag-input" id="add-tag"
-                               name="tag" autocomplete="off" data-toggle="dropdown"
-                               placeholder="הכנס תג (comma separated)"
-                               >
-                    </div>-->
+                    <div class="form-group col-sm-4" id="add-tag-dropdown-{{ status.id }}">
+                        <input id="add-tag-{{ status.status_id }}" type="text" name="tag"
+                               class="form-control add-tag-input input-large" autocomplete="off"
+                               placeholder="הכנס תג (comma separated)" data-toggle="dropdown">
 
-
-					<div class="form-group" id="add-tag-dropdown">
-						<input id="add-tag-{{ status.status_id }}" type="text" name="tag" 
-							   class="form-control add-tag-input" autocomplete="off"
-							   placeholder="הכנס תג (comma separated)" data-toggle="dropdown">
-						<ul id="add-tag-list" class="dropdown-menu">
-						</ul>
-					</div>
-
-
-                    <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">הוסף תיוגים</button>
+                        <div class="add-tag-list dropdown" id="add-tag-list-{{ status.id }}">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">הוסף תיוגים
+                        </button>
+                    </div>
                     <!-- </form> -->
-
-                    
                 </div>
             {% endif %}
+            <!-- /Add tags option -->
         </div>
     </div>
 </div>
