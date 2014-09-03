@@ -80,6 +80,7 @@
                 <li data-order-by="-published"><a href="{{ request.path }}?order_by=-published">לפי תאריך</a></li>
                 <li data-order-by="-like_count"><a href="{{ request.path }}?order_by=-like_count">לפי מספר לייקים</a></li>
                 <li data-order-by="-comment_count"><a href="{{ request.path }}?order_by=-comment_count">לפי מספר תגובות</a></li>
+                <li data-order-by="custom" id="order-by-custom"><a href="{{ request.get_full_path }}">אחר</a></li>
             </ul>
             {% include "core/facebook_status_list.html" with object_list=object_list %}
         </div>

@@ -382,6 +382,7 @@ class AllStatusesView(StatusListView):
         return query_set
 
     def get_context_data(self, **kwargs):
+        order_by = get_order_by(self.request)
         context = super(AllStatusesView, self).get_context_data(**kwargs)
         feeds = Facebook_Feed.objects.filter(
             facebook_status__published__gte=(
@@ -534,7 +535,7 @@ class SearchView(StatusListView):
 
         order_by = get_order_by(self.request)
 
-        return_queryset = Facebook_Status.objects.filter(query_Q).order_by("%s" % order_by)
+        return_queryset = Facebook_Status.objects.filter(query_Q).order_by(*order_by)
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
