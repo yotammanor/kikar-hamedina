@@ -38,7 +38,6 @@ function addAutoSuggestElementToFilter(id, name, type, icon) {
 function removeSelectedFilterElement(id, type) {
 /* remove a selected element fro applied filters.
  */
-    console.log("#" + type + id);
     $("#" + type + id).remove();
 
     // clean-up after removing.
@@ -57,7 +56,6 @@ function updateSearchGUIObjectsVisibility() {
         id = $(this).data('id')
         searchTerms[type].push(id)
     })
-    console.log(searchTerms)
     var keysOfSearchTerms = Object.keys(searchTerms)
     for (var i = 0; i < keysOfSearchTerms.length; i++) {
         if (searchTerms[keysOfSearchTerms[i]].length > 0) {
@@ -123,16 +121,13 @@ $(document).ready(function () {
                 searchTerms['search_str'].push(inputValue)
             }
             search_str_ids = '"' + searchTerms['search_str'].join('","') + '"'
-            console.log(search_str_ids)
             if (search_str_ids.length > 2) {
                 // length > 2 - is set because an empty string will be "" //
                 url += "search_str=" + search_str_ids + "&"
             }
-            console.log(url)
             var operator = $("input:radio[name=selected-operator]:checked").val()
 
             var order_by = $("input:radio[name=selected-order-by]:checked").val()
-            //        console.log(operator).delay(5000)
             url += "tags_and_search_str_operator=" + operator + "&order_by=" + order_by
             window.location.assign(encodeURI(url))
         } else {

@@ -15,7 +15,6 @@ $(document).ready(function () {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 responseText = JSON.parse(jqXHR.responseText);
-//                console.log($("#status-metrics-is-updating-indicator-" + data['id']));
                 $("#status-metrics-is-updating-indicator-" + responseText).addClass("hidden-object")
                 $("#status-metrics-is-error-indicator-" + responseText).removeClass("hidden-object")
             }
