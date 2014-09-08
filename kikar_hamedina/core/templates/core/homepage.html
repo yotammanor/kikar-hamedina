@@ -11,7 +11,7 @@
 {% block title %}כיכר המדינה : עמוד ראשי{% endblock title %}
 
 {% block context-header %}
-<div class="alert alert-info alert-dismissible" role="alert">
+<div class="alert alert-danger alert-dismissible" role="alert">
   <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
   <strong>האתר עדיין בתהליכי בנייה!</strong> יתכנו פערים וטעויות במידע המוצג באתר, לתשומת ליבך.
 </div>
@@ -43,8 +43,8 @@
                 <br>
             </div>
             <div class="col-lg-10 main-page-frame">
-                <h3>כיום, {{ number_of_mks }} חברי כנסת פעילים בפייסבוק באופן קבוע. אנחנו אוספים את כל מה שהם כותבים,
-                    במטרה לעזור לציבור ולך להבין לעקוב אחרי השיחה.</h3>
+                <h3>כיום, {{ number_of_mks }} מתוך חברי הכנסת פעילים בפייסבוק באופן קבוע. </h3>
+                <h3>אנחנו עוקבים אחרי כל מה שהנבחרים כותבים - ועוזרים לך לקחת חלק בשיחה.</h3>
             </div>
             <div class="main-page-frame col-lg-1">
                 <br>
@@ -62,14 +62,13 @@
                     <h4><b>תוהה מה אפשר למצוא אצלנו? אפשר לדעת, למשל: </b></h4>
                 </div>
                 <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> מה כתבו ב-<a
-                            href="{% url 'all-statuses' %}">{{ statuses_last_day }}</a> הפוסטים החדשים שפורסמו
-                        היום?
+                    <h4><i class="fa fa-thumbs-o-up"></i> מה נכתב בסטאטוסים הפופולריים ביותר <a
+                            href="{% url 'all-statuses' %}?range=week&order_by=-like_count">בשבוע האחרון</a>?
                     </h4>
                 </div>
                 <div class="main-page-frame main-page-frame-links">
                     <h4><i class="fa fa-thumbs-o-up"></i> על מה מדברים במפלגת <a
-                            href={% url 'party' featured_party.id %}>{{ featured_party.name }}</a>
+                            href="{% url 'party' featured_party.id %}?range=week">{{ featured_party.name }}</a>
                         בימים אלו?</h4>
                 </div>
                 <div class="main-page-frame main-page-frame-links">
