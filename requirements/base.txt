@@ -21,5 +21,12 @@ pandas==0.13.1
 django-pandas==0.1.0
 python-dateutil==1.5
 django-tastypie==0.9.15
+pysolr
+django-haystack
 
--r oknesset.txt
+# -r oknesset.txt
+django-debug-toolbar>=1.0
+nose
+django-nose
+-e git://github.com/hasadna/django-activity-stream.git@c56a07921b8c796fce35bda6feab4610fdf64e5d#egg=django-activity-stream
+-e git://github.com/pinax/django-mailer.git#egg=django-mailer

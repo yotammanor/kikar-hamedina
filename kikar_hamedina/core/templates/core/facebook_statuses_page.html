@@ -70,19 +70,62 @@
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
-    <script>
-        $.endlessPaginate({
-            paginateOnScroll: true,
-            paginateOnScrollMargin: 1000,
-            paginateOnScrollChunkSize: 10
-        });
-    </script>
+    <script src="{{ STATIC_URL }}js/renderLinksForStatusListHandlers.js"></script>
+    <script src="{{ STATIC_URL }}js/updateStatusPanelsThroughEndlessPagination.js"></script>
+
 
     <div class="row">
         <div class="col-md-9 panel-group">
+            <!-- Order-by links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
+            <ul class="nav nav-tabs" id="order-by-options">
+                <li data-order-by="-published"><a href="#">לפי תאריך</a></li>
+                <li data-order-by="-like_count"><a href="#">לפי מספר לייקים</a>
+                </li>
+                <li data-order-by="-comment_count"><a href="#">לפי מספר
+                    תגובות</a></li>
+                <li data-order-by="custom" id="order-by-custom"><a href="#">אחר</a></li>
+                <!-- visible only when used -->
+            </ul>
+            <!-- List of statuses -->
             {% include "core/facebook_status_list.html" with object_list=object_list %}
         </div>
         <div class="col-md-2">
+            <!-- Filter-by-date links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
+            <div><br><br></div>
+            {% block date_filter %}
+                <ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
+                    <li class="heading"><b> סנן לפי זמן: </b></li>
+
+                    <li data-range="default" id="default-filter">
+                        <a href="#">ללא סינון </a>
+
+                    </li>
+                    <li data-range="week">
+                        <a href="#">בשבוע האחרון </a>
+                    </li>
+                    <li data-range="two_weeks">
+                        <a href="#">בשבועיים האחרונים</a>
+                    </li>
+                    <li data-range="month">
+                        <a href="#">בחודש האחרון</a>
+                    </li>
+                    <li data-range="current_month">
+                        <a href="#">במהלך {% now "F" %}</a>
+                    </li>
+                    <li data-range="current_year">
+                        <a href="#">במהלך {% now "Y" %}</a>
+                    </li>
+
+                    <li data-range="protective-edge">
+                        <a href="#">במהלך צוק איתן</a>
+                    </li>
+                </ul>
+            {% endblock date_filter %}
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
             {% block sidebar %}
                 <ul class="list-group">
                     <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות
