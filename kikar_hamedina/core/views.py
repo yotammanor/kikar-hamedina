@@ -4,6 +4,7 @@ import urllib2
 import json
 from operator import or_, and_
 from IPython.lib.pretty import pprint
+from collections import defaultdict
 
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import FieldError, ObjectDoesNotExist
@@ -39,6 +40,39 @@ allowed_fields_for_order_by = [field.name for field in Facebook_Status._meta.fie
 ALLOWED_FIELDS_FOR_ORDER_BY = getattr(settings, 'ALLOWED_FIELDS_FOR_ORDER_BY', allowed_fields_for_order_by)
 
 CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
+
+FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_START_DATE',
+                                            timezone.datetime(2000, 1, 1, 0, 0, tzinfo=timezone.utc))
+FILTER_BY_DATE_DEFAULT_END_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_END_DATE', timezone.now())
+
+DATE_RANGE_DICT = {'default': {'start_date': FILTER_BY_DATE_DEFAULT_START_DATE,
+                               'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
+
+                   'week': {'start_date': timezone.now() - timezone.timedelta(days=7),
+                            'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
+
+                   'two_weeks': {'start_date': timezone.now() - timezone.timedelta(days=14),
+                                 'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
+
+                   'month': {'start_date': timezone.now() - timezone.timedelta(days=31),
+                             'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
+
+                   'current_month': {
+                       'start_date': timezone.datetime(timezone.now().year, timezone.now().month, 1,
+                                                       tzinfo=timezone.utc),
+                       'end_date': FILTER_BY_DATE_DEFAULT_END_DATE
+                   },
+                   'current_year': {
+                       'start_date': timezone.datetime(timezone.now().year, 1, 1, tzinfo=timezone.utc),
+                       'end_date': FILTER_BY_DATE_DEFAULT_END_DATE
+                   },
+                   'protective_edge': {
+                   # Dates are set based on information from Wikipedia:
+                   # http://he.wikipedia.org/wiki/%D7%9E%D7%91%D7%A6%D7%A2_%D7%A6%D7%95%D7%A7_%D7%90%D7%99%D7%AA%D7%9F
+                       'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
+                       'end_date': timezone.datetime(2014, 8, 26, tzinfo=timezone.utc)
+                   },
+}
 
 
 # TODO: refactor the next constant to use the pattern above
@@ -88,6 +122,26 @@ def get_order_by(request):
     if not order_by:
         order_by = [DEFAULT_STATUS_ORDER_BY]
     return order_by
+
+
+def filter_by_date(request, datetime_field='published'):
+    try:
+        filter_range_arg = request.GET['range']
+    except MultiValueDictKeyError:
+        filter_range_arg = 'default'
+
+    try:
+        start_date = DATE_RANGE_DICT[filter_range_arg]['start_date']
+        end_date = DATE_RANGE_DICT[filter_range_arg]['end_date']
+    except KeyError:
+        start_date = DATE_RANGE_DICT['default']['start_date']
+        end_date = DATE_RANGE_DICT['default']['end_date']
+
+    print filter_range_arg
+
+    date_time_field_range = datetime_field + '__range'
+    range_value = (start_date, end_date)
+    return Q(**{date_time_field_range: range_value})
 
 
 class StatusListView(AjaxListView):
@@ -323,12 +377,12 @@ class BillboardsView(ListView):
         # value_format="{:,.0f}",
         # top_num_of_values=10,
         # is_sorted_reversed=True,
-        #                                          data_set=self.stats.popular_statuses_last_month(
-        #                                              [feed.id for feed in Facebook_Feed.current_feeds.all()], 10),
-        #                                          data_name_attr='persona.content_object.name',
-        #                                          data_value_float_attr='mean_status_likes_last_month',
-        #                                          calc_type='stats',
-        #                                          arguments_for_function=None,
+        # data_set=self.stats.popular_statuses_last_month(
+        # [feed.id for feed in Facebook_Feed.current_feeds.all()], 10),
+        # data_name_attr='persona.content_object.name',
+        # data_value_float_attr='mean_status_likes_last_month',
+        # calc_type='stats',
+        # arguments_for_function=None,
         # )
 
         billboard_6 = {
@@ -366,7 +420,8 @@ class OnlyCommentsView(ListView):
 
     def get_queryset(self):
         order_by = get_order_by(self.request)
-        query_set = Facebook_Status.objects_no_filters.filter(is_comment=True).order_by(*order_by)\
+        date_range_Q = filter_by_date(self.request, datetime_field='published')
+        query_set = Facebook_Status.objects_no_filters.filter(is_comment=True).filter(date_range_Q).order_by(*order_by) \
             .order_by(*order_by)
         return query_set
 
@@ -378,11 +433,11 @@ class AllStatusesView(StatusListView):
 
     def get_queryset(self):
         order_by = get_order_by(self.request)
-        query_set = super(AllStatusesView, self).get_queryset().order_by(*order_by)
+        date_range_Q = filter_by_date(self.request, datetime_field='published')
+        query_set = super(AllStatusesView, self).get_queryset().filter(date_range_Q).order_by(*order_by)
         return query_set
 
     def get_context_data(self, **kwargs):
-        order_by = get_order_by(self.request)
         context = super(AllStatusesView, self).get_context_data(**kwargs)
         feeds = Facebook_Feed.objects.filter(
             facebook_status__published__gte=(
@@ -507,14 +562,14 @@ class SearchView(StatusListView):
         return query_Q
 
     def get_queryset(self):
-
+        date_range_Q = filter_by_date(self.request, datetime_field='published')
         members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
         print 'get_queryset_executed:', query_Q
 
         order_by = get_order_by(self.request)
         # print getattr(self.request.GET, 'order_by')
-        return_queryset = Facebook_Status.objects.filter(query_Q).order_by(*order_by)
+        return_queryset = Facebook_Status.objects.filter(query_Q).filter(date_range_Q).order_by(*order_by)
         return return_queryset
 
     def get_context_data(self, **kwargs):
@@ -522,7 +577,7 @@ class SearchView(StatusListView):
 
         members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
-
+        date_range_Q = filter_by_date(self.request, datetime_field='published')
         context['members'] = Member.objects.filter(id__in=members_ids)
 
         context['parties'] = Party.objects.filter(id__in=parties_ids)
@@ -535,7 +590,7 @@ class SearchView(StatusListView):
 
         order_by = get_order_by(self.request)
 
-        return_queryset = Facebook_Status.objects.filter(query_Q).order_by(*order_by)
+        return_queryset = Facebook_Status.objects.filter(query_Q).filter(date_range_Q).order_by(*order_by)
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -555,6 +610,7 @@ class StatusFilterUnifiedView(StatusListView):
 
     def get_queryset(self):
         order_by = get_order_by(self.request)
+        date_range_Q = filter_by_date(request=self.request, datetime_field='published')
         variable_column = self.kwargs['variable_column']
         search_string = self.kwargs['id']
         if self.kwargs['context_object'] == 'tag':
@@ -563,19 +619,13 @@ class StatusFilterUnifiedView(StatusListView):
                 search_field = 'id'
             else:
                 search_field = 'name'
-            selected_filter = variable_column + '__' + search_field
-            try:
-                query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by(
-                    *order_by)
-            except FieldError:
-                selected_filter = variable_column + '__' + 'name'
-                query_set = Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by(
-                    *order_by)
                 # TODO: Replace with redirect to actual url with 'name' in path, and HttpResponseRedirect()
-            return query_set
+            selected_filter = variable_column + '__' + search_field
         else:
             selected_filter = variable_column
-            return Facebook_Status.objects.filter(**{selected_filter: search_string}).order_by(*order_by)
+
+        return Facebook_Status.objects.filter(**{selected_filter: search_string}).filter(date_range_Q).order_by(
+            *order_by)
 
     def get_context_data(self, **kwargs):
         context = super(StatusFilterUnifiedView, self).get_context_data(**kwargs)
@@ -604,8 +654,10 @@ class MemberView(StatusFilterUnifiedView):
         if self.persona is None:
             return []
 
+        date_range_Q = filter_by_date(request=self.request, datetime_field='published')
+        print date_range_Q
         order_by = get_order_by(self.request)
-        query_set = self.persona.get_main_feed.facebook_status_set.all().order_by(*order_by)
+        query_set = self.persona.get_main_feed.facebook_status_set.filter(date_range_Q).order_by(*order_by)
         return query_set
 
     def get_context_data(self, **kwargs):
@@ -632,7 +684,9 @@ class PartyView(StatusFilterUnifiedView):
         all_members_for_party = Party.objects.get(id=search_string).current_members()
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
-        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]) \
+        date_range_Q = filter_by_date(request=self.request, datetime_field='published')
+        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]).filter(
+            date_range_Q) \
             .order_by(*order_by)
 
         return query_set
@@ -644,7 +698,9 @@ class TagView(StatusFilterUnifiedView):
 
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
-        all_feeds_for_tag = Facebook_Feed.objects.filter(facebook_status__tags__id=context['object'].id).distinct()
+        print context['object_list']
+        all_feeds_for_tag = Facebook_Feed.objects.filter(
+            facebook_status__id__in=[status.id for status in context['object_list']]).distinct()
         context['side_bar_list'] = Member.objects.filter(
             id__in=[feed.persona.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
