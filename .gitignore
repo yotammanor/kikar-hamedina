@@ -11,3 +11,11 @@ kikar_hamedina/kikar_hamedina/settings/key.py
 local_settings.py
 
 kikar_hamedina/initial_data.json
+solr-4.9.0
+solr-4.7.2
+apache-solr-3.5.0
+
+kikar_hamedina/facebook_feeds/fixtures/1001_1001.json
+kikar_hamedina/facebook_feeds/fixtures/1001_1002.json
+kikar_hamedina/facebook_feeds/fixtures/1001_1003.json
+kikar_hamedina/facebook_feeds/fixtures/1001_1004.json

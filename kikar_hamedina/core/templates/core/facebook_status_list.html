@@ -1,8 +1,11 @@
 {% load endless %}
-{% paginate object_list %}
 
-{% for status in object_list %}
+
+{% paginate 5,10 object_list as objects_in_page %}
+<div>
+{% for status in objects_in_page %}
     {% include "core/facebook_status.html" %}
+    <br>
 {% endfor %}
-
 {% show_more "טען עדכונים נוספים" "<span><i class='fa fa-spinner fa-spin'></i> טוען</span>"|escape %}
+</div>

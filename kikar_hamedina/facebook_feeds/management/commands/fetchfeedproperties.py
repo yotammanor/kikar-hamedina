@@ -9,11 +9,11 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 import facebook
 from unidecode import unidecode
-from ...models import \
-    Facebook_Feed as Facebook_Feed_Model, \
-    Facebook_Status as Facebook_Status_Model, \
-    User_Token as User_Token_Model, \
-    Feed_Popularity as Feed_Popularity_Model
+from facebook_feeds.models import \
+    Facebook_Feed, \
+    Facebook_Status, \
+    User_Token, \
+    Feed_Popularity
 
 FACEBOOK_API_VERSION = 'v2.0'
 
@@ -118,7 +118,7 @@ class Command(BaseCommand):
             if feed_data:
                 feed_dict = defaultdict(str, feed_data)
                 # If post_id already exists in DB
-                feed = Facebook_Feed_Model.objects.get(id=feed_id)
+                feed = Facebook_Feed.objects.get(id=feed_id)
                 # Assuming retrieved data from facebook is always more up-to-date than our data
                 feed.about = feed_dict['about']
                 feed.birthday = feed_dict['birthday']
@@ -128,10 +128,11 @@ class Command(BaseCommand):
                 feed.picture_large = feed_dict['pic_large']
                 feed.username = feed_dict['username']
                 feed.website = feed_dict['website']
+                feed.current_fan_count=feed_dict['likes']
                 # save feed object.
                 feed.save()
                 # feed_popularity data
-                feed_popularity = Feed_Popularity_Model(
+                feed_popularity = Feed_Popularity(
                     feed=feed,
                     date_of_creation=timezone.now(),
                     fan_count=feed_dict['likes'],
@@ -141,7 +142,7 @@ class Command(BaseCommand):
 
             else:
                 print 'No data retrieved for feed {0}'.format(feed_id)
-        except Facebook_Feed_Model.DoesNotExist:
+        except Facebook_Feed.DoesNotExist:
             # If feed does not exist at all, raise exception.
             print 'Error: {0} is missing from db'.format(feed_id)
             raise
@@ -154,7 +155,21 @@ class Command(BaseCommand):
 	    data_dict = {'feed_id': feed.id, 'data': {}}
             return data_dict
             # Set facebook graph access token to user access token
-            token = User_Token_Model.objects.all().order_by('-date_of_creation').first()
+            token = None
+            if feed.tokens.all():
+
+                token = feed.tokens.order_by('-date_of_creation').first()
+
+            elif feed.requires_user_token:
+                print feed.tokens.all()
+                print 'feed requires user token'
+                pass
+            elif User_Token.objects.all():
+                print 'feed does not require a particular user token.'
+                token = User_Token.objects.all().order_by('-date_of_creation').first()
+
+            print 'token is: %s.' % token
+
             if token:
                 print 'token is: %s' % token.token
                 self.graph.access_token = token.token
@@ -178,7 +193,7 @@ class Command(BaseCommand):
         elif feed.feed_type == 'PP':  # 'PP - Public Page'
             try:
                 # Set facebook graph access token to most up-to-date user token in db
-                token = User_Token_Model.objects.first()
+                token = User_Token.objects.first()
                 self.graph.access_token = token.token
             except:
                 # Fallback: Set facebook graph access token to app access token
@@ -213,14 +228,14 @@ class Command(BaseCommand):
         list_of_feeds = list()
         # Case no args - fetch all feeds
         if len(args) == 0:
-            list_of_feeds = [feed for feed in Facebook_Feed_Model.objects.all()]
+            list_of_feeds = [feed for feed in Facebook_Feed.objects.all()]
         # Case arg exists - fetch feed by id supplied
         elif len(args) == 1:
             feed_id = int(args[0])
             try:
-                feed = Facebook_Feed_Model.objects.get(pk=feed_id)
+                feed = Facebook_Feed.objects.get(pk=feed_id)
                 list_of_feeds.append(feed)
-            except Facebook_Feed_Model.DoesNotExist:
+            except Facebook_Feed.DoesNotExist:
                 warning_msg = "Feed #({0}) does not exist.".format(feed_id)
                 logger = logging.getLogger('django')
                 logger.warning(warning_msg)
