@@ -50,6 +50,9 @@
                             {{ status.published | naturaltime }}
                             {#                            </h6>#}
                         </a>
+                        {% if status.is_deleted %}
+                            (הסטטוס נמחק)
+                        {% endif %}
                     </h6>
                 </div>
                 {#                <div class="row" id="date-row-container">#}

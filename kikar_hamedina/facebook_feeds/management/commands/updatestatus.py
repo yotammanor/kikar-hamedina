@@ -1,5 +1,6 @@
 import sys
 import datetime
+import dateutil
 import logging
 from optparse import make_option
 from collections import defaultdict
@@ -18,37 +19,51 @@ FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.1')
 NUMBER_OF_TRIES_FOR_REQUEST = 3
 LENGTH_OF_EMPTY_ATTACHMENT_JSON = 21
 
+# The error code from fb API for a deleted status.
+DELETED_STATUS_ERROR_CODE = 100
+
 
 class Command(BaseCommand):
     args = '<feed_id>'
     help = 'Updates a single status'
-    option_force_update = make_option('-f',
-                                      '--force-update',
-                                      action='store_true',
-                                      dest='force-update',
-                                      default=False,
-                                      help='Force update of status.')
-
-    option_force_attachment_update = make_option('-a',
-                                                 '--force-attachment-update',
-                                                 action='store_true',
-                                                 dest='force-attachment-update',
-                                                 default=False,
-                                                 help='Use this flag to force updating of status attachment')
-
-    option_list_helper = list()
-    for x in BaseCommand.option_list:
-        option_list_helper.append(x)
-    option_list_helper.append(option_force_update)
-    option_list_helper.append(option_force_attachment_update)
-    option_list = tuple(option_list_helper)
+    option_list = BaseCommand.option_list + (
+        make_option('-f',
+                    '--force-update',
+                    action='store_true',
+                    dest='force-update',
+                    default=False,
+                    help='Force update of status.'),
+        make_option('-a',
+                    '--force-attachment-update',
+                    action='store_true',
+                    dest='force-attachment-update',
+                    default=False,
+                    help='Use this flag to force updating of status attachment'),
+        make_option('--from-date',
+                    action='store',
+                    type='string',
+                    dest='from-date',
+                    default=None,
+                    help='Specify date from which to update the statuses (inclusive) e.g. 2014-03-31'),
+        make_option('--to-date',
+                    action='store',
+                    type='string',
+                    dest='to-date',
+                    default=None,
+                    help='Specify date until which to update the statuses (exclusive) e.g. 2014-03-31'),
+        make_option('--update-deleted',
+                    action='store_true',
+                    dest='update-deleted',
+                    default=False,
+                    help='Update is_deleted flag: set to True/False for deleted/existing statuses'),
+    )
 
     graph = facebook.GraphAPI()
 
     def fetch_status_object_data(self, status_id):
         """
-        Receives a feed_id for a facebook
-        Returns a facebook-sdk fql query, with all status objects published by the page itself.
+        Receives a Facebook status ID
+        Returns a dictionary with status properties, an empty dict on error or None if status believed to be deleted.
         """
         status_data = dict()
         api_request_path = "{0}".format(status_id)
@@ -64,7 +79,10 @@ class Command(BaseCommand):
                 status_data = self.graph.request(path=api_request_path, args=args_for_request)
                 break
 
-            except GraphAPIError:
+            except GraphAPIError as e:
+                # Note: e.type doesn't work in the version we're using
+                if e.result.get('error', {}).get('code') == DELETED_STATUS_ERROR_CODE:
+                    return None  # Status deleted
                 warning_msg = "Failed first attempt for feed #({0}) from FB API.".format(status_id)
                 logger = logging.getLogger('django')
                 logger.warning(warning_msg)
@@ -142,12 +160,10 @@ class Command(BaseCommand):
         """
         Receives a single status_object object as retrieved from facebook-sdk, and inserts the status_object
         to the db.
-                """
+        """
         # Create a datetime object from int received in status_object
         current_time_of_update = datetime.datetime.strptime(retrieved_status_data['updated_time'],
                                                             '%Y-%m-%dT%H:%M:%S+0000').replace(tzinfo=timezone.utc)
-
-        def_dict_rec = lambda: defaultdict(def_dict_rec)
 
         status_object_defaultdict = defaultdict(lambda: None, retrieved_status_data)
         if status_object_defaultdict['message']:
@@ -184,7 +200,8 @@ class Command(BaseCommand):
 
         try:
 
-            if (status_object.updated < current_time_of_update) or options['force-update']:
+            if ((status_object.updated < current_time_of_update) or options['force-update'] or
+                (options['update-deleted'] and status_object.is_deleted)):
                 # If post_id exists but of earlier update time, fields are updated.
                 print 'update status_object'
                 status_object.content = message
@@ -196,6 +213,10 @@ class Command(BaseCommand):
                 status_object.story = story
                 status_object.story_tags = story_tags
                 status_object.is_comment = status_object.set_is_comment
+                if status_object.is_deleted and options['update-deleted']:
+                    status_object.is_deleted = False
+                    self.stdout.write('Status no longer marked deleted')
+
 
                 # update attachment data
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
@@ -209,16 +230,16 @@ class Command(BaseCommand):
             # If status_id is NoneType, and does not exist at all, create it from data.
             print 'create status_object'
             status_object = Facebook_Status(feed_id=retrieved_status_data['from']['id'],
-                                     status_id=retrieved_status_data['id'],
-                                     content=message,
-                                     like_count=like_count,
-                                     comment_count=comment_count,
-                                     share_count=share_count,
-                                     published=published,
-                                     updated=current_time_of_update,
-                                     status_type=type_of_status,
-                                     story=story,
-                                     story_tags=story_tags)
+                                            status_id=retrieved_status_data['id'],
+                                            content=message,
+                                            like_count=like_count,
+                                            comment_count=comment_count,
+                                            share_count=share_count,
+                                            published=published,
+                                            updated=current_time_of_update,
+                                            status_type=type_of_status,
+                                            story=story,
+                                            story_tags=story_tags)
 
             status_object.is_comment = status_object.set_is_comment
 
@@ -230,9 +251,15 @@ class Command(BaseCommand):
             # save status_object object.
             status_object.save()
 
+    def set_deleted_status_in_db(self, status):
+        """Set is_deleted flag to True and save status"""
+        status.is_deleted = True
+        status.save()
+
     def fetch_status_data(self, status):
         """
-        Returns a Dict object with Status data, by Status ID, empty Dict if not working.
+        Returns a Dict object with Status data, by Status ID, empty Dict if not working,
+        None if status deleted.
         """
 
         status_dict = dict()
@@ -283,7 +310,13 @@ class Command(BaseCommand):
         list_of_statuses = list()
         # Case no args - fetch all feeds
         if len(args) == 0:
-            list_of_statuses = [status for status in Facebook_Status.objects_no_filters.all().order_by('-published')]
+            criteria = {}
+            if options['from-date'] is not None:
+                criteria['published__gte'] = dateutil.parser.parse(options['from-date'])
+            if options['to-date'] is not None:
+                criteria['published__lt'] = dateutil.parser.parse(options['to-date'])
+            db_statuses = Facebook_Status.objects_no_filters.filter(**criteria).order_by('-published')
+            list_of_statuses = list(db_statuses)
 
         # Case arg exists - fetch status by id supplied
         elif len(args) == 1:
@@ -302,11 +335,11 @@ class Command(BaseCommand):
         else:
             raise CommandError('Please enter a valid status id')
 
-        # Iterate over list_of_statuses
-        sliced_list_of_statuses = list_of_statuses
+        self.stdout.write('Starting to update {0} statuses'.format(len(list_of_statuses)))
 
-        for i, status in enumerate(sliced_list_of_statuses):
-            self.stdout.write('Working on status {0} of {1}: {2}.'.format(i+1, len(sliced_list_of_statuses), status.status_id))
+        # Iterate over list_of_statuses
+        for i, status in enumerate(list_of_statuses):
+            self.stdout.write('Working on status {0} of {1}: {2}.'.format(i+1, len(list_of_statuses), status.status_id))
             status_data = self.fetch_status_data(status)
             self.stdout.write('Successfully fetched status: {0}.'.format(status.pk))
 
@@ -314,6 +347,15 @@ class Command(BaseCommand):
                 self.update_status_object_in_db(options, status_object=status, retrieved_status_data=status_data)
                 self.stdout.write('Successfully written status: {0}.'.format(status.pk))
                 info_msg = "Successfully updated status: {0}.".format(status.pk)
+
+            elif status_data is None:  # Status deleted
+                if options['update-deleted']:
+                    self.set_deleted_status_in_db(status)
+                    info_msg = 'Successfully marked status deleted: {0}.'.format(status.pk)
+                    self.stdout.write(info_msg)
+                else:
+                    self.stdout.write('Ignoring deleted status: {0} (use --update-deleted to update DB).'.format(status.pk))
+                    info_msg = 'Ignoring deleted status: {0}.'.format(status.pk)
 
             else:
                 self.stdout.write('No data was retrieved for status: {0}.'.format(status.id))
