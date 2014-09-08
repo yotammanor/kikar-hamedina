@@ -3,7 +3,6 @@ $.endlessPaginate({
     paginateOnScrollMargin: 1000,
     paginateOnScrollChunkSize: 10,
     onCompleted: function (context, fragment) {
-        console.log('URL:', context.url);
         var new_statuses = $.grep($(fragment), function (elem) {
             return $(elem).is(".status-panel")
         });
