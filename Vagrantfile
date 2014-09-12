@@ -43,11 +43,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       cd /vagrant/kikar_hamedina/
       python manage.py syncdb
       python manage.py migrate
-      # uncomment at the moment when we actually host .gz files,
-      # nowadays the unzip .json files exist on github.
-      #for f in 1001_1001 1001_1002 1001_1003 1001_1004; do
-      #  gunzip facebook_feeds/fixtures/${f}.json.gz
-      #done
+      for f in 1001_1001 1001_1002 1001_1003 1001_1004; do
+        gunzip facebook_feeds/fixtures/${f}.json.gz
+      done
       for f in data_fixture_planet data_fixture_mks data_fixture_facebook_feeds 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007; do
         python manage.py loaddata ${f}.json
       done
