@@ -31,7 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     shell.inline = <<-EOS
       set -e
       # Do 2 pip tries as sometimes repositories fail to respond
-      PIP="pip install -r /vagrant/requirements/vps.txt"
+      PIP="sudo pip install -r /vagrant/requirements/vps.txt"
       $PIP || $PIP
     EOS
   end
@@ -41,15 +41,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     shell.inline = <<-EOS
       set -e
       cd /vagrant/kikar_hamedina/
-      python manage.py syncdb --noinput
-      [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
-      python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
-      for m in core persons mks links facebook_feeds video; do
-        python manage.py migrate $m
-      done
-      for f in 1001_1001 1001_1002 1001_1003 1001_1004; do
-        gunzip facebook_feeds/fixtures/${f}.json.gz
-      done
+      python manage.py syncdb
+      python manage.py migrate
+      # uncomment at the moment when we actually host .gz files,
+      # nowadays the unzip .json files exist on github.
+      #for f in 1001_1001 1001_1002 1001_1003 1001_1004; do
+      #  gunzip facebook_feeds/fixtures/${f}.json.gz
+      #done
       for f in data_fixture_planet data_fixture_mks data_fixture_facebook_feeds 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007; do
         python manage.py loaddata ${f}.json
       done
