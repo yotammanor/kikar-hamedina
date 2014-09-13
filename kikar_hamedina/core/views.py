@@ -28,23 +28,26 @@ from mks.models import Party, Member
 from facebook import GraphAPIError
 from core.insights import StatsEngine
 
-DEFAULT_POPULARITY_DIF_COMPARISON_TYPE = getattr(settings, 'DEFAULT_POPULARITY_DIF_COMPARISON_TYPE', 'rel')
+# current knesset number
+CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
 
+# used for calculating top gainer of fan_count
+MIN_FAN_COUNT_FOR_REL_COMPARISON = getattr(settings, 'MIN_FAN_COUNT_FOR_REL_COMPARISON', 5000)
+DEFAULT_POPULARITY_DIF_COMPARISON_TYPE = getattr(settings, 'DEFAULT_POPULARITY_DIF_COMPARISON_TYPE', 'rel')
 POPULARITY_DIF_DAYS_BACK = getattr(settings, 'POPULARITY_DIF_DAYS_BACK', 30)
 
+# search logic default operator
 DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
 
+# order by default
 DEFAULT_STATUS_ORDER_BY = getattr(settings, 'DEFAULT_STATUS_ORDER_BY', '-published')
-
 allowed_fields_for_order_by = [field.name for field in Facebook_Status._meta.fields]
 ALLOWED_FIELDS_FOR_ORDER_BY = getattr(settings, 'ALLOWED_FIELDS_FOR_ORDER_BY', allowed_fields_for_order_by)
 
-CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
-
+# filter by date options
 FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_START_DATE',
                                             timezone.datetime(2000, 1, 1, 0, 0, tzinfo=timezone.utc))
 FILTER_BY_DATE_DEFAULT_END_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_END_DATE', timezone.now())
-
 DATE_RANGE_DICT = {'default': {'start_date': FILTER_BY_DATE_DEFAULT_START_DATE,
                                'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
 
@@ -85,8 +88,6 @@ NUMBER_OF_TAGS_TO_PRESENT = 3
 TAGS_FROM_LAST_DAYS = 7
 
 NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
-
-MIN_FAN_COUNT_FOR_REL_COMPARISON = 50000
 
 
 class NoDefaultProvided(object):
