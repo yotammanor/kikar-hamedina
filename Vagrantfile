@@ -41,8 +41,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     shell.inline = <<-EOS
       set -e
       cd /vagrant/kikar_hamedina/
-      python manage.py syncdb
-      python manage.py migrate
+      python manage.py syncdb --noinput
+      [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
+      python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
+      for m in core persons mks links facebook_feeds video; do
+        python manage.py migrate $m
+      done
       for f in 1001_1001 1001_1002 1001_1003 1001_1004; do
         gunzip facebook_feeds/fixtures/${f}.json.gz
       done
