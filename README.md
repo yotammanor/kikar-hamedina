@@ -5,7 +5,7 @@ Clone the project into your local repository.
 
 Then Copy the file
 ``kikar_hamedina/kikar_hamedina/local_settings.py.template`` into
-``kikar_hamedina/kikar_hamedina/local_settingsoy.py``
+``kikar_hamedina/kikar_hamedina/local_settings.py``
 
 Edit it to include your facebook details
 - FACEBOOK_SECRET_KEY
@@ -29,7 +29,7 @@ Using Vagrant After Installation
 
 Virtual machine (vagrant) maintenance:
 
-``vagrant desroy`` - destroy virtual machine
+``vagrant destroy`` - destroy virtual machine
 
 ``vagrant up`` - create virtual machine or run it if it is down
 
