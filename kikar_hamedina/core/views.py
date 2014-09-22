@@ -148,6 +148,35 @@ def filter_by_date(request, datetime_field='published'):
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
+    def apply_reqest_params(self, query):
+        """Apply request params to DB query. This currently includes 'range'
+        and 'order_by' """
+        date_range_Q = filter_by_date(self.request)
+        result = query.filter(date_range_Q)
+
+        order_by = get_order_by(self.request)
+        if order_by:
+            # By default ordering puts NULLs on top, but we want them in the
+            # bottom. It isn't trivial to change this behavior in django
+            # (more so for non-fixed fields) but important for user experience
+            # See http://stackoverflow.com/q/7749216
+            null_field = order_by[0]
+            if null_field.startswith('-'):
+                null_field = null_field[1:]
+                null_order = 'is_null'
+            else:
+                null_order = '-is_null'
+            # We need to be paranoid here with raw SQL escaping, as there is
+            # no standard way to escape field name (select_params is only for
+            # values, not names). So only fix NULLs for these specific fields.
+            # See http://stackoverflow.com/q/6618344
+            if null_field in ("published", "like_count", "comment_count"):
+                result = result.extra(select={ 'is_null': '%s IS NULL' % null_field}).order_by(null_order, *order_by)
+            else:
+                result = result.order_by(*order_by)
+        return result
+
+
 
 class HomepageView(ListView):
     template_name = 'core/homepage.html'
@@ -415,16 +444,12 @@ class BillboardsView(ListView):
         return context
 
 
-class OnlyCommentsView(ListView):
+class OnlyCommentsView(StatusListView):
     model = Facebook_Status
     template_name = 'core/all_results.html'
 
     def get_queryset(self):
-        order_by = get_order_by(self.request)
-        date_range_Q = filter_by_date(self.request, datetime_field='published')
-        query_set = Facebook_Status.objects_no_filters.filter(is_comment=True).filter(date_range_Q).order_by(*order_by) \
-            .order_by(*order_by)
-        return query_set
+        return self.apply_reqest_params(Facebook_Status.objects_no_filters.filter(is_comment=True))
 
 
 class AllStatusesView(StatusListView):
@@ -433,10 +458,7 @@ class AllStatusesView(StatusListView):
     # paginate_by = 100
 
     def get_queryset(self):
-        order_by = get_order_by(self.request)
-        date_range_Q = filter_by_date(self.request, datetime_field='published')
-        query_set = super(AllStatusesView, self).get_queryset().filter(date_range_Q).order_by(*order_by)
-        return query_set
+        return self.apply_reqest_params(super(AllStatusesView, self).get_queryset())
 
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
@@ -563,22 +585,17 @@ class SearchView(StatusListView):
         return query_Q
 
     def get_queryset(self):
-        date_range_Q = filter_by_date(self.request, datetime_field='published')
         members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
         print 'get_queryset_executed:', query_Q
 
-        order_by = get_order_by(self.request)
-        # print getattr(self.request.GET, 'order_by')
-        return_queryset = Facebook_Status.objects.filter(query_Q).filter(date_range_Q).order_by(*order_by)
-        return return_queryset
+        return self.apply_reqest_params(Facebook_Status.objects.filter(query_Q))
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
         members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
-        date_range_Q = filter_by_date(self.request, datetime_field='published')
         context['members'] = Member.objects.filter(id__in=members_ids)
 
         context['parties'] = Party.objects.filter(id__in=parties_ids)
@@ -589,9 +606,7 @@ class SearchView(StatusListView):
 
         context['search_title'] = 'my search'
 
-        order_by = get_order_by(self.request)
-
-        return_queryset = Facebook_Status.objects.filter(query_Q).filter(date_range_Q).order_by(*order_by)
+        return_queryset = self.apply_reqest_params(Facebook_Status.objects.filter(query_Q))
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -610,8 +625,6 @@ class StatusFilterUnifiedView(StatusListView):
     page_template = "core/facebook_status_list.html"
 
     def get_queryset(self):
-        order_by = get_order_by(self.request)
-        date_range_Q = filter_by_date(request=self.request, datetime_field='published')
         variable_column = self.kwargs['variable_column']
         search_string = self.kwargs['id']
         if self.kwargs['context_object'] == 'tag':
@@ -625,8 +638,7 @@ class StatusFilterUnifiedView(StatusListView):
         else:
             selected_filter = variable_column
 
-        return Facebook_Status.objects.filter(**{selected_filter: search_string}).filter(date_range_Q).order_by(
-            *order_by)
+        return self.apply_reqest_params(Facebook_Status.objects.filter(**{selected_filter: search_string}))
 
     def get_context_data(self, **kwargs):
         context = super(StatusFilterUnifiedView, self).get_context_data(**kwargs)
@@ -655,11 +667,7 @@ class MemberView(StatusFilterUnifiedView):
         if self.persona is None:
             return []
 
-        date_range_Q = filter_by_date(request=self.request, datetime_field='published')
-        print date_range_Q
-        order_by = get_order_by(self.request)
-        query_set = self.persona.get_main_feed.facebook_status_set.filter(date_range_Q).order_by(*order_by)
-        return query_set
+        return self.apply_reqest_params(self.persona.get_main_feed.facebook_status_set)
 
     def get_context_data(self, **kwargs):
         context = super(MemberView, self).get_context_data(**kwargs)
@@ -686,11 +694,7 @@ class PartyView(StatusFilterUnifiedView):
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         date_range_Q = filter_by_date(request=self.request, datetime_field='published')
-        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]).filter(
-            date_range_Q) \
-            .order_by(*order_by)
-
-        return query_set
+        return self.apply_reqest_params(Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]))
 
 
 class TagView(StatusFilterUnifiedView):
