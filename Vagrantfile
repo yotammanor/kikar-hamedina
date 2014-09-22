@@ -31,7 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     shell.inline = <<-EOS
       set -e
       # Do 2 pip tries as sometimes repositories fail to respond
-      PIP="pip install -r /vagrant/requirements/vps.txt"
+      PIP="sudo pip install -r /vagrant/requirements/vps.txt"
       $PIP || $PIP
     EOS
   end
