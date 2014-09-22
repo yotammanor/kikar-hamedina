@@ -18,6 +18,7 @@ from django.template import RequestContext
 from django.utils import timezone
 from django.db.models import Count, Q, Max, F
 from django.conf import settings
+from django import db
 
 import facebook
 from endless_pagination.views import AjaxListView
@@ -904,42 +905,38 @@ def add_tag_to_status(request):
 def search_bar(request):
     searchText = request.GET['text']
 
-    response_data = dict()
-    response_data['number_of_results'] = 0
-    response_data['results'] = []
-    if searchText.strip() == "":
-        print "NO STRING"
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+    response_data = {
+        'number_of_results': 0,
+        'results': []
+    }
 
-    members = Member.objects.filter(name__contains=searchText, is_current=True).order_by('name')[
-              :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
-    for member in members:
-        newResult = dict()
-        newResult['id'] = member.id
-        newResult['name'] = member.name
-        newResult['party'] = member.current_party.name
-        newResult['type'] = "member"
-        response_data['results'].append(newResult)
-        response_data['number_of_results'] += 1
+    if searchText.strip():
+        # factory method to create a dynamic search result
+        def result_factory(id, name, type, **additional_info):
+            result = {
+                'id': id,
+                'name': name,
+                'type': type
+            }
+            result.update(additional_info)
+            response_data['number_of_results'] += 1
+            return result
 
-    tags = Tag.objects.filter(name__contains=searchText).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
-    for tag in tags:
-        newResult = dict()
-        newResult['id'] = tag.id
-        newResult['name'] = tag.name
-        newResult['type'] = "tag"
-        response_data['results'].append(newResult)
-        response_data['number_of_results'] += 1
+        members = Member.objects.filter(name__contains=searchText, is_current=True)\
+            .select_related('current_party').order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        for member in members:
+            response_data['results'].append(
+                result_factory(member.id, member.name, "member", party=member.current_party.name))
 
-    parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER).order_by('name')[
-              :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
-    for party in parties:
-        newResult = dict()
-        newResult['id'] = party.id
-        newResult['name'] = party.name
-        newResult['type'] = "party"
-        response_data['results'].append(newResult)
-        response_data['number_of_results'] += 1
+        tags = Tag.objects.filter(name__contains=searchText).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        for tag in tags:
+            response_data['results'].append(
+                result_factory(tag.id, tag.name, "tag"))
+
+        parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER).order_by('name')[
+                  :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        for party in parties:
+            response_data['results'].append(
+                result_factory(party.id, party.name, "party"))
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
-
