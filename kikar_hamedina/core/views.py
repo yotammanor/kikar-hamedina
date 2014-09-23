@@ -48,35 +48,40 @@ ALLOWED_FIELDS_FOR_ORDER_BY = getattr(settings, 'ALLOWED_FIELDS_FOR_ORDER_BY', a
 # filter by date options
 FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_START_DATE',
                                             timezone.datetime(2000, 1, 1, 0, 0, tzinfo=timezone.utc))
-FILTER_BY_DATE_DEFAULT_END_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_END_DATE', timezone.now())
-DATE_RANGE_DICT = {'default': {'start_date': FILTER_BY_DATE_DEFAULT_START_DATE,
-                               'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
 
-                   'week': {'start_date': timezone.now() - timezone.timedelta(days=7),
-                            'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
 
-                   'two_weeks': {'start_date': timezone.now() - timezone.timedelta(days=14),
-                                 'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
+def get_date_range_dict():
+    filter_by_date_default_end_date = timezone.now()
 
-                   'month': {'start_date': timezone.now() - timezone.timedelta(days=31),
-                             'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
+    date_range_dict = {'default': {'start_date': FILTER_BY_DATE_DEFAULT_START_DATE,
+                                   'end_date': filter_by_date_default_end_date},
 
-                   'current_month': {
-                       'start_date': timezone.datetime(timezone.now().year, timezone.now().month, 1,
-                                                       tzinfo=timezone.utc),
-                       'end_date': FILTER_BY_DATE_DEFAULT_END_DATE
-                   },
-                   'current_year': {
-                       'start_date': timezone.datetime(timezone.now().year, 1, 1, tzinfo=timezone.utc),
-                       'end_date': FILTER_BY_DATE_DEFAULT_END_DATE
-                   },
-                   'protective_edge': {
-                   # Dates are set based on information from Wikipedia:
-                   # http://he.wikipedia.org/wiki/%D7%9E%D7%91%D7%A6%D7%A2_%D7%A6%D7%95%D7%A7_%D7%90%D7%99%D7%AA%D7%9F
-                       'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
-                       'end_date': timezone.datetime(2014, 8, 26, tzinfo=timezone.utc)
-                   },
-}
+                       'week': {'start_date': timezone.now() - timezone.timedelta(days=7),
+                                'end_date': filter_by_date_default_end_date},
+
+                       'two_weeks': {'start_date': timezone.now() - timezone.timedelta(days=14),
+                                     'end_date': filter_by_date_default_end_date},
+
+                       'month': {'start_date': timezone.now() - timezone.timedelta(days=31),
+                                 'end_date': filter_by_date_default_end_date},
+
+                       'current_month': {
+                           'start_date': timezone.datetime(timezone.now().year, timezone.now().month, 1,
+                                                           tzinfo=timezone.utc),
+                           'end_date': filter_by_date_default_end_date
+                       },
+                       'current_year': {
+                           'start_date': timezone.datetime(timezone.now().year, 1, 1, tzinfo=timezone.utc),
+                           'end_date': filter_by_date_default_end_date
+                       },
+                       'protective_edge': {
+                           # Dates are set based on information from Wikipedia:
+                           # he.wikipedia.org/wiki/%D7%9E%D7%91%D7%A6%D7%A2_%D7%A6%D7%95%D7%A7_%D7%90%D7%99%D7%AA%D7%9F
+                           'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
+                           'end_date': timezone.datetime(2014, 8, 26, tzinfo=timezone.utc)
+                       },
+    }
+    return date_range_dict
 
 
 # TODO: refactor the next constant to use the pattern above
@@ -127,17 +132,18 @@ def get_order_by(request):
 
 
 def filter_by_date(request, datetime_field='published'):
+    date_range_dict = get_date_range_dict()
     try:
         filter_range_arg = request.GET['range']
     except MultiValueDictKeyError:
         filter_range_arg = 'default'
 
     try:
-        start_date = DATE_RANGE_DICT[filter_range_arg]['start_date']
-        end_date = DATE_RANGE_DICT[filter_range_arg]['end_date']
+        start_date = date_range_dict[filter_range_arg]['start_date']
+        end_date = date_range_dict[filter_range_arg]['end_date']
     except KeyError:
-        start_date = DATE_RANGE_DICT['default']['start_date']
-        end_date = DATE_RANGE_DICT['default']['end_date']
+        start_date = date_range_dict['default']['start_date']
+        end_date = date_range_dict['default']['end_date']
 
     print filter_range_arg
 
@@ -172,11 +178,10 @@ class StatusListView(AjaxListView):
             # values, not names). So only fix NULLs for these specific fields.
             # See http://stackoverflow.com/q/6618344
             if null_field in ("published", "like_count", "comment_count"):
-                result = result.extra(select={ 'is_null': '%s IS NULL' % null_field}).order_by(null_order, *order_by)
+                result = result.extra(select={'is_null': '%s IS NULL' % null_field}).order_by(null_order, *order_by)
             else:
                 result = result.order_by(*order_by)
         return result
-
 
 
 class HomepageView(ListView):
@@ -695,7 +700,8 @@ class PartyView(StatusFilterUnifiedView):
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         date_range_Q = filter_by_date(request=self.request, datetime_field='published')
-        return self.apply_reqest_params(Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]))
+        return self.apply_reqest_params(
+            Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]))
 
 
 class TagView(StatusFilterUnifiedView):
@@ -717,6 +723,9 @@ class FacebookStatusDetailView(DetailView):
 
     model = Facebook_Status
     slug_field = 'status_id'
+
+    def get_queryset(self, **kwargs):
+        return Facebook_Status.objects_no_filters.filter(status_id=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):
         context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
@@ -922,8 +931,8 @@ def search_bar(request):
             response_data['number_of_results'] += 1
             return result
 
-        members = Member.objects.filter(name__contains=searchText, is_current=True)\
-            .select_related('current_party').order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        members = Member.objects.filter(name__contains=searchText, is_current=True) \
+                      .select_related('current_party').order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for member in members:
             response_data['results'].append(
                 result_factory(member.id, member.name, "member", party=member.current_party.name))
@@ -933,7 +942,8 @@ def search_bar(request):
             response_data['results'].append(
                 result_factory(tag.id, tag.name, "tag"))
 
-        parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER).order_by('name')[
+        parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER).order_by(
+            'name')[
                   :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for party in parties:
             response_data['results'].append(
