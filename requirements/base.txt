@@ -29,6 +29,7 @@ django-debug-toolbar>=1.0
 nose
 django-nose
 PIL
+feedparser
 django-pagination==1.0.7
 django-tagging==0.3.1
 -e git://github.com/hasadna/django-activity-stream.git@c56a07921b8c796fce35bda6feab4610fdf64e5d#egg=django-activity-stream
