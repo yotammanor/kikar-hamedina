@@ -8,8 +8,12 @@ body {
     width: 300px;
 }
 
+.photo-container {
+    padding: 10px 15px;
+}
+
 .logo-photo {
-    height: 29px;
+    height: 30px;
 }
 
 .profile-photo {
@@ -21,9 +25,9 @@ body {
 	width: 79px;
 }
 */
-.navbar-options {
+/*.navbar-options {
     margin-top: 9px;
-}
+}*/
 
 /*
 .navbar-brand {
