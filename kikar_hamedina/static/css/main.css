@@ -8,6 +8,7 @@ body {
     width: 300px;
 }
 
+/* navbar */
 .photo-container {
     padding: 10px 15px;
 }
@@ -16,8 +17,34 @@ body {
     height: 30px;
 }
 
+/*blue dropdowns*/
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  color: white;
+  background-color: #428bca;
+  background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
+  background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+}
+
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+  color: white;
+  background-color: #428bca;
+  background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
+  background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+}
+
 .profile-photo {
     align-items: right;
+}
+
+#profile-photo {
+    margin-left: 20px;
 }
 
 /*

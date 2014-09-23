@@ -35,37 +35,39 @@
     </script>
 
     <!-- For autocomplete for tagging. Can be moved somewhere else -->
-    <!-- TODO: availableTags -->
+    <!-- TODO: availableTags. -->
     <script>
-        $(function () {
-            var availableTags = [
-                "ActionScript",
-                "AppleScript",
-                "Asp",
-                "BASIC",
-                "C",
-                "C++",
-                "Clojure",
-                "COBOL",
-                "ColdFusion",
-                "Erlang",
-                "Fortran",
-                "Groovy",
-                "Haskell",
-                "Java",
-                "JavaScript",
-                "Lisp",
-                "Perl",
-                "PHP",
-                "Python",
-                "Ruby",
-                "Scala",
-                "Scheme"
-            ];
-            $(".add-tag").autocomplete({
-                source: availableTags
-            });
-        });
+    // not being used... was causing an error in the console when loading politicians page
+    //     $(function () {
+    //         // TODO: make this the list of available tags. at the moment it's suggesting nonsense for autocomplete
+    //         var availableTags = [
+    //             // "ActionScript",
+    //             // "AppleScript",
+    //             // "Asp",
+    //             // "BASIC",
+    //             // "C",
+    //             // "C++",
+    //             // "Clojure",
+    //             // "COBOL",
+    //             // "ColdFusion",
+    //             // "Erlang",
+    //             // "Fortran",
+    //             // "Groovy",
+    //             // "Haskell",
+    //             // "Java",
+    //             // "JavaScript",
+    //             // "Lisp",
+    //             // "Perl",
+    //             // "PHP",
+    //             // "Python",
+    //             // "Ruby",
+    //             // "Scala",
+    //             // "Scheme"
+    //         ];
+    //         $(".add-tag").autocomplete({
+    //             source: availableTags
+    //         });
+    //     });
     </script>
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -75,7 +77,7 @@
 
 
     <div class="row">
-        <div class="col-md-9 panel-group">
+        <div class="col-sm-9 panel-group">
             <!-- Order-by links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
             <ul class="nav nav-tabs" id="order-by-options">
                 <li data-order-by="-published"><a href="#">לפי תאריך</a></li>
@@ -89,7 +91,7 @@
             <!-- List of statuses -->
             {% include "core/facebook_status_list.html" with object_list=object_list %}
         </div>
-        <div class="col-md-2">
+        <div class="col-sm-3">
             <!-- Filter-by-date links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
             <div><br><br></div>
             {% block date_filter %}

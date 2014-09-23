@@ -10,10 +10,9 @@
     {% with object.facebook_persona.get_main_feed as feed %}
         {% load humanize %}
         {% load core_extras %}
-        <p>
 
-            <img src="{{ feed.picture_large }}" class="img-rounded" id="profile-photo">
-        </p>
+        <img src="{{ feed.picture_large }}" class="img-rounded pull-right" id="profile-photo">
+        
         <p>
             <i class="fa fa-group"></i>
             <a href="{% url 'party' object.current_party.id %}">{{ object.current_party.name }}</a>
