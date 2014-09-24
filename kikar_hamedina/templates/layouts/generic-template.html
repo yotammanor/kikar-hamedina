@@ -178,16 +178,19 @@
 
             </ul>
 
-            <div class="navbar-form navbar-left dropdown" id="search-bar-form" role="search">
-                <div class="form-group" id="search-results-dropdown">
-                    <input id="navbar-search-box" type="text" name="search_str" class="form-control" autocomplete="off"
-                           placeholder="חיפוש..." data-toggle="dropdown">
-                    <ul id="search-results-list" class="dropdown-menu">
-                    </ul>
+            <div class="col-sm-3 col-md-3 pull-left">
+                <div class="navbar-form navbar-left dropdown" id="search-bar-form" role="search">
+                    <div class="input-group" id="search-results-dropdown">
+                        <input id="navbar-search-box" type="text" name="search_str" class="form-control" autocomplete="off" placeholder="חיפוש..." data-toggle="dropdown">
+                        <ul id="search-results-list" class="dropdown-menu">
+                        </ul>
+                        <div class="input-group-btn">
+                            <button class="btn btn-success" id="search-bar-submit" data-target="{% url 'search' %}" type="button"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
                 </div>
-                <button type="button" class="btn btn-success" id="search-bar-submit" data-target="{% url 'search' %}"><i
-                        class="fa fa-search"></i></button>
             </div>
+            
         </div>
         <!--/.nav-collapse -->
     </div>
