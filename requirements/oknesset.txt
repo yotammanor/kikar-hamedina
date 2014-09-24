@@ -12,6 +12,7 @@
 #       nose, django-nose, django-activity-stream,
 #       django-mailer, django-debug-toolbar
 #       PIL,
+#       feedparser,
 #       django-pagination==1.0.7,
 #       django-tagging==0.3.1    - appear in our base.txt requirement.
 #
@@ -22,7 +23,6 @@
 django_compressor==1.2
 BeautifulSoup
 vobject
-feedparser
 gdata
 django-social-auth>=0.7.19
 oauth==1.0.1
