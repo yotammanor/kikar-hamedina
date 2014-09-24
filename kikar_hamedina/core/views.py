@@ -871,6 +871,12 @@ def status_update(request, status_id):
 
 # A handler for add_tag_to_status ajax call from client
 def add_tag_to_status(request):
+    # Todo:
+    """
+    1. actually restrict unregistered people from adding a tag
+    2. using POST method instead of GET method
+    3. using single transaction for the whole process
+    """
     response_data = dict()
     response_data['success'] = False
     status_id = request.GET["id"]
