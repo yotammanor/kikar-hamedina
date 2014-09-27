@@ -17,8 +17,14 @@ INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'likes a link',
                                                'likes a photo',
                                                'likes a video',
+                                               'likes a status',
+                                               'liked this post',
                                                'commented on this',
                                                'commented on a post',
+                                               'commented on a photo',
+                                               'commented on a video',
+                                               'commented on a link',
+                                               'commented on a status',
 ]
 
 
@@ -247,25 +253,8 @@ class Facebook_Status(models.Model):
 
         print 'status db id:', self.id
         # print 'story string:', story_string
-        # print 'story tags:', self.story_tags
 
-        # Check for non-mk users mentioned within status's story tags
-        print 'Based on story_tags:',
-        if self.story_tags:
-            # has a story with the style of <user> commented on <feed>'s status
-            story_tags_eval = eval(str(self.story_tags))
-            try:
-                for tag in story_tags_eval.values():
-                    for dic in tag:
-                        feed_in_tag = Facebook_Feed.current_feeds.filter(vendor_id=dic['id'])
-                        if not feed_in_tag:
-                            # the mentioned user is not an mk
-                            print 'True'
-                            return True
-            except:
-                print 'True'
-                return True
-        print 'False.'
+        # --Deprecated logic-- : based on story_tags. Code will appear in file's history
 
         # Check for strings indicative of comment activity
         print 'Based on indicative text:',
