@@ -146,6 +146,14 @@ LOGGING = {
             'filename': 'debug.log',
             'formatter': 'simple'
         },
+        'scraping': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/scarping.log',
+            'maxBytes': 1024 * 1024 * 10, # 10MB each log file
+            'backupCount': 10,
+            'formatter': 'simple'
+        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -159,6 +167,11 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['scrapeFile'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'scraping': {
+            'handlers': ['scraping'],
             'propagate': True,
             'level': 'INFO',
         },
