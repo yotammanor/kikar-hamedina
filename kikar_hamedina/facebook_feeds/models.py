@@ -25,6 +25,7 @@ INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'commented on a video',
                                                'commented on a link',
                                                'commented on a status',
+                                               'replied to a comment',
 ]
 
 
