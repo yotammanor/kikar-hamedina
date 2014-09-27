@@ -834,7 +834,7 @@ def get_data_from_facebook(request):
 
 # A handler for status_update ajax call from client
 def status_update(request, status_id):
-    status = Facebook_Status.objects.get(status_id=status_id)
+    status = Facebook_Status.objects_no_filters.get(status_id=status_id)
 
     response = HttpResponse(content_type="application/json")
     response_data = dict()
