@@ -17,9 +17,16 @@ INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'likes a link',
                                                'likes a photo',
                                                'likes a video',
+                                               'likes a status',
+                                               'liked this post',
                                                'commented on this',
-
-                                               ]
+                                               'commented on a post',
+                                               'commented on a photo',
+                                               'commented on a video',
+                                               'commented on a link',
+                                               'commented on a status',
+                                               'replied to a comment',
+]
 
 
 class Facebook_Persona(models.Model):
@@ -102,7 +109,8 @@ class Facebook_Feed(models.Model):
         asked_for_date_of_value = timezone.now() - datetime.timedelta(days=days_back)
 
         try:
-            popularity_history_timeseries = self.feed_popularity_set.to_timeseries('fan_count', index='date_of_creation')
+            popularity_history_timeseries = self.feed_popularity_set.to_timeseries('fan_count',
+                                                                                   index='date_of_creation')
             first_value = popularity_history_timeseries.iloc[-1].name.to_pydatetime()
             last_value = popularity_history_timeseries.iloc[0].name.to_pydatetime()
 
@@ -118,7 +126,8 @@ class Facebook_Feed(models.Model):
                     # if requested date's data is missing - interpolate from existing data
                     is_interpolated = True
                     resampled_history_interpolated = resampled_history_raw.interpolate()
-                    fan_count_at_requested_date = resampled_history_interpolated.loc[asked_for_date_of_value.date()].fan_count
+                    fan_count_at_requested_date = resampled_history_interpolated.loc[
+                        asked_for_date_of_value.date()].fan_count
                 else:
                     fan_count_at_requested_date = resampled_history_raw.loc[asked_for_date_of_value.date()].fan_count
 
@@ -153,6 +162,7 @@ class Facebook_Feed(models.Model):
     @property
     def popularity_dif_week_growth_rate(self, days_back=DEFAULT_DAYS_BACK_FOR_POPULARITY_DIF):
         return self.popularity_dif(days_back)['fan_count_dif_growth_rate']
+
 
 class Feed_Popularity(models.Model):
     feed = models.ForeignKey('Facebook_Feed')
@@ -244,25 +254,8 @@ class Facebook_Status(models.Model):
 
         print 'status db id:', self.id
         # print 'story string:', story_string
-        # print 'story tags:', self.story_tags
 
-        # Check for non-mk users mentioned within status's story tags
-        print 'Based on story_tags:',
-        if self.story_tags:
-            # has a story with the style of <user> commented on <feed>'s status
-            story_tags_eval = eval(str(self.story_tags))
-            try:
-                for tag in story_tags_eval.values():
-                    for dic in tag:
-                        feed_in_tag = Facebook_Feed.current_feeds.filter(vendor_id=dic['id'])
-                        if not feed_in_tag:
-                            # the mentioned user is not an mk
-                            print 'True'
-                            return True
-            except:
-                print 'True'
-                return True
-        print 'False.'
+        # --Deprecated logic-- : based on story_tags. Code will appear in file's history
 
         # Check for strings indicative of comment activity
         print 'Based on indicative text:',
@@ -272,7 +265,7 @@ class Facebook_Status(models.Model):
             if text in story_string:
                 # print 'found'
                 found_text.append(text)
-            # else:
+                # else:
                 # print 'not found'
         if found_text:
             print 'True'

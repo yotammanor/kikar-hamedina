@@ -834,7 +834,7 @@ def get_data_from_facebook(request):
 
 # A handler for status_update ajax call from client
 def status_update(request, status_id):
-    status = Facebook_Status.objects.get(status_id=status_id)
+    status = Facebook_Status.objects_no_filters.get(status_id=status_id)
 
     response = HttpResponse(content_type="application/json")
     response_data = dict()
@@ -884,6 +884,12 @@ def status_update(request, status_id):
 
 # A handler for add_tag_to_status ajax call from client
 def add_tag_to_status(request):
+    # Todo:
+    """
+    1. actually restrict unregistered people from adding a tag
+    2. using POST method instead of GET method
+    3. using single transaction for the whole process
+    """
     response_data = dict()
     response_data['success'] = False
     status_id = request.GET["id"]

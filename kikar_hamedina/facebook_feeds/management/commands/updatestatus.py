@@ -305,6 +305,8 @@ class Command(BaseCommand):
         Executes updatestatus manage.py command.
         Receives either one status ID and updates the data for that status,
         or no status ID and therefore retrieves all Statuses and updates their data one by one.
+
+        Options exist for running within a given date range.
         """
 
         list_of_statuses = list()
