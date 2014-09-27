@@ -14,9 +14,9 @@ $(document).ready(function () {
                 $("#status-metrics-is-updating-indicator-" + data['id']).hide()
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                responseText = JSON.parse(jqXHR.responseText);
-                $("#status-metrics-is-updating-indicator-" + responseText).hide();
-                $("#status-metrics-is-error-indicator-" + responseText).show()
+//                console.log(jqXHR);
+                $("#status-metrics-is-updating-indicator-" + status_id).hide();
+                $("#status-metrics-is-error-indicator-" + status_id).show()
             }
         });
     });
