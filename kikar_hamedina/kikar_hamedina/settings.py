@@ -6,6 +6,9 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.p
 
 sub_path = lambda *x: os.path.join(PROJECT_ROOT, *x)
 
+# Configuring LOGS_ROOT
+LOGS_ROOT = sub_path("logs")
+
 # Configuring DATA_ROOT
 DATA_ROOT = sub_path("data")
 
@@ -149,8 +152,8 @@ LOGGING = {
         'scraping': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/scarping.log',
-            'maxBytes': 1024 * 1024 * 10, # 10MB each log file
+            'filename': '%s/scarping.log' % LOGS_ROOT,
+            'maxBytes': 1024 * 1024 * 10,  # 10MB each log file
             'backupCount': 10,
             'formatter': 'simple'
         },

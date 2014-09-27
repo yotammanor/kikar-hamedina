@@ -18,7 +18,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell do |shell|
     shell.inline = <<-EOS
       set -e
-
       sudo -u postgres psql -c "DROP DATABASE IF EXISTS kikar"
       sudo -u postgres psql -c "DROP ROLE IF EXISTS kikar"
       sudo -u postgres psql -c "CREATE USER kikar WITH PASSWORD 'kikar'"
@@ -41,6 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     shell.inline = <<-EOS
       set -e
       cd /vagrant/kikar_hamedina/
+      [ ! -d logs ] && mkdir logs
       python manage.py syncdb --noinput
       [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
       python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
