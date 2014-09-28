@@ -12,7 +12,7 @@
     </div>
 {% endblock %}
 
-{% block content %}
+{% block main_content %}
     <ul>
         {% for member in object_list %}
             <li><a href="{% url 'member' member.id %}">{{ member.name }}</a></li>

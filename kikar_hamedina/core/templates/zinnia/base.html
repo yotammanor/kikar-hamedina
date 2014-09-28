@@ -3,10 +3,6 @@
 
 {% block meta-keywords %}{% get_tags as entry_tags %}{{ entry_tags|join:", "}}{% endblock meta-keywords %}
 
-{% block meta %}
-    <meta name="generator" content="Zinnia {{ ZINNIA_VERSION }}" />
-{% endblock meta %}
-
 {% block link %}
     <link rel="index" href="{% url 'zinnia_entry_archive_index' %}" />
     <link rel="author" type="text/plain" href="{% url 'zinnia_humans' %}" />
@@ -18,20 +14,17 @@
     {% get_archives_entries "zinnia/tags/entries_archives_link.html" %}
 {% endblock link %}
 
+
+{% block blog_content %}
+{% get_archives_entries "zinnia/tags/entries_archives_link.html" %}
 {% block breadcrumbs %}
   {% zinnia_breadcrumbs %}
 {% endblock breadcrumbs %}
+{% block content %}
+{% endblock content %}
+{% endblock blog_content %}
 
 {% block sidebar %}
-<div id="widget-welcome" class="widget">
-  <h3>{% trans "Welcome!" %}</h3>
-  <p>
-    {% trans "This simple theme is the default appearance of Zinnia." %}
-  </p>
-  <p>
-    {% trans "Don't hesitate to override the template <strong>zinnia/base.html</strong> to start <a href='http://docs.django-blog-zinnia.com/en/latest/how-to/customize_look_and_feel.html'>customizing your Weblog</a>." %}
-  </p>
-</div>
 <div id="widget-categories" class="widget">
   <h3>{% trans "Categories" %}</h3>
   {% get_categories %}

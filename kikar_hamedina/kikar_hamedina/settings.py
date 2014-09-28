@@ -60,7 +60,7 @@ INSTALLED_APPS = (
     'django_pandas',
     'tastypie',
     'mptt',
-    'zinnia'
+    'zinnia',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -87,6 +87,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "planet.context_processors.context",
     "core.context_processors.generic",
+    "zinnia.context_processors.version",
 )
 
 ROOT_URLCONF = 'kikar_hamedina.urls'

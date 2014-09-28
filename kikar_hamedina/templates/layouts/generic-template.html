@@ -38,6 +38,9 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/>
 
+    {% block link %}
+    {% endblock %}
+
     {% block scripts %}
     {% endblock %}
 
@@ -219,7 +222,7 @@
             </div>
         {% endblock %}
 
-        {% block content %}
+        {% block main_content %}
         {% endblock %}
 
     </div>
