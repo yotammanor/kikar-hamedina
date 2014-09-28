@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
+    'django.contrib.comments',
     'rest_framework',
     'django_extensions',
     'south',
@@ -58,6 +59,8 @@ INSTALLED_APPS = (
     'dumpdata_chunks',
     'django_pandas',
     'tastypie',
+    'mptt',
+    'zinnia'
 )
 
 MIDDLEWARE_CLASSES = (
