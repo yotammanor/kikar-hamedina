@@ -2,6 +2,8 @@ import datetime
 from pprint import pprint
 from optparse import make_option
 from collections import defaultdict
+from unidecode import unidecode
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
@@ -36,6 +38,13 @@ class Command(BaseCommand):
                                  .format(DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN,
                                          DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN)
     )
+    option_force_update = make_option('-f',
+                                                 '--force-update',
+                                                 action='store_true',
+                                                 dest='force-update',
+                                                 default=False,
+                                                 help='Use this flag to force updating of status/'
+    )
     option_force_attachment_update = make_option('-a',
                                                  '--force-attachment-update',
                                                  action='store_true',
@@ -47,6 +56,7 @@ class Command(BaseCommand):
     for x in BaseCommand.option_list:
         option_list_helper.append(x)
     option_list_helper.append(option_initial)
+    option_list_helper.append(option_force_update)
     option_list_helper.append(option_force_attachment_update)
     option_list = tuple(option_list_helper)
 
@@ -183,7 +193,7 @@ class Command(BaseCommand):
             status = Facebook_Status_Model.objects_no_filters.get(
                 status_id=status_object['id'])  # use objects_default manages to get statuses that are comments as well.
 
-            if status.updated < current_time_of_update:
+            if status.updated < current_time_of_update or options['force-update']:
                 # If post_id exists but of earlier update time, fields are updated.
                 print 'update status'
                 status.content = message
@@ -195,6 +205,11 @@ class Command(BaseCommand):
                 status.story = story
                 status.story_tags = story_tags
                 status.is_comment = status.set_is_comment
+
+                try:
+                    status.save()
+                except:
+                    raise
 
                 # update attachment data
                 self.create_or_update_attachment(status, status_object_defaultdict)
@@ -227,6 +242,7 @@ class Command(BaseCommand):
                 self.insert_status_attachment(status, status_object_defaultdict)
         finally:
             # save status object.
+            print 'saving status'
             status.save()
 
     def get_feed_statuses(self, feed, post_number_limit):

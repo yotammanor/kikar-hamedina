@@ -1,8 +1,8 @@
+<div id="status-list-containter">
+
 {% load endless %}
 
-
 {% paginate 5,10 object_list as objects_in_page %}
-<div>
 {% for status in objects_in_page %}
     {% include "core/facebook_status.html" %}
     <br>

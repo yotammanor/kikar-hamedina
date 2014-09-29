@@ -73,7 +73,7 @@ class Party(models.Model):
     knesset = models.ForeignKey(Knesset, related_name='parties', db_index=True,
                                 null=True, blank=True)
 
-    logo = models.ImageField(blank=True,null=True,upload_to='partyLogos')
+    logo = models.ImageField(blank=True, null=True, upload_to='partyLogos')
 
     objects = BetterManager()
     current_knesset = CurrentKnessetPartyManager()
@@ -239,7 +239,7 @@ class Member(models.Model):
         return self.name
 
     def save(self, **kwargs):
-        self.recalc_average_monthly_committee_presence()
+        # self.recalc_average_monthly_committee_presence()  //oknesset dependency not implemented
         super(Member, self).save(**kwargs)
 
     def average_votes_per_month(self):

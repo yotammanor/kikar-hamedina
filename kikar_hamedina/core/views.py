@@ -18,6 +18,7 @@ from django.template import RequestContext
 from django.utils import timezone
 from django.db.models import Count, Q, Max, F
 from django.conf import settings
+from django import db
 
 import facebook
 from endless_pagination.views import AjaxListView
@@ -28,51 +29,59 @@ from mks.models import Party, Member
 from facebook import GraphAPIError
 from core.insights import StatsEngine
 
-DEFAULT_POPULARITY_DIF_COMPARISON_TYPE = getattr(settings, 'DEFAULT_POPULARITY_DIF_COMPARISON_TYPE', 'rel')
+# current knesset number
+CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
 
+# used for calculating top gainer of fan_count
+MIN_FAN_COUNT_FOR_REL_COMPARISON = getattr(settings, 'MIN_FAN_COUNT_FOR_REL_COMPARISON', 5000)
+DEFAULT_POPULARITY_DIF_COMPARISON_TYPE = getattr(settings, 'DEFAULT_POPULARITY_DIF_COMPARISON_TYPE', 'rel')
 POPULARITY_DIF_DAYS_BACK = getattr(settings, 'POPULARITY_DIF_DAYS_BACK', 30)
 
+# search logic default operator
 DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
 
+# order by default
 DEFAULT_STATUS_ORDER_BY = getattr(settings, 'DEFAULT_STATUS_ORDER_BY', '-published')
-
 allowed_fields_for_order_by = [field.name for field in Facebook_Status._meta.fields]
 ALLOWED_FIELDS_FOR_ORDER_BY = getattr(settings, 'ALLOWED_FIELDS_FOR_ORDER_BY', allowed_fields_for_order_by)
 
-CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
-
+# filter by date options
 FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_START_DATE',
                                             timezone.datetime(2000, 1, 1, 0, 0, tzinfo=timezone.utc))
-FILTER_BY_DATE_DEFAULT_END_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_END_DATE', timezone.now())
 
-DATE_RANGE_DICT = {'default': {'start_date': FILTER_BY_DATE_DEFAULT_START_DATE,
-                               'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
 
-                   'week': {'start_date': timezone.now() - timezone.timedelta(days=7),
-                            'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
+def get_date_range_dict():
+    filter_by_date_default_end_date = timezone.now()
 
-                   'two_weeks': {'start_date': timezone.now() - timezone.timedelta(days=14),
-                                 'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
+    date_range_dict = {'default': {'start_date': FILTER_BY_DATE_DEFAULT_START_DATE,
+                                   'end_date': filter_by_date_default_end_date},
 
-                   'month': {'start_date': timezone.now() - timezone.timedelta(days=31),
-                             'end_date': FILTER_BY_DATE_DEFAULT_END_DATE},
+                       'week': {'start_date': timezone.now() - timezone.timedelta(days=7),
+                                'end_date': filter_by_date_default_end_date},
 
-                   'current_month': {
-                       'start_date': timezone.datetime(timezone.now().year, timezone.now().month, 1,
-                                                       tzinfo=timezone.utc),
-                       'end_date': FILTER_BY_DATE_DEFAULT_END_DATE
-                   },
-                   'current_year': {
-                       'start_date': timezone.datetime(timezone.now().year, 1, 1, tzinfo=timezone.utc),
-                       'end_date': FILTER_BY_DATE_DEFAULT_END_DATE
-                   },
-                   'protective_edge': {
-                   # Dates are set based on information from Wikipedia:
-                   # http://he.wikipedia.org/wiki/%D7%9E%D7%91%D7%A6%D7%A2_%D7%A6%D7%95%D7%A7_%D7%90%D7%99%D7%AA%D7%9F
-                       'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
-                       'end_date': timezone.datetime(2014, 8, 26, tzinfo=timezone.utc)
-                   },
-}
+                       'two_weeks': {'start_date': timezone.now() - timezone.timedelta(days=14),
+                                     'end_date': filter_by_date_default_end_date},
+
+                       'month': {'start_date': timezone.now() - timezone.timedelta(days=31),
+                                 'end_date': filter_by_date_default_end_date},
+
+                       'current_month': {
+                           'start_date': timezone.datetime(timezone.now().year, timezone.now().month, 1,
+                                                           tzinfo=timezone.utc),
+                           'end_date': filter_by_date_default_end_date
+                       },
+                       'current_year': {
+                           'start_date': timezone.datetime(timezone.now().year, 1, 1, tzinfo=timezone.utc),
+                           'end_date': filter_by_date_default_end_date
+                       },
+                       'protective_edge': {
+                           # Dates are set based on information from Wikipedia:
+                           # he.wikipedia.org/wiki/%D7%9E%D7%91%D7%A6%D7%A2_%D7%A6%D7%95%D7%A7_%D7%90%D7%99%D7%AA%D7%9F
+                           'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
+                           'end_date': timezone.datetime(2014, 8, 26, tzinfo=timezone.utc)
+                       },
+    }
+    return date_range_dict
 
 
 # TODO: refactor the next constant to use the pattern above
@@ -85,8 +94,6 @@ NUMBER_OF_TAGS_TO_PRESENT = 3
 TAGS_FROM_LAST_DAYS = 7
 
 NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
-
-MIN_FAN_COUNT_FOR_REL_COMPARISON = 50000
 
 
 class NoDefaultProvided(object):
@@ -125,17 +132,18 @@ def get_order_by(request):
 
 
 def filter_by_date(request, datetime_field='published'):
+    date_range_dict = get_date_range_dict()
     try:
         filter_range_arg = request.GET['range']
     except MultiValueDictKeyError:
         filter_range_arg = 'default'
 
     try:
-        start_date = DATE_RANGE_DICT[filter_range_arg]['start_date']
-        end_date = DATE_RANGE_DICT[filter_range_arg]['end_date']
+        start_date = date_range_dict[filter_range_arg]['start_date']
+        end_date = date_range_dict[filter_range_arg]['end_date']
     except KeyError:
-        start_date = DATE_RANGE_DICT['default']['start_date']
-        end_date = DATE_RANGE_DICT['default']['end_date']
+        start_date = date_range_dict['default']['start_date']
+        end_date = date_range_dict['default']['end_date']
 
     print filter_range_arg
 
@@ -146,6 +154,34 @@ def filter_by_date(request, datetime_field='published'):
 
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
+
+    def apply_reqest_params(self, query):
+        """Apply request params to DB query. This currently includes 'range'
+        and 'order_by' """
+        date_range_Q = filter_by_date(self.request)
+        result = query.filter(date_range_Q)
+
+        order_by = get_order_by(self.request)
+        if order_by:
+            # By default ordering puts NULLs on top, but we want them in the
+            # bottom. It isn't trivial to change this behavior in django
+            # (more so for non-fixed fields) but important for user experience
+            # See http://stackoverflow.com/q/7749216
+            null_field = order_by[0]
+            if null_field.startswith('-'):
+                null_field = null_field[1:]
+                null_order = 'is_null'
+            else:
+                null_order = '-is_null'
+            # We need to be paranoid here with raw SQL escaping, as there is
+            # no standard way to escape field name (select_params is only for
+            # values, not names). So only fix NULLs for these specific fields.
+            # See http://stackoverflow.com/q/6618344
+            if null_field in ("published", "like_count", "comment_count"):
+                result = result.extra(select={'is_null': '%s IS NULL' % null_field}).order_by(null_order, *order_by)
+            else:
+                result = result.order_by(*order_by)
+        return result
 
 
 class HomepageView(ListView):
@@ -414,16 +450,12 @@ class BillboardsView(ListView):
         return context
 
 
-class OnlyCommentsView(ListView):
+class OnlyCommentsView(StatusListView):
     model = Facebook_Status
     template_name = 'core/all_results.html'
 
     def get_queryset(self):
-        order_by = get_order_by(self.request)
-        date_range_Q = filter_by_date(self.request, datetime_field='published')
-        query_set = Facebook_Status.objects_no_filters.filter(is_comment=True).filter(date_range_Q).order_by(*order_by) \
-            .order_by(*order_by)
-        return query_set
+        return self.apply_reqest_params(Facebook_Status.objects_no_filters.filter(is_comment=True))
 
 
 class AllStatusesView(StatusListView):
@@ -432,10 +464,7 @@ class AllStatusesView(StatusListView):
     # paginate_by = 100
 
     def get_queryset(self):
-        order_by = get_order_by(self.request)
-        date_range_Q = filter_by_date(self.request, datetime_field='published')
-        query_set = super(AllStatusesView, self).get_queryset().filter(date_range_Q).order_by(*order_by)
-        return query_set
+        return self.apply_reqest_params(super(AllStatusesView, self).get_queryset())
 
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
@@ -562,22 +591,17 @@ class SearchView(StatusListView):
         return query_Q
 
     def get_queryset(self):
-        date_range_Q = filter_by_date(self.request, datetime_field='published')
         members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
         print 'get_queryset_executed:', query_Q
 
-        order_by = get_order_by(self.request)
-        # print getattr(self.request.GET, 'order_by')
-        return_queryset = Facebook_Status.objects.filter(query_Q).filter(date_range_Q).order_by(*order_by)
-        return return_queryset
+        return self.apply_reqest_params(Facebook_Status.objects.filter(query_Q))
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
         members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
-        date_range_Q = filter_by_date(self.request, datetime_field='published')
         context['members'] = Member.objects.filter(id__in=members_ids)
 
         context['parties'] = Party.objects.filter(id__in=parties_ids)
@@ -588,9 +612,7 @@ class SearchView(StatusListView):
 
         context['search_title'] = 'my search'
 
-        order_by = get_order_by(self.request)
-
-        return_queryset = Facebook_Status.objects.filter(query_Q).filter(date_range_Q).order_by(*order_by)
+        return_queryset = self.apply_reqest_params(Facebook_Status.objects.filter(query_Q))
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -609,8 +631,6 @@ class StatusFilterUnifiedView(StatusListView):
     page_template = "core/facebook_status_list.html"
 
     def get_queryset(self):
-        order_by = get_order_by(self.request)
-        date_range_Q = filter_by_date(request=self.request, datetime_field='published')
         variable_column = self.kwargs['variable_column']
         search_string = self.kwargs['id']
         if self.kwargs['context_object'] == 'tag':
@@ -624,8 +644,7 @@ class StatusFilterUnifiedView(StatusListView):
         else:
             selected_filter = variable_column
 
-        return Facebook_Status.objects.filter(**{selected_filter: search_string}).filter(date_range_Q).order_by(
-            *order_by)
+        return self.apply_reqest_params(Facebook_Status.objects.filter(**{selected_filter: search_string}))
 
     def get_context_data(self, **kwargs):
         context = super(StatusFilterUnifiedView, self).get_context_data(**kwargs)
@@ -654,11 +673,7 @@ class MemberView(StatusFilterUnifiedView):
         if self.persona is None:
             return []
 
-        date_range_Q = filter_by_date(request=self.request, datetime_field='published')
-        print date_range_Q
-        order_by = get_order_by(self.request)
-        query_set = self.persona.get_main_feed.facebook_status_set.filter(date_range_Q).order_by(*order_by)
-        return query_set
+        return self.apply_reqest_params(self.persona.get_main_feed.facebook_status_set)
 
     def get_context_data(self, **kwargs):
         context = super(MemberView, self).get_context_data(**kwargs)
@@ -685,11 +700,8 @@ class PartyView(StatusFilterUnifiedView):
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         date_range_Q = filter_by_date(request=self.request, datetime_field='published')
-        query_set = Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]).filter(
-            date_range_Q) \
-            .order_by(*order_by)
-
-        return query_set
+        return self.apply_reqest_params(
+            Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]))
 
 
 class TagView(StatusFilterUnifiedView):
@@ -711,6 +723,9 @@ class FacebookStatusDetailView(DetailView):
 
     model = Facebook_Status
     slug_field = 'status_id'
+
+    def get_queryset(self, **kwargs):
+        return Facebook_Status.objects_no_filters.filter(status_id=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):
         context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
@@ -819,7 +834,7 @@ def get_data_from_facebook(request):
 
 # A handler for status_update ajax call from client
 def status_update(request, status_id):
-    status = Facebook_Status.objects.get(status_id=status_id)
+    status = Facebook_Status.objects_no_filters.get(status_id=status_id)
 
     response = HttpResponse(content_type="application/json")
     response_data = dict()
@@ -869,6 +884,12 @@ def status_update(request, status_id):
 
 # A handler for add_tag_to_status ajax call from client
 def add_tag_to_status(request):
+    # Todo:
+    """
+    1. actually restrict unregistered people from adding a tag
+    2. using POST method instead of GET method
+    3. using single transaction for the whole process
+    """
     response_data = dict()
     response_data['success'] = False
     status_id = request.GET["id"]
@@ -899,42 +920,39 @@ def add_tag_to_status(request):
 def search_bar(request):
     searchText = request.GET['text']
 
-    response_data = dict()
-    response_data['number_of_results'] = 0
-    response_data['results'] = []
-    if searchText.strip() == "":
-        print "NO STRING"
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+    response_data = {
+        'number_of_results': 0,
+        'results': []
+    }
 
-    members = Member.objects.filter(name__contains=searchText, is_current=True).order_by('name')[
-              :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
-    for member in members:
-        newResult = dict()
-        newResult['id'] = member.id
-        newResult['name'] = member.name
-        newResult['party'] = member.current_party.name
-        newResult['type'] = "member"
-        response_data['results'].append(newResult)
-        response_data['number_of_results'] += 1
+    if searchText.strip():
+        # factory method to create a dynamic search result
+        def result_factory(id, name, type, **additional_info):
+            result = {
+                'id': id,
+                'name': name,
+                'type': type
+            }
+            result.update(additional_info)
+            response_data['number_of_results'] += 1
+            return result
 
-    tags = Tag.objects.filter(name__contains=searchText).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
-    for tag in tags:
-        newResult = dict()
-        newResult['id'] = tag.id
-        newResult['name'] = tag.name
-        newResult['type'] = "tag"
-        response_data['results'].append(newResult)
-        response_data['number_of_results'] += 1
+        members = Member.objects.filter(name__contains=searchText, is_current=True) \
+                      .select_related('current_party').order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        for member in members:
+            response_data['results'].append(
+                result_factory(member.id, member.name, "member", party=member.current_party.name))
 
-    parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER).order_by('name')[
-              :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
-    for party in parties:
-        newResult = dict()
-        newResult['id'] = party.id
-        newResult['name'] = party.name
-        newResult['type'] = "party"
-        response_data['results'].append(newResult)
-        response_data['number_of_results'] += 1
+        tags = Tag.objects.filter(name__contains=searchText).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        for tag in tags:
+            response_data['results'].append(
+                result_factory(tag.id, tag.name, "tag"))
+
+        parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER).order_by(
+            'name')[
+                  :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        for party in parties:
+            response_data['results'].append(
+                result_factory(party.id, party.name, "party"))
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
-

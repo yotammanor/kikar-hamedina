@@ -45,11 +45,14 @@
                             {#                            </h6>#}
                         </a>
                         |
-                        <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">
+                        <a class="link-on-blue" title="{{ status.published }}" href="{% url 'status-detail' status.status_id %}">
                             {#                            <h6>#}
                             {{ status.published | naturaltime }}
                             {#                            </h6>#}
                         </a>
+                        {% if status.is_deleted %}
+                            (הסטטוס נמחק)
+                        {% endif %}
                     </h6>
                 </div>
                 {#                <div class="row" id="date-row-container">#}

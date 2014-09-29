@@ -1083,8 +1083,8 @@
         "fields": {
             "feed_type": "UP", 
             "vendor_id": "100003905338146", 
-            "is_current": false, 
-            "persona": "99", 
+            "is_current": true,
+            "persona": "99",
             "requires_user_token": true
         }
     }, 
@@ -2361,7 +2361,7 @@
                 "mks", 
                 "member"
             ], 
-            "object_id": "13"
+            "object_id": "857"
         }
     }, 
     {
