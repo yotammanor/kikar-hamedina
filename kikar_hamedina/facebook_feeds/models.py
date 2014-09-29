@@ -1,5 +1,6 @@
 import datetime
 from unidecode import unidecode
+from time import sleep
 
 from django.conf import settings
 from django.db import models
@@ -16,9 +17,16 @@ INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'likes a link',
                                                'likes a photo',
                                                'likes a video',
+                                               'likes a status',
+                                               'liked this post',
                                                'commented on this',
-
-                                               ]
+                                               'commented on a post',
+                                               'commented on a photo',
+                                               'commented on a video',
+                                               'commented on a link',
+                                               'commented on a status',
+                                               'replied to a comment',
+]
 
 
 class Facebook_Persona(models.Model):
@@ -101,7 +109,8 @@ class Facebook_Feed(models.Model):
         asked_for_date_of_value = timezone.now() - datetime.timedelta(days=days_back)
 
         try:
-            popularity_history_timeseries = self.feed_popularity_set.to_timeseries('fan_count', index='date_of_creation')
+            popularity_history_timeseries = self.feed_popularity_set.to_timeseries('fan_count',
+                                                                                   index='date_of_creation')
             first_value = popularity_history_timeseries.iloc[-1].name.to_pydatetime()
             last_value = popularity_history_timeseries.iloc[0].name.to_pydatetime()
 
@@ -117,7 +126,8 @@ class Facebook_Feed(models.Model):
                     # if requested date's data is missing - interpolate from existing data
                     is_interpolated = True
                     resampled_history_interpolated = resampled_history_raw.interpolate()
-                    fan_count_at_requested_date = resampled_history_interpolated.loc[asked_for_date_of_value.date()].fan_count
+                    fan_count_at_requested_date = resampled_history_interpolated.loc[
+                        asked_for_date_of_value.date()].fan_count
                 else:
                     fan_count_at_requested_date = resampled_history_raw.loc[asked_for_date_of_value.date()].fan_count
 
@@ -152,6 +162,7 @@ class Facebook_Feed(models.Model):
     @property
     def popularity_dif_week_growth_rate(self, days_back=DEFAULT_DAYS_BACK_FOR_POPULARITY_DIF):
         return self.popularity_dif(days_back)['fan_count_dif_growth_rate']
+
 
 class Feed_Popularity(models.Model):
     feed = models.ForeignKey('Facebook_Feed')
@@ -203,6 +214,7 @@ class Facebook_Status(models.Model):
     story = models.TextField(null=True)
     story_tags = models.TextField(null=True)
     is_comment = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False, null=False)
 
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
     objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
@@ -240,50 +252,33 @@ class Facebook_Status(models.Model):
         else:
             story_string = ''
 
-        # print 'status db id:', self.id
+        print 'status db id:', self.id
         # print 'story string:', story_string
 
-        # Check for non-mk users mentioned within status's story tags
-        if self.story_tags:
-            # has a story with the style of <user> commented on <feed>'s status
-            # print self.story_tags, type(self.story_tags)
-            story_tags_eval = eval(str(self.story_tags))
-            try:
-                for tag in story_tags_eval.values():
-                    for dic in tag:
-                        feed_in_tag = Facebook_Feed.objects.filter(vendor_id=dic['id'])
-                        if not feed_in_tag:
-                            # the mentioned user is not an mk
-                            # print 'True'
-                            return True
-            except:
-                # print 'True'
-                return True
-
-            # print 'True'
-            return True
+        # --Deprecated logic-- : based on story_tags. Code will appear in file's history
 
         # Check for strings indicative of comment activity
+        print 'Based on indicative text:',
         found_text = []
         for text in INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD:
             # print 'trying', text
             if text in story_string:
                 # print 'found'
                 found_text.append(text)
-            # else:
+                # else:
                 # print 'not found'
         if found_text:
-            # print 'True'
+            print 'True'
             return True
-        else:
-            # print 'False'
-            return False
+
+        print 'False'
+        return False
 
 
-status_with_photo = '161648040544835_720225251353775'
-status_with_youtube_link = '161648040544835_723225304387103'
-status_with_link_to_newspaper = '161648040544835_719797924729841'
-status_with_no_multimedia = '161648040544835_718801471496153'
+# status_with_photo = '161648040544835_720225251353775'
+# status_with_youtube_link = '161648040544835_723225304387103'
+# status_with_link_to_newspaper = '161648040544835_719797924729841'
+# status_with_no_multimedia = '161648040544835_718801471496153'
 
 ATTACHMENT_MEDIA_TYPES = (
     ('status', 'Status'),

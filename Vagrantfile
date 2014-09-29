@@ -18,7 +18,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell do |shell|
     shell.inline = <<-EOS
       set -e
-
       sudo -u postgres psql -c "DROP DATABASE IF EXISTS kikar"
       sudo -u postgres psql -c "DROP ROLE IF EXISTS kikar"
       sudo -u postgres psql -c "CREATE USER kikar WITH PASSWORD 'kikar'"
@@ -31,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     shell.inline = <<-EOS
       set -e
       # Do 2 pip tries as sometimes repositories fail to respond
-      PIP="pip install -r /vagrant/requirements/vps.txt"
+      PIP="sudo pip install -r /vagrant/requirements/vps.txt"
       $PIP || $PIP
     EOS
   end
@@ -41,6 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     shell.inline = <<-EOS
       set -e
       cd /vagrant/kikar_hamedina/
+      [ ! -d logs ] && mkdir logs
       python manage.py syncdb --noinput
       [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
       python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
@@ -50,7 +50,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       for f in 1001_1001 1001_1002 1001_1003 1001_1004; do
         gunzip facebook_feeds/fixtures/${f}.json.gz
       done
-      for f in data_fixture_planet data_fixture_mks data_fixture_facebook_feeds 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007; do
+      for f in data_fixture_planet data_fixture_mks data_fixture_facebook_feeds 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007 1004_1008; do
         python manage.py loaddata ${f}.json
       done
       for f in 1001_1001 1001_1002 1001_1003 1001_1004; do

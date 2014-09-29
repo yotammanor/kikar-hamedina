@@ -10,17 +10,19 @@
 #
 # Also: ipython, south, python-dateutil, django-tastypie,
 #       nose, django-nose, django-activity-stream,
-#       django-mailer, django-debug-toolbar  - appear in our base.txt requirement.
+#       django-mailer, django-debug-toolbar
+#       PIL,
+#       feedparser,
+#       django-pagination==1.0.7,
+#       django-tagging==0.3.1    - appear in our base.txt requirement.
 #
 #       gunicorn - in vps.txt
 
-PIL
-django-pagination==1.0.7
-django-tagging==0.3.1
+
+
 django_compressor==1.2
 BeautifulSoup
 vobject
-feedparser
 gdata
 django-social-auth>=0.7.19
 oauth==1.0.1
@@ -28,7 +30,6 @@ python-memcached==1.48
 -e git://github.com/openid/python-openid.git#egg=python-openid
 django-ratings
 -e git://github.com/thornomad/django-hitcount.git#egg=django-hitcount
--e git://github.com/hasadna/django-planet.git@7a66a954b231391f2ac76e97f2a469f69fd29037#egg=django-planet
 -e git://github.com/hasadna/django-annotatetext.git#egg=django-annotatetext
 -e git://github.com/hasadna/django-avatar.git@e6ed23b44764d75d1f3955472f5afc2c4ddf7bcc#egg=django-avatar
 -e git://github.com/hasadna/django-backlinks.git@a90c5db5b4794965b7559ca4631bef8984957a9b#egg=django-backlinks

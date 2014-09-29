@@ -9,7 +9,7 @@ function float2str(num) {
 
 $(document).ready(function () {
     var member_id = $("#insights").data('objectid');
-    $("#insights-loading").removeClass('hidden-object');
+    $("#insights-loading").show();
     var api_url = '/api/v1/insights/member/' + member_id + '/?format=json';
     $.ajax({
         url: api_url,
@@ -19,12 +19,12 @@ $(document).ready(function () {
             $("#ins_mean_likes_month").text(float2str(data.mean_status_likes_last_month));
             $("#ins_n_week").text(int2str(data.n_statuses_last_week));
             $("#ins_mean_likes_week").text(float2str(data.mean_status_likes_last_week));
-            $("#insights-loading").addClass('hidden-object');
+            $("#insights-loading").hide();
             $('#insights').toggle(true);
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            $("#insights-loading").addClass("hidden-object");
-            $("#insights-error").removeClass("hidden-object");
+            $("#insights-loading").hide();
+            $("#insights-error").show();
         }
     });
 });
