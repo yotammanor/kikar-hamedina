@@ -1,0 +1,101 @@
+.facebook-status-panel {
+	color: white;
+	background-color: #003366;
+	font-family: Aleph, Arial;
+	font-size: 9px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	padding: 2%;
+}
+
+.facebook-status-panel > .list-group > .list-group-item {
+	margin: 0% 2%;
+	border-width:0;
+}
+
+.facebook-status-background {
+	background-color: #003366;
+	background-image: none;
+	color: white;
+}
+
+.facebook-status-header {
+	padding-top: 0.5%;
+	padding-right:0.5%;
+	padding-bottom: 0%;
+}
+
+.facebook-status-content {
+	color: black;
+	background-color: #dedede;
+	padding: 1%;
+}
+
+.facebook-status-reactions {
+	color: black;
+	background-color: #bbbbbb;
+	padding: 2% 1%;
+}
+
+.facebook-status-reactions:after {
+ 	content: '';
+	position: absolute;
+	border-style: solid;
+	border-width: 12px 10px 0;
+	border-color: #bbbbbb transparent;
+	display: block;
+	width: 0;
+	z-index: 1;
+	bottom: -30%;
+	left: 4.5%;
+}
+
+.facebook-status-reactions-read-more {
+	float: left;
+	padding-left: 2%;
+}
+
+.facebook-status-meta {
+	padding: 2% 1%;
+	height: auto;
+}
+
+.facebook-status-meta-details {
+	display: inline-block;
+	width: 84%;
+}
+
+.facebook-status-meta-feed {
+	font-size:14px;
+	font-weight: bold;
+}
+
+.facebook-status-meta-party {
+	font-size: 13px;
+	font-weight: bold;
+	color: black;
+}
+
+.facebook-status-meta-image {
+	display: inline;	
+	position: absolute;
+	width: auto;
+	height: 80%;
+}
+
+@media all and (min-width: @screen-sm-min) and (max-width: @screen-md-min)
+{
+	.facebook-status-meta-feed 
+	{
+		color: black;
+	}
+}
+
+.facebook-status-meta-image > img {
+	
+	width: auto;
+	height: 100%;
+	text-align: left;
+	border:3px solid black;
+}
+

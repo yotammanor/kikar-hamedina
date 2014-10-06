@@ -1,11 +1,10 @@
 {% extends "layouts/generic-template.html" %}
 
-{% block title %} סטטוס של {{member.name}} {% endblock title %}
-
-
-{% block h1 %}
-סטטוס של {{member.name}}
+{% block scripts %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/facebook_status.css"/>
 {% endblock %}
+
+{% block title %} סטטוס של {{member.name}} {% endblock title %}
 
 {% block context-header %}
 {% endblock %}
