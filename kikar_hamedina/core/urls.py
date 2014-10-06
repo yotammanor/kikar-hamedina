@@ -73,6 +73,8 @@ urlpatterns = patterns('',
                            queryset=Facebook_Status.objects.filter(tags=None, feed__persona__object_id__isnull=False).order_by('-published')),
                            kwargs={'context_object': 'untagged'},
                            name='untagged'),
+                       url(r'^blog/', include('zinnia.urls')),
+                       url(r'^comments/', include('django.contrib.comments.urls')),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

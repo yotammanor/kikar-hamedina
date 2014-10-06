@@ -38,6 +38,9 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/>
 
+    {% block link %}
+    {% endblock %}
+
     {% block scripts %}
     {% endblock %}
 
@@ -170,6 +173,9 @@
                     </li>
                 {% endif %}
                 <li class="navbar-nav navbar-right">
+                    <a href="{% url 'zinnia_entry_archive_index' %}" class="navbar-options">בלוג</a>
+                </li>
+                <li class="navbar-nav navbar-right">
                     <a href="{% url 'search-gui' %}" class="navbar-options">חיפוש</a>
                 </li>
                 <!-- <li class="active"><a href="#">פוליטיקאים</a></li> -->
@@ -216,7 +222,7 @@
             </div>
         {% endblock %}
 
-        {% block content %}
+        {% block main_content %}
         {% endblock %}
 
     </div>
