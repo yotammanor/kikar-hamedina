@@ -65,37 +65,32 @@ Installation (Deprecated, but might still work)
 
 .. Set your db inside ``kikar_hamedina/kikar_hamedina/settings/local.py`` with your db details.
 
-.. Install required packages: ``pip install -r requirements/local.txt`` (for local version requirements)
+.. Install required packages: ``pip install -r requirements/local.txt --allow-external PIL --allow-unverified PIL`` (for local version requirements)
 
 
 To Set up DB run the following:
 
-``python manage.py syncdb --migrate``
-``python manage.py runserver``
+``python manage.py syncdb``
+``python manage.py migrate``
+
 
 This is all very nice, but there's no data :-( To insert initial data
 into the db, CTRL-C the server abd run:
 
-``python manage.py loaddata data_fixture_planet.json``
-``python manage.py loaddata data_fixture_mks.json``
-
-``python manage.py loaddata data_fixture_persons.json`` - This is an empty json, waiting for deprecation
-
-``python manage.py loaddata data_fixture_facebook_feeds.json``
-
+``for f in data_fixture_planet data_fixture_mks data_fixture_facebook_feeds 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007 1004_1008; do
+	python manage.py loaddata ${f}.json
+done``
 
 ``python manage.py fetchfeedproperties``
 
 ``python manage.py fetchfeedstatuses --initial``
 
 The first command will insert to db data from a pre-created list of parties, persons, feeds, and tags.
-The second command will fetch statuses for all feeds in data.
+The second and third commands will fetch statuses for all feeds in data.
 Tag initial sets the request to 1000 messages per feed (as opposed to default of 20), so it might take a while to finish. *Note: Default number of messages is set within fetchfeedstatuses.py command, see file for exact value.
 
 
 You can also run: ``python manage.py fetchfeedstatuses {feed_id} [--initial]`` to download a single feed.
-
-
 
 Once you're all setup run:
 
