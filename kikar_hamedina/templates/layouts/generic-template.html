@@ -38,6 +38,9 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/>
 
+    {% block link %}
+    {% endblock %}
+
     {% block scripts %}
     {% endblock %}
 
@@ -99,7 +102,7 @@
 
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
-        
+
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -166,7 +169,10 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="navbar-nav navbar-right">
-                        <a href="{% url 'untagged' %}" class="navbar-options">תיוג פוסטים</a>
+                        <a href="{% url 'untagged' %}" class="navbar-options">תיוג</a>
+                    </li>
+                    <li class="navbar-nav navbar-right">
+                        <a href="{% url 'zinnia_entry_archive_index' %}" class="navbar-options">בלוג</a>
                     </li>
                 {% endif %}
                 <li class="navbar-nav navbar-right">
@@ -181,11 +187,13 @@
             <div class="col-sm-3 col-md-3 pull-left">
                 <div class="navbar-form navbar-left dropdown" id="search-bar-form" role="search">
                     <div class="input-group" id="search-results-dropdown">
-                        <input id="navbar-search-box" type="text" name="search_str" class="form-control" autocomplete="off" placeholder="חיפוש..." data-toggle="dropdown">
+                        <input id="navbar-search-box" type="text" name="search_str" class="form-control"
+                               autocomplete="off" placeholder="חיפוש..." data-toggle="dropdown">
                         <ul id="search-results-list" class="dropdown-menu">
                         </ul>
                         <div class="input-group-btn">
-                            <button class="btn btn-success" id="search-bar-submit" data-target="{% url 'search' %}" type="button"><i class="fa fa-search"></i></button>
+                            <button class="btn btn-success" id="search-bar-submit" data-target="{% url 'search' %}"
+                                    type="button"><i class="fa fa-search"></i></button>
                         </div>
                     </div>
                 </div>
@@ -216,7 +224,7 @@
             </div>
         {% endblock %}
 
-        {% block content %}
+        {% block main_content %}
         {% endblock %}
 
     </div>
