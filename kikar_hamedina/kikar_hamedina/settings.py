@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'links',
     'video',
     #Ours
+    'kikartags',
     'knesset',
     'mks',
     'persons',

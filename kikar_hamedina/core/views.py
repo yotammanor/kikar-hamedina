@@ -22,7 +22,7 @@ from django import db
 
 import facebook
 from endless_pagination.views import AjaxListView
-from taggit.models import Tag as TaggitTag
+from kikartags.models import TaggitTag as TaggitTag
 
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
 from facebook_feeds.management.commands import updatestatus
@@ -747,7 +747,7 @@ class AllParties(ListView):
 
 class AllTags(ListView):
     template_name = 'core/all_tags.html'
-    model = Tag
+    model = TaggitTag
 
 
 def about_page(request):
