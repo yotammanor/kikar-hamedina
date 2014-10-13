@@ -47,7 +47,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       for m in core persons mks links facebook_feeds video zinnia; do
         python manage.py migrate $m
       done
-      python manage.py loaddata data_fixture_planet data_fixture_mks data_fixture_facebook_feeds 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007 1004_1008
+      for f in data_fixture_planet data_fixture_mks data_fixture_facebook_feeds 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007 1004_1008; do
+        python manage.py loaddata $f
+       done
       python manage.py fetchfeedproperties || true
       python manage.py fetchfeedstatuses
     EOS
