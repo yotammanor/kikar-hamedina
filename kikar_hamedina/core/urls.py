@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag
-from kikartags.models import TaggitTag
+from kikartags.models import TaggitTag as TaggitTag
 from mks.models import Party, Member
 from django.conf import settings
 from tastypie.api import Api

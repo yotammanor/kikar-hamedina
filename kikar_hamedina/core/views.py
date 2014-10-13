@@ -50,6 +50,9 @@ ALLOWED_FIELDS_FOR_ORDER_BY = getattr(settings, 'ALLOWED_FIELDS_FOR_ORDER_BY', a
 FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_START_DATE',
                                             timezone.datetime(2000, 1, 1, 0, 0, tzinfo=timezone.utc))
 
+# hot-topics page
+NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS = getattr(settings, 'NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS', 7)
+
 
 def get_date_range_dict():
     filter_by_date_default_end_date = timezone.now()
@@ -91,8 +94,6 @@ HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
 NUMBER_OF_TAGS_TO_PRESENT = 3
-
-TAGS_FROM_LAST_DAYS = 7
 
 NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
 
@@ -156,7 +157,7 @@ def filter_by_date(request, datetime_field='published'):
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
-    def apply_reqest_params(self, query):
+    def apply_request_params(self, query):
         """Apply request params to DB query. This currently includes 'range'
         and 'order_by' """
         date_range_Q = filter_by_date(self.request)
@@ -210,13 +211,17 @@ class HomepageView(ListView):
 
 
 class HotTopicsView(ListView):
-    model = Tag
+    model = TaggitTag
     template_name = 'core/homepage_old.html'
 
     def get_queryset(self):
-        queryset = Tag.objects.filter(is_for_main_display=True, statuses__published__gte=(
-            datetime.date.today() - datetime.timedelta(days=TAGS_FROM_LAST_DAYS))).annotate(
-            number_of_posts=Count('statuses')).order_by(
+
+        relevant_statuses = Facebook_Status.objects.filter(published__gte=(
+            datetime.date.today() - datetime.timedelta(days=NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS)))
+        queryset = TaggitTag.objects.filter(is_for_main_display=True,
+                                            kikartags_taggittaggeditem_items__object_id__in=[status.id for status in
+                                                                                             relevant_statuses]).annotate(
+            number_of_posts=Count('kikartags_taggittaggeditem_items')).order_by(
             '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
         return queryset
 
@@ -224,7 +229,7 @@ class HotTopicsView(ListView):
         context = super(HotTopicsView, self).get_context_data(**kwargs)
         wrote_about_tag = dict()
         for tag in context['object_list']:
-            list_of_writers = Facebook_Feed.objects.filter(facebook_status__tags__id=tag.id).distinct()
+            list_of_writers = Facebook_Feed.objects.filter(facebook_status__tags_from_taggit__id=tag.id).distinct()
             list_of_writers_with_latest_fan_count = list()
             for feed in list_of_writers:
                 list_of_writers_with_latest_fan_count.append({'feed': feed,
@@ -456,7 +461,7 @@ class OnlyCommentsView(StatusListView):
     template_name = 'core/all_results.html'
 
     def get_queryset(self):
-        return self.apply_reqest_params(Facebook_Status.objects_no_filters.filter(is_comment=True))
+        return self.apply_request_params(Facebook_Status.objects_no_filters.filter(is_comment=True))
 
 
 class AllStatusesView(StatusListView):
@@ -465,7 +470,7 @@ class AllStatusesView(StatusListView):
     # paginate_by = 100
 
     def get_queryset(self):
-        return self.apply_reqest_params(super(AllStatusesView, self).get_queryset())
+        return self.apply_request_params(super(AllStatusesView, self).get_queryset())
 
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
@@ -529,7 +534,7 @@ class SearchView(StatusListView):
         # tags - search for all tags specified by their id
         tags_Q = Q()
         if tags_ids:
-            tags_to_queries = [Q(tags__id=tag_id) for tag_id in tags_ids]
+            tags_to_queries = [Q(tags_from_taggit__id=tag_id) for tag_id in tags_ids]
             print 'tags_to_queries:', len(tags_to_queries)
             for query_for_single_tag in tags_to_queries:
                 # print 'Now adding query:', query_for_single_tag
@@ -549,10 +554,10 @@ class SearchView(StatusListView):
         for word in words:
             if not search_str_Q:
                 search_str_Q = Q(content__contains=word)
-                search_str_Q = Q(tags__name__contains=word) | search_str_Q
+                search_str_Q = Q(tags_from_taggit__name__contains=word) | search_str_Q
             else:
                 search_str_Q = Q(content__contains=word) | search_str_Q
-                search_str_Q = Q(tags__name__contains=word) | search_str_Q
+                search_str_Q = Q(tags_from_taggit__name__contains=word) | search_str_Q
 
         # tags query and keyword query concatenated. Logic is set according to request input
         try:
@@ -596,7 +601,7 @@ class SearchView(StatusListView):
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
         print 'get_queryset_executed:', query_Q
 
-        return self.apply_reqest_params(Facebook_Status.objects.filter(query_Q))
+        return self.apply_request_params(Facebook_Status.objects.filter(query_Q))
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
@@ -607,13 +612,13 @@ class SearchView(StatusListView):
 
         context['parties'] = Party.objects.filter(id__in=parties_ids)
 
-        context['tags'] = Tag.objects.filter(id__in=tags_ids)
+        context['tags'] = TaggitTag.objects.filter(id__in=tags_ids)
 
         context['search_str'] = words
 
         context['search_title'] = 'my search'
 
-        return_queryset = self.apply_reqest_params(Facebook_Status.objects.filter(query_Q))
+        return_queryset = self.apply_request_params(Facebook_Status.objects.filter(query_Q))
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -641,11 +646,12 @@ class StatusFilterUnifiedView(StatusListView):
             else:
                 search_field = 'name'
                 # TODO: Replace with redirect to actual url with 'name' in path, and HttpResponseRedirect()
-            selected_filter = variable_column + '__' + search_field
+            # selected_filter = variable_column + '__' + search_field
+            selected_filter = 'tags_from_taggit__' + search_field
         else:
             selected_filter = variable_column
 
-        return self.apply_reqest_params(Facebook_Status.objects.filter(**{selected_filter: search_string}))
+        return self.apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_string}))
 
     def get_context_data(self, **kwargs):
         context = super(StatusFilterUnifiedView, self).get_context_data(**kwargs)
@@ -674,7 +680,7 @@ class MemberView(StatusFilterUnifiedView):
         if self.persona is None:
             return []
 
-        return self.apply_reqest_params(self.persona.get_main_feed.facebook_status_set)
+        return self.apply_request_params(self.persona.get_main_feed.facebook_status_set)
 
     def get_context_data(self, **kwargs):
         context = super(MemberView, self).get_context_data(**kwargs)
@@ -701,13 +707,13 @@ class PartyView(StatusFilterUnifiedView):
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         date_range_Q = filter_by_date(request=self.request, datetime_field='published')
-        return self.apply_reqest_params(
+        return self.apply_request_params(
             Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]))
 
 
 class TagView(StatusFilterUnifiedView):
     template_name = "core/tag.html"
-    parent_model = Tag
+    parent_model = TaggitTag
 
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
@@ -752,28 +758,6 @@ class AllTags(ListView):
 
 def about_page(request):
     return render(request, 'core/about.html')
-
-
-def add_tag(request, id):
-    status = Facebook_Status.objects.get(id=id)
-    tagsString = request.POST['tag']
-    tagsList = tagsString.split(',')
-    for tagName in tagsList:
-        strippedTagName = tagName.strip()
-        if strippedTagName:
-            tag, created = Tag.objects.get_or_create(name=strippedTagName)
-            if created:
-                tag.name = strippedTagName
-                tag.is_for_main_display = True
-                tag.save()
-                # add status to tag statuses
-            tag.statuses.add(status)
-            tag.save()
-
-    # Always return an HttpResponseRedirect after successfully dealing
-    # with POST data. This prevents data from being posted twice if a
-    # user hits the Back button.
-    return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
 # Views for getting facebook data using a user Token
@@ -931,6 +915,29 @@ def add_tag_to_status(request):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
+# TODO: Deprecated function, should be safely deleted.
+def add_tag(request, id):
+    status = Facebook_Status.objects.get(id=id)
+    tagsString = request.POST['tag']
+    tagsList = tagsString.split(',')
+    for tagName in tagsList:
+        strippedTagName = tagName.strip()
+        if strippedTagName:
+            tag, created = Tag.objects.get_or_create(name=strippedTagName)
+            if created:
+                tag.name = strippedTagName
+                tag.is_for_main_display = True
+                tag.save()
+                # add status to tag statuses
+            tag.statuses.add(status)
+            tag.save()
+
+    # Always return an HttpResponseRedirect after successfully dealing
+    # with POST data. This prevents data from being posted twice if a
+    # user hits the Back button.
+    return HttpResponseRedirect(request.META["HTTP_REFERER"])
+
+
 # A handler for the search bar request from the client
 def search_bar(request):
     searchText = request.GET['text']
@@ -958,7 +965,7 @@ def search_bar(request):
             response_data['results'].append(
                 result_factory(member.id, member.name, "member", party=member.current_party.name))
 
-        tags = Tag.objects.filter(name__contains=searchText).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        tags = TaggitTag.objects.filter(name__contains=searchText).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for tag in tags:
             response_data['results'].append(
                 result_factory(tag.id, tag.name, "tag"))
