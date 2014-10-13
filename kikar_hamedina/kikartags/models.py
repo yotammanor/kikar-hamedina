@@ -1,6 +1,7 @@
 from django.db import models
 
-# Create your models here.
+from slugify import slugify as default_slugify
+
 from django.utils.translation import ugettext_lazy as _
 from taggit.models import TagBase, GenericTaggedItemBase
 
@@ -9,9 +10,17 @@ class TaggitTag(TagBase):
     # name = models.CharField(unique=True, max_length=128)
     # statuses = models.ManyToManyField(Facebook_Status, related_name='taggit_tags')
     is_for_main_display = models.BooleanField(default=True, null=False)
+    # slug = models.CharField(verbose_name=_('Slug'), unique=False, max_length=100)
 
     def __unicode__(self):
         return self.name
+
+    # inherit slugify from TagBase
+    def slugify(self, tag, i=None):
+        slug = default_slugify(tag)
+        if i is not None:
+            slug += "_%d" % i
+        return slug
 
     class Meta:
         verbose_name = _("Tag")
