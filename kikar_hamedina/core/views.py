@@ -22,6 +22,7 @@ from django import db
 
 import facebook
 from endless_pagination.views import AjaxListView
+from taggit.models import Tag as TaggitTag
 
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
 from facebook_feeds.management.commands import updatestatus
@@ -894,13 +895,13 @@ def add_tag_to_status(request):
     response_data['success'] = False
     status_id = request.GET["id"]
     response_data['id'] = status_id
-    tagName = request.GET["tag_str"]
-    strippedTagName = tagName.strip()
+    tag_name = request.GET["tag_str"]
+    stripped_tag_name = tag_name.strip()
     try:
-        if strippedTagName:
-            tag, created = Tag.objects.get_or_create(name=strippedTagName)
+        if stripped_tag_name:
+            tag, created = Tag.objects.get_or_create(name=stripped_tag_name)
             if created:
-                tag.name = strippedTagName
+                tag.name = stripped_tag_name
                 tag.is_for_main_display = True
                 tag.save()
                 # add status to tag statuses
@@ -910,6 +911,20 @@ def add_tag_to_status(request):
         response_data['success'] = True
     except:
         print "ERROR AT ADDING STATUS TO TAG"
+        print status_id
+
+    try:
+        if stripped_tag_name:
+            taggit_tag, created = TaggitTag.objects.get_or_create(name=stripped_tag_name)
+            if created:
+                taggit_tag.name = stripped_tag_name
+                taggit_tag.save()
+            status = Facebook_Status.objects_no_filters.get(id=status_id)
+            status.tags_from_taggit.add(taggit_tag)
+            status.save()
+            print 'worked!'
+    except:
+        print "error with taggit."
         print status_id
 
     finally:

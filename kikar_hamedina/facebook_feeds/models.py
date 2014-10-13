@@ -8,8 +8,10 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django_pandas.managers import DataFrameManager
+from taggit.managers import TaggableManager
 
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
+
 
 INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'on their own',
@@ -218,6 +220,8 @@ class Facebook_Status(models.Model):
 
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
     objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
+
+    tags_from_taggit = TaggableManager()
 
     def __unicode__(self):
         return self.status_id
