@@ -12,7 +12,7 @@ from django_pandas.managers import DataFrameManager
 from taggit.managers import TaggableManager
 
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
-from kikartags.models import TaggitTaggedItem
+from kikartags.models import TaggedItem
 
 INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'on their own',
@@ -223,7 +223,7 @@ class Facebook_Status(models.Model):
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
     objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
 
-    tags_from_taggit = TaggableManager(through=TaggitTaggedItem)
+    tags = TaggableManager(through=TaggedItem)
 
     def __unicode__(self):
         return self.status_id
@@ -349,11 +349,11 @@ class User_Token(models.Model):
         return 'token_' + self.user_id
 
 
+# Deprecated Tags
 class Tag(models.Model):
     name = models.CharField(unique=True, max_length=128)
-    statuses = models.ManyToManyField(Facebook_Status, related_name='tags')
+    statuses = models.ManyToManyField(Facebook_Status, related_name='old_tags')
     is_for_main_display = models.BooleanField(default=True, null=False)
 
     def __unicode__(self):
         return self.name
-

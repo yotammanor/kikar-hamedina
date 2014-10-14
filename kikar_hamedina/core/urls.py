@@ -1,8 +1,8 @@
 from django.conf.urls import patterns, url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag
-from kikartags.models import TaggitTag as TaggitTag
+from facebook_feeds.models import Facebook_Status, Facebook_Feed
+from kikartags.models import Tag as Tag
 from mks.models import Party, Member
 from django.conf import settings
 from tastypie.api import Api
@@ -58,7 +58,7 @@ urlpatterns = patterns('',
                        url(r'^parties/$', views.AllParties.as_view(
                            queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-parties'),
-                       url(r'^tags/$', views.AllTags.as_view(queryset=TaggitTag.objects.all()),
+                       url(r'^tags/$', views.AllTags.as_view(queryset=Tag.objects.all()),
                            name='all-tags'),
                        # urls and views used only indirectly
                        url(r'^status_permalink/(?P<slug>[-_\w]+)/$', views.FacebookStatusDetailView.as_view(), name='status-detail'),
