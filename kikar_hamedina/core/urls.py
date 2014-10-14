@@ -66,8 +66,6 @@ urlpatterns = patterns('',
                        url(r'^fblogin/get-data/$', views.get_data_from_facebook, name='get-data-from-facebook'),
                        url(r'^status_update/(?P<status_id>\w+)/$', views.status_update),
                        url(r'^add_tag_to_status/$', views.add_tag_to_status),
-                       url(r'^add-tag/(?P<id>\d+)/$', views.add_tag,
-                           name='add-tag'),
                        # unused Views for statuses
                        url(r'^comments/', views.OnlyCommentsView.as_view(), name='comments'),
                        url(r'^untagged/$', views.AllStatusesView.as_view(

@@ -915,29 +915,6 @@ def add_tag_to_status(request):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
-# TODO: Deprecated function, should be safely deleted.
-def add_tag(request, id):
-    status = Facebook_Status.objects.get(id=id)
-    tagsString = request.POST['tag']
-    tagsList = tagsString.split(',')
-    for tagName in tagsList:
-        strippedTagName = tagName.strip()
-        if strippedTagName:
-            tag, created = Tag.objects.get_or_create(name=strippedTagName)
-            if created:
-                tag.name = strippedTagName
-                tag.is_for_main_display = True
-                tag.save()
-                # add status to tag statuses
-            tag.statuses.add(status)
-            tag.save()
-
-    # Always return an HttpResponseRedirect after successfully dealing
-    # with POST data. This prevents data from being posted twice if a
-    # user hits the Back button.
-    return HttpResponseRedirect(request.META["HTTP_REFERER"])
-
-
 # A handler for the search bar request from the client
 def search_bar(request):
     searchText = request.GET['text']
