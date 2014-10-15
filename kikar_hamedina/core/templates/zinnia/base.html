@@ -10,52 +10,32 @@
     <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="{% url 'zinnia_wlwmanifest' %}" />
     <link rel="search" type="application/opensearchdescription+xml" title="Zinnia's Blog" href="{% url 'zinnia_opensearch' %}" />
     <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of latest entries" %}" href="{% url 'zinnia_entry_latest_feed' %}" />
-    <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of latest discussions" %}" href="{% url 'zinnia_discussion_latest_feed' %}" />
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/blog.css"/>
+
     {% get_archives_entries "zinnia/tags/entries_archives_link.html" %}
 {% endblock link %}
 
 
 {% block blog_content %}
 {% get_archives_entries "zinnia/tags/entries_archives_link.html" %}
-{% block breadcrumbs %}
-  {% zinnia_breadcrumbs %}
-{% endblock breadcrumbs %}
 {% block content %}
 {% endblock content %}
 {% endblock blog_content %}
 
 {% block sidebar %}
-<div id="widget-categories" class="widget">
-  <h3>{% trans "Categories" %}</h3>
-  {% get_categories %}
-</div>
-<div id="widget-authors" class="widget">
-  <h3>{% trans "Authors" %}</h3>
-  {% get_authors %}
+<div id="widget-rss" class="widget">
+  <a href="{% url 'zinnia_entry_latest_feed' %}" title="{% trans "RSS Feed of latest entries" %}" class="feeds">
+    {% trans "RSS Feed" %}
+  </a>
 </div>
 <div id="widget-calendar" class="widget">
   <h3>{% trans "Calendar" %}</h3>
   {% get_calendar_entries %}
 </div>
-<div id="widget-tags" class="widget">
-  <h3>{% trans "Tags" %}</h3>
-  {% get_tag_cloud %}
-</div>
 <div id="widget-recents" class="widget">
   <h3>{% trans "Recent entries" %}</h3>
   {% get_recent_entries %}
-</div>
-<div id="widget-comments" class="widget">
-  <h3>{% trans "Recent comments" %}</h3>
-  {% get_recent_comments %}
-</div>
-<div id="widget-linkbacks" class="widget">
-  <h3>{% trans "Recent linkbacks" %}</h3>
-  {% get_recent_linkbacks %}
-</div>
-<div id="widget-randoms" class="widget">
-  <h3>{% trans "Random entries" %}</h3>
-  {% get_random_entries %}
 </div>
 <div id="widget-populars" class="widget">
   <h3>{% trans "Popular entries" %}</h3>

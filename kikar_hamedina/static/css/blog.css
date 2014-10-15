@@ -1,0 +1,16 @@
+div.entry-header {
+	margin-bottom: 10px;
+}
+.entry-title {
+	margin-bottom: 0;
+}
+p.entry-info, p.entry-last-update {
+	display: inline;
+}
+
+p.entry-info, p.entry-last-update, p.entry-shorturl {
+	font-size: 70%;
+	margin: 0;
+	padding: 0;
+	color: #bbb;
+}
