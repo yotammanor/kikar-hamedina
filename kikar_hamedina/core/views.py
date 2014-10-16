@@ -735,17 +735,14 @@ class TagView(StatusFilterUnifiedView):
             selected_filter = 'tags__in'
             search_value = [synonym_tag.synonym_tag for synonym_tag in selected_tag.synonym_proper_tag.all()]
             search_value.append(selected_tag)
-            print search_value, type(search_value)
 
         if selected_tag.synonym_synonym_tag.exists():
-            print selected_tag.id
             # if is a synonym of another tag, redirect
             proper_tag = selected_tag.synonym_synonym_tag.first().tag
             url = reverse('tag', kwargs={'variable_column': 'tags',
                                          # 'context_object': 'tag',
                                          'search_field': 'id',
                                          'id': proper_tag.id})
-            print 'here', proper_tag.id
             # return HttpResponseRedirect(url)
             raise HasSynonymError('has synonym, redirect', redirect_url=url)
 

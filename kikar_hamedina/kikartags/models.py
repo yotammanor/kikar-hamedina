@@ -24,7 +24,6 @@ class Tag(TagBase):
         verbose_name_plural = _("Tags")
 
 
-
 class TaggedItem(GenericTaggedItemBase):
     # TaggedWhatever can also extend TaggedItemBase or a combination of
     # both TaggedItemBase and GenericTaggedItemBase. GenericTaggedItemBase
@@ -42,6 +41,9 @@ class TagSynonym(models.Model):
     synonym_tag = models.ForeignKey(Tag,
                                     related_name='synonym_synonym_tag',
                                     unique=True)
+
+    class Meta:
+        unique_together = ("tag", "synonym_tag")
 
     def __unicode__(self):
         return 'Synonym: %s of main tag %s' % (default_slugify(self.synonym_tag.name), default_slugify(self.tag.name))

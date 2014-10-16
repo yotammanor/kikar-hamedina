@@ -2,6 +2,7 @@
 <html>
 <head>
     {% load staticfiles %}
+    {% load kikartags_extras %}
     <title>כיכר המדינה | {% block title %}{% endblock title %}</title>
 
     <!-- Fonts -->
@@ -150,7 +151,9 @@
                         <li><a href="{% url 'all-tags' %}">כל הנושאים</a></li>
                         <li class="divider"></li>
                         {% for tag in navTags %}
-                            <li><a href="{% url 'tag' 'name' tag.name %}">{{ tag.name }}</a></li>
+                            {% with tag|proper_tag as tag %}
+                                <li><a href="{% url 'tag' 'name' tag.name %}">{{ tag.name }}</a></li>
+                            {% endwith %}
                         {% endfor %}
                     </ul>
                 </li>
