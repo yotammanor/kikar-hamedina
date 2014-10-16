@@ -24,6 +24,7 @@ class Tag(TagBase):
         verbose_name_plural = _("Tags")
 
 
+
 class TaggedItem(GenericTaggedItemBase):
     # TaggedWhatever can also extend TaggedItemBase or a combination of
     # both TaggedItemBase and GenericTaggedItemBase. GenericTaggedItemBase
@@ -33,3 +34,36 @@ class TaggedItem(GenericTaggedItemBase):
     # # Here is where you provide your custom Tag class.
     tag = models.ForeignKey(Tag,
                             related_name="%(app_label)s_%(class)s_items")
+
+
+## Open-Knesset.auxilary.models
+class TagSynonym(models.Model):
+    tag = models.ForeignKey(Tag, related_name='synonym_proper_tag')
+    synonym_tag = models.ForeignKey(Tag,
+                                    related_name='synonym_synonym_tag',
+                                    unique=True)
+
+    def __unicode__(self):
+        return 'Synonym: %s of main tag %s' % (default_slugify(self.synonym_tag.name), default_slugify(self.tag.name))
+#
+#
+# class TagSuggestion(models.Model):
+#     name = models.TextField(unique=True)
+#     suggested_by = models.ForeignKey(User, verbose_name=_('Suggested by'),
+#                                      related_name='tagsuggestion', blank=True,
+#                                      null=True)
+#     content_type = models.ForeignKey(ContentType)
+#     object_id    = models.PositiveIntegerField(db_index=True)
+#     object       = generic.GenericForeignKey('content_type', 'object_id')
+
+
+class HasSynonymError(Exception):
+    def __init__(self, message, redirect_url):
+
+        # Call the base class constructor with the parameters it needs
+        super(HasSynonymError, self).__init__(message)
+
+        # Now for your custom code...
+        self.redirect_url = redirect_url
+
+

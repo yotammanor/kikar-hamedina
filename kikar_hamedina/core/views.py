@@ -2,15 +2,16 @@ import datetime
 import json
 from operator import or_, and_
 
+from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
+from django.utils import timezone
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.template import RequestContext
-from django.utils import timezone
 from django.db.models import Count, Q
-from django.conf import settings
 
 import facebook
 from facebook import GraphAPIError
@@ -19,7 +20,7 @@ from endless_pagination.views import AjaxListView
 from facebook_feeds.management.commands import updatestatus
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity
 from facebook_feeds.models import Tag as OldTag
-from kikartags.models import Tag as Tag
+from kikartags.models import Tag as Tag, TagSynonym, HasSynonymError
 from mks.models import Party, Member
 from core.insights import StatsEngine
 
@@ -212,8 +213,8 @@ class HotTopicsView(ListView):
         relevant_statuses = Facebook_Status.objects.filter(published__gte=(
             datetime.date.today() - datetime.timedelta(days=NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS)))
         queryset = Tag.objects.filter(is_for_main_display=True,
-                                            kikartags_taggeditem_items__object_id__in=[status.id for status in
-                                                                                             relevant_statuses]).annotate(
+                                      kikartags_taggeditem_items__object_id__in=[status.id for status in
+                                                                                 relevant_statuses]).annotate(
             number_of_posts=Count('kikartags_taggeditem_items')).order_by(
             '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
         return queryset
@@ -706,6 +707,50 @@ class PartyView(StatusFilterUnifiedView):
 class TagView(StatusFilterUnifiedView):
     template_name = "core/tag.html"
     parent_model = Tag
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method.lower() in self.http_method_names:
+            handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
+        else:
+            handler = self.http_method_not_allowed
+        try:
+            return handler(request, *args, **kwargs)
+        except HasSynonymError as e:
+            return HttpResponseRedirect(e.redirect_url)
+
+    def get_queryset(self, **kwargs):
+        variable_column = self.kwargs['variable_column']
+        search_value = self.kwargs['id']
+        search_field = self.kwargs['search_field']
+        if search_field == 'id':
+            search_field = 'id'
+        else:
+            search_field = 'name'
+            # TODO: Replace with redirect to actual url with 'name' in path, and HttpResponseRedirect()
+        selected_filter = variable_column + '__' + search_field
+
+        selected_tag = Tag.objects.get(**{search_field: search_value})
+        if selected_tag.synonym_proper_tag.exists():
+            # if has synonyms, add to queryset
+            selected_filter = 'tags__in'
+            search_value = [synonym_tag.synonym_tag for synonym_tag in selected_tag.synonym_proper_tag.all()]
+            search_value.append(selected_tag)
+            print search_value, type(search_value)
+
+        if selected_tag.synonym_synonym_tag.exists():
+            print selected_tag.id
+            # if is a synonym of another tag, redirect
+            proper_tag = selected_tag.synonym_synonym_tag.first().tag
+            url = reverse('tag', kwargs={'variable_column': 'tags',
+                                         # 'context_object': 'tag',
+                                         'search_field': 'id',
+                                         'id': proper_tag.id})
+            print 'here', proper_tag.id
+            # return HttpResponseRedirect(url)
+            raise HasSynonymError('has synonym, redirect', redirect_url=url)
+
+        return self.apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_value}))
+
 
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
