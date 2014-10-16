@@ -10,6 +10,8 @@ from django.contrib.contenttypes import generic
 
 from django_pandas.managers import DataFrameManager
 from taggit.managers import TaggableManager
+from slugify import slugify
+
 
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
 from kikartags.models import TaggedItem
@@ -85,7 +87,7 @@ class Facebook_Feed(models.Model):
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
 
     def __unicode__(self):
-        return unicode(self.username) + " " + self.vendor_id
+        return slugify(self.username) + " " + self.vendor_id
 
     @property
     def get_current_fan_count(self):
@@ -184,7 +186,7 @@ class Feed_Popularity(models.Model):
         ordering = ['-date_of_creation']
 
     def __unicode__(self):
-        return unicode(self.feed) + " " + str(self.date_of_creation)
+        return slugify(self.feed.name) + " " + str(self.date_of_creation.date())
         # strftime("%Y_%M_%D_%H:%m:%s", self.date_of_creation)
 
 
