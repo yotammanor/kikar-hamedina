@@ -21,7 +21,7 @@ from endless_pagination.views import AjaxListView
 from facebook_feeds.management.commands import updatestatus
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity
 from facebook_feeds.models import Tag as OldTag
-from kikartags.models import Tag as Tag, TagSynonym, HasSynonymError
+from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from mks.models import Party, Member
 from core.insights import StatsEngine
 
@@ -789,6 +789,17 @@ class AllParties(ListView):
 class AllTags(ListView):
     template_name = 'core/all_tags.html'
     model = Tag
+
+
+class ReviewTagsView(ListView):
+    template_name = 'core/review_tags.html'
+    model = TaggedItem
+
+
+    def get_queryset(self):
+        queryset = TaggedItem.objects.all().order_by('-date_of_tagging')
+        print queryset
+        return queryset
 
 
 def about_page(request):
