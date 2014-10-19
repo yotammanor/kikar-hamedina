@@ -62,5 +62,3 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     EOS
   end
 end
-
-# 563a4cb
