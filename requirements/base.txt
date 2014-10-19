@@ -25,7 +25,8 @@ pysolr
 django-haystack
 futures
 django-blog-zinnia==0.14.1
-
+django-taggit
+-r unicode-slugify-master.zip
 
 # -r oknesset.txt
 django-debug-toolbar>=1.0

@@ -1,7 +1,8 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
 from mks.models import Knesset, Party, Member
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag as OldTag, User_Token, Feed_Popularity
+from kikartags.models import Tag as Tag
 from planet.models import Blog
 
 
