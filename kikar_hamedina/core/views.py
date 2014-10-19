@@ -1,28 +1,32 @@
 import datetime
+import time
+import urllib2
 import json
 from operator import or_, and_
+from IPython.lib.pretty import pprint
+from collections import defaultdict
 
-from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
-from django.utils import timezone
+from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.shortcuts import render, render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError, Http404
+from django.core.urlresolvers import reverse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.decorators.csrf import csrf_protect
+from django.views.generic.base import View
 from django.template import RequestContext
-from django.db.models import Count, Q
+from django.utils import timezone
+from django.db.models import Count, Q, Max, F
+from django.conf import settings
+from django import db
 
 import facebook
-from facebook import GraphAPIError
 from endless_pagination.views import AjaxListView
 
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag, User_Token, Feed_Popularity
 from facebook_feeds.management.commands import updatestatus
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity
-from facebook_feeds.models import Tag as OldTag
-from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from mks.models import Party, Member
+from facebook import GraphAPIError
 from core.insights import StatsEngine
 
 # current knesset number
@@ -44,9 +48,6 @@ ALLOWED_FIELDS_FOR_ORDER_BY = getattr(settings, 'ALLOWED_FIELDS_FOR_ORDER_BY', a
 # filter by date options
 FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_START_DATE',
                                             timezone.datetime(2000, 1, 1, 0, 0, tzinfo=timezone.utc))
-
-# hot-topics page
-NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS = getattr(settings, 'NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS', 7)
 
 
 def get_date_range_dict():
@@ -89,6 +90,8 @@ HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
 NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 
 NUMBER_OF_TAGS_TO_PRESENT = 3
+
+TAGS_FROM_LAST_DAYS = 7
 
 NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
 
@@ -152,7 +155,7 @@ def filter_by_date(request, datetime_field='published'):
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
 
-    def apply_request_params(self, query):
+    def apply_reqest_params(self, query):
         """Apply request params to DB query. This currently includes 'range'
         and 'order_by' """
         date_range_Q = filter_by_date(self.request)
@@ -207,16 +210,12 @@ class HomepageView(ListView):
 
 class HotTopicsView(ListView):
     model = Tag
-    template_name = 'core/hot_topics.html'
+    template_name = 'core/homepage_old.html'
 
     def get_queryset(self):
-
-        relevant_statuses = Facebook_Status.objects.filter(published__gte=(
-            datetime.date.today() - datetime.timedelta(days=NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS)))
-        queryset = Tag.objects.filter(is_for_main_display=True,
-                                      kikartags_taggeditem_items__object_id__in=[status.id for status in
-                                                                                 relevant_statuses]).annotate(
-            number_of_posts=Count('kikartags_taggeditem_items')).order_by(
+        queryset = Tag.objects.filter(is_for_main_display=True, statuses__published__gte=(
+            datetime.date.today() - datetime.timedelta(days=TAGS_FROM_LAST_DAYS))).annotate(
+            number_of_posts=Count('statuses')).order_by(
             '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
         return queryset
 
@@ -456,7 +455,7 @@ class OnlyCommentsView(StatusListView):
     template_name = 'core/all_results.html'
 
     def get_queryset(self):
-        return self.apply_request_params(Facebook_Status.objects_no_filters.filter(is_comment=True))
+        return self.apply_reqest_params(Facebook_Status.objects_no_filters.filter(is_comment=True))
 
 
 class AllStatusesView(StatusListView):
@@ -465,7 +464,7 @@ class AllStatusesView(StatusListView):
     # paginate_by = 100
 
     def get_queryset(self):
-        return self.apply_request_params(super(AllStatusesView, self).get_queryset())
+        return self.apply_reqest_params(super(AllStatusesView, self).get_queryset())
 
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
@@ -596,7 +595,7 @@ class SearchView(StatusListView):
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
         print 'get_queryset_executed:', query_Q
 
-        return self.apply_request_params(Facebook_Status.objects.filter(query_Q))
+        return self.apply_reqest_params(Facebook_Status.objects.filter(query_Q))
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
@@ -613,7 +612,7 @@ class SearchView(StatusListView):
 
         context['search_title'] = 'my search'
 
-        return_queryset = self.apply_request_params(Facebook_Status.objects.filter(query_Q))
+        return_queryset = self.apply_reqest_params(Facebook_Status.objects.filter(query_Q))
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -645,7 +644,7 @@ class StatusFilterUnifiedView(StatusListView):
         else:
             selected_filter = variable_column
 
-        return self.apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_string}))
+        return self.apply_reqest_params(Facebook_Status.objects.filter(**{selected_filter: search_string}))
 
     def get_context_data(self, **kwargs):
         context = super(StatusFilterUnifiedView, self).get_context_data(**kwargs)
@@ -674,7 +673,7 @@ class MemberView(StatusFilterUnifiedView):
         if self.persona is None:
             return []
 
-        return self.apply_request_params(self.persona.get_main_feed.facebook_status_set)
+        return self.apply_reqest_params(self.persona.get_main_feed.facebook_status_set)
 
     def get_context_data(self, **kwargs):
         context = super(MemberView, self).get_context_data(**kwargs)
@@ -701,54 +700,13 @@ class PartyView(StatusFilterUnifiedView):
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         date_range_Q = filter_by_date(request=self.request, datetime_field='published')
-        return self.apply_request_params(
+        return self.apply_reqest_params(
             Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]))
 
 
 class TagView(StatusFilterUnifiedView):
     template_name = "core/tag.html"
     parent_model = Tag
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.method.lower() in self.http_method_names:
-            handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
-        else:
-            handler = self.http_method_not_allowed
-        try:
-            return handler(request, *args, **kwargs)
-        except HasSynonymError as e:
-            return HttpResponseRedirect(e.redirect_url)
-
-    def get_queryset(self, **kwargs):
-        variable_column = self.kwargs['variable_column']
-        search_value = self.kwargs['id']
-        search_field = self.kwargs['search_field']
-        if search_field == 'id':
-            search_field = 'id'
-        else:
-            search_field = 'name'
-            # TODO: Replace with redirect to actual url with 'name' in path, and HttpResponseRedirect()
-        selected_filter = variable_column + '__' + search_field
-
-        selected_tag = Tag.objects.get(**{search_field: search_value})
-        if selected_tag.synonym_proper_tag.exists():
-            # if has synonyms, add to queryset
-            selected_filter = 'tags__in'
-            search_value = [synonym_tag.synonym_tag for synonym_tag in selected_tag.synonym_proper_tag.all()]
-            search_value.append(selected_tag)
-
-        if selected_tag.synonym_synonym_tag.exists():
-            # if is a synonym of another tag, redirect
-            proper_tag = selected_tag.synonym_synonym_tag.first().tag
-            url = reverse('tag', kwargs={'variable_column': 'tags',
-                                         # 'context_object': 'tag',
-                                         'search_field': 'id',
-                                         'id': proper_tag.id})
-            # return HttpResponseRedirect(url)
-            raise HasSynonymError('has synonym, redirect', redirect_url=url)
-
-        return self.apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_value}))
-
 
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
@@ -791,19 +749,30 @@ class AllTags(ListView):
     model = Tag
 
 
-class ReviewTagsView(ListView):
-    template_name = 'core/review_tags.html'
-    model = TaggedItem
-
-
-    def get_queryset(self):
-        queryset = TaggedItem.objects.all().order_by('-date_of_tagging')
-        print queryset
-        return queryset
-
-
 def about_page(request):
     return render(request, 'core/about.html')
+
+
+def add_tag(request, id):
+    status = Facebook_Status.objects.get(id=id)
+    tagsString = request.POST['tag']
+    tagsList = tagsString.split(',')
+    for tagName in tagsList:
+        strippedTagName = tagName.strip()
+        if strippedTagName:
+            tag, created = Tag.objects.get_or_create(name=strippedTagName)
+            if created:
+                tag.name = strippedTagName
+                tag.is_for_main_display = True
+                tag.save()
+                # add status to tag statuses
+            tag.statuses.add(status)
+            tag.save()
+
+    # Always return an HttpResponseRedirect after successfully dealing
+    # with POST data. This prevents data from being posted twice if a
+    # user hits the Back button.
+    return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
 # Views for getting facebook data using a user Token
@@ -914,7 +883,6 @@ def status_update(request, status_id):
 
 
 # A handler for add_tag_to_status ajax call from client
-@csrf_protect
 def add_tag_to_status(request):
     # Todo:
     """
@@ -922,41 +890,24 @@ def add_tag_to_status(request):
     2. using POST method instead of GET method
     3. using single transaction for the whole process
     """
-    c = {}
     response_data = dict()
     response_data['success'] = False
     status_id = request.GET["id"]
     response_data['id'] = status_id
-    tag_name = request.GET["tag_str"]
-    stripped_tag_name = tag_name.strip()
-    # Kikartags-based tagging
+    tagName = request.GET["tag_str"]
+    strippedTagName = tagName.strip()
     try:
-        if stripped_tag_name:
-            taggit_tag, created = Tag.objects.get_or_create(name=stripped_tag_name)
+        if strippedTagName:
+            tag, created = Tag.objects.get_or_create(name=strippedTagName)
             if created:
-                taggit_tag.name = stripped_tag_name
-                taggit_tag.save()
-            status = Facebook_Status.objects_no_filters.get(id=status_id)
-            status.tags.user_aware_add(request.user, taggit_tag)
-            status.save()
-            response_data['tag'] = {'id': taggit_tag.id, 'name': taggit_tag.name}
-        response_data['success'] = True
-    except:
-        print "ERROR AT ADDING STATUS TO TAG."
-        print status_id
-    # Old Deprecated Tagging
-    try:
-        if stripped_tag_name:
-            tag, created = OldTag.objects.get_or_create(name=stripped_tag_name)
-            if created:
-                tag.name = stripped_tag_name
+                tag.name = strippedTagName
                 tag.is_for_main_display = True
                 tag.save()
                 # add status to tag statuses
             tag.statuses.add(status_id)
             tag.save()
-        #     response_data['tag'] = {'id': tag.id, 'name': tag.name}
-        # response_data['success'] = True
+            response_data['tag'] = {'id': tag.id, 'name': tag.name}
+        response_data['success'] = True
     except:
         print "ERROR AT ADDING STATUS TO TAG"
         print status_id
