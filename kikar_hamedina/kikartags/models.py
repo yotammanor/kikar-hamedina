@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
 
 from slugify import slugify as default_slugify
 
@@ -33,14 +35,17 @@ class TaggedItem(GenericTaggedItemBase):
     # # Here is where you provide your custom Tag class.
     tag = models.ForeignKey(Tag,
                             related_name="%(app_label)s_%(class)s_items")
+    tagged_by = models.ForeignKey(User, related_name='tagged', null=True, default=None)
+    date_of_tagging = models.DateTimeField(null=True, default=timezone.now())
 
+    def __unicode__(self):
+        super_str = super(TaggedItem, self).__unicode__()
+        return 'User: %s, ' % self.tagged_by + super_str
 
 ## Open-Knesset.auxilary.models
 class TagSynonym(models.Model):
     tag = models.ForeignKey(Tag, related_name='synonym_proper_tag')
-    synonym_tag = models.ForeignKey(Tag,
-                                    related_name='synonym_synonym_tag',
-                                    unique=True)
+    synonym_tag = models.ForeignKey(Tag, related_name='synonym_synonym_tag', unique=True)
 
     class Meta:
         unique_together = ("tag", "synonym_tag")

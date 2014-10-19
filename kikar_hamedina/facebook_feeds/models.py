@@ -10,6 +10,7 @@ from django.contrib.contenttypes import generic
 
 from django_pandas.managers import DataFrameManager
 from taggit.managers import TaggableManager
+from kikartags.managers import _KikarTaggableManager
 from slugify import slugify
 
 
@@ -225,7 +226,7 @@ class Facebook_Status(models.Model):
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
     objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
 
-    tags = TaggableManager(through=TaggedItem)
+    tags = TaggableManager(through=TaggedItem, manager=_KikarTaggableManager)
 
     def __unicode__(self):
         return self.status_id

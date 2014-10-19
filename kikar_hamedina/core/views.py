@@ -10,6 +10,7 @@ from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from django.db.models import Count, Q
 
@@ -902,6 +903,7 @@ def status_update(request, status_id):
 
 
 # A handler for add_tag_to_status ajax call from client
+@csrf_protect
 def add_tag_to_status(request):
     # Todo:
     """
@@ -909,12 +911,29 @@ def add_tag_to_status(request):
     2. using POST method instead of GET method
     3. using single transaction for the whole process
     """
+    c = {}
     response_data = dict()
     response_data['success'] = False
     status_id = request.GET["id"]
     response_data['id'] = status_id
     tag_name = request.GET["tag_str"]
     stripped_tag_name = tag_name.strip()
+    # Kikartags-based tagging
+    try:
+        if stripped_tag_name:
+            taggit_tag, created = Tag.objects.get_or_create(name=stripped_tag_name)
+            if created:
+                taggit_tag.name = stripped_tag_name
+                taggit_tag.save()
+            status = Facebook_Status.objects_no_filters.get(id=status_id)
+            status.tags.user_aware_add(request.user, taggit_tag)
+            status.save()
+            response_data['tag'] = {'id': taggit_tag.id, 'name': taggit_tag.name}
+        response_data['success'] = True
+    except:
+        print "ERROR AT ADDING STATUS TO TAG."
+        print status_id
+    # Old Deprecated Tagging
     try:
         if stripped_tag_name:
             tag, created = OldTag.objects.get_or_create(name=stripped_tag_name)
@@ -925,24 +944,10 @@ def add_tag_to_status(request):
                 # add status to tag statuses
             tag.statuses.add(status_id)
             tag.save()
-            response_data['tag'] = {'id': tag.id, 'name': tag.name}
-        response_data['success'] = True
+        #     response_data['tag'] = {'id': tag.id, 'name': tag.name}
+        # response_data['success'] = True
     except:
         print "ERROR AT ADDING STATUS TO TAG"
-        print status_id
-
-    try:
-        if stripped_tag_name:
-            taggit_tag, created = Tag.objects.get_or_create(name=stripped_tag_name)
-            if created:
-                taggit_tag.name = stripped_tag_name
-                taggit_tag.save()
-            status = Facebook_Status.objects_no_filters.get(id=status_id)
-            status.tags.add(taggit_tag)
-            status.save()
-            print 'worked!'
-    except:
-        print "error with taggit."
         print status_id
 
     finally:
