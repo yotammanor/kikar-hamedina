@@ -1,8 +1,7 @@
 from django.conf.urls import patterns, url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
-from facebook_feeds.models import Facebook_Status, Facebook_Feed
-from kikartags.models import Tag as Tag
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag
 from mks.models import Party, Member
 from django.conf import settings
 from tastypie.api import Api
@@ -66,15 +65,16 @@ urlpatterns = patterns('',
                        url(r'^fblogin/get-data/$', views.get_data_from_facebook, name='get-data-from-facebook'),
                        url(r'^status_update/(?P<status_id>\w+)/$', views.status_update),
                        url(r'^add_tag_to_status/$', views.add_tag_to_status),
+                       url(r'^add-tag/(?P<id>\d+)/$', views.add_tag,
+                           name='add-tag'),
                        # unused Views for statuses
-                       url(r'^comments/$', views.OnlyCommentsView.as_view(), name='comments'),
+                       url(r'^comments/', views.OnlyCommentsView.as_view(), name='comments'),
                        url(r'^untagged/$', views.AllStatusesView.as_view(
                            queryset=Facebook_Status.objects.filter(tags=None, feed__persona__object_id__isnull=False).order_by('-published')),
                            kwargs={'context_object': 'untagged'},
                            name='untagged'),
-                       url(r'^review-tags/$', views.ReviewTagsView.as_view(), name='review-tags'),
-                       url(r'^blog/$', include('zinnia.urls')),
-                       url(r'^comments/$', include('django.contrib.comments.urls')),
+                       url(r'^blog/', include('zinnia.urls')),
+                       url(r'^comments/', include('django.contrib.comments.urls')),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

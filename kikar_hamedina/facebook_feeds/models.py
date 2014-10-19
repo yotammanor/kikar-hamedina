@@ -7,15 +7,9 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-
 from django_pandas.managers import DataFrameManager
-from taggit.managers import TaggableManager
-from kikartags.managers import _KikarTaggableManager
-from slugify import slugify
-
 
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
-from kikartags.models import TaggedItem
 
 INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'on their own',
@@ -33,7 +27,6 @@ INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'commented on a status',
                                                'replied to a comment',
 ]
-
 
 
 class Facebook_Persona(models.Model):
@@ -88,7 +81,7 @@ class Facebook_Feed(models.Model):
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
 
     def __unicode__(self):
-        return slugify(self.username) + " " + self.vendor_id
+        return unicode(self.username) + " " + self.vendor_id
 
     @property
     def get_current_fan_count(self):
@@ -187,7 +180,7 @@ class Feed_Popularity(models.Model):
         ordering = ['-date_of_creation']
 
     def __unicode__(self):
-        return slugify(self.feed.name) + " " + str(self.date_of_creation.date())
+        return unicode(self.feed) + " " + str(self.date_of_creation)
         # strftime("%Y_%M_%D_%H:%m:%s", self.date_of_creation)
 
 
@@ -225,8 +218,6 @@ class Facebook_Status(models.Model):
 
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
     objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
-
-    tags = TaggableManager(through=TaggedItem, manager=_KikarTaggableManager)
 
     def __unicode__(self):
         return self.status_id
@@ -352,11 +343,11 @@ class User_Token(models.Model):
         return 'token_' + self.user_id
 
 
-# Deprecated Tags
 class Tag(models.Model):
     name = models.CharField(unique=True, max_length=128)
-    statuses = models.ManyToManyField(Facebook_Status, related_name='old_tags')
+    statuses = models.ManyToManyField(Facebook_Status, related_name='tags')
     is_for_main_display = models.BooleanField(default=True, null=False)
 
     def __unicode__(self):
         return self.name
+
