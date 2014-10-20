@@ -26,7 +26,7 @@ django-haystack
 futures
 django-blog-zinnia==0.14.1
 django-taggit
--r unicode-slugify-master.zip
+-e git+https://github.com/mozilla/unicode-slugify.git#egg=unicode-slugify
 
 # -r oknesset.txt
 django-debug-toolbar>=1.0

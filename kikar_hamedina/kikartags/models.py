@@ -42,6 +42,7 @@ class TaggedItem(GenericTaggedItemBase):
         super_str = super(TaggedItem, self).__unicode__()
         return 'User: %s, ' % self.tagged_by + super_str
 
+
 ## Open-Knesset.auxilary.models
 class TagSynonym(models.Model):
     tag = models.ForeignKey(Tag, related_name='synonym_proper_tag')

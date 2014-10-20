@@ -8,6 +8,7 @@ from django.core import management
 class Migration(DataMigration):
 
 
+
     def forwards(self, orm):
         "Write your forwards methods here."
         # Note: Don't use "from appname.models import ModelName".

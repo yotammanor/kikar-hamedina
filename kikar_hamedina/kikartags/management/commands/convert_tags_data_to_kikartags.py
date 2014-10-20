@@ -19,7 +19,6 @@ class Command(BaseCommand):
                 new_tag.is_for_main_display = old_tag.is_for_main_display
 
             new_tag.save()
-
             for status in old_tag.statuses.all():
                 status.tags.add(new_tag)
 
