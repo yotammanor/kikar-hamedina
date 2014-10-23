@@ -7,9 +7,15 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+
 from django_pandas.managers import DataFrameManager
+from taggit.managers import TaggableManager
+from kikartags.managers import _KikarTaggableManager
+from slugify import slugify
+
 
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
+from kikartags.models import TaggedItem
 
 INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'on their own',
@@ -33,7 +39,7 @@ class Facebook_Persona(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey()
-    main_feed = models.SmallIntegerField(null=True, default=0)
+    main_feed = models.SmallIntegerField(null=True, default=0, blank=True)
 
     @property
     def get_main_feed(self):
@@ -57,21 +63,21 @@ class Facebook_Feed(models.Model):
     DEFAULT_DAYS_BACK_FOR_POPULARITY_DIF = getattr(settings, 'DEFAULT_DAYS_BACK_FOR_POPULARITY_DIF', 7)
 
     persona = models.ForeignKey('Facebook_Persona', related_name='feeds')
-    vendor_id = models.TextField(null=True)
-    username = models.TextField(null=True, default=None)
-    birthday = models.TextField(null=True)
-    name = models.TextField(null=True)
-    link = models.URLField(null=True, max_length=2000)
-    picture_square = models.URLField(null=True, max_length=2000)
-    picture_large = models.URLField(null=True, max_length=2000)
+    vendor_id = models.TextField(null=True, blank=True)
+    username = models.TextField(null=True, default=None, blank=True)
+    birthday = models.TextField(null=True, blank=True)
+    name = models.TextField(null=True, blank=True)
+    link = models.URLField(null=True, blank=True, max_length=2000)
+    picture_square = models.URLField(null=True, blank=True, max_length=2000)
+    picture_large = models.URLField(null=True, blank=True, max_length=2000)
     feed_type = models.CharField(null=False, max_length=2, choices=FEED_TYPES, default='PP')
     requires_user_token = models.BooleanField(default=False, null=False)
     is_current = models.BooleanField(default=True, null=False)
     current_fan_count = models.IntegerField(default=0, null=False)
 
     # Public Page Only
-    about = models.TextField(null=True, default='')
-    website = models.URLField(null=True, max_length=2000)
+    about = models.TextField(null=True, blank=True, default='')
+    website = models.URLField(null=True, blank=True, max_length=2000)
 
     objects = DataFrameManager()
 
@@ -81,7 +87,7 @@ class Facebook_Feed(models.Model):
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
 
     def __unicode__(self):
-        return unicode(self.username) + " " + self.vendor_id
+        return slugify(self.username) + " " + self.vendor_id
 
     @property
     def get_current_fan_count(self):
@@ -180,7 +186,7 @@ class Feed_Popularity(models.Model):
         ordering = ['-date_of_creation']
 
     def __unicode__(self):
-        return unicode(self.feed) + " " + str(self.date_of_creation)
+        return slugify(self.feed.name) + " " + str(self.date_of_creation.date())
         # strftime("%Y_%M_%D_%H:%m:%s", self.date_of_creation)
 
 
@@ -205,19 +211,21 @@ class Facebook_Status(models.Model):
     feed = models.ForeignKey('Facebook_Feed')
     status_id = models.CharField(unique=True, max_length=128)
     content = models.TextField()
-    like_count = models.PositiveIntegerField(null=True)
-    comment_count = models.PositiveIntegerField(null=True)
-    share_count = models.PositiveIntegerField(null=True)
+    like_count = models.PositiveIntegerField(null=True, blank=True)
+    comment_count = models.PositiveIntegerField(null=True, blank=True)
+    share_count = models.PositiveIntegerField(null=True, blank=True)
     published = models.DateTimeField()
     updated = models.DateTimeField()
-    status_type = models.CharField(null=True, default=None, max_length=128)
-    story = models.TextField(null=True)
-    story_tags = models.TextField(null=True)
+    status_type = models.CharField(null=True, blank=True, default=None, max_length=128)
+    story = models.TextField(null=True, blank=True)
+    story_tags = models.TextField(null=True, blank=True)
     is_comment = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False, null=False)
 
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
     objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
+
+    tags = TaggableManager(through=TaggedItem, manager=_KikarTaggableManager)
 
     def __unicode__(self):
         return self.status_id
@@ -310,14 +318,14 @@ ATTACHMENT_MEDIA_TYPES = (
 
 class Facebook_Status_Attachment(models.Model):
     status = models.OneToOneField(Facebook_Status, related_name='attachment')
-    name = models.TextField(null=True)  # name
-    caption = models.TextField(null=True)  # caption
-    description = models.TextField(null=True)  # description
+    name = models.TextField(null=True, blank=True)  # name
+    caption = models.TextField(null=True, blank=True)  # caption
+    description = models.TextField(null=True, blank=True)  # description
     link = models.TextField(null=False)  # link
-    facebook_object_id = models.CharField(unique=False, null=True,
+    facebook_object_id = models.CharField(unique=False, null=True, blank=True,
                                           max_length=128)  # object_id (exists only for internal links)
-    type = models.CharField(null=True, choices=ATTACHMENT_MEDIA_TYPES, max_length=16)  # type
-    picture = models.TextField(null=True)  # picture
+    type = models.CharField(null=True, blank=True, choices=ATTACHMENT_MEDIA_TYPES, max_length=16)  # type
+    picture = models.TextField(null=True, blank=True)  # picture
 
     @property
     def is_internal_link(self):
@@ -343,11 +351,11 @@ class User_Token(models.Model):
         return 'token_' + self.user_id
 
 
+# Deprecated Tags
 class Tag(models.Model):
     name = models.CharField(unique=True, max_length=128)
-    statuses = models.ManyToManyField(Facebook_Status, related_name='tags')
+    statuses = models.ManyToManyField(Facebook_Status, related_name='old_tags')
     is_for_main_display = models.BooleanField(default=True, null=False)
 
     def __unicode__(self):
         return self.name
-

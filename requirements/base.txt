@@ -24,6 +24,9 @@ django-tastypie==0.9.15
 pysolr
 django-haystack
 futures
+django-blog-zinnia==0.14.1
+django-taggit
+-e git+https://github.com/mozilla/unicode-slugify.git#egg=unicode-slugify
 
 # -r oknesset.txt
 django-debug-toolbar>=1.0

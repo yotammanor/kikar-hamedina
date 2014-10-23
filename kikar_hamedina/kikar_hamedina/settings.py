@@ -40,24 +40,31 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
+    'django.contrib.comments',
+    'django.contrib.humanize',
+    #Third-Party
     'rest_framework',
     'django_extensions',
     'south',
     'pagination',
     'tagging',
-    'planet',
-    'persons',
-    'knesset',
-    'links',
-    'video',
-    'mks',
-    'facebook_feeds',
-    'core',
-    'django.contrib.humanize',
-    'endless_pagination',
     'dumpdata_chunks',
     'django_pandas',
+    'taggit',
     'tastypie',
+    'mptt',
+    'zinnia',
+    'endless_pagination',
+    'planet',
+    'links',
+    'video',
+    #Ours
+    'kikartags',
+    'knesset',
+    'mks',
+    'persons',
+    'facebook_feeds',
+    'core',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -84,6 +91,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "planet.context_processors.context",
     "core.context_processors.generic",
+    "zinnia.context_processors.version",
 )
 
 ROOT_URLCONF = 'kikar_hamedina.urls'
@@ -111,13 +119,20 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
-#Django-planet requirements
+#Django-planet settings
 PLANET = {
     "USER_AGENT": "Kikar-Hamedina Planet/1.0"
 }
 
 SITE_ID = 1
+
+
+#Django-taggit settings
+SOUTH_MIGRATION_MODULES = {
+    'taggit': 'taggit.south_migrations',
+}
 
 
 TEMPLATE_LOADERS = (
