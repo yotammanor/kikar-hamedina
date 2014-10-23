@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, url, include
+from django.conf.urls.static import static
+
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed
@@ -75,7 +77,7 @@ urlpatterns = patterns('',
                            kwargs={'context_object': 'untagged'},
                            name='untagged'),
                        url(r'^review-tags/$', views.ReviewTagsView.as_view(), name='review-tags'),
-)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = format_suffix_patterns(urlpatterns)
 
