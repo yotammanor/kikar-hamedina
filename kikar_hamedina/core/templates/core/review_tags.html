@@ -1,0 +1,35 @@
+{% extends "layouts/generic-template.html" %}
+{% load humanize %}
+{% load kikartags_extras %}
+
+{% block title %}
+    תיוגים שבוצעו לאחרונה
+{% endblock title %}
+
+{% block h1 %}
+    תויג לאחרונה
+{% endblock %}
+
+{% block main_content %}
+    <table class="table">
+        <tr class="header">
+            <td>תויג לפני</td>
+            <td>על ידי</td>
+            <td>הסטאטוס</td>
+            <td>תגית</td>
+        </tr>
+        {% for obj in object_list %}
+            <tr>
+                <td>{{ obj.date_of_tagging|timesince }}</td>
+                <td>{{ obj.tagged_by }}</td>
+                {% with obj.content_object as status %}
+                    <td><a href={% url 'status-detail' status.status_id %}>סטאטוס</a>
+                        של {{ status.feed.persona.content_object.name }}<br>
+                        {{ status.content|truncatewords:10 }}
+                    </td>
+                {% endwith %}
+                <td>{{ obj.tag|proper_tag }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock main_content %}

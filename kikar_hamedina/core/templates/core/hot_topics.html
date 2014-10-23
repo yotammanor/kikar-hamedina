@@ -1,6 +1,6 @@
 {% extends "layouts/generic-template.html" %}
 
-{% block title %}עמוד ראשי{% endblock title %}
+{% block title %}הנושאים החמים{% endblock title %}
 
 {% block h1 %}
 כיכר המדינה
@@ -10,7 +10,7 @@
     הנושאים החמים
 </div>
 {% endblock %}
-{% block content %}
+{% block main_content %}
 <div class="row">
     <div class="col-md-12">
         {% for tag, feed_list in wrote_about_tag.items %}

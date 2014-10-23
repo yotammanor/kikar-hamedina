@@ -6,7 +6,7 @@
     כל המפלגות
 {% endblock %}
 
-{% block content %}
+{% block main_content %}
     <ul>
         {% for party in object_list %}
             <li><a href="{% url 'party' party.id %}">{{ party.name }}</a></li>
