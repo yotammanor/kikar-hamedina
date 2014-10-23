@@ -22,6 +22,7 @@
 
 {% load humanize %}
 {% load core_extras %}
+{% load kikartags_extras %}
 <div class="panel panel-primary status-panel" data-statusid="{{ status.status_id }}">
     <div class="panel-heading col-lg-12">
         <div class="row">
@@ -96,9 +97,11 @@
                 <strong style="display:{% if status.tags.count > 0 %}inline{% else %}none{% endif %}">תגים: </strong>
 			<span id="{{ status.id }}-tags">
 			{% for tag in status.tags.all %}
+                {% with tag|proper_tag as tag %}
                 <a href="{% url 'tag' 'name' tag.name %}">
                     <span class="label label-info">{{ tag.name }}</span>
                 </a>
+                {% endwith %}
             {% endfor %}
 			</span>
 
