@@ -1,11 +1,10 @@
 {% extends "layouts/generic-template.html" %}
 {% load i18n staticfiles %}
 
-{% block details %}
-            <a href="{% url 'zinnia_entry_latest_feed' %}" title="{% trans "RSS Feed of latest entries" %}" class="feeds">
-              {% trans "RSS Feed" %}
-            </a>
-{% endblock details %}
+{% block h1 %}בלוג כיכר המדינה{% endblock %}
+
+
+{% block details %}{% endblock details %}
 
 {% block main_content %}
         <div class="col-sm-9 panel-group">

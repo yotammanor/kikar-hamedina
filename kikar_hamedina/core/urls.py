@@ -25,6 +25,8 @@ urlpatterns = patterns('',
                        url(r'^$', views.HomepageView.as_view(), name='index'),
                        # include urls
                        url(r'^api/', include(v1_api.urls)),
+                       url(r'^blog/', include('zinnia.urls')),
+                       url(r'^comments/', include('django.contrib.comments.urls')),
                        # navbar direct decendants url
                        url(r'^billboards/$', views.BillboardsView.as_view(), name='billboards'),
                        # TODO: rename to `hot` to covr hot topics
@@ -67,14 +69,12 @@ urlpatterns = patterns('',
                        url(r'^status_update/(?P<status_id>\w+)/$', views.status_update),
                        url(r'^add_tag_to_status/$', views.add_tag_to_status),
                        # unused Views for statuses
-                       url(r'^comments/$', views.OnlyCommentsView.as_view(), name='comments'),
+                       url(r'^status-comments/$', views.OnlyCommentsView.as_view(), name='status-comments'),
                        url(r'^untagged/$', views.AllStatusesView.as_view(
                            queryset=Facebook_Status.objects.filter(tags=None, feed__persona__object_id__isnull=False).order_by('-published')),
                            kwargs={'context_object': 'untagged'},
                            name='untagged'),
                        url(r'^review-tags/$', views.ReviewTagsView.as_view(), name='review-tags'),
-                       url(r'^blog/$', include('zinnia.urls')),
-                       url(r'^comments/$', include('django.contrib.comments.urls')),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
