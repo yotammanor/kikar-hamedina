@@ -37,7 +37,7 @@ class TaggedItem(GenericTaggedItemBase):
     # # Here is where you provide your custom Tag class.
     tag = models.ForeignKey(Tag,
                             related_name="%(app_label)s_%(class)s_items")
-    tagged_by = models.ForeignKey(User, related_name='tagged', null=True, default=None)
+    tagged_by = models.ForeignKey(User, related_name='tagged', null=True, default=None, blank=True)
     date_of_tagging = models.DateTimeField(null=True, default=timezone.now())
 
     def __unicode__(self):
