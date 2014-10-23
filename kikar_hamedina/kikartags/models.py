@@ -10,6 +10,7 @@ from taggit.models import TagBase, GenericTaggedItemBase
 
 class Tag(TagBase):
     is_for_main_display = models.BooleanField(default=True, null=False)
+    logo = models.ImageField(upload_to='tags_logos', null=True, blank=True)
 
     def __unicode__(self):
         return self.name
