@@ -1,15 +1,18 @@
 Installation Using Vagrant
 ========================
 
-Clone the project into your local repository.
+Fork this project to your GitHub account.
+
+
+Clone your version of the project into your local repository.
 
 Then Copy the file
 ``kikar_hamedina/kikar_hamedina/local_settings.py.template`` into
 ``kikar_hamedina/kikar_hamedina/local_settings.py``
 
-Edit it to include your facebook details
+Edit it to include your facebook details (Ask project leader for details)
 - FACEBOOK_SECRET_KEY
-- FACEBOOK_APP_ID
+- FACEBOOK_APP_ID 
 
 Install virtualbox: https://www.virtualbox.org/wiki/Downloads
 
