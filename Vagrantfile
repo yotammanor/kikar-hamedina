@@ -52,6 +52,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         python manage.py loaddata $f
        done
       python manage.py migrate kikartags
+      python manage.py convert_tags_data_to_kikartags
       python manage.py fetchfeedproperties || true
       python manage.py fetchfeedstatuses
     EOS
