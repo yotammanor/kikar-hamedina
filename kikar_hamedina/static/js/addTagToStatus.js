@@ -119,7 +119,7 @@ $(document).ready(function () {
     // event - text is inserted or focus is returned to tag input.
     //
     //         * Aimed  at opening and populating list  of auto-suggest.
-    $(".add-tag-input").bind({
+/*    $(".add-tag-input").bind({
         input: function (event) {
 //        $('#add-tag-dropdown').removeClass("open")
             tagAddingHandler($(this))
@@ -128,5 +128,12 @@ $(document).ready(function () {
         focusin: function (event) {
             tagAddingHandler($(this))
         }
+    });*/
+
+    $("div.row").on("input", ".add-tag-input", function (event) {
+//        $('#add-tag-dropdown').removeClass("open")
+        tagAddingHandler($(this))
+    }).on("focusin", ".add-tag-input", function (event) {
+        tagAddingHandler($(this))
     });
 });
