@@ -1,0 +1,97 @@
+/*
+use less or sass for these values:
+lighter-blue: rgb(0, 81, 143); // bg and nav (alternative: #294778)
+dark-blue: rgb(0, 60, 107); // politician divs (alternative: #5e7db2)
+gray: rgb(238, 238, 238); // post text background
+*/
+
+body {
+  text-align: right;
+  direction: rtl;
+  background-color: rgb(0, 81, 143);
+  color: white;
+}
+
+.navbar-default {
+  background-color: rgb(0, 81, 143);
+  border: transparent;
+  margin-bottom: 0;
+}
+
+.navbar-default .navbar-brand
+{
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  text-align: center;
+  margin: auto;
+  color: #fff;
+}
+
+.navbar-default .navbar-brand:hover
+{
+  color: #fff;
+}
+
+
+.navbar-default .navbar-toggle {
+  border-color: transparent; 
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+  border-color: transparent; 
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: white;
+}
+
+.politician {
+  background-color: rgb(0, 60, 107);
+  padding: 5px 10px 10px 10px;
+  margin-bottom: 10px;
+}
+
+.politician-title {
+  font-weight: 300;
+  font-size: 20px;
+}
+
+.post-text {
+  background-color: rgb(238, 238, 238);
+  color: black;
+  padding: 5px;
+}
+
+.post-text > p {
+  margin: 2px;
+}
+
+.post-details {
+  background-color: #fff;
+  color: black;
+  padding: 5px;
+}
+
+.post-details-social-actions {
+  font-weight: 600;
+}
+
+.post-details-social-actions > span {
+  margin-left: 10px;
+}
+
+.post-details-social-actions .glyphicon {
+  color: rgb(0, 81, 143);
+}
+
+.post-details-read-more {
+  float: left;
+}
+
+
+
+
+
+
