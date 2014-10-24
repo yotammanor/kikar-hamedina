@@ -11,14 +11,6 @@ $.endlessPaginate({
         var new_statuses = $.grep($(fragment).children(), function (elem) {
             return $(elem).is(".status-panel")
         });
-        $(new_statuses).each(function (index) {
-            $(this).on("input", function (event) {
-                tagAddingHandler($(this))
-            });
-
-            $(".add-tag-input").on("focusin", function (event) {
-                tagAddingHandler($(this))
-            });
 //            status_id = $(this).data("statusid");
 //            update_status_url = "/status_update/" + status_id + "/";
 //            $("#status-metrics-is-updating-indicator-" + status_id).show();
@@ -36,14 +28,5 @@ $.endlessPaginate({
 //                    $("#status-metrics-is-error-indicator-" + data['id']).show();
 //                }
 //            });
-        });
-        $(".add-tag-input").on("input", function (event) {
-//        $('#add-tag-dropdown').removeClass("open")
-            tagAddingHandler($(this))
-        });
-
-        $(".add-tag-input").on("focusin", function (event) {
-            tagAddingHandler($(this))
-        });
     }
 });
