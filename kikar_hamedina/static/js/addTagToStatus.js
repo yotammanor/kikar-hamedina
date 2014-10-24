@@ -123,10 +123,10 @@ $(document).ready(function () {
         input: function (event) {
 //        $('#add-tag-dropdown').removeClass("open")
             tagAddingHandler($(this))
-        },
+        } //,
 
-        focusin: function (event) {
-            tagAddingHandler($(this))
-        }
+//        focusin: function (event) {
+//            tagAddingHandler($(this))
+//        }
     });
 });
