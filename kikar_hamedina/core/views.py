@@ -156,29 +156,8 @@ class StatusListView(AjaxListView):
         """Apply request params to DB query. This currently includes 'range'
         and 'order_by' """
         date_range_Q = filter_by_date(self.request)
-        result = query.filter(date_range_Q)
-
         order_by = get_order_by(self.request)
-        if order_by:
-            # By default ordering puts NULLs on top, but we want them in the
-            # bottom. It isn't trivial to change this behavior in django
-            # (more so for non-fixed fields) but important for user experience
-            # See http://stackoverflow.com/q/7749216
-            null_field = order_by[0]
-            if null_field.startswith('-'):
-                null_field = null_field[1:]
-                null_order = 'is_null'
-            else:
-                null_order = '-is_null'
-            # We need to be paranoid here with raw SQL escaping, as there is
-            # no standard way to escape field name (select_params is only for
-            # values, not names). So only fix NULLs for these specific fields.
-            # See http://stackoverflow.com/q/6618344
-            if null_field in ("published", "like_count", "comment_count"):
-                result = result.extra(select={'is_null': '%s IS NULL' % null_field}).order_by(null_order, *order_by)
-            else:
-                result = result.order_by(*order_by)
-        return result
+        return query.filter(date_range_Q).order_by(*order_by)
 
 
 class HomepageView(ListView):
