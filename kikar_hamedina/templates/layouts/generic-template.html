@@ -158,14 +158,14 @@
                     </ul>
                 </li>
 
-                <li class="navbar-nav navbar-right">
+                <li class="navbar-nav navbar-right  hidden-md hidden-sm hidden-xs">
                     <a href="{% url 'all-statuses' %}" class="navbar-options">כל העדכונים</a>
                 </li>
 
-                <li class="navbar-nav navbar-right">
+                <li class="navbar-nav navbar-right hidden-md hidden-sm hidden-xs">
                     <a href="{% url 'billboards' %}" class="navbar-options">המצעד</a>
                 </li>
-                <li class="navbar-nav navbar-right">
+                <li class="navbar-nav navbar-right  hidden-md hidden-sm hidden-xs">
                     <a href="{% url 'about' %}" class="navbar-options">
                         אודות
                     </a>
@@ -174,7 +174,7 @@
                     <li class="navbar-nav navbar-right">
                         <a href="{% url 'untagged' %}" class="navbar-options">תיוג</a>
                     </li>
-                    <li class="navbar-nav navbar-right">
+                    <li class="navbar-nav navbar-right hidden-md hidden-sm hidden-xs">
                         <a href="{% url 'zinnia_entry_archive_index' %}" class="navbar-options">בלוג</a>
                     </li>
                 {% endif %}
@@ -187,7 +187,7 @@
 
             </ul>
 
-            <div class="col-sm-3 col-md-3 pull-left">
+            <div class="col-sm-3  pull-left">
                 <div class="navbar-form navbar-left dropdown" id="search-bar-form" role="search">
                     <div class="input-group" id="search-results-dropdown">
                         <input id="navbar-search-box" type="text" name="search_str" class="form-control"
