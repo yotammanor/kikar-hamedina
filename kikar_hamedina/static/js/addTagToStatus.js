@@ -100,8 +100,8 @@ function tagAddingHandler(obj) {
 
 
 $(document).ready(function () {
-    // event: clicking on the add-tag button
-    $(".add-tag-button").click(function () {
+    $("div.row").on("click", ".add-tag-button", function (event) {
+        // event: clicking on the add-tag button
         console.log("adding tag");
         id = $(this).parent().parent().data("statusid");
         tag = $(this).parent().parent().find(".add-tag-input");
@@ -114,23 +114,10 @@ $(document).ready(function () {
         for (t in tags) {
             addTag(id, tags[t], csrf_token)
         }
-
-    });
-    // event - text is inserted or focus is returned to tag input.
-    //
-    //         * Aimed  at opening and populating list  of auto-suggest.
-/*    $(".add-tag-input").bind({
-        input: function (event) {
-//        $('#add-tag-dropdown').removeClass("open")
-            tagAddingHandler($(this))
-        },
-
-        focusin: function (event) {
-            tagAddingHandler($(this))
-        }
-    });*/
-
-    $("div.row").on("input", ".add-tag-input", function (event) {
+    }).on("input", ".add-tag-input", function (event) {
+        // event - text is inserted or focus is returned to tag input.
+        //
+        //         * Aimed  at opening and populating list  of auto-suggest.
 //        $('#add-tag-dropdown').removeClass("open")
         tagAddingHandler($(this))
     }).on("focusin", ".add-tag-input", function (event) {
