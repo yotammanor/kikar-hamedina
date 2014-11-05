@@ -74,6 +74,7 @@ class Facebook_Feed(models.Model):
     requires_user_token = models.BooleanField(default=False, null=False)
     is_current = models.BooleanField(default=True, null=False)
     current_fan_count = models.IntegerField(default=0, null=False)
+    locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1))
 
     # Public Page Only
     about = models.TextField(null=True, blank=True, default='')
@@ -88,6 +89,11 @@ class Facebook_Feed(models.Model):
 
     def __unicode__(self):
         return slugify(self.username) + " " + self.vendor_id
+
+    def save(self, *args, **kwargs):
+        '''On save, update locally_updated fields'''
+        self.locally_updated = timezone.now()
+        return super(Facebook_Feed, self).save(*args, **kwargs)
 
     @property
     def get_current_fan_count(self):
@@ -221,6 +227,7 @@ class Facebook_Status(models.Model):
     story_tags = models.TextField(null=True, blank=True)
     is_comment = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False, null=False)
+    locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1))
 
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
     objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
@@ -229,6 +236,11 @@ class Facebook_Status(models.Model):
 
     def __unicode__(self):
         return self.status_id
+
+    def save(self, *args, **kwargs):
+        '''On save, update locally_updated fields'''
+        self.locally_updated = timezone.now()
+        return super(Facebook_Status, self).save(*args, **kwargs)
 
     @property
     def get_link(self):
