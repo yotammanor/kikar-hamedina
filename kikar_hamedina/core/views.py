@@ -160,12 +160,12 @@ class StatusListView(AjaxListView):
         return query.filter(date_range_Q).order_by(*order_by)
 
 
-class HomepageView(ListView):
-    template_name = 'core/homepage.html'
+class AboutUsView(ListView):
+    template_name = 'core/about_us.html'
     model = Facebook_Status
 
     def get_context_data(self, **kwargs):
-        context = super(HomepageView, self).get_context_data(**kwargs)
+        context = super(AboutUsView, self).get_context_data(**kwargs)
         new_statuses_last_day = Facebook_Status.objects.filter(published__gte=(
             datetime.date.today() - datetime.timedelta(days=1))).count()
         context['statuses_last_day'] = new_statuses_last_day
@@ -432,7 +432,7 @@ class BillboardsView(ListView):
 
 class OnlyCommentsView(StatusListView):
     model = Facebook_Status
-    template_name = 'core/all_results.html'
+    template_name = 'core/homepage_all_statuses.html'
 
     def get_queryset(self):
         return self.apply_request_params(Facebook_Status.objects_no_filters.filter(is_comment=True))
@@ -440,7 +440,7 @@ class OnlyCommentsView(StatusListView):
 
 class AllStatusesView(StatusListView):
     model = Facebook_Status
-    template_name = 'core/all_results.html'
+    template_name = 'core/homepage_all_statuses.html'
     # paginate_by = 100
 
     def get_queryset(self):
@@ -779,10 +779,6 @@ class ReviewTagsView(ListView):
         queryset = TaggedItem.objects.all().order_by('-date_of_tagging')
         print queryset
         return queryset
-
-
-def about_page(request):
-    return render(request, 'core/about.html')
 
 
 # Views for getting facebook data using a user Token

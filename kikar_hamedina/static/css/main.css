@@ -137,3 +137,8 @@ body {
 .hidden-object {
     display: none;
 }
+
+#hompage-logo {
+    max-width: 100%;
+    height: auto;
+}
