@@ -24,7 +24,7 @@ v1_api.register(StatsPartyResource())
 
 urlpatterns = patterns('',
                        # homepage
-                       url(r'^$', views.HomepageView.as_view(), name='index'),
+                       url(r'^$', views.AllStatusesView.as_view(), name='index'),
                        # include urls
                        url(r'^api/', include(v1_api.urls)),
                        url(r'^blog/', include('zinnia.urls')),
@@ -34,7 +34,7 @@ urlpatterns = patterns('',
                        # TODO: rename to `hot` to covr hot topics
                        url(r'^hot-topics/$', views.HotTopicsView.as_view(), name='hot-topics'),
                        url(r'^searchgui/$', views.SearchGuiView.as_view(), name="search-gui"),
-                       url(r'^about/$', views.about_page, name='about', ),
+                       url(r'^about/$', views.AboutUsView.as_view(), name='about', ),
                        url(r'^all-statuses/$',
                            views.AllStatusesView.as_view(),
                            kwargs={'context_object': 'index'},

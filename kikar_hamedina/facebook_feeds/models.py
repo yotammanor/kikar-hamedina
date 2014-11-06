@@ -34,7 +34,6 @@ INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'replied to a comment',
 ]
 
-
 class Facebook_Persona(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
@@ -211,9 +210,9 @@ class Facebook_Status(models.Model):
     feed = models.ForeignKey('Facebook_Feed')
     status_id = models.CharField(unique=True, max_length=128)
     content = models.TextField()
-    like_count = models.PositiveIntegerField(null=True, blank=True)
-    comment_count = models.PositiveIntegerField(null=True, blank=True)
-    share_count = models.PositiveIntegerField(null=True, blank=True)
+    like_count = models.PositiveIntegerField(default=0, blank=True)
+    comment_count = models.PositiveIntegerField(default=0, blank=True)
+    share_count = models.PositiveIntegerField(default=0, blank=True)
     published = models.DateTimeField()
     updated = models.DateTimeField()
     status_type = models.CharField(null=True, blank=True, default=None, max_length=128)

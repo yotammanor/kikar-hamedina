@@ -1,0 +1,26 @@
+{% extends "core/facebook_statuses_page.html" %}
+
+{% block title %}כיכר המדינה - כל העדכונים{% endblock title %}
+
+{% block h1 %}
+    <div class="main-page-frame col-lg-12">
+        <img id="homepage-logo" src="{{ STATIC_URL }}media/kikar_hamedina_logo.png">
+    </div>
+    <div class="main-page-frame col-lg-12">
+        <h1>חברי הכנסת ברשתות החברתיות</h1>
+    </div>
+{% endblock %}
+
+{% block context-header %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <strong>האתר עדיין בתהליכי בנייה!</strong> יתכנו פערים וטעויות במידע המוצג באתר, לתשומת ליבך.
+    </div>
+    <div class="container main-page-frame">
+    </div>
+{% endblock %}
+
+
+{% block details %}
+{% endblock %}

@@ -11,24 +11,22 @@ $.endlessPaginate({
         var new_statuses = $.grep($(fragment).children(), function (elem) {
             return $(elem).is(".status-panel")
         });
-        $(new_statuses).each(function (index) {
-            status_id = $(this).data("statusid");
-            update_status_url = "/status_update/" + status_id + "/";
-            $("#status-metrics-is-updating-indicator-" + status_id).show();
-            $.ajax({
-                url: update_status_url,
-                contentType: "application/json",
-                success: function (data) {
-                    $("#" + data['id'] + "-likes").text(data['likes']);
-                    $("#" + data['id'] + "-comments").text(data['comments']);
-                    $("#" + data['id'] + "-shares").text(data['shares']);
-                    $("#status-metrics-is-updating-indicator-" + data['id']).hide()
-                },
-                error: function (data) {
-                    $("#status-metrics-is-updating-indicator-" + data['id']).hide();
-                    $("#status-metrics-is-error-indicator-" + data['id']).show();
-                }
-            });
-        });
+//            status_id = $(this).data("statusid");
+//            update_status_url = "/status_update/" + status_id + "/";
+//            $("#status-metrics-is-updating-indicator-" + status_id).show();
+//            $.ajax({
+//                url: update_status_url,
+//                contentType: "application/json",
+//                success: function (data) {
+//                    $("#" + data['id'] + "-likes").text(data['likes']);
+//                    $("#" + data['id'] + "-comments").text(data['comments']);
+//                    $("#" + data['id'] + "-shares").text(data['shares']);
+//                    $("#status-metrics-is-updating-indicator-" + data['id']).hide()
+//                },
+//                error: function (data) {
+//                    $("#status-metrics-is-updating-indicator-" + data['id']).hide();
+//                    $("#status-metrics-is-error-indicator-" + data['id']).show();
+//                }
+//            });
     }
 });

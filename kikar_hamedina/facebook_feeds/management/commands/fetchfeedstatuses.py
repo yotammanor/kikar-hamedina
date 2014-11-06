@@ -163,15 +163,15 @@ class Command(BaseCommand):
         if status_object_defaultdict['likes']:
             like_count = status_object_defaultdict['likes']['summary']['total_count']
         else:
-            like_count = None
+            like_count = 0
         if status_object_defaultdict['comments']:
             comment_count = status_object_defaultdict['comments']['summary']['total_count']
         else:
-            comment_count = None
+            comment_count = 0
         if status_object_defaultdict['shares']:
             share_count = status_object_defaultdict['shares']['count']
         else:
-            share_count = None
+            share_count = 0
         if status_object_defaultdict['status_type']:
             type_of_status = status_object_defaultdict['status_type']
         else:
