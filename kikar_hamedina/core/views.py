@@ -48,6 +48,11 @@ FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_ST
 # hot-topics page
 NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS = getattr(settings, 'NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS', 7)
 
+# needs_refresh - Constants for quick status refresh
+MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
+MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
+MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60*10)  # 10 minutes
+
 
 def get_date_range_dict():
     filter_by_date_default_end_date = timezone.now()
@@ -838,10 +843,6 @@ def get_data_from_facebook(request):
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
-# Constant for quick status refresh
-MAX_STATUS_AGE_FOR_REFRESH = 60*60*24*2  # 2 days
-MIN_STATUS_REFRESH_INTERVAL = 5  # 5 seconds
-MAX_STATUS_REFRESH_INTERVAL = 60*10  # 10 minutes
 
 def status_needs_refresh(status):
     """Returns whether the status needs a refresh from FB based on its age.
@@ -856,8 +857,8 @@ def status_needs_refresh(status):
     refresh_range = MAX_STATUS_REFRESH_INTERVAL - MIN_STATUS_REFRESH_INTERVAL
     refresh_interval = (normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
     need_refresh = status.locally_updated + timezone.timedelta(seconds=refresh_interval) < now
-    # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
-    #     need_refresh, age_secs, normalized_age, refresh_interval, status.locally_updated, now)
+    print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
+        need_refresh, age_secs, normalized_age, refresh_interval, status.locally_updated, now)
     return need_refresh
 
 
