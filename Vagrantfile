@@ -54,14 +54,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       python manage.py migrate kikartags
       python manage.py convert_tags_data_to_kikartags
       python manage.py fetchfeedproperties || true
-      python manage.py fetchfeedstatuses
     EOS
   end
 
   config.vm.provision :shell do |shell|
     shell.inline = <<-EOS
+      set -e
       echo 'exec python /vagrant/kikar_hamedina/manage.py runserver 0.0.0.0:8000' > /etc/init/kikar.conf
       start kikar
+    EOS
+  end
+
+  config.vm.provision :shell do |shell|
+    shell.inline = <<-EOS
+      cd /vagrant/kikar_hamedina/
+      echo 'exec python /vagrant/kikar_hamedina/manage.py runserver 0.0.0.0:8000' > /etc/init/kikar.conf
+      python manage.py fetchfeedstatuses
     EOS
   end
 end
