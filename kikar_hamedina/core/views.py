@@ -838,40 +838,59 @@ def get_data_from_facebook(request):
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
+# Constant for quick status refresh
+MAX_STATUS_AGE_FOR_REFRESH = 60*60*24*2  # 2 days
+MIN_STATUS_REFRESH_INTERVAL = 5  # 5 seconds
+MAX_STATUS_REFRESH_INTERVAL = 60*10  # 10 minutes
+
+def status_needs_refresh(status):
+    """Returns whether the status needs a refresh from FB based on its age.
+    A status that was just created is updated every 5 seconds, a 2 days old
+    status is updated every 10 minutes. Older status don't get updated here
+    and they rely on a background process that runs every 10 minutes."""
+    now = timezone.now()
+    age_secs = max((now - status.published).total_seconds(), 0)
+    if age_secs > MAX_STATUS_AGE_FOR_REFRESH:
+        return False  # Old status - don't refresh here
+    normalized_age = age_secs / MAX_STATUS_AGE_FOR_REFRESH
+    refresh_range = MAX_STATUS_REFRESH_INTERVAL - MIN_STATUS_REFRESH_INTERVAL
+    refresh_interval = (normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
+    need_refresh = status.locally_updated + timezone.timedelta(seconds=refresh_interval) < now
+    # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
+    #     need_refresh, age_secs, normalized_age, refresh_interval, status.locally_updated, now)
+    return need_refresh
+
+
 # A handler for status_update ajax call from client
 def status_update(request, status_id):
     status = Facebook_Status.objects_no_filters.get(status_id=status_id)
 
-    response = HttpResponse(content_type="application/json")
+    response = HttpResponse(content_type="application/json", status=200)
     response_data = dict()
     response_data['id'] = status.status_id
 
     try:
+       if status_needs_refresh(status):
+            update_status_command = updatestatus.Command()
+            update_status_command.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                                     settings.FACEBOOK_SECRET_KEY)
+            status_response_dict = update_status_command.fetch_status_object_data(status_id)
 
-        update_status_command = updatestatus.Command()
-        update_status_command.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
-                                                                                 settings.FACEBOOK_SECRET_KEY)
-        status_response_dict = update_status_command.fetch_status_object_data(status_id)
+            response_data['likes'] = getattr(getattr(getattr(status_response_dict, 'likes', 0), 'summary', 0),
+                                             'total_count', 0)
+            response_data['comments'] = getattr(getattr(getattr(status_response_dict, 'comments', 0), 'summary', 0),
+                                                'total_count', 0)
+            response_data['shares'] = getattr(getattr(status_response_dict, 'shares', 0), 'count', 0)
 
-        response_data['likes'] = getattr(getattr(getattr(status_response_dict, 'likes', None), 'summary', None),
-                                         'total_count', None)
-        response_data['comments'] = getattr(getattr(getattr(status_response_dict, 'comments', None), 'summary', None),
-                                            'total_count', None)
-        response_data['shares'] = getattr(getattr(status_response_dict, 'shares', None), 'count', None)
-        try:
-            status.like_count = int(response_data['likes'])
-            status.comment_count = int(response_data['comments'])
-            status.share_count = int(response_data['shares'])
-            status.save()
-            # print 'saved data to db'
-        finally:
-            format_int_or_null = lambda x: 0 if not x else "{:,}".format(x)
+            try:
+                update_status_command.update_status_object_in_db(retrieved_status_data=status_response_dict,
+                                                                 status_object=status,
+                                                                 options={'force-update': True,
+                                                                          'force-attachment-update': True})
+                # print 'saved data to db'
+            finally:
+                response.status_code = 200
 
-            response_data['likes'] = format_int_or_null(status.like_count)
-            response_data['comments'] = format_int_or_null(status.comment_count)
-            response_data['shares'] = format_int_or_null(status.share_count)
-            response_data['id'] = status.status_id
-            response.status_code = 200
 
     except KeyError as e:
         response.status_code = 500
@@ -883,6 +902,13 @@ def status_update(request, status_id):
         raise e
 
     finally:
+        format_int_or_null = lambda x: 0 if not x else "{:,}".format(x)
+
+        response_data['likes'] = format_int_or_null(status.like_count)
+        response_data['comments'] = format_int_or_null(status.comment_count)
+        response_data['shares'] = format_int_or_null(status.share_count)
+        response_data['id'] = status.status_id
+
         # print 'response is:', response_data
         response.content = json.dumps(response_data)
         return response
