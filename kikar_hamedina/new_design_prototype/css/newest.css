@@ -228,7 +228,7 @@ a {
 
 /* this gives us a vertical horizontal line next to the posts */
 .posts-vertical-line-left {
-  border-left: 1px solid #ccc;
+  border-left: 1px solid #eeeeee;
   /*margin: 30px 0;*/
   /*margin: 20px 0 0 0;*/
   /*padding: 0;*/
@@ -303,7 +303,8 @@ a {
   float: right;
   /*background-color: orange;*/
   width: 40%;
-  padding: 0 30px;
+  /*padding: 0 30px;*/
+  padding: 0 6%;
 }
 
 .extra-info-group > ul {
