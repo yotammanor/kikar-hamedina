@@ -172,7 +172,7 @@ a {
     height: 100%;
     float: right;
     width: 20%;
-    padding: 20px;
+    padding: 20px 0;
     background-color: rgb(49, 53, 64);
     color: white;
   }
@@ -180,20 +180,36 @@ a {
 
 .nav-sidebar {
   list-style: none;
-  padding-right: 10%;
+  padding: 0;
+  padding-right: 20px;
+  /*padding-top: 20px;*/
+  /*padding-right: 10%;*/
 }
 
 .nav-sidebar > li {
-  padding: 2px 0;
+  width: 100%;
+  /*padding: 2px 0;*/
 }
 
 .nav-sidebar > li > a {
+  /*padding: 2px 0;*/
   color: #ffffff;
+  display: block;
+  padding: 5px 10px;
+  /*padding: 10px 10px 10px 0;*/
+}
+
+.nav-sidebar > li > a:hover {
+  background-color: rgb(0, 60, 106);
+  text-decoration: none;
+  /*background-color: rgb(0, 81, 144);*/
 }
 
 .nav-sidebar-heading {
   font-weight: 600;
   font-size: 16px;
+  padding: 10px;
+  padding-top: 0;
 }
 
 .sidebar > hr {
