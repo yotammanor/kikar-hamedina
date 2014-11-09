@@ -239,14 +239,18 @@ nav.sidebar ul:after {
 
 nav.sidebar ul ul {
   z-index: 2000;
-  position: absolute;
+  position: fixed;
   top: 80px;
+  bottom: 0px;
   right: 20%;
   background-color: rgb(40, 44, 54);
   width: 20%;
   list-style: none;
   padding-top: 20px;
   padding-bottom: 20px;
+  padding-right: 20px;
+  /*max-height: 300px;*/
+  overflow-y: auto;
 }
 
 nav.sidebar ul ul li {
