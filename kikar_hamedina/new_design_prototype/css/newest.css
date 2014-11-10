@@ -295,8 +295,13 @@ nav.sidebar ul ul li a:hover {
 .posts-container {
   float: right;
   height: 100%;
-  width: 60%;
+  width: 100%;
   background-color: #fff;
+}
+@media (min-width: 768px) {
+  .posts-container {
+    width: 60%;
+  }
 }
 
 /* this gives us a vertical horizontal line next to the posts */
@@ -373,11 +378,17 @@ nav.sidebar ul ul li a:hover {
 }
 
 .extra-info {
-  float: right;
-  /*background-color: orange;*/
-  width: 40%;
-  /*padding: 0 30px;*/
-  padding: 0 6%;
+  display: none;
+}
+@media (min-width: 768px) {
+  .extra-info {
+    display: block;
+    float: right;
+    /*background-color: orange;*/
+    width: 40%;
+    /*padding: 0 30px;*/
+    padding: 0 6%;
+  }
 }
 
 .extra-info-group > ul {
