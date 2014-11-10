@@ -114,17 +114,13 @@ a {
   padding-left: 10px;
 }
 
-/*TODO - not 100% right. not using atm*/
-#search-input {
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  font-size: 1.3em;
-  line-height: 3;
-  vertical-align: middle;
-  background: none;
-  border: none;
+.search > input {
+  outline-width: 0;
+  border: 0;
+  width: 90%;
+  background-color: transparent;
+  line-height: 28px;
+  height: 28px;
 }
 
 .nav-bar-items {
