@@ -857,8 +857,8 @@ def status_needs_refresh(status):
     refresh_range = MAX_STATUS_REFRESH_INTERVAL - MIN_STATUS_REFRESH_INTERVAL
     refresh_interval = (normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
     need_refresh = status.locally_updated + timezone.timedelta(seconds=refresh_interval) < now
-    print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
-        need_refresh, age_secs, normalized_age, refresh_interval, status.locally_updated, now)
+    # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
+    #     need_refresh, age_secs, normalized_age, refresh_interval, status.locally_updated, now)
     return need_refresh
 
 
