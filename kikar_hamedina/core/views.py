@@ -48,11 +48,6 @@ FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_ST
 # hot-topics page
 NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS = getattr(settings, 'NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS', 7)
 
-# needs_refresh - Constants for quick status refresh
-MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
-MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
-MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60*10)  # 10 minutes
-
 
 def get_date_range_dict():
     filter_by_date_default_end_date = timezone.now()
@@ -843,25 +838,6 @@ def get_data_from_facebook(request):
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
-
-def status_needs_refresh(status):
-    """Returns whether the status needs a refresh from FB based on its age.
-    A status that was just created is updated every 5 seconds, a 2 days old
-    status is updated every 10 minutes. Older status don't get updated here
-    and they rely on a background process that runs every 10 minutes."""
-    now = timezone.now()
-    age_secs = max((now - status.published).total_seconds(), 0)
-    if age_secs > MAX_STATUS_AGE_FOR_REFRESH:
-        return False  # Old status - don't refresh here
-    normalized_age = age_secs / MAX_STATUS_AGE_FOR_REFRESH
-    refresh_range = MAX_STATUS_REFRESH_INTERVAL - MIN_STATUS_REFRESH_INTERVAL
-    refresh_interval = (normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
-    need_refresh = status.locally_updated + timezone.timedelta(seconds=refresh_interval) < now
-    # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
-    #     need_refresh, age_secs, normalized_age, refresh_interval, status.locally_updated, now)
-    return need_refresh
-
-
 # A handler for status_update ajax call from client
 def status_update(request, status_id):
     status = Facebook_Status.objects_no_filters.get(status_id=status_id)
@@ -871,11 +847,11 @@ def status_update(request, status_id):
     response_data['id'] = status.status_id
 
     try:
-       if status_needs_refresh(status):
+        if status.needs_refresh:
             update_status_command = updatestatus.Command()
             update_status_command.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                                      settings.FACEBOOK_SECRET_KEY)
-            status_response_dict = update_status_command.fetch_status_object_data(status_id)
+            status_response_dict = update_status_command.fetch_status_object_data(status_id) or {}
 
             response_data['likes'] = getattr(getattr(getattr(status_response_dict, 'likes', 0), 'summary', 0),
                                              'total_count', 0)
@@ -901,6 +877,10 @@ def status_update(request, status_id):
 
     except ValueError as e:
         raise e
+
+    except Exception as e:
+        print 'status_update error:', e
+        raise
 
     finally:
         format_int_or_null = lambda x: 0 if not x else "{:,}".format(x)
