@@ -32,65 +32,32 @@
 
   <body>
 
-    <!--<div class="snap-drawers">-->
-      <!--<div class="snap-drawer snap-drawer-left">-->
-        <!--<div>-->
-          <!--<h3>Snap.js</h3>-->
-          <!--<h4>Demos</h4>-->
-          <!--<ul>-->
-            <!--<li><a href="default.html">Default</a></li>-->
-            <!--<li><a href="noDrag.html">No Drag</a></li>-->
-            <!--<li><a href="dragElement.html">Drag Element</a></li>-->
-            <!--<li><a href="rightDisabled.html">Right Disabled</a></li>-->
-            <!--<li><a href="hyperextend.html">Hyperextension Disabled</a></li>-->
-            <!--<li><a href="skinnyThreshold.html">Skinny Threshold</a></li>-->
-            <!--<li><a href="toggles.html">Toggles</a></li>-->
-            <!--<li><a href="classNames.html">Class Names</a></li>-->
-            <!--<li><a href="expand.html">Expanding</a></li>-->
-            <!--<li><a href="settings.html">Settings</a></li>-->
-            <!--<li><a href="ratchet/template.html">Ratchet</a></li>-->
-          <!--</ul>-->
-          <!--<div>-->
-            <!--<p>The Default demo shows basic Snap.js functionality</p>-->
-            <!--<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla non erat ac leo ultrices blandit sed vel risus. Pellentesque facilisis blandit auctor. Maecenas vestibulum vulputate tincidunt. Mauris nec quam libero. Fusce eget ligula non leo varius condimentum quis ac elit. Donec id urna ut neque semper ultrices. Proin ut suscipit felis. Nullam neque felis, ullamcorper scelerisque volutpat vel, vehicula vehicula neque. Aenean scelerisque elit ac erat sagittis ullamcorper.</p>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="snap-drawer snap-drawer-right"></div>-->
-    <!--</div>-->
-
-    <!--<div id="content" class="snap-content">-->
-      <!--<div id="toolbar">-->
-        <!--<a href="#" id="open-left"></a>-->
-        <!--<h1>Default</h1>-->
-      <!--</div>-->
-    <!--</div>-->
-
     <div class="top-bar clearfix">
 
       <div class="logo">
         <a href="/index.html">
           <img src="../img/logo5.png" alt="כיכר המדינה"/>
         </a>
+        <a href="#" id="pull-menu"><!--Menu -->&#9776;</a>
       </div>
 
       <nav class="nav-bar">
-        <div class="search">
+        <div class="search clearfix">
           <span class="glyphicon glyphicon-search"></span>
           <input type="text" role="search" placeholder="חפש חבר כנסת, נושא מתויג, אומילים שח״כים אומרים"/>
         </div>
 
         <ul class="nav-bar-items">
-          <!--<li><a href="#">אודות</a></li>-->
-          <!--<li><a href="#">המצעד</a></li>-->
+          <li><a href="#">אודות</a></li>
+          <li><a href="#">המצעד</a></li>
           <!--remove this. we have a search bar already-->
           <!--<li><a href="#">חיפוש</a></li>-->
-          <!--<li><a href="#">כל העדכונים</a></li>-->
+          <li><a href="#">כל העדכונים</a></li>
 
           <!--In english for testing. Webstorm doesn't work well with Hebrew-->
-          <li><a href="#">About</a></li>
-          <li><a href="#">Steps</a></li>
-          <li><a href="#">All updates</a></li>
+          <!--<li><a href="#">About</a></li>-->
+          <!--<li><a href="#">Steps</a></li>-->
+          <!--<li><a href="#">All updates</a></li>-->
         </ul>
       </nav>
 
@@ -98,7 +65,7 @@
 
     <nav class="sidebar">
       <ul class="nav-sidebar">
-        <li class="active nav-sidebar-heading">כל הפוליטיקאים</li>
+        <li class="nav-sidebar-heading">כל הפוליטיקאים</li>
         <li><a href="#">בנימין נתניהו</a></li>
         <li><a href="#">יאיר לפיד</a></li>
         <li><a href="#">שלי יחימוביץ׳</a></li>
@@ -389,6 +356,36 @@
     <script src="../js/jquery-1.11.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
 
+    <script>
+      $(function() {
+
+        // some useful links:
+        // 1 - http://www.learningjquery.com/2009/02/slide-elements-in-different-directions/
+        // 2 - http://www.hongkiat.com/blog/responsive-web-nav/
+        // 3 - http://jsfiddle.net/DcWS2/10/
+
+        // show sidebar for bigger screens.
+        // don't want this to run on every resize? see:
+        // http://stackoverflow.com/questions/2854407/javascript-jquery-window-resize-how-to-fire-after-the-resize-is-completed
+        $(window).on('resize', function(){
+          var win = $(this); //this = window
+          if (win.width() >= 768) {
+            $('.sidebar').show();
+          }
+          //causes weird behaviour. not essential either way
+          // else {
+          //   $('.sidebar').hide();
+          // }
+        });
+
+        $('#pull-menu').click(function() {
+          $('.sidebar').toggle();
+
+          // ugly hack, because toggle was removing padding for some reason
+          $('.sidebar').css( "padding", "20px 0" );
+        });
+      });
+    </script>
 
   </body>
 </html>
