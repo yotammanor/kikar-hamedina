@@ -1,8 +1,55 @@
 from django.contrib.auth.models import AnonymousUser
 from django.utils import six
+from django.db import models
 
 from taggit.managers import _TaggableManager
 from taggit.utils import require_instance_manager
+
+
+class TagManager(models.Manager):
+
+    def __init__(self):
+        super(TagManager, self).__init__()
+
+    def get_proper(self, *args, **kwargs):
+        """
+        Returns the proper form of tag.
+        If the requested tag is a synonym of a proper tag, the proper version will be returned.
+        Otherwise, the selected tag is returned unchanged.
+        """
+        selected_tag = self.get(*args, **kwargs)
+        if selected_tag.proper_form_of_tag.exists():
+            return selected_tag.proper_form_of_tag.first().proper_form_of_tag
+        else:
+            return selected_tag
+
+    def filter_proper(self, *args, **kwargs):
+        """
+        Returns the queryset with proper forms of tags only.
+        Receives a queryset of tags, and for each of them
+        """
+        selected_tags = self.filter(*args, **kwargs)
+        set_of_tag_ids = set([self.get_proper(id=tag.id).id for tag in selected_tags])
+        return self.filter(id__in=[tag_id for tag_id in set_of_tag_ids])
+
+    def exclude_synonyms(self, *args, **kwargs):
+        """
+        Within a given queryset of tags,
+        filter out tags that are synonyms of other (proper) tags.
+        """
+        return self.filter(*args, **kwargs).filter(proper_form_of_tag__isnull=True)
+
+    def filter_bundle(self, *args, **kwargs):
+        """
+        Extends a filtered queryset of tags to
+        include all proper and synonyms of those tags.
+        """
+        selected_tags = self.filter_proper(*args, **kwargs)
+        all_ids_in_bundle = list()
+        for selected_tag in selected_tags:
+            all_ids_in_bundle.append(selected_tag.id)
+            all_ids_in_bundle += [tag.tag.id for tag in selected_tag.synonyms.all()]
+        return self.filter(id__in=set(all_ids_in_bundle))
 
 
 class _KikarTaggableManager(_TaggableManager):

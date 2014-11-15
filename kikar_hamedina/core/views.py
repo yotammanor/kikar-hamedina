@@ -1,6 +1,7 @@
 import datetime
 import json
 from operator import or_, and_
+from unidecode import unidecode
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -49,9 +50,9 @@ FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_ST
 NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS = getattr(settings, 'NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS', 7)
 
 # needs_refresh - Constants for quick status refresh
-MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
+MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60 * 60 * 24 * 2)  # 2 days
 MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
-MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60*10)  # 10 minutes
+MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60 * 10)  # 10 minutes
 
 
 def get_date_range_dict():
@@ -146,8 +147,6 @@ def filter_by_date(request, datetime_field='published'):
     except KeyError:
         start_date = date_range_dict['default']['start_date']
         end_date = date_range_dict['default']['end_date']
-
-    print filter_range_arg
 
     date_time_field_range = datetime_field + '__range'
     range_value = (start_date, end_date)
@@ -513,10 +512,11 @@ class SearchView(StatusListView):
         # tags - search for all tags specified by their id
         tags_Q = Q()
         if tags_ids:
-            tags_to_queries = [Q(tags__id=tag_id) for tag_id in tags_ids]
+            # | Q(tags__synonyms__proper_form_of_tag__id=tag_id)
+            tag_bundle_ids = [tag.id for tag in Tag.objects.filter_bundle(id__in=tags_ids)]
+            tags_to_queries = [Q(tags__id=tag_id) for tag_id in tag_bundle_ids]
             print 'tags_to_queries:', len(tags_to_queries)
             for query_for_single_tag in tags_to_queries:
-                # print 'Now adding query:', query_for_single_tag
                 if not tags_Q:
                     # the first query overrides the empty concatenated query
                     tags_Q = query_for_single_tag
@@ -561,8 +561,6 @@ class SearchView(StatusListView):
 
         print 'search_str_with_tags_Q:', search_str_with_tags_Q
         print '\n'
-        # print 'members_or_parties:', memebers_OR_parties_Q, bool(memebers_OR_parties_Q)
-        # print 'keywords_or_tags:', search_str_with_tags_Q, bool(search_str_with_tags_Q)
 
         query_Q = Q()
         if memebers_OR_parties_Q and search_str_with_tags_Q:
@@ -715,15 +713,15 @@ class TagView(StatusFilterUnifiedView):
         selected_filter = variable_column + '__' + search_field
 
         selected_tag = Tag.objects.get(**{search_field: search_value})
-        if selected_tag.synonym_proper_tag.exists():
+        if selected_tag.synonyms.exists():
             # if has synonyms, add to queryset
             selected_filter = 'tags__in'
-            search_value = [synonym_tag.synonym_tag for synonym_tag in selected_tag.synonym_proper_tag.all()]
-            search_value.append(selected_tag)
+            search_value = [synonym.tag for synonym in selected_tag.synonyms.all()]
+            search_value.append(selected_tag)  # don't forget the to add the original proper tag!
 
-        if selected_tag.synonym_synonym_tag.exists():
+        if selected_tag.proper_form_of_tag.exists():
             # if is a synonym of another tag, redirect
-            proper_tag = selected_tag.synonym_synonym_tag.first().tag
+            proper_tag = selected_tag.proper_form_of_tag.first().proper_form_of_tag
             url = reverse('tag', kwargs={'variable_column': 'tags',
                                          # 'context_object': 'tag',
                                          'search_field': 'id',
@@ -736,7 +734,6 @@ class TagView(StatusFilterUnifiedView):
 
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
-        print context['object_list']
         all_feeds_for_tag = Facebook_Feed.objects.filter(
             facebook_status__id__in=[status.id for status in context['object_list']]).distinct()
         context['side_bar_list'] = Member.objects.filter(
@@ -782,7 +779,6 @@ class ReviewTagsView(ListView):
 
     def get_queryset(self):
         queryset = TaggedItem.objects.all().order_by('-date_of_tagging')
-        print queryset
         return queryset
 
 
@@ -843,7 +839,6 @@ def get_data_from_facebook(request):
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
-
 def status_needs_refresh(status):
     """Returns whether the status needs a refresh from FB based on its age.
     A status that was just created is updated every 5 seconds, a 2 days old
@@ -871,7 +866,7 @@ def status_update(request, status_id):
     response_data['id'] = status.status_id
 
     try:
-       if status_needs_refresh(status):
+        if status_needs_refresh(status):
             update_status_command = updatestatus.Command()
             update_status_command.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                                      settings.FACEBOOK_SECRET_KEY)
@@ -888,7 +883,6 @@ def status_update(request, status_id):
                                                                  status_object=status,
                                                                  options={'force-update': True,
                                                                           'force-attachment-update': True})
-                # print 'saved data to db'
             finally:
                 response.status_code = 200
 
@@ -910,7 +904,6 @@ def status_update(request, status_id):
         response_data['shares'] = format_int_or_null(status.share_count)
         response_data['id'] = status.status_id
 
-        # print 'response is:', response_data
         response.content = json.dumps(response_data)
         return response
 
@@ -957,8 +950,8 @@ def add_tag_to_status(request):
                 # add status to tag statuses
             tag.statuses.add(status_id)
             tag.save()
-        #     response_data['tag'] = {'id': tag.id, 'name': tag.name}
-        # response_data['success'] = True
+            # response_data['tag'] = {'id': tag.id, 'name': tag.name}
+            # response_data['success'] = True
     except:
         print "ERROR AT ADDING STATUS TO TAG"
         print status_id
@@ -969,37 +962,48 @@ def add_tag_to_status(request):
 
 # A handler for the search bar request from the client
 def search_bar(request):
-    searchText = request.GET['text']
+    search_text = request.GET['text']
 
     response_data = {
         'number_of_results': 0,
         'results': []
     }
 
-    if searchText.strip():
+    if search_text.strip():
         # factory method to create a dynamic search result
-        def result_factory(id, name, type, **additional_info):
+
+        def result_factory(object_id, name, object_type, **additional_info):
             result = {
-                'id': id,
+                'id': object_id,
                 'name': name,
-                'type': type
+                'type': object_type
             }
             result.update(additional_info)
             response_data['number_of_results'] += 1
             return result
 
-        members = Member.objects.filter(name__contains=searchText, is_current=True) \
+        query_direct_name = Q(name__contains=search_text)
+        query_alternative_names = Q(memberaltname__name__contains=search_text)
+        combined_member_name_query = query_direct_name | query_alternative_names
+
+        members = Member.objects.filter(combined_member_name_query, is_current=True) \
                       .select_related('current_party').order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for member in members:
             response_data['results'].append(
                 result_factory(member.id, member.name, "member", party=member.current_party.name))
 
-        tags = Tag.objects.filter(name__contains=searchText).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        query_tag_synonyms = Q(synonyms__tag__name=search_text)
+        combined_tag_name_query = query_direct_name | query_tag_synonyms
+
+        tags = Tag.objects.filter_proper(combined_tag_name_query).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for tag in tags:
             response_data['results'].append(
                 result_factory(tag.id, tag.name, "tag"))
 
-        parties = Party.objects.filter(name__contains=searchText, knesset__number=CURRENT_KNESSET_NUMBER).order_by(
+        query_alternative_names = Q(partyaltname__name__contains=search_text)
+        combined_party_name_query = query_direct_name | query_alternative_names
+
+        parties = Party.objects.filter(combined_party_name_query, knesset__number=CURRENT_KNESSET_NUMBER).order_by(
             'name')[
                   :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for party in parties:

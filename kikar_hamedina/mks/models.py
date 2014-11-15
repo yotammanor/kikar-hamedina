@@ -63,6 +63,11 @@ class Knesset(models.Model):
         return reverse('parties-members-list', kwargs={'pk': self.number})
 
 
+class PartyAltname(models.Model):
+    member = models.ForeignKey('Party')
+    name = models.CharField(max_length=64)
+
+
 class Party(models.Model):
     name = models.CharField(max_length=64)
     start_date = models.DateField(blank=True, null=True)
