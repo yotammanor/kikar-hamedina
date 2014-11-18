@@ -50,8 +50,13 @@ blue-link-color: rgb(40, 70, 120)
 body {
   text-align: right;
   direction: rtl;
-  padding-top: 80px;
   background-color: rgb(49, 53, 64);
+  padding-top: 60px;
+}
+@media (min-width: 768px) {
+  body {
+    padding-top: 80px;
+  }
 }
 
 a {
@@ -60,50 +65,91 @@ a {
 }
 
 .top-bar {
-  height: 80px;
-  line-height: 80px;
+  height: 60px;
+  line-height: 60px;
   top: 0;
   position: fixed;
   right: 0;
   left: 0;
   z-index: 1030;
 }
+@media (min-width: 768px) {
+  .top-bar {
+    height: 80px;
+    line-height: 80px;
+  }
+}
 
 .logo {
-  display: none;
+  float: right;
+  background-color: rgb(0, 81, 144);
+  color: white;
+  height: 100%;
+  width: 100%;
+  display: block;
+  text-align: center;
 }
 @media (min-width: 768px) {
   .logo {
-    float: right;
-    background-color: rgb(0, 81, 144);
-    color: white;
-    height: 100%;
     width: 20%;
-    display: block;
-    text-align: center;
   }
+}
 
-  .logo > a > img {
-    max-width: 80%;
-    max-height: 70%;
+.logo > a > img {
+  max-width: 80%;
+  max-height: 70%;
+}
+
+/* mobile menu */
+#pull-menu {
+  color: white;
+  font-size: 30px;
+  position: absolute;
+  right: 15px;
+  top: 0;
+  float: right;
+}
+#pull-menu:hover {
+  text-decoration: none;
+}
+#pull-menu {
+  /*display: block;*/
+  /*background-color: #283744;*/
+  /*width: 100%;*/
+  /*position: relative;*/
+}
+/*#pull-menu:after {*/
+  /*content:"";*/
+  /*background: url('nav-icon.png') no-repeat;*/
+  /*background-color: green;*/
+  /*width: 30px;*/
+  /*height: 30px;*/
+  /*display: inline-block;*/
+  /*position: absolute;*/
+  /*right: 15px;*/
+  /*top: 10px;*/
+/*}*/
+@media (min-width: 768px) {
+  #pull-menu {
+    display: none;
   }
-
 }
 
 .nav-bar {
-  float: right;
-  background-color: rgb(247,247,247);
-  height: 100%;
-  width: 100%;
+  display: none;
 }
 @media (min-width: 768px) {
   .nav-bar {
+    display: block;
+    float: right;
+    background-color: rgb(247, 247, 247);
+    height: 100%;
     width: 80%;
   }
 }
 
 .search {
-  width: 50%;
+  width: 45%;
   float: right;
   font-weight: 900;
   font-size: 16px;
@@ -117,14 +163,19 @@ a {
 .search > input {
   outline-width: 0;
   border: 0;
-  width: 90%;
+  /*
+  better solution for search bar is like the second answer here:
+  http://stackoverflow.com/questions/773517/style-input-element-to-fill-remaining-width-of-its-container
+  would allow us to do width 100% for the input
+  */
+  width: 88%;
   background-color: transparent;
   line-height: 28px;
   height: 28px;
 }
 
 .nav-bar-items {
-  width: 50%;
+  width: 55%;
   float: right;
   list-style: none;
 }
@@ -138,6 +189,7 @@ a {
   /*indented border effect*/
   border-right: 1px solid rgb(232, 232, 232);
   border-left: 1px solid #fff;
+
 }
 
 /*#indented ul li:first-child {border-left: none;}*/
@@ -202,13 +254,14 @@ a {
 }
 
 .nav-sidebar-heading {
+  color: white;
   font-weight: 600;
   font-size: 16px;
   padding: 10px;
   padding-top: 0;
 }
 
-.sidebar > hr {
+nav.sidebar > hr {
   margin-top: 15px;
   margin-bottom: 15px;
   border-top: 1px solid rgb(56, 60, 73);
@@ -295,8 +348,13 @@ nav.sidebar ul ul li a:hover {
 .posts-container {
   float: right;
   height: 100%;
-  width: 60%;
+  width: 100%;
   background-color: #fff;
+}
+@media (min-width: 768px) {
+  .posts-container {
+    width: 60%;
+  }
 }
 
 /* this gives us a vertical horizontal line next to the posts */
@@ -373,11 +431,17 @@ nav.sidebar ul ul li a:hover {
 }
 
 .extra-info {
-  float: right;
-  /*background-color: orange;*/
-  width: 40%;
-  /*padding: 0 30px;*/
-  padding: 0 6%;
+  display: none;
+}
+@media (min-width: 768px) {
+  .extra-info {
+    display: block;
+    float: right;
+    /*background-color: orange;*/
+    width: 40%;
+    /*padding: 0 30px;*/
+    padding: 0 6%;
+  }
 }
 
 .extra-info-group > ul {

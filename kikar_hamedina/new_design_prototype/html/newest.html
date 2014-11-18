@@ -15,6 +15,7 @@
     Remove the BS stuff we don't need to keep the css file size down. -->
     <!-- Bootstrap core CSS -->
     <link href="../css/bootstrap.css" rel="stylesheet">
+    <!--<link href="../css/snap.css" rel="stylesheet">-->
     <!--<link href="../css/bootstrap-rtl.min.css" rel="stylesheet">-->
     <!-- <link href="../css/bootstrap-theme.css" rel="stylesheet"> -->
 
@@ -32,13 +33,16 @@
   <body>
 
     <div class="top-bar clearfix">
+
       <div class="logo">
         <a href="/index.html">
           <img src="../img/logo5.png" alt="כיכר המדינה"/>
         </a>
+        <a href="#" id="pull-menu"><!--Menu -->&#9776;</a>
       </div>
-      <div class="nav-bar">
-        <div class="search">
+
+      <nav class="nav-bar">
+        <div class="search clearfix">
           <span class="glyphicon glyphicon-search"></span>
           <input type="text" role="search" placeholder="חפש חבר כנסת, נושא מתויג, אומילים שח״כים אומרים"/>
         </div>
@@ -46,15 +50,22 @@
         <ul class="nav-bar-items">
           <li><a href="#">אודות</a></li>
           <li><a href="#">המצעד</a></li>
-          <li><a href="#">חיפוש</a></li>
+          <!--remove this. we have a search bar already-->
+          <!--<li><a href="#">חיפוש</a></li>-->
           <li><a href="#">כל העדכונים</a></li>
+
+          <!--In english for testing. Webstorm doesn't work well with Hebrew-->
+          <!--<li><a href="#">About</a></li>-->
+          <!--<li><a href="#">Steps</a></li>-->
+          <!--<li><a href="#">All updates</a></li>-->
         </ul>
-      </div>
+      </nav>
+
     </div>
 
     <nav class="sidebar">
       <ul class="nav-sidebar">
-        <li class="active nav-sidebar-heading">כל הפוליטיקאים</li>
+        <li class="nav-sidebar-heading">כל הפוליטיקאים</li>
         <li><a href="#">בנימין נתניהו</a></li>
         <li><a href="#">יאיר לפיד</a></li>
         <li><a href="#">שלי יחימוביץ׳</a></li>
@@ -344,5 +355,37 @@
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
     <script src="../js/jquery-1.11.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+
+    <script>
+      $(function() {
+
+        // some useful links:
+        // 1 - http://www.learningjquery.com/2009/02/slide-elements-in-different-directions/
+        // 2 - http://www.hongkiat.com/blog/responsive-web-nav/
+        // 3 - http://jsfiddle.net/DcWS2/10/
+
+        // show sidebar for bigger screens.
+        // don't want this to run on every resize? see:
+        // http://stackoverflow.com/questions/2854407/javascript-jquery-window-resize-how-to-fire-after-the-resize-is-completed
+        $(window).on('resize', function(){
+          var win = $(this); //this = window
+          if (win.width() >= 768) {
+            $('.sidebar').show();
+          }
+          //causes weird behaviour. not essential either way
+          // else {
+          //   $('.sidebar').hide();
+          // }
+        });
+
+        $('#pull-menu').click(function() {
+          $('.sidebar').toggle();
+
+          // ugly hack, because toggle was removing padding for some reason
+          $('.sidebar').css( "padding", "20px 0" );
+        });
+      });
+    </script>
+
   </body>
 </html>
