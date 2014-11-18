@@ -34,6 +34,13 @@ INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
                                                'replied to a comment',
 ]
 
+
+# needs_refresh - Constants for quick status refresh
+MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
+MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
+MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60*10)  # 10 minutes
+
+
 class Facebook_Persona(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
@@ -292,6 +299,24 @@ class Facebook_Status(models.Model):
 
         print 'False'
         return False
+
+    @property
+    def needs_refresh(self):
+        """Returns whether the status needs a refresh from FB based on its age.
+        A status that was just created is updated every 5 seconds, a 2 days old
+        status is updated every 10 minutes. Older status don't get updated here
+        and they rely on a background process that runs every 10 minutes."""
+        now = timezone.now()
+        age_secs = max((now - self.published).total_seconds(), 0)
+        if age_secs > MAX_STATUS_AGE_FOR_REFRESH:
+            return False  # Old status - don't refresh here
+        normalized_age = age_secs / MAX_STATUS_AGE_FOR_REFRESH
+        refresh_range = MAX_STATUS_REFRESH_INTERVAL - MIN_STATUS_REFRESH_INTERVAL
+        refresh_interval = (normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
+        need_refresh = self.locally_updated + timezone.timedelta(seconds=refresh_interval) < now
+        # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
+        #     need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
+        return need_refresh
 
 
 # status_with_photo = '161648040544835_720225251353775'
