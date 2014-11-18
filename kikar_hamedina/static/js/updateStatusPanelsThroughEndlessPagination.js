@@ -9,7 +9,7 @@ $.endlessPaginate({
 //        Structure of fragment is set at core/templates/core/facebook_status_list.html
 //
         var new_statuses = $.grep($(fragment).children(), function (elem) {
-            return $(elem).is(".status-panel")
+            return $(elem).is(".status-needs-refresh")
         });
         $(new_statuses).each(function (index) {
             status_id = $(this).data("statusid");
