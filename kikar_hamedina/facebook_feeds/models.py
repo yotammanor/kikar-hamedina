@@ -17,23 +17,6 @@ from slugify import slugify
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
 from kikartags.models import TaggedItem
 
-INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
-                                               'on their own',
-                                               'on her own',
-                                               'likes a link',
-                                               'likes a photo',
-                                               'likes a video',
-                                               'likes a status',
-                                               'liked this post',
-                                               'commented on this',
-                                               'commented on a post',
-                                               'commented on a photo',
-                                               'commented on a video',
-                                               'commented on a link',
-                                               'commented on a status',
-                                               'replied to a comment',
-]
-
 
 # needs_refresh - Constants for quick status refresh
 MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
@@ -55,7 +38,7 @@ class Facebook_Persona(models.Model):
             return None  # TODO: What should we return here when no main feed is defined/ no feeds exist?
 
     def __unicode__(self):
-        return "Facebook_Persona: " + self.content_type + " " + str(self.object_id)
+        return "Facebook_Persona: %s %s" % (self.content_type, self.object_id)
 
 
 class Facebook_Feed(models.Model):
@@ -263,7 +246,7 @@ class Facebook_Status(models.Model):
                 return True
             else:
                 return False
-        except:
+        except Exception:
             return False
 
     @property
@@ -273,31 +256,19 @@ class Facebook_Status(models.Model):
         Returns True or False.
         """
         # Some formatting and printing
-        if self.story:
-            story_string = unidecode(self.story)
-        else:
-            story_string = ''
-
-        print 'status db id:', self.id
-        # print 'story string:', story_string
-
-        # --Deprecated logic-- : based on story_tags. Code will appear in file's history
+        story_string = unidecode(self.story or '')
 
         # Check for strings indicative of comment activity
-        print 'Based on indicative text:',
-        found_text = []
-        for text in INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD:
-            # print 'trying', text
-            if text in story_string:
-                # print 'found'
-                found_text.append(text)
-                # else:
-                # print 'not found'
-        if found_text:
-            print 'True'
-            return True
-
-        print 'False'
+        feed_name = unidecode((self.feed and self.feed.name) or '')
+        for sp in Status_Comment_Pattern.objects.all():
+            pattern = sp.pattern
+            try:
+                if pattern.format(name=feed_name) in story_string:
+                    # print 'Comment:', self, pattern, ':', story_string
+                    return True
+            except (KeyError, IndexError) as e:
+                print 'Format error', self, sp, e
+        # print 'Not a comment', self
         return False
 
     @property
@@ -385,6 +356,13 @@ class User_Token(models.Model):
 
     def __unicode__(self):
         return 'token_' + self.user_id
+
+
+class Status_Comment_Pattern(models.Model):
+    pattern = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return self.pattern
 
 
 # Deprecated Tags
