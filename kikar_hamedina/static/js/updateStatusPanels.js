@@ -1,6 +1,6 @@
 // AJAX that updates the stats for every status-panel.
 $(document).ready(function () {
-    $(".status-panel").each(function (index) {
+    $(".status-needs-refresh").each(function (index) {
         var status_id = $(this).data("statusid");
         update_status_url = "/status_update/" + status_id + "/";
         $("#status-metrics-is-updating-indicator-" + status_id).show();

@@ -5,7 +5,7 @@ from django.forms.models import inlineformset_factory
 from django.contrib.contenttypes import generic
 from django.db.models import Q
 
-from models import Member, Membership, MemberAltname
+from models import Member, Membership, MemberAltname, PartyAltname
 from models import CoalitionMembership, Correlation, Party
 from links.models import Link
 from video.models import Video
@@ -24,6 +24,11 @@ class MemberLinksInline(generic.GenericTabularInline):
 
 class MemberAltnameInline(admin.TabularInline):
     model = MemberAltname
+    extra = 1
+
+
+class PartyAltnameInline(admin.TabularInline):
+    model = PartyAltname
     extra = 1
 
 
@@ -51,7 +56,7 @@ class PartyAdmin(admin.ModelAdmin):
     list_display = ('name', 'knesset', 'start_date', 'end_date', 'is_coalition',
                     'number_of_members', 'number_of_seats')
     list_filter = ('knesset', )
-    inlines = (MembershipInline,)
+    inlines = (MembershipInline, PartyAltnameInline)
 admin.site.register(Party, PartyAdmin)
 
 

@@ -1,0 +1,26 @@
+{% load staticfiles %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<table>
+    <tr>
+        <td>Text : </td>
+        <td>{{post.content}}</td>
+    </tr>
+    <tr>
+        <td>Name : </td>
+        <td>{{post.feed.name}}</td>
+    </tr>
+</table>
+
+</br>
+
+</body>
+</html>
+
+{% endblock %}

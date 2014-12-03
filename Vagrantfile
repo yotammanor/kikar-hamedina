@@ -44,7 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       python manage.py syncdb --noinput
       [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
       python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
-      for m in core persons mks links facebook_feeds video zinnia taggit; do
+      for m in core persons mks links facebook_feeds video zinnia taggit updater; do
         python manage.py migrate $m
       done
       python manage.py migrate kikartags 0004
@@ -54,14 +54,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       python manage.py migrate kikartags
       python manage.py convert_tags_data_to_kikartags
       python manage.py fetchfeedproperties || true
-      python manage.py fetchfeedstatuses
     EOS
   end
 
   config.vm.provision :shell do |shell|
     shell.inline = <<-EOS
+      set -e
       echo 'exec python /vagrant/kikar_hamedina/manage.py runserver 0.0.0.0:8000' > /etc/init/kikar.conf
       start kikar
+    EOS
+  end
+
+  config.vm.provision :shell do |shell|
+    shell.inline = <<-EOS
+      cd /vagrant/kikar_hamedina/
+      echo 'exec python /vagrant/kikar_hamedina/manage.py runserver 0.0.0.0:8000' > /etc/init/kikar.conf
+      python manage.py fetchfeedstatuses
     EOS
   end
 end
