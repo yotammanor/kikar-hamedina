@@ -119,7 +119,7 @@ def getattrd(obj, name, default=NoDefaultProvided):
 
 def get_order_by(request):
     """
-    This function receives a request, and parses order_by parameter, if exits into
+    This function receives a request, and parses order_by parameter, if exists into
     an array of approved and validated order_by fields.
     If fails, falls back to a default order-by (-published)
     """
