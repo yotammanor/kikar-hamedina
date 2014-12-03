@@ -17,22 +17,12 @@ from slugify import slugify
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
 from kikartags.models import TaggedItem
 
-INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD = ['on his own',
-                                               'on their own',
-                                               'on her own',
-                                               'likes a link',
-                                               'likes a photo',
-                                               'likes a video',
-                                               'likes a status',
-                                               'liked this post',
-                                               'commented on this',
-                                               'commented on a post',
-                                               'commented on a photo',
-                                               'commented on a video',
-                                               'commented on a link',
-                                               'commented on a status',
-                                               'replied to a comment',
-]
+
+# needs_refresh - Constants for quick status refresh
+MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
+MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
+MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60*10)  # 10 minutes
+
 
 class Facebook_Persona(models.Model):
     content_type = models.ForeignKey(ContentType)
@@ -48,7 +38,7 @@ class Facebook_Persona(models.Model):
             return None  # TODO: What should we return here when no main feed is defined/ no feeds exist?
 
     def __unicode__(self):
-        return "Facebook_Persona: " + self.content_type + " " + str(self.object_id)
+        return "Facebook_Persona: %s %s" % (self.content_type, self.object_id)
 
 
 class Facebook_Feed(models.Model):
@@ -73,6 +63,7 @@ class Facebook_Feed(models.Model):
     requires_user_token = models.BooleanField(default=False, null=False)
     is_current = models.BooleanField(default=True, null=False)
     current_fan_count = models.IntegerField(default=0, null=False)
+    locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1), null=True)
 
     # Public Page Only
     about = models.TextField(null=True, blank=True, default='')
@@ -87,6 +78,11 @@ class Facebook_Feed(models.Model):
 
     def __unicode__(self):
         return slugify(self.username) + " " + self.vendor_id
+
+    def save(self, *args, **kwargs):
+        '''On save, update locally_updated fields'''
+        self.locally_updated = timezone.now()
+        return super(Facebook_Feed, self).save(*args, **kwargs)
 
     @property
     def get_current_fan_count(self):
@@ -210,9 +206,9 @@ class Facebook_Status(models.Model):
     feed = models.ForeignKey('Facebook_Feed')
     status_id = models.CharField(unique=True, max_length=128)
     content = models.TextField()
-    like_count = models.PositiveIntegerField(null=True, blank=True)
-    comment_count = models.PositiveIntegerField(null=True, blank=True)
-    share_count = models.PositiveIntegerField(null=True, blank=True)
+    like_count = models.PositiveIntegerField(default=0, blank=True)
+    comment_count = models.PositiveIntegerField(default=0, blank=True)
+    share_count = models.PositiveIntegerField(default=0, blank=True)
     published = models.DateTimeField()
     updated = models.DateTimeField()
     status_type = models.CharField(null=True, blank=True, default=None, max_length=128)
@@ -220,6 +216,7 @@ class Facebook_Status(models.Model):
     story_tags = models.TextField(null=True, blank=True)
     is_comment = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False, null=False)
+    locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1))
 
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
     objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
@@ -228,6 +225,11 @@ class Facebook_Status(models.Model):
 
     def __unicode__(self):
         return self.status_id
+
+    def save(self, *args, **kwargs):
+        '''On save, update locally_updated fields'''
+        self.locally_updated = timezone.now()
+        return super(Facebook_Status, self).save(*args, **kwargs)
 
     @property
     def get_link(self):
@@ -244,7 +246,7 @@ class Facebook_Status(models.Model):
                 return True
             else:
                 return False
-        except:
+        except Exception:
             return False
 
     @property
@@ -254,32 +256,38 @@ class Facebook_Status(models.Model):
         Returns True or False.
         """
         # Some formatting and printing
-        if self.story:
-            story_string = unidecode(self.story)
-        else:
-            story_string = ''
-
-        print 'status db id:', self.id
-        # print 'story string:', story_string
-
-        # --Deprecated logic-- : based on story_tags. Code will appear in file's history
+        story_string = unidecode(self.story or '')
 
         # Check for strings indicative of comment activity
-        print 'Based on indicative text:',
-        found_text = []
-        for text in INDICATIVE_TEXTS_FOR_COMMENT_IN_STORY_FIELD:
-            # print 'trying', text
-            if text in story_string:
-                # print 'found'
-                found_text.append(text)
-                # else:
-                # print 'not found'
-        if found_text:
-            print 'True'
-            return True
-
-        print 'False'
+        feed_name = unidecode((self.feed and self.feed.name) or '')
+        for sp in Status_Comment_Pattern.objects.all():
+            pattern = sp.pattern
+            try:
+                if pattern.format(name=feed_name) in story_string:
+                    # print 'Comment:', self, pattern, ':', story_string
+                    return True
+            except (KeyError, IndexError) as e:
+                print 'Format error', self, sp, e
+        # print 'Not a comment', self
         return False
+
+    @property
+    def needs_refresh(self):
+        """Returns whether the status needs a refresh from FB based on its age.
+        A status that was just created is updated every 5 seconds, a 2 days old
+        status is updated every 10 minutes. Older status don't get updated here
+        and they rely on a background process that runs every 10 minutes."""
+        now = timezone.now()
+        age_secs = max((now - self.published).total_seconds(), 0)
+        if age_secs > MAX_STATUS_AGE_FOR_REFRESH:
+            return False  # Old status - don't refresh here
+        normalized_age = age_secs / MAX_STATUS_AGE_FOR_REFRESH
+        refresh_range = MAX_STATUS_REFRESH_INTERVAL - MIN_STATUS_REFRESH_INTERVAL
+        refresh_interval = (normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
+        need_refresh = self.locally_updated + timezone.timedelta(seconds=refresh_interval) < now
+        # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
+        #     need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
+        return need_refresh
 
 
 # status_with_photo = '161648040544835_720225251353775'
@@ -348,6 +356,13 @@ class User_Token(models.Model):
 
     def __unicode__(self):
         return 'token_' + self.user_id
+
+
+class Status_Comment_Pattern(models.Model):
+    pattern = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return self.pattern
 
 
 # Deprecated Tags

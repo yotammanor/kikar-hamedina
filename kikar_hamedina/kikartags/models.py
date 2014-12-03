@@ -7,11 +7,15 @@ from slugify import slugify as default_slugify
 from django.utils.translation import ugettext_lazy as _
 from taggit.models import TagBase, GenericTaggedItemBase
 
+from kikartags.managers import TagManager
+
 
 class Tag(TagBase):
     is_for_main_display = models.BooleanField(default=True, null=False)
     logo = models.ImageField(upload_to='tags_logos', null=True, blank=True)
     is_suggestion = models.BooleanField(default=False, null=False)
+
+    objects = TagManager()
 
     def __unicode__(self):
         return self.name
@@ -47,14 +51,14 @@ class TaggedItem(GenericTaggedItemBase):
 
 ## Open-Knesset.auxilary.models
 class TagSynonym(models.Model):
-    tag = models.ForeignKey(Tag, related_name='synonym_proper_tag')
-    synonym_tag = models.ForeignKey(Tag, related_name='synonym_synonym_tag', unique=True)
+    tag = models.ForeignKey(Tag, related_name='proper_form_of_tag', unique=True)  # synonym_roper_tag
+    proper_form_of_tag = models.ForeignKey(Tag, related_name='synonyms')  # synonym_synonym_tag
 
     class Meta:
-        unique_together = ("tag", "synonym_tag")
+        unique_together = ("tag", "proper_form_of_tag")
 
     def __unicode__(self):
-        return 'Synonym: %s of main tag %s' % (default_slugify(self.synonym_tag.name), default_slugify(self.tag.name))
+        return 'Synonym: %s of main tag %s' % (default_slugify(self.tag.name), default_slugify(self.proper_form_of_tag.name))
 #
 #
 # class TagSuggestion(models.Model):

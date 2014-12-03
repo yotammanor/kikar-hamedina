@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'planet',
     'links',
     'video',
+    'polymorphic',
     #Ours
     'kikartags',
     'knesset',
@@ -65,6 +66,7 @@ INSTALLED_APPS = (
     'persons',
     'facebook_feeds',
     'core',
+    'updater'
 )
 
 MIDDLEWARE_CLASSES = (
