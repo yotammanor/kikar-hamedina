@@ -72,9 +72,7 @@ class StatsEngine(object):
         # Note - without like_count!=NULL pandas thinks the column type is object and not number
         month_statuses = Facebook_Status.objects.filter(published__gte=month_ago, like_count__isnull=False)
 
-        # TODO: Should we rewrite to include isnull values and fillna == 0 or -1?
-
-        field_names = ['id', 'feed', 'published', 'like_count']
+        field_names = ['id', 'feed', 'published', 'like_count', 'comment_count', 'share_count']
         recs = np.core.records.fromrecords(month_statuses.values_list(*field_names), names=field_names)
         self.month_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
         self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
@@ -95,6 +93,12 @@ class StatsEngine(object):
 
     def mean_status_likes_last_month(self, feed_ids):
         return normalize(self.feeds_statuses(self.month_statuses, feed_ids)['like_count'].mean())
+
+    def mean_status_comments_last_week(self, feed_ids):
+        return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['comment_count'].mean())
+
+    def mean_status_shares_last_week(self, feed_ids):
+        return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['share_count'].mean())
 
     def popular_statuses_last_week(self, feed_ids, num=3):
         ordered = self.feeds_statuses(self.week_statuses, feed_ids).sort('like_count', ascending=False)
@@ -172,6 +176,8 @@ class PartyStats(object):
         self.n_statuses_last_week = engine.n_statuses_last_week(feed_ids)
         self.n_statuses_last_month = engine.n_statuses_last_month(feed_ids)
         self.mean_status_likes_last_week = engine.mean_status_likes_last_week(feed_ids)
+        self.mean_status_comments_last_week = engine.mean_status_comments_last_week(feed_ids)
+        self.mean_status_shares_last_week = engine.mean_status_shares_last_week(feed_ids)
         self.mean_status_likes_last_month = engine.mean_status_likes_last_month(feed_ids)
         self.popular_statuses_last_week = engine.popular_statuses_last_week(feed_ids)
         self.popular_statuses_last_month = engine.popular_statuses_last_month(feed_ids)
@@ -193,7 +199,7 @@ class Stats(object):
         print timezone.now(), "Calculating stats..."
         self.member_list = [MemberStats(member, self.engine) for member in Member.objects.all()]
         self.member_dict = dict((m.member.id, m) for m in self.member_list)
-        self.party_list = [PartyStats(member, self.engine) for member in Party.objects.all()]
+        self.party_list = [PartyStats(member, self.engine) for member in Party.current_knesset.all()]
         self.party_dict = dict((p.party.id, p) for p in self.party_list)
         print timezone.now(), "Done loading stats"
 
