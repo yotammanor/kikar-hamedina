@@ -1,9 +1,9 @@
 /* renderLinksForStatusListHandler.js -
-   handles the styling and link generation for order-by and filter-by-date options.
-   uses get request arguments to build relevant links, and uses that data (or lackthereof)
-   to style links as active (or hidden).
+ handles the styling and link generation for order-by and filter-by-date options.
+ uses get request arguments to build relevant links, and uses that data (or lackthereof)
+ to style links as active (or hidden).
 
-used at: core/facebook_status_page.html
+ used at: core/facebook_status_page.html
  */
 
 function getUrlVars() {
@@ -23,16 +23,18 @@ function getUrlVars() {
     return vars;
 }
 
-function setActiveElem(obj, data_param_name, data_param_value, set_custom){
+function setActiveElem(obj, data_param_name, data_param_value, set_custom) {
     // sets element as active if appears in the relevant get request parameter.
     // if all values passed are not set to active, then set_custom will end up being true,
     // Otherwise it will be false.
-
-    if (obj.data(data_param_name) == data_param_value) {
+    if (obj.data(data_param_name).replace('-', '') == data_param_value.replace('-', '')) {
         obj.addClass('active');
+        $('a i', obj).show();
         set_custom = false;
     } else {
         obj.removeClass('active');
+        $('a i', obj).hide();
+
     }
     return set_custom
 }
@@ -83,7 +85,7 @@ $(document).ready(function () {
     var order_by_custom = $('#order-by-custom');
     order_by_custom.hide();
     $('#order-by-options').children().each(function () {
-        set_custom = setActiveElem($(this),'order-by',order_by_param,set_custom)
+        set_custom = setActiveElem($(this), 'order-by', order_by_param, set_custom)
     });
 
     // set default order-by if needed.
@@ -92,17 +94,39 @@ $(document).ready(function () {
         order_by_custom.addClass('active')
     }
 
+    // set ascending/descending attributes
+    var orderByActiveElem = $('#order-by-options').children('.active');
+    var urlArgs = getUrlVars();
+    if ('order_by' in urlArgs) {
+        if (urlArgs['order_by'].indexOf('-') == -1) {
+            // is currently ascending, set to descending
+//            orderByActiveElem.data('orderBy', '-' + orderByActiveElem.data('orderBy'))
+            $('a i', orderByActiveElem).removeClass('fa-caret-down');
+            $('a i', orderByActiveElem).addClass('fa-caret-up')
+        } else {
+            // is currently descending, set to ascending
+
+            orderByActiveElem.data('orderBy', orderByActiveElem.data('orderBy').replace('-', ''))
+        }
+    } else {
+//      Default order-by is -published, therefor - reverse
+        orderByActiveElem.data('orderBy', orderByActiveElem.data('orderBy').replace('-', ''))
+    }
+    rebuildOrderByHrefAttr(orderByActiveElem, "order-by", "order_by")
+
     // Set active filter-by-date link style.
 
-    var default_filter=true;
-    if (!vars['range']){
+    var default_filter = true;
+    if (!vars['range']) {
         range_param = false
     } else {
         range_param = vars['range']
     }
 
     if (range_param != false) {
-        $('#filter-by-date-range-options').children().each(function() {
+
+
+        $('#filter-by-date-range-options').children().not('.heading').each(function () {
             default_filter = setActiveElem($(this), 'range', range_param, default_filter)
         });
 
@@ -110,7 +134,7 @@ $(document).ready(function () {
 
     // set default filter-by-date if needed.
 
-    if (default_filter == true){
+    if (default_filter == true) {
         $('#default-filter').addClass('active')
     }
 

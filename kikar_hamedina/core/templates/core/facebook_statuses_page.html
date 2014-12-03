@@ -79,15 +79,16 @@
     <div class="row">
         <div class="col-sm-9 panel-group">
             <!-- Order-by links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
-            <ul class="nav nav-tabs" id="order-by-options">
-                <li data-order-by="-published"><a href="#">לפי תאריך</a></li>
-                <li data-order-by="-like_count"><a href="#">לפי מספר לייקים</a>
+            <ul class="nav nav-pills" id="order-by-options">
+                <li data-order-by="-published"><a href="#"><i class="fa fa-caret-down" id="dec-asc-published"></i> לפי תאריך</a></li>
+                <li data-order-by="-like_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-likes"></i> לפי מספר לייקים</a>
                 </li>
-                <li data-order-by="-comment_count"><a href="#">לפי מספר
+                <li data-order-by="-comment_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-comments" ></i> לפי מספר
                     תגובות</a></li>
                 <li data-order-by="custom" id="order-by-custom"><a href="#">אחר</a></li>
                 <!-- visible only when used -->
             </ul>
+            <br>
             <!-- List of statuses -->
             {% include "core/facebook_status_list.html" with object_list=object_list %}
         </div>
