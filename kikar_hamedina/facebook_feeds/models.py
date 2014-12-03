@@ -63,7 +63,7 @@ class Facebook_Feed(models.Model):
     requires_user_token = models.BooleanField(default=False, null=False)
     is_current = models.BooleanField(default=True, null=False)
     current_fan_count = models.IntegerField(default=0, null=False)
-    locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1))
+    locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1), null=True)
 
     # Public Page Only
     about = models.TextField(null=True, blank=True, default='')
