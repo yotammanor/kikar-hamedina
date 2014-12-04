@@ -139,8 +139,13 @@ class Command(BaseCommand):
 
     def build_and_send_email(self, data, options):
         date = timezone.now().date().strftime('%Y_%m_%d')
-
-        recipients = getattr(options, 'recipients', settings.DEFAULT_WEEKLY_RECIPIENTS)
+        
+        if 'recipients' in options:
+            print 'yes'
+            recipients = options['recipients']
+        else:
+            print 'no'
+            recipients = settings.DEFAULT_WEEKLY_RECIPIENTS
 
         print 'recipients:', recipients
 
