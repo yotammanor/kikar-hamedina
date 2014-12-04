@@ -29,5 +29,5 @@ class LinksAdmin(admin.ModelAdmin):
     actions = [make_active, make_inactive ]
 
 
-admin.site.register(Link, LinksAdmin)
-admin.site.register(LinkType, LinkTypesAdmin)
+# admin.site.register(Link, LinksAdmin)
+# admin.site.register(LinkType, LinkTypesAdmin)

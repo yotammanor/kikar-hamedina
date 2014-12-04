@@ -772,10 +772,10 @@ class AllTags(ListView):
     model = Tag
 
 
-class ReviewTagsView(ListView):
-    template_name = 'core/review_tags.html'
+class ReviewTagsView(AjaxListView):
+    template_name = "core/review_tags.html"
+    page_template = "core/review_tags.html"
     model = TaggedItem
-
 
     def get_queryset(self):
         queryset = TaggedItem.objects.all().order_by('-date_of_tagging')
