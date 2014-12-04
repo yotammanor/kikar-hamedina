@@ -106,3 +106,4 @@ pk,model,main_feed,object_id,content_type
 105,facebook_feeds.facebook_persona,105,805,"[u'mks', u'member']"
 106,facebook_feeds.facebook_persona,106,829,"[u'mks', u'member']"
 107,facebook_feeds.facebook_persona,107,906,"[u'mks', u'member']"
+108,facebook_feeds.facebook_persona,108,813,"[u'mks', u'member']"

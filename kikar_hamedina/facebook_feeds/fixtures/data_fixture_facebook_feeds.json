@@ -31,7 +31,7 @@
             "vendor_id": "34775063966", 
             "feed_type": "PP", 
             "persona": "3", 
-            "is_current": true, 
+            "is_current": false, 
             "locally_updated": null
         }
     }, 
@@ -795,9 +795,9 @@
         "pk": "69", 
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
-            "requires_user_token": true, 
-            "vendor_id": "574847197", 
-            "feed_type": "UP", 
+            "requires_user_token": false, 
+            "vendor_id": "620206311338749", 
+            "feed_type": "PP", 
             "persona": "69", 
             "is_current": true, 
             "locally_updated": null
@@ -1279,6 +1279,18 @@
             "vendor_id": "789005101144982", 
             "feed_type": "PP", 
             "persona": "107", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "108", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "1523283981271285", 
+            "feed_type": "PP", 
+            "persona": "108", 
             "is_current": true, 
             "locally_updated": null
         }
@@ -2561,6 +2573,18 @@
         "fields": {
             "main_feed": "107", 
             "object_id": "906", 
+            "content_type": [
+                "mks", 
+                "member"
+            ]
+        }
+    }, 
+    {
+        "pk": "108", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "108", 
+            "object_id": "813", 
             "content_type": [
                 "mks", 
                 "member"
