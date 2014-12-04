@@ -10,6 +10,8 @@
     תויג לאחרונה
 {% endblock %}
 
+{% load endless %}
+
 {% block main_content %}
     <table class="table">
         <tr class="header">
@@ -18,7 +20,8 @@
             <td>הסטאטוס</td>
             <td>תגית</td>
         </tr>
-        {% for obj in object_list %}
+        {% paginate 20,5 object_list as objects_in_page %}
+        {% for obj in objects_in_page %}
             <tr>
                 <td>{{ obj.date_of_tagging|timesince }}</td>
                 <td>{{ obj.tagged_by }}</td>
@@ -32,4 +35,5 @@
             </tr>
         {% endfor %}
     </table>
+    {% show_more "טען תיוגים נוספים" "<span><i class='fa fa-spinner fa-spin'></i> טוען</span>"|escape %}
 {% endblock main_content %}

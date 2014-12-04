@@ -20,3 +20,4 @@ class TagAdmin(admin.ModelAdmin):
     inlines = (TagSynonymInline, TaggedItemInline)
 
 admin.site.register(Tag, TagAdmin)
+admin.site.register(TaggedItem)
