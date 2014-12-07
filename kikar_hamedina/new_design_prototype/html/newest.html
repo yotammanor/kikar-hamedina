@@ -32,7 +32,7 @@
 
   <body>
 
-    <div class="top-bar clearfix">
+    <div class="top-bar">
 
       <div class="logo">
         <a href="/index.html">
@@ -42,7 +42,7 @@
       </div>
 
       <nav class="nav-bar">
-        <div class="search clearfix">
+        <div class="search">
           <span class="glyphicon glyphicon-search"></span>
           <input type="text" role="search" placeholder="חפש חבר כנסת, נושא מתויג, אומילים שח״כים אומרים"/>
         </div>
@@ -371,6 +371,8 @@
           var win = $(this); //this = window
           if (win.width() >= 768) {
             $('.sidebar').show();
+            $('.nav-bar').show();
+            $('.sidebar').css( "padding", "20px 0 20px 0" );
           }
           //causes weird behaviour. not essential either way
           // else {
@@ -379,10 +381,11 @@
         });
 
         $('#pull-menu').click(function() {
+          $('.nav-bar').toggle();
           $('.sidebar').toggle();
 
           // ugly hack, because toggle was removing padding for some reason
-          $('.sidebar').css( "padding", "20px 0" );
+          $('.sidebar').css( "padding", "129px 0 20px 0" );
         });
       });
     </script>
