@@ -1,11 +1,101 @@
-<div id="status-list-containter">
-
 {% load endless %}
 
 {% paginate 10,5 object_list as objects_in_page %}
 {% for status in objects_in_page %}
-    {% include "core/facebook_status.html" %}
-    <br>
+    {% block status_object %}
+        {% include "core/facebook_status.html" %}
+    {% endblock status_object %}
 {% endfor %}
 {% show_more "טען עדכונים נוספים" "<span><i class='fa fa-spinner fa-spin'></i> טוען</span>"|escape %}
-</div>
+
+
+{##}
+{#<hr/>#}
+{##}
+{#<div class="post clearfix">#}
+{#    <img src="../img/netanyahu.jpg" alt="" class="post-mk-image"/>#}
+{##}
+{#    <div class="post-head clearfix">#}
+{#                <span class="post-mk-name">#}
+{#                  <a href="#">Yair Lapid - יאיר לפיד</a>#}
+{#                </span>#}
+{#                <span class="post-time">#}
+{#                  לפני שעתיים#}
+{#                </span>#}
+{#    </div>#}
+{#    <div class="post-content">#}
+{#        <div class="post-text">#}
+{#            <p>#}
+{#                אלו עקרונות תקציב 2015, כפי שסוכמו בין ראש הממשלה וביני:#}
+{#                לא יועלו מיסים.#}
+{#            </p>#}
+{##}
+{#            <p>#}
+{#                תקציב הביטחון יוגדל ב-6 מיליארד שקלים.#}
+{#            </p>#}
+{##}
+{#            <p>#}
+{#                התקציבים החברתיים יגדלו באופן משמעותי, ויוצאו לפועל שורה של תוכניות למען השכבות החלשות ומעמד הביניים#}
+{#                הישראלי.#}
+{#            </p>#}
+{##}
+{#            <p>#}
+{#                הגירעון יועלה ל-3....#}
+{#                &nbsp;&nbsp;&nbsp;<a href="#">קרא עוד>>></a>#}
+{#            </p>#}
+{#        </div>#}
+{#        <img src="../img/ramzor.png" alt="" class="post-image"/>#}
+{#    </div>#}
+{#    <div class="post-social-stats">#}
+{#        <!-- not the intended icons for use. the share icon currently used is quite different to the#}
+{#         one in the pdf design -->#}
+{#        <span class="glyphicon glyphicon-share"></span> 120#}
+{#        <span class="glyphicon glyphicon-comment"></span> 233#}
+{#        <span class="glyphicon glyphicon-thumbs-up"></span> 313#}
+{#    </div>#}
+{#</div>#}
+{#<hr/>#}
+{##}
+{#<div class="post clearfix">#}
+{#    <img src="../img/netanyahu.jpg" alt="" class="post-mk-image"/>#}
+{##}
+{#    <div class="post-head clearfix">#}
+{#                <span class="post-mk-name">#}
+{#                  <a href="#">Yair Lapid - יאיר לפיד</a>#}
+{#                </span>#}
+{#                <span class="post-time">#}
+{#                  לפני שעתיים#}
+{#                </span>#}
+{#    </div>#}
+{#    <div class="post-content">#}
+{#        <div class="post-text">#}
+{#            <p>#}
+{#                אלו עקרונות תקציב 2015, כפי שסוכמו בין ראש הממשלה וביני:#}
+{#                לא יועלו מיסים.#}
+{#            </p>#}
+{##}
+{#            <p>#}
+{#                תקציב הביטחון יוגדל ב-6 מיליארד שקלים.#}
+{#            </p>#}
+{##}
+{#            <p>#}
+{#                התקציבים החברתיים יגדלו באופן משמעותי, ויוצאו לפועל שורה של תוכניות למען השכבות החלשות ומעמד הביניים#}
+{#                הישראלי.#}
+{#            </p>#}
+{##}
+{#            <p>#}
+{#                הגירעון יועלה ל-3....#}
+{#                &nbsp;&nbsp;&nbsp;<a href="#">קרא עוד>>></a>#}
+{#            </p>#}
+{#        </div>#}
+{#        <img src="../img/ramzor.png" alt="" class="post-image"/>#}
+{#    </div>#}
+{#    <div class="post-social-stats">#}
+{#        <!-- not the intended icons for use. the share icon currently used is quite different to the#}
+{#         one in the pdf design -->#}
+{#        <span class="glyphicon glyphicon-share"></span> 120#}
+{#        <span class="glyphicon glyphicon-comment"></span> 233#}
+{#        <span class="glyphicon glyphicon-thumbs-up"></span> 313#}
+{#    </div>#}
+{#</div>#}
+{#<hr/>#}

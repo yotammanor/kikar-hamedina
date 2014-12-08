@@ -1,0 +1,38 @@
+{% extends "layouts/generic-template.html" %}
+{##}
+{#{% block title %}Homepage{% endblock title %}#}
+{##}
+{#{% block h1 %}#}
+{#    עמוד ראשי#}
+{#{% endblock %}#}
+
+{% block main_content %}
+    {##}
+    {#    {% load humanize %}#}
+    {#    {% load core_extras %}#}
+    {#    <div>#}
+    {#        {% include "core/facebook_status_list.html" with object_list=object_list %}#}
+    {#    </div>#}
+
+
+    <div class="posts-container">
+        <div class="posts-vertical-line-left">
+
+            <div class="posts">
+                {% block status_list %}
+                    {% include "core/facebook_status_list.html" with object_list=object_list %}
+                {% endblock status_list %}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="extra-info">
+        {% block extra_info %}
+
+        {% endblock extra_info %}
+    </div>
+
+
+{% endblock %}
+
