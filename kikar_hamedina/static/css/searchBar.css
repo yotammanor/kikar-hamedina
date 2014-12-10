@@ -8,13 +8,13 @@
     </li>
 </ul>*/
 
+/* MOVED TO newest.css */
 /* ul*/
-#search-results-list {
+/*#search-results-list {
   position: relative;
 
   color: black;
   list-style: none;
-  /*background-color: #fff;*/
   
   background-color: rgb(247,247,247);
   border: 1px solid rgb(232, 232, 232);
@@ -56,5 +56,5 @@ li.result-container:hover a {
 
 .result-sub-text {
 	font-size: 12px;
-}
+}*/
 
