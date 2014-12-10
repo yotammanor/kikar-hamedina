@@ -91,6 +91,9 @@ class StatsEngine(object):
     def mean_status_likes_last_week(self, feed_ids):
         return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['like_count'].mean())
 
+    def total_status_likes_last_week(self, feed_ids):
+        return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['like_count'].sum())
+
     def mean_status_likes_last_month(self, feed_ids):
         return normalize(self.feeds_statuses(self.month_statuses, feed_ids)['like_count'].mean())
 
@@ -143,6 +146,7 @@ class MemberStats(object):
     def init_stats(self, engine, member, persona, feed):
         self.n_statuses_last_week = engine.n_statuses_last_week([feed.id])
         self.n_statuses_last_month = engine.n_statuses_last_month([feed.id])
+        self.total_status_likes_last_week = engine.total_status_likes_last_week([feed.id])
         self.mean_status_likes_last_week = engine.mean_status_likes_last_week([feed.id])
         self.mean_status_likes_last_month = engine.mean_status_likes_last_month([feed.id])
         self.popular_statuses_last_week = engine.popular_statuses_last_week([feed.id])
@@ -175,6 +179,7 @@ class PartyStats(object):
     def init_stats(self, engine, feed_ids, feed2member):
         self.n_statuses_last_week = engine.n_statuses_last_week(feed_ids)
         self.n_statuses_last_month = engine.n_statuses_last_month(feed_ids)
+        self.total_status_likes_last_week = engine.total_status_likes_last_week(feed_ids)
         self.mean_status_likes_last_week = engine.mean_status_likes_last_week(feed_ids)
         self.mean_status_comments_last_week = engine.mean_status_comments_last_week(feed_ids)
         self.mean_status_shares_last_week = engine.mean_status_shares_last_week(feed_ids)
