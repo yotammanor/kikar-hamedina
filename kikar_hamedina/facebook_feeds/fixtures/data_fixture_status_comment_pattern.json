@@ -1,0 +1,30 @@
+[
+{
+    "pk": 1, 
+    "model": "facebook_feeds.status_comment_pattern", 
+    "fields": {
+        "pattern": "{name} likes"
+    }
+},
+{
+    "pk": 2, 
+    "model": "facebook_feeds.status_comment_pattern", 
+    "fields": {
+        "pattern": "{name} commented"
+    }
+},
+{
+    "pk": 3, 
+    "model": "facebook_feeds.status_comment_pattern", 
+    "fields": {
+        "pattern": "{name} liked"
+    }
+},
+{
+    "pk": 4, 
+    "model": "facebook_feeds.status_comment_pattern", 
+    "fields": {
+        "pattern": "{name} replied"
+    }
+}
+]
