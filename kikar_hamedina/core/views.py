@@ -969,6 +969,18 @@ def search_bar(request):
             return result
 
         query_direct_name = Q(name__contains=search_text)
+
+        # Parties
+        query_alternative_names = Q(partyaltname__name__contains=search_text)
+        combined_party_name_query = query_direct_name | query_alternative_names
+        parties = Party.objects.filter(combined_party_name_query, knesset__number=CURRENT_KNESSET_NUMBER).order_by(
+            'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+
+        for party in parties:
+            response_data['results'].append(
+                result_factory(party.id, party.name, "party"))
+
+        # Members
         query_alternative_names = Q(memberaltname__name__contains=search_text)
         combined_member_name_query = query_direct_name | query_alternative_names
 
@@ -977,7 +989,7 @@ def search_bar(request):
         for member in members:
             response_data['results'].append(
                 result_factory(member.id, member.name, "member", party=member.current_party.name))
-
+        # Tags
         query_tag_synonyms = Q(synonyms__tag__name=search_text)
         combined_tag_name_query = query_direct_name | query_tag_synonyms
 
@@ -985,15 +997,5 @@ def search_bar(request):
         for tag in tags:
             response_data['results'].append(
                 result_factory(tag.id, tag.name, "tag"))
-
-        query_alternative_names = Q(partyaltname__name__contains=search_text)
-        combined_party_name_query = query_direct_name | query_alternative_names
-
-        parties = Party.objects.filter(combined_party_name_query, knesset__number=CURRENT_KNESSET_NUMBER).order_by(
-            'name')[
-                  :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
-        for party in parties:
-            response_data['results'].append(
-                result_factory(party.id, party.name, "party"))
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
