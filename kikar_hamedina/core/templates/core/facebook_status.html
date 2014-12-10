@@ -208,8 +208,9 @@
             {{ status.attachment.link }}
             <img src="{{ status.attachment.picture }}" alt="" class="post-image"/>
         {% endif %}
-        {{ status|link }}
-        {{ status.id }}
+        <a href="{% url 'status-detail' status.status_id %}">permalink</a>
+        {{ status.is_comment }}
+        {{ status.feed.id }}
     </div>
     <div class="post-social-stats">
         <!-- not the intended icons for use. the share icon currently used is quite different to the
