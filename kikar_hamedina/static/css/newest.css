@@ -435,6 +435,7 @@ nav.sidebar ul ul li a:hover {
   /*height: 800px;*/
   background-color: #fff ;
   padding: 30px 0;
+  overflow-wrap: break-word;
 }
 @media (min-width: 768px) {
   .main-area {
@@ -496,6 +497,7 @@ nav.sidebar ul ul li a:hover {
 }
 
 .post-content {
+  width: 100%;
   float: right;
 }
 
