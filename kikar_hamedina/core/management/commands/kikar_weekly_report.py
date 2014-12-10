@@ -4,6 +4,7 @@ from time import sleep
 import numpy as np
 
 import pandas as pd
+from pandas import ExcelWriter
 
 from django.utils import timezone
 from django.core.mail import send_mail, EmailMessage
@@ -45,12 +46,14 @@ class Command(BaseCommand):
         feeds_data = []
         for feed in feeds:
             num_of_weekly_statuses = engine.n_statuses_last_week([feed.id])
+            total_like_count_weekly = engine.total_status_likes_last_week([feed.id])
             mean_like_count_weekly = engine.mean_status_likes_last_week([feed.id])
             mean_comment_count_weekly = engine.mean_status_comments_last_week([feed.id])
             mean_share_count_weekly = engine.mean_status_shares_last_week([feed.id])
             feeds_data.append({'feed_id': feed.id,
                                'feed_name': feed.name or feed.persona.content_object.name,
                                'num_of_weekly_statuses': num_of_weekly_statuses,
+                               'total_like_count_this_week': total_like_count_weekly,
                                'mean_like_count_this_week': mean_like_count_weekly,
                                'mean_comment_count_this_week': mean_comment_count_weekly,
                                'mean_share_count_this_week': mean_share_count_weekly,
@@ -71,6 +74,7 @@ class Command(BaseCommand):
                 'party_id': party.party.id,
                 'party_name': party.party.name,
                 'num_of_weekly_statuses': party.n_statuses_last_week,
+                'total_like_count_this_week': party.total_status_likes_last_week,
                 'mean_like_count_this_week': party.mean_status_likes_last_week,
                 'mean_comment_count_this_week': party.mean_status_comments_last_week,
                 'mean_share_count_this_week': party.mean_status_shares_last_week,
@@ -115,6 +119,7 @@ class Command(BaseCommand):
                 'num_of_members_in_faction': fact['size'],
                 'num_of_feeds_in_faction': len(fact['feeds']),
                 'num_of_weekly_statuses': engine.n_statuses_last_week(fact['feeds']),
+                'total_like_count_this_week': engine.total_status_likes_last_week(fact['feeds']),
                 'mean_like_count_this_week': engine.mean_status_likes_last_week(fact['feeds']),
                 'mean_comment_count_this_week': engine.mean_status_comments_last_week(fact['feeds']),
                 'mean_share_count_this_week': engine.mean_status_shares_last_week(fact['feeds']),
@@ -139,7 +144,7 @@ class Command(BaseCommand):
 
     def build_and_send_email(self, data, options):
         date = timezone.now().date().strftime('%Y_%m_%d')
-        
+
         if 'recipients' in options:
             print 'yes'
             recipients = options['recipients']
@@ -150,12 +155,18 @@ class Command(BaseCommand):
         print 'recipients:', recipients
 
         message = EmailMessage(subject='Kikar Hamedina, Weekly Report: %s' % date,
-                               body='Here is the message.',
+                               body='Kikar Hamedina, Weekly Report: %s.' % date,
                                to=recipients)
+        w = ExcelWriter('Weekly_report_%s.xlsx' % date)
+
         for datum in data:
-            csvfile = StringIO.StringIO()
-            data_csv = pd.DataFrame.from_dict(datum['content']).to_csv(csvfile, encoding='utf-8-sig')
-            message.attach('%s_%s.csv' % (datum['name'], date), csvfile.getvalue(), 'text/csv')
+            # csvfile = StringIO.StringIO()
+            pd.DataFrame.from_dict(datum['content']).to_excel(w, sheet_name=datum['name'])
+
+        w.save()
+        w.close()
+        # f = open(w.path, 'r', encoding='utf-8')
+        message.attach_file(w.path)
         message.send()
 
     def handle(self, *args, **options):
