@@ -333,6 +333,7 @@ class Facebook_Status_Attachment(models.Model):
                                           max_length=128)  # object_id (exists only for internal links)
     type = models.CharField(null=True, blank=True, choices=ATTACHMENT_MEDIA_TYPES, max_length=16)  # type
     picture = models.TextField(null=True, blank=True)  # picture
+    source = models.TextField(null=True, blank=True) # full_size picture
 
     @property
     def is_internal_link(self):

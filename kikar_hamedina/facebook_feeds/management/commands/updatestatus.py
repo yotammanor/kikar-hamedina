@@ -103,6 +103,26 @@ class Command(BaseCommand):
             print 'empty dict for status returned'
         return status_data
 
+    def get_picture_attachment_json(self, attachment):
+        api_request_path = "{0}/".format(attachment.facebook_object_id)
+        args_for_request = {'version': FACEBOOK_API_VERSION,
+                            'fields': "id, images, height, source"}
+        try_number = 1
+        while try_number <= NUMBER_OF_TRIES_FOR_REQUEST:
+            try:
+                photo_object = self.graph.request(path=api_request_path, args=args_for_request)
+                return photo_object
+            except:
+                warning_msg = "Failed first attempt for attachment #({0}) from FB API.".format(attachment.id)
+                logger = logging.getLogger('django')
+                logger.warning(warning_msg)
+                try_number += 1
+        error_msg = "Failed three attempts for feed #({0}) from FB API.".format(attachment.id)
+        logger = logging.getLogger('django.request')
+        logger.warning(error_msg)
+        return {}
+
+
     @staticmethod
     def insert_status_attachment(status, status_object_defaultdict):
         # print 'insert attachment'
@@ -120,8 +140,7 @@ class Command(BaseCommand):
         attachment.save()
         # add all media files related to attachment
 
-    @staticmethod
-    def update_status_attachment(attachment, status_object_defaultdict):
+    def update_status_attachment(self, attachment, status_object_defaultdict):
         # print 'update attachment'
         attachment_defaultdict = defaultdict(str, status_object_defaultdict)
         if attachment_defaultdict['link']:
@@ -133,6 +152,15 @@ class Command(BaseCommand):
             attachment.facebook_object_id = attachment_defaultdict['object_id']
             attachment.type = attachment_defaultdict['type']
             attachment.picture = attachment_defaultdict['picture']
+            # get source for picture attachments
+            if attachment.type == 'photo':
+                print '\tgetting picture source'
+                photo_object = self.get_picture_attachment_json(attachment)
+                selected_attachment_object = sorted(photo_object['images'], key=lambda x: x['height'], reverse=True)[0]
+                attachment.source = selected_attachment_object['source']
+            elif attachment.type == 'video':
+                print '\tsetting video source'
+                attachment.source = attachment_defaultdict['source']
             attachment.save()
         else:
             # if has no link field - then there's no attachment, and it must be deleted
