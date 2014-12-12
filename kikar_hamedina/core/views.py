@@ -548,8 +548,10 @@ class SearchView(StatusListView):
             if words:
                 if use_regex:
                     # Build regex - all words we've found separated by 'non-word' characters
+                    # and also allow VAV and/or HEI in front of each word.
                     # NOTE: regex syntax is DB dependent - this works on postgres
-                    regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(words) + PG_RE_PHRASE_END
+                    re_words = [u'\u05D5?\u05D4?' + word for word in words]
+                    regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(re_words) + PG_RE_PHRASE_END
                     search_str_Q = join_queries(Q(content__iregex=regex), search_str_Q, or_)
                 else:
                     # Fallback code to use if we want to disable regex-based search
