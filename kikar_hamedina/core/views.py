@@ -59,10 +59,12 @@ MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 6
 RE_SPLIT_WORD_UNICODE = re.compile('\W+', re.UNICODE)
 
 # Postgres regex for word boundaries. Unfortunately Hebrew support is not good, so can't use \W
-# (\W detects Hebrew characters as non-word chars)
-PG_RE_NON_WORD_CHARS = '[[:punct:][:space:]]+'
-PG_RE_PHRASE_START = '(^|[[:punct:][:space:]]+)'
-PG_RE_PHRASE_END = '([[:punct:][:space:]]+|$)'
+# (\W detects Hebrew characters as non-word chars). Including built-in punctuation and whitespace
+# plus a unicode range with some exotic spaces/dashes/quotes
+PG_RE_NON_WORD_CHARS = u'[[:punct:][:space:]\u2000-\u201f]+'
+# Start/end of phrase also allow beginning/end of statue
+PG_RE_PHRASE_START = u'(^|%s)' % (PG_RE_NON_WORD_CHARS,)
+PG_RE_PHRASE_END = u'(%s|$)' % (PG_RE_NON_WORD_CHARS,)
 
 
 def get_date_range_dict():
