@@ -544,22 +544,21 @@ class SearchView(StatusListView):
         # to False to use a (not as good) text search instead
         use_regex = True
         for phrase in phrases:
-            # Split into words (remove whitespace, punctuation etc.)
-            words = re.split(RE_SPLIT_WORD_UNICODE, phrase)
-            # If there are no words - ignore this phrase
-            if words:
-                if use_regex:
-                    # Build regex - all words we've found separated by 'non-word' characters
-                    # and also allow VAV and/or HEI in front of each word.
-                    # NOTE: regex syntax is DB dependent - this works on postgres
-                    re_words = [u'\u05D5?\u05D4?' + word for word in words]
-                    regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(re_words) + PG_RE_PHRASE_END
-                    search_str_Q = join_queries(Q(content__iregex=regex), search_str_Q, or_)
-                else:
-                    # Fallback code to use if we want to disable regex-based search
-                    searchstr = ' '.join(words)
-                    search_str_Q = join_queries(Q(content__icontains=searchstr), search_str_Q, or_)
-                search_str_Q = Q(tags__name__contains=phrase) | search_str_Q
+            if use_regex:
+                # Split into words (remove whitespace, punctuation etc.)
+                words = re.split(RE_SPLIT_WORD_UNICODE, phrase)
+                # If there are no words - ignore this phrase
+                if words:
+                        # Build regex - all words we've found separated by 'non-word' characters
+                        # and also allow VAV and/or HEI in front of each word.
+                        # NOTE: regex syntax is DB dependent - this works on postgres
+                        re_words = [u'\u05D5?\u05D4?' + word for word in words]
+                        regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(re_words) + PG_RE_PHRASE_END
+                        search_str_Q = join_queries(Q(content__iregex=regex), search_str_Q, or_)
+            else:
+                # Fallback code to use if we want to disable regex-based search
+                search_str_Q = join_queries(Q(content__icontains=phrase), search_str_Q, or_)
+            search_str_Q = Q(tags__name__contains=phrase) | search_str_Q
 
         # tags query and keyword query concatenated. Logic is set according to request input
         request_operator = self.request.GET.get('tags_and_search_str_operator', DEFAULT_OPERATOR)
