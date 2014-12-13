@@ -477,8 +477,8 @@ nav.sidebar ul ul li a:hover {
 
 .post-mk-image {
   float: right;
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   margin-left: 10px;
   margin-bottom: 10px;
 }
@@ -505,8 +505,13 @@ nav.sidebar ul ul li a:hover {
 
 }
 
+.post-image-container {
+  text-align: center;
+}
+
 .post-image {
   max-width: 100%;
+  max-height: 200px;
 }
 
 .post-social-stats {
