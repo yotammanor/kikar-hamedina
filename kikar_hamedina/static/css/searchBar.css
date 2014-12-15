@@ -1,9 +1,60 @@
-.result-container {
-	color: black;
+/*<ul id="search-results-list">
+
+    <li class="result-container">
+        <a href="/member/831">
+            <div class="result-main-text"><span class="glyphicon glyphicon-user"></span> מירי רגב</div>
+            <div class="result-sub-text">הליכוד – ישראל ביתנו</div>
+        </a>
+    </li>
+</ul>*/
+
+/* MOVED TO newest.css */
+/* ul*/
+/*#search-results-list {
+  position: relative;
+
+  color: black;
+  list-style: none;
+  
+  background-color: rgb(247,247,247);
+  border: 1px solid rgb(232, 232, 232);
+
+  z-index: 2000;
+  max-height: 400px;
+  overflow-y: auto;
+  line-height: 20px;
+  padding: 0;
+  margin-top: 10px;
+
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  #search-results-list {
+    right: -20px;
+    margin-top: 0;
+  }
+}
+
+li.result-container {
+  border-bottom: 1px solid rgb(232, 232, 232);
+  padding: 10px 20px;
+}
+
+li.result-container:hover {
+  background-color: rgb(0, 81, 144);
+}
+
+li.result-container:hover a {
+  color: white;
+  text-decoration: none;
+}
+
+.result-main-text {
+  font-weight: bold;
 }
 
 .result-sub-text {
-	font-size: 8px;
-	font-weight: bold;
-}
+	font-size: 12px;
+}*/
 
