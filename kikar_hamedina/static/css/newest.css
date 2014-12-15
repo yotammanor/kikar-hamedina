@@ -455,6 +455,36 @@ nav.sidebar ul ul li a:hover {
   }
 }
 
+.posts-sortby-container {
+  margin-bottom: 15px;
+}
+
+.posts-sortby {
+  float: right;
+  list-style: none;
+}
+
+.posts-sortby > li {
+  float: right;
+  margin: 0;
+  margin-left: 10px;
+}
+
+.posts-sortby > li > a {
+  color: #fff;
+  background-color: rgb(0, 81, 144);
+  padding: 7px 10px;
+}
+
+.posts-sortby > li > a:hover {
+  text-decoration: none;
+  background-color: rgb(49, 53, 64);
+}
+
+.posts-sortby > li.active > a {
+  background-color: rgb(49, 53, 64);
+}
+
 /* this gives us a vertical horizontal line next to the posts */
 .posts-vertical-line-left {
   border-left: 1px solid #eeeeee;
@@ -529,9 +559,14 @@ nav.sidebar ul ul li a:hover {
   -khtml-border-radius: 13px; /* for old Konqueror browsers */
 }
 
-.post-social-stats > .glyphicon {
-  /*color: rgb(0, 81, 144);*/
-  color: rgb(40, 70, 120);
+.post-social-stats > a {
+  margin: 0 6px;
+  color: rgb(0, 81, 144);
+}
+
+.post-social-stats > a:hover {
+  text-decoration: none;
+  color: rgb(49, 53, 64);
 }
 
 .extra-info {

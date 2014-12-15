@@ -221,9 +221,9 @@
     <div class="post-social-stats">
         <!-- not the intended icons for use. the share icon currently used is quite different to the
          one in the pdf design -->
-        <a href="#"><span class="glyphicon glyphicon-share"></span> 120</a>
-        <a href="#"><span class="glyphicon glyphicon-comment"></span> 233</a>
-        <a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> 313</a>
+        <a href="#"><span class="glyphicon glyphicon-share"></span> {{ status.share_count|floatformat:1|intcomma|slice:":-2" }}</a>
+        <a href="#"><span class="glyphicon glyphicon-comment"></span> {{ status.comment_count|floatformat:1|intcomma|slice:":-2" }}</a>
+        <a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> {{ status.like_count|floatformat:1|intcomma|slice:":-2" }}</a>
     </div>
 </div>
 

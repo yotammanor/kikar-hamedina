@@ -197,7 +197,20 @@
     <div class="main-area">
 
       <div class="posts-container">
+
         <div class="posts-vertical-line-left">
+
+          <div class="posts-sortby-container clearfix">
+            <ul class="posts-sortby" id="order-by-options">
+              <li data-order-by="-published" class="active"><a href="/member/878/?order_by=published"><i class="fa fa-caret-down" id="dec-asc-published"></i> לפי תאריך</a></li>
+              <li data-order-by="-like_count"><a href="/member/878/?order_by=-like_count"><i class="fa fa-caret-down" id="dec-asc-likes" style="display: none;"></i> לפי מספר לייקים</a>
+              </li>
+              <li data-order-by="-comment_count"><a href="/member/878/?order_by=-comment_count"><i class="fa fa-caret-down" id="dec-asc-comments" style="display: none;"></i> לפי מספר
+                  תגובות</a></li>
+              <li data-order-by="custom" id="order-by-custom" style="display: none;"><a href="#">אחר</a></li>
+              <!-- visible only when used -->
+            </ul>
+          </div>
 
           <div class="posts">
             <div class="post clearfix">
