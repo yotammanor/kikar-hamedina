@@ -473,6 +473,7 @@ nav.sidebar ul ul li a:hover {
 .posts-sortby > li > a {
   color: #fff;
   background-color: rgb(0, 81, 144);
+  text-decoration: none;
   padding: 7px 10px;
 }
 
