@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 from operator import or_, and_
 from unidecode import unidecode
 
@@ -53,6 +54,17 @@ NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS = getattr(settings, 'NUMBER_OF_LAST_DAYS_FOR_HO
 MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60 * 60 * 24 * 2)  # 2 days
 MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
 MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60 * 10)  # 10 minutes
+
+# Python regex for splitting words
+RE_SPLIT_WORD_UNICODE = re.compile('\W+', re.UNICODE)
+
+# Postgres regex for word boundaries. Unfortunately Hebrew support is not good, so can't use \W
+# (\W detects Hebrew characters as non-word chars). Including built-in punctuation and whitespace
+# plus a unicode range with some exotic spaces/dashes/quotes
+PG_RE_NON_WORD_CHARS = u'[[:punct:][:space:]\u2000-\u201f]+'
+# Start/end of phrase also allow beginning/end of statue
+PG_RE_PHRASE_START = u'(^|%s)' % (PG_RE_NON_WORD_CHARS,)
+PG_RE_PHRASE_END = u'(%s|$)' % (PG_RE_NON_WORD_CHARS,)
 
 
 def get_date_range_dict():
@@ -461,6 +473,10 @@ class AllStatusesView(StatusListView):
         return context
 
 
+def join_queries(q1, q2, operator):
+    """Join two queries with operator (e.g. or_, and_) while handling empty queries"""
+    return operator(q1, q2) if (q1 and q2) else (q1 or q2)
+
 #
 class SearchView(StatusListView):
     model = Facebook_Status
@@ -492,22 +508,22 @@ class SearchView(StatusListView):
             tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
 
         # keywords searched for, comma separated
-        words = []
+        phrases = []
         if 'search_str' in self.request.GET.keys():
             search_str_stripped = self.request.GET['search_str'].strip()[1:-1]  # removes quotes from beginning and end.
-            words = [word for word in search_str_stripped.split('","')]
+            phrases = [phrase for phrase in search_str_stripped.split('","')]
 
-        print 'parsed request:', members_ids, parties_ids, tags_ids, words
-        return members_ids, parties_ids, tags_ids, words
+        print 'parsed request:', members_ids, parties_ids, tags_ids, phrases
+        return members_ids, parties_ids, tags_ids, phrases
 
-    def parse_q_object(self, members_ids, parties_ids, tags_ids, words):
+    def parse_q_object(self, members_ids, parties_ids, tags_ids, phrases):
         member_query = Member.objects.filter(id__in=members_ids)
         feeds = Facebook_Feed.objects.filter(persona__object_id__in=[member.id for member in member_query])
 
         # all members asked for (through member search of party search), with OR between them.
-        memebers_OR_parties_Q = Q()
+        members_OR_parties_Q = Q()
         if feeds:
-            memebers_OR_parties_Q = Q(feed__in=feeds)
+            members_OR_parties_Q = Q(feed__in=feeds)
 
         # tags - search for all tags specified by their id
         tags_Q = Q()
@@ -517,65 +533,52 @@ class SearchView(StatusListView):
             tags_to_queries = [Q(tags__id=tag_id) for tag_id in tag_bundle_ids]
             print 'tags_to_queries:', len(tags_to_queries)
             for query_for_single_tag in tags_to_queries:
-                if not tags_Q:
-                    # the first query overrides the empty concatenated query
-                    tags_Q = query_for_single_tag
-                else:
-                    # the rest are concatenated with OR
-                    tags_Q = query_for_single_tag | tags_Q
-        else:
-            tags_Q = Q()
+                # tags_Q is empty for the first iteration
+                tags_Q = join_queries(query_for_single_tag, tags_Q, or_)
 
         print 'tags_Q:', tags_Q
 
         # keywords - searched both in content and in tags of posts.
         search_str_Q = Q()
-        for word in words:
-            if not search_str_Q:
-                search_str_Q = Q(content__contains=word)
-                search_str_Q = Q(tags__name__contains=word) | search_str_Q
+        # If regexes cause security / performance problem - switch this flag
+        # to False to use a (not as good) text search instead
+        use_regex = True
+        for phrase in phrases:
+            if use_regex:
+                # Split into words (remove whitespace, punctuation etc.)
+                words = re.split(RE_SPLIT_WORD_UNICODE, phrase)
+                # If there are no words - ignore this phrase
+                if words:
+                        # Build regex - all words we've found separated by 'non-word' characters
+                        # and also allow VAV and/or HEI in front of each word.
+                        # NOTE: regex syntax is DB dependent - this works on postgres
+                        re_words = [u'\u05D5?\u05D4?' + word for word in words]
+                        regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(re_words) + PG_RE_PHRASE_END
+                        search_str_Q = join_queries(Q(content__iregex=regex), search_str_Q, or_)
             else:
-                search_str_Q = Q(content__contains=word) | search_str_Q
-                search_str_Q = Q(tags__name__contains=word) | search_str_Q
+                # Fallback code to use if we want to disable regex-based search
+                search_str_Q = join_queries(Q(content__icontains=phrase), search_str_Q, or_)
+            search_str_Q = Q(tags__name__contains=phrase) | search_str_Q
 
         # tags query and keyword query concatenated. Logic is set according to request input
-        try:
-            request_operator = self.request.GET['tags_and_search_str_operator']
-        except MultiValueDictKeyError:
-            request_operator = DEFAULT_OPERATOR
+        request_operator = self.request.GET.get('tags_and_search_str_operator', DEFAULT_OPERATOR)
 
         print 'selected_operator:', request_operator
-        if request_operator == 'or_operator':
-            selected_operator = or_
-        else:
-            selected_operator = and_
+        selected_operator = and_ if request_operator == 'and_operator' else or_
 
-        # Handle joining of empty queries
-        search_str_with_tags_Q = Q()
-        if tags_Q and search_str_Q:
-            search_str_with_tags_Q = selected_operator(tags_Q, search_str_Q)
-        elif tags_Q:
-            search_str_with_tags_Q = tags_Q
-        elif search_str_Q:
-            search_str_with_tags_Q = search_str_Q
+        search_str_with_tags_Q = join_queries(tags_Q, search_str_Q, selected_operator)
 
         print 'search_str_with_tags_Q:', search_str_with_tags_Q
         print '\n'
 
-        query_Q = Q()
-        if memebers_OR_parties_Q and search_str_with_tags_Q:
-            query_Q = memebers_OR_parties_Q & search_str_with_tags_Q
-        elif memebers_OR_parties_Q:
-            query_Q = memebers_OR_parties_Q
-        elif search_str_with_tags_Q:
-            query_Q = search_str_with_tags_Q
+        query_Q = join_queries(members_OR_parties_Q, search_str_with_tags_Q, and_)
 
         print 'query to be executed:', query_Q
         return query_Q
 
     def get_queryset(self):
-        members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
-        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
+        members_ids, parties_ids, tags_ids, phrases = self.get_parsed_request()
+        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, phrases)
         print 'get_queryset_executed:', query_Q
 
         return self.apply_request_params(Facebook_Status.objects.filter(query_Q))
@@ -583,15 +586,15 @@ class SearchView(StatusListView):
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
-        members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
-        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
+        members_ids, parties_ids, tags_ids, phrases = self.get_parsed_request()
+        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, phrases)
         context['members'] = Member.objects.filter(id__in=members_ids)
 
         context['parties'] = Party.objects.filter(id__in=parties_ids)
 
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
 
-        context['search_str'] = words
+        context['search_str'] = phrases
 
         context['search_title'] = 'my search'
 
