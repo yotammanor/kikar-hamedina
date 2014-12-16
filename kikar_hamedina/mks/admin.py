@@ -36,33 +36,39 @@ class MemberRelatedVideosInline(generic.GenericTabularInline):
     model = Video
     ct_fk_field = 'object_pk'
     can_delete = False
-    fields = ['title','description','embed_link','group','sticky','hide']
-    ordering = ['group','-sticky','-published']
-    readonly_fields = ['title','description','embed_link','group']
+    fields = ['title', 'description', 'embed_link', 'group', 'sticky', 'hide']
+    ordering = ['group', '-sticky', '-published']
+    readonly_fields = ['title', 'description', 'embed_link', 'group']
     extra = 0
+
     def queryset(self, request):
         qs = super(MemberRelatedVideosInline, self).queryset(request)
         qs = qs.filter(Q(hide=False) | Q(hide=None))
         return qs
 
+
 class CoalitionMembershipAdmin(admin.ModelAdmin):
-    list_display = ('party','start_date','end_date')
+    list_display = ('party', 'start_date', 'end_date')
+
+
 admin.site.register(CoalitionMembership, CoalitionMembershipAdmin)
 
 
 class PartyAdmin(admin.ModelAdmin):
     ordering = ('name',)
-#    fields = ('name','start_date','end_date', 'is_coalition','number_of_members')
+    # fields = ('name','start_date','end_date', 'is_coalition','number_of_members')
     list_display = ('name', 'knesset', 'start_date', 'end_date', 'is_coalition',
                     'number_of_members', 'number_of_seats')
     list_filter = ('knesset', )
     inlines = (MembershipInline, PartyAltnameInline)
+
+
 admin.site.register(Party, PartyAdmin)
 
 
 class MemberAdmin(admin.ModelAdmin):
     ordering = ('name',)
-#    fields = ('name','start_date','end_date')
+    # fields = ('name','start_date','end_date')
     list_display = ('name', 'gender', 'PartiesString', 'current_party',
                     'is_current', 'current_position')
     list_editable = ('is_current', 'current_position')
@@ -86,13 +92,20 @@ class MemberAdmin(admin.ModelAdmin):
 
     def queryset(self, request):
         return super(MemberAdmin, self).queryset(request).select_related('current_party')
+
+
 admin.site.register(Member, MemberAdmin)
 
 
 class CorrelationAdmin(admin.ModelAdmin):
     ordering = ('-normalized_score',)
+
+
 admin.site.register(Correlation, CorrelationAdmin)
+
 
 class MembershipAdmin(admin.ModelAdmin):
     ordering = ('member__name',)
+
+
 admin.site.register(Membership, MembershipAdmin)
