@@ -63,7 +63,6 @@ INSTALLED_APPS = (
     'kikartags',
     'knesset',
     'mks',
-    'persons',
     'facebook_feeds',
     'core',
     'updater'
