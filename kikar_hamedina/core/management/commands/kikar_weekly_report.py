@@ -158,7 +158,7 @@ class Command(BaseCommand):
     def build_and_send_email(self, data, options):
         date = timezone.now().date().strftime('%Y_%m_%d')
 
-        if 'recipients' in options:
+        if options['recipients']:
             print 'yes'
             recipients = options['recipients']
         else:
@@ -199,4 +199,3 @@ class Command(BaseCommand):
         print 'Sending email..'
         self.build_and_send_email(all_data, options)
         print 'Done.'
-        # return feeds_data, parties_data, factions_data, week_statuses
