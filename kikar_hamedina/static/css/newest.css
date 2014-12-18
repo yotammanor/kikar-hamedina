@@ -256,7 +256,7 @@ li.result-container:hover a {
   float: right;
   width: 33.333333%;
   text-align: center;
-  padding: 15px 0;
+  padding: 0;
 }
 
 .nav-bar-items > li:hover {
@@ -265,6 +265,14 @@ li.result-container:hover a {
 
 .nav-bar-items > li:hover > a {
   color: white;
+}
+
+.nav-bar-items > li > a {
+  text-decoration: none;
+  color: rgb(102, 102, 102);
+  font-weight: 600;
+  display: block;
+  padding: 15px 0;
 }
 
 @media (min-width: 768px) {
@@ -279,23 +287,19 @@ li.result-container:hover a {
     float: left;
     display: block;
     position: relative;
-    padding: 0 20px;
     /*border-right: 1px solid #adadad;*/
     /*indented border effect*/
     border-right: 1px solid rgb(232, 232, 232);
     border-left: 1px solid #fff;
   }
+
+  .nav-bar-items > li > a {
+    padding: 0 20px;
+  }
 }
 
 /*#indented ul li:first-child {border-left: none;}*/
 /*#indented ul li:last-child {border-right: none;}*/
-
-.nav-bar-items > li > a {
-  text-decoration: none;
-  color: rgb(102, 102, 102);
-  font-weight: 600;
-  /*display: block;*/
-}
 
 /* Hide for mobile, show later */
 .sidebar {
