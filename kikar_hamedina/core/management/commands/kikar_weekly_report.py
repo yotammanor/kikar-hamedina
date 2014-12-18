@@ -51,7 +51,8 @@ class Command(BaseCommand):
             mean_comment_count_weekly = engine.mean_status_comments_last_week([feed.id])
             mean_share_count_weekly = engine.mean_status_shares_last_week([feed.id])
             feeds_data.append({'feed_id': feed.id,
-                               'feed_name': feed.name or feed.persona.content_object.name,
+                               'feed_name': feed.persona.content_object.name,
+                               'feed_type': feed.feed_type,
                                'num_of_weekly_statuses': num_of_weekly_statuses,
                                'total_like_count_this_week': total_like_count_weekly,
                                'mean_like_count_this_week': mean_like_count_weekly,
@@ -80,32 +81,41 @@ class Command(BaseCommand):
                 'mean_share_count_this_week': party.mean_status_shares_last_week,
             })
 
+        PARTY_NAME_FORMAT = '; '
+
         factions = [{'id': 1,
                      'name': 'right_side',
+                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[14, 17])]),
                      'feeds': party_ids[14] + party_ids[17],
-                     'size': Party.objects.get(id=14).number_of_seats + Party.objects.get(id=17).number_of_seats
+                     'size': Party.objects.get(id=14).number_of_seats +
+                             Party.objects.get(id=17).number_of_seats
                     },
                     {'id': 2,
                      'name': 'center_side',
-                     'feeds': party_ids[15] + party_ids[21] + party_ids[25],
-                     'size': Party.objects.get(id=15).number_of_seats + Party.objects.get(id=
-                                                                                          21).number_of_seats + Party.objects.get(
-                         id=25).number_of_seats
+                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[15, 25])]),
+                     'feeds': party_ids[15] + party_ids[25],
+                     'size': Party.objects.get(id=15).number_of_seats +
+                             Party.objects.get(id=25).number_of_seats
                     },
                     {'id': 3,
                      'name': 'left_side',
-                     'feeds': party_ids[16] + party_ids[20],
-                     'size': Party.objects.get(id=16).number_of_seats + Party.objects.get(id=20).number_of_seats
+                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[16, 20, 21])]),
+                     'feeds': party_ids[16] + party_ids[20] + party_ids[21],
+                     'size': Party.objects.get(id=16).number_of_seats +
+                             Party.objects.get(id=20).number_of_seats +
+                             Party.objects.get(id=21).number_of_seats
                     },
                     {'id': 4,
                      'name': 'arab_parties',
+                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[22, 23, 24])]),
                      'feeds': party_ids[22] + party_ids[23] + party_ids[24],
-                     'size': Party.objects.get(id=22).number_of_seats + Party.objects.get(
-                         id=23).number_of_seats + Party.objects.get(
-                         id=24).number_of_seats
+                     'size': Party.objects.get(id=22).number_of_seats +
+                             Party.objects.get(id=23).number_of_seats +
+                             Party.objects.get(id=24).number_of_seats
                     },
                     {'id': 5,
-                     'name': 'charedi_parties',
+                     'name': 'haredi_parties',
+                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[18, 19])]),
                      'feeds': party_ids[18] + party_ids[19],
                      'size': Party.objects.get(id=18).number_of_seats + Party.objects.get(id=19).number_of_seats
                     },
@@ -116,6 +126,7 @@ class Command(BaseCommand):
             factions_data.append({
                 'faction_id': fact['id'],
                 'faction_name': fact['name'],
+                'faction_members': fact['members'],
                 'num_of_members_in_faction': fact['size'],
                 'num_of_feeds_in_faction': len(fact['feeds']),
                 'num_of_weekly_statuses': engine.n_statuses_last_week(fact['feeds']),
@@ -125,7 +136,9 @@ class Command(BaseCommand):
                 'mean_share_count_this_week': engine.mean_status_shares_last_week(fact['feeds']),
             })
 
-        return feeds_data, parties_data, factions_data
+        meta_data = []
+
+        return feeds_data, parties_data, factions_data, meta_data
 
     def statuses_data(self):
         week_ago, month_ago = get_times()
@@ -171,7 +184,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        feeds_data, parties_data, factions_data = self.feed_and_group_stats()
+        feeds_data, parties_data, factions_data, meta_data = self.feed_and_group_stats()
         week_statuses = self.statuses_data()
 
         all_data = [{'name': 'feeds_data',
