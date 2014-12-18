@@ -15,6 +15,8 @@ from core.insights import StatsEngine, Stats, get_times
 from mks.models import Party
 from facebook_feeds.models import Facebook_Feed, Facebook_Status
 
+from reporting.models import WeeklyReportRecipients
+
 
 def split_by_comma(option, opt, value, parser):
     setattr(parser.values, option.dest, [x.strip() for x in value.split(',')])
@@ -31,10 +33,24 @@ class Command(BaseCommand):
                              callback=split_by_comma,
                              help='set emails, seperated by value')
 
+    recipients_from_db = make_option('-d',
+                                     '--recipients-from-db',
+                                     action='store_true',
+                                     dest='recipients_from_db',
+                                     help='add this flag to send report based on emails from db.')
+
+    beta_recipients_from_db = make_option('-b',
+                                          '--beta-recipients-from-db',
+                                          action='store_true',
+                                          dest='beta_recipients_from_db',
+                                          help='add this flag to send report based on emails from db marked as beta only.')
+
     option_list_helper = list()
     for x in BaseCommand.option_list:
         option_list_helper.append(x)
     option_list_helper.append(recipients)
+    option_list_helper.append(recipients_from_db)
+    option_list_helper.append(beta_recipients_from_db)
     option_list = tuple(option_list_helper)
 
     def feed_and_group_stats(self):
@@ -158,11 +174,22 @@ class Command(BaseCommand):
     def build_and_send_email(self, data, options):
         date = timezone.now().date().strftime('%Y_%m_%d')
 
-        if options['recipients']:
-            print 'yes'
+        if options['beta_recipients_from_db']:
+            print 'beta recipients requested from db.'
+            recipients = [a.email for a in WeeklyReportRecipients.objects.filter(is_active=True, is_beta=True)]
+        elif options['recipients_from_db']:
+            print 'recipients requested from db.'
+            recipients = [a.email for a in WeeklyReportRecipients.objects.filter(is_active=True)]
+
+        elif options['recipients']:
+            print 'manual recipients requested.'
             recipients = options['recipients']
         else:
-            print 'no'
+            print 'no recipients requested.'
+            recipients = settings.DEFAULT_WEEKLY_RECIPIENTS
+
+        if not recipients:
+            print 'no recipients in db.'
             recipients = settings.DEFAULT_WEEKLY_RECIPIENTS
 
         print 'recipients:', recipients

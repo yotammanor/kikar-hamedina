@@ -274,6 +274,7 @@ def join_queries(q1, q2, operator):
     """Join two queries with operator (e.g. or_, and_) while handling empty queries"""
     return operator(q1, q2) if (q1 and q2) else (q1 or q2)
 
+
 #
 class SearchView(StatusListView):
     model = Facebook_Status
@@ -346,12 +347,12 @@ class SearchView(StatusListView):
                 words = re.split(RE_SPLIT_WORD_UNICODE, phrase)
                 # If there are no words - ignore this phrase
                 if words:
-                        # Build regex - all words we've found separated by 'non-word' characters
-                        # and also allow VAV and/or HEI in front of each word.
-                        # NOTE: regex syntax is DB dependent - this works on postgres
-                        re_words = [u'\u05D5?\u05D4?' + word for word in words]
-                        regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(re_words) + PG_RE_PHRASE_END
-                        search_str_Q = join_queries(Q(content__iregex=regex), search_str_Q, or_)
+                    # Build regex - all words we've found separated by 'non-word' characters
+                    # and also allow VAV and/or HEI in front of each word.
+                    # NOTE: regex syntax is DB dependent - this works on postgres
+                    re_words = [u'\u05D5?\u05D4?' + word for word in words]
+                    regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(re_words) + PG_RE_PHRASE_END
+                    search_str_Q = join_queries(Q(content__iregex=regex), search_str_Q, or_)
             else:
                 # Fallback code to use if we want to disable regex-based search
                 search_str_Q = join_queries(Q(content__icontains=phrase), search_str_Q, or_)
@@ -773,7 +774,8 @@ def search_bar(request):
         # Parties
         query_alternative_names = Q(partyaltname__name__contains=search_text)
         combined_party_name_query = query_direct_name | query_alternative_names
-        parties = Party.objects.filter(combined_party_name_query, knesset__number=CURRENT_KNESSET_NUMBER).order_by(
+        parties = Party.objects.filter(combined_party_name_query,
+                                       knesset__number=CURRENT_KNESSET_NUMBER).distinct().order_by(
             'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
 
         for party in parties:
@@ -784,7 +786,7 @@ def search_bar(request):
         query_alternative_names = Q(memberaltname__name__contains=search_text)
         combined_member_name_query = query_direct_name | query_alternative_names
 
-        members = Member.objects.filter(combined_member_name_query, is_current=True) \
+        members = Member.objects.filter(combined_member_name_query, is_current=True).distinct() \
                       .select_related('current_party').order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for member in members:
             response_data['results'].append(
@@ -793,7 +795,8 @@ def search_bar(request):
         query_tag_synonyms = Q(synonyms__tag__name=search_text)
         combined_tag_name_query = query_direct_name | query_tag_synonyms
 
-        tags = Tag.objects.filter_proper(combined_tag_name_query).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        tags = Tag.objects.filter_proper(combined_tag_name_query).distinct().order_by('name')[
+               :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for tag in tags:
             response_data['results'].append(
                 result_factory(tag.id, tag.name, "tag"))
