@@ -65,7 +65,9 @@ INSTALLED_APPS = (
     'mks',
     'facebook_feeds',
     'core',
-    'updater'
+    'updater',
+    'persons',
+    'reporting',
 )
 
 MIDDLEWARE_CLASSES = (
