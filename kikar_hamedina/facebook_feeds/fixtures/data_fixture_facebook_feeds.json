@@ -1060,7 +1060,7 @@
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
             "requires_user_token": true, 
-            "vendor_id": "1441382008", 
+            "vendor_id": "(",
             "feed_type": "UP", 
             "persona": "89", 
             "is_current": true, 
