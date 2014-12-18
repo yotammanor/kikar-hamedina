@@ -9,7 +9,7 @@ function addTag(status_id, tag_name, csrf_token) {
      The ajax request to add a particular tag, based on received input.
      */
     var add_tag_uri = "/add_tag_to_status/?id=" + status_id + "&tag_str=" + tag_name + "&csrftoken=" + csrf_token
-    console.log(add_tag_uri)
+    console.log(add_tag_uri);
     $.ajax({
         url: add_tag_uri,
         contentType: "application/json",
@@ -17,17 +17,16 @@ function addTag(status_id, tag_name, csrf_token) {
 //            console.log("GOT RESPONSE")
 //            console.log(data)
             if (data['success']) {
-                tag = data['tag']
-                console.log(tag)
-                var source = $("#add-tag-to-status-template").html()
+                tag = data['tag'];
+                console.log(tag);
+                var source = $("#add-tag-to-status-template").html();
                 var template = Handlebars.compile(source);
                 var html = template(tag);
-                console.log("html: " + html)
-                $("#" + data['id'] + "-tags").prev().css("display", "inline")
+                console.log("html: " + html);
+                $("#" + data['id'] + "-tags").prev().css("display", "inline");
                 $("#" + data['id'] + "-tags").append(html)
-            }
-            else {
-                console.log(data)
+            } else {
+                console.log(data);
                 console.log("ERROR AT SERVER")
             }
         },
@@ -35,7 +34,7 @@ function addTag(status_id, tag_name, csrf_token) {
             console.log("BADDDDD ERROR!!")
         }
     });
-};
+}
 
 function tagAddingHandler(obj) {
     /*

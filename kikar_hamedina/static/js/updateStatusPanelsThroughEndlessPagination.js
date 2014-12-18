@@ -30,5 +30,6 @@ $.endlessPaginate({
                 }
             });
         });
+        FB && FB.XFBML.parse(); // Update new embedded posts etc.
     }
 });

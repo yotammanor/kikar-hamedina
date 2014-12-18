@@ -169,12 +169,12 @@
 {% endblock %}
 
 {% block sidebar %}
-    <ul class="list-group">
-        {% for member in object.current_party.current_members.all %}
-            <li class="list-group-item"><i class="fa fa-user"></i> <a
-                    href="{% url 'member' member.id %}">{{ member.name }}</a></li>
-        {% endfor %}
-    </ul>
+{#    <ul class="list-group">#}
+{#        {% for member in object.current_party.current_members.all %}#}
+{#            <li class="list-group-item"><i class="fa fa-user"></i> <a#}
+{#                    href="{% url 'member' member.id %}">{{ member.name }}</a></li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
 {% endblock %}
 
 {% block scripts %}

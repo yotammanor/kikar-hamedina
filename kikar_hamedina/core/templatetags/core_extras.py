@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from urllib2 import unquote
 from django import template
 from django.template.defaultfilters import floatformat
@@ -29,3 +30,10 @@ def percent(value):
 @register.filter(name='urldecode')
 def unquote_new(value):
     return unquote(value).decode()
+
+@register.filter(name='render_icons')
+def render_icons(value):
+    if '#like' in value:
+        return value.replace('#like', '<i class="fa fa-thumbs-up"></i>')
+    else:
+        return value
