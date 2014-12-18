@@ -1296,6 +1296,18 @@
         }
     }, 
     {
+        "pk": "109", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "268367643345001", 
+            "feed_type": "PP", 
+            "persona": "109", 
+            "is_current": false, 
+            "locally_updated": null
+        }
+    }, 
+    {
         "pk": "52", 
         "model": "facebook_feeds.facebook_persona", 
         "fields": {
@@ -2585,6 +2597,18 @@
         "fields": {
             "main_feed": "108", 
             "object_id": "813", 
+            "content_type": [
+                "mks", 
+                "member"
+            ]
+        }
+    }, 
+    {
+        "pk": "109", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "109", 
+            "object_id": "999", 
             "content_type": [
                 "mks", 
                 "member"

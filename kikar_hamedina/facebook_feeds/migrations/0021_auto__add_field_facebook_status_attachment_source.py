@@ -13,10 +13,26 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.TextField')(null=True, blank=True),
                       keep_default=False)
 
+        # Adding field 'Facebook_Status_Attachment.source_width'
+        db.add_column(u'facebook_feeds_facebook_status_attachment', 'source_width',
+                      self.gf('django.db.models.fields.PositiveSmallIntegerField')(max_length=4, null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'Facebook_Status_Attachment.source_height'
+        db.add_column(u'facebook_feeds_facebook_status_attachment', 'source_height',
+                      self.gf('django.db.models.fields.PositiveSmallIntegerField')(max_length=4, null=True, blank=True),
+                      keep_default=False)
+
 
     def backwards(self, orm):
         # Deleting field 'Facebook_Status_Attachment.source'
         db.delete_column(u'facebook_feeds_facebook_status_attachment', 'source')
+
+        # Deleting field 'Facebook_Status_Attachment.source_width'
+        db.delete_column(u'facebook_feeds_facebook_status_attachment', 'source_width')
+
+        # Deleting field 'Facebook_Status_Attachment.source_height'
+        db.delete_column(u'facebook_feeds_facebook_status_attachment', 'source_height')
 
 
     models = {
@@ -81,6 +97,8 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'picture': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'source': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'source_height': ('django.db.models.fields.PositiveSmallIntegerField', [], {'max_length': '4', 'null': 'True', 'blank': 'True'}),
+            'source_width': ('django.db.models.fields.PositiveSmallIntegerField', [], {'max_length': '4', 'null': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'attachment'", 'unique': 'True', 'to': u"orm['facebook_feeds.Facebook_Status']"}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '16', 'null': 'True', 'blank': 'True'})
         },
