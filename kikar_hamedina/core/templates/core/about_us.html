@@ -11,10 +11,14 @@
 {% block title %}כיכר המדינה - מי אנחנו{% endblock title %}
 
 {% block context-header %}
-<div class="alert alert-danger alert-dismissible" role="alert">
-  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-  <strong>האתר עדיין בתהליכי בנייה!</strong> יתכנו פערים וטעויות במידע המוצג באתר, לתשומת ליבך.
-</div>
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <strong>האתר עדיין בתהליכי בנייה!</strong> יתכנו פערים וטעויות במידע המוצג באתר, לתשומת ליבך.
+
+    </div>
 {% endblock %}
 
 {% load core_extras %}
@@ -44,6 +48,7 @@
             </div>
             <div class="col-lg-10 main-page-frame">
                 <h3>כיום, {{ number_of_mks }} מתוך חברי הכנסת פעילים בפייסבוק באופן קבוע. </h3>
+
                 <h3>אנחנו מרכזים את כל מה שחברי הכנסת כותבים - ועוזרים לך להבין, ולקחת חלק בשיחה.</h3>
             </div>
             <div class="main-page-frame col-lg-1">
@@ -109,6 +114,9 @@
                     id="hasadna-logo-img" alt=""><span>הסדנא לידע ציבורי <span
                     class="small">(ע"ר)</span></span></a></div>
         </div>
+        <br>
+
+        <div>{% include 'core/donate_button.html' %}</div>
     </div>
 {% endblock %}
 
