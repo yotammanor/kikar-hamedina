@@ -181,15 +181,20 @@
     <img src="{{ status.feed.picture_square }}" alt="" class="post-mk-image"/>
 
     <div class="post-head clearfix">
-                <span class="post-mk-name">
-                  <a href="{% url 'member' status.feed.persona.object_id %}">{{ status.feed.persona.content_object.name }}</a>
-                </span>
-                <span class="post-time">
-                  {{ status.published | naturaltime }}
-                    {% if status.is_deleted %}
-                        (הסטטוס נמחק)
-                    {% endif %}
-                </span>
+        <span class="post-mk-name">
+          <a href="{% url 'member' status.feed.persona.object_id %}">{{ status.feed.persona.content_object.name }}</a>
+        </span>
+        <span class="post-time">
+          {{ status.published | naturaltime }}
+            {% if status.is_deleted %}
+                (הסטטוס נמחק)
+            {% endif %}
+        </span>
+        <div>
+            <a class="" href="{% url 'party' status.feed.persona.content_object.current_party.id %}">
+                {{ status.feed.persona.content_object.current_party.name }}
+            </a>
+        </div>
     </div>
     <div class="post-content">
         <div class="post-text">
@@ -199,25 +204,26 @@
 
             <p>{{ status.content | linebreaks | truncatewords:50 }}
                 {% if status.content|length > 50 %}
-                    &nbsp;&nbsp;&nbsp;<a href="#">קרא עוד>>></a>
+                    &nbsp;&nbsp;&nbsp;<a href="{{ status|link }}">קרא עוד>>></a>
                 {% endif %}
             </p>
         </div>
         {% if status.has_attachment %}
-            {{ status.attachment.type }} <br>
-            {{ status.attachment.link }}
-            <img src="{{ status.attachment.picture }}" alt="" class="post-image"/>
+            <div class="post-image-container">
+                {# {{ status.attachment.type }} <br> #}
+                {# {{ status.attachment.link }} #}
+                <img src="{{ status.attachment.picture }}" alt="" class="post-image" />
+            </div>
         {% endif %}
-        <a href="{% url 'status-detail' status.status_id %}">permalink</a>
-        {{ status.is_comment }}
-        {{ status.feed.id }}
+        {# {{ status|link }} #}
+        {# {{ status.id }} #}
     </div>
     <div class="post-social-stats">
         <!-- not the intended icons for use. the share icon currently used is quite different to the
          one in the pdf design -->
-        <span class="glyphicon glyphicon-share"></span> 120
-        <span class="glyphicon glyphicon-comment"></span> 233
-        <span class="glyphicon glyphicon-thumbs-up"></span> 313
+        <a href="#"><span class="glyphicon glyphicon-share"></span> {{ status.share_count|floatformat:1|intcomma|slice:":-2" }}</a>
+        <a href="#"><span class="glyphicon glyphicon-comment"></span> {{ status.comment_count|floatformat:1|intcomma|slice:":-2" }}</a>
+        <a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> {{ status.like_count|floatformat:1|intcomma|slice:":-2" }}</a>
     </div>
 </div>
 
