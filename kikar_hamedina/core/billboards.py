@@ -80,7 +80,7 @@ class Billboards(object):
                                                                  order_of_board=3,
         )
 
-        self.median_status_likes_board = self.create_billboard_dict(title='כמות חציונית של #like',
+        self.median_status_likes_board = self.create_billboard_dict(title='כמות חציונית של #like לסטאטוס',
                                                                     second_title=DEFAULT_SECOND_TITLE,
                                                                     header_name='Name',
                                                                     header_value_formatted='median_status_likes_last_week',
@@ -99,7 +99,7 @@ class Billboards(object):
 
         self.top_likes_board = {
             'order_of_board': 5,
-            'title': 'הסטאטוס עם הכי הרבה #like',
+            'title': 'הסטטוס עם כמות ה-#like הגבוהה ביותר',
             'second_title': DEFAULT_SECOND_TITLE,
             'headers': {
                 'name': 'Name',
