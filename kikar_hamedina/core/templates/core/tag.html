@@ -19,12 +19,12 @@
 {% endblock %}
 
 {% block sidebar %}
-    <ul class="list-group">
-        <li class="list-group-item list-group-item-heading"><b> כתבו בנושא: </b></li>
-        {% for content_object in side_bar_list.all %}
-            <li class="list-group-item">
-                <a href="{% url 'member' content_object.id %}">{{ content_object.name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+{#    <ul class="list-group">#}
+{#        <li class="list-group-item list-group-item-heading"><b> כתבו בנושא: </b></li>#}
+{#        {% for content_object in side_bar_list.all %}#}
+{#            <li class="list-group-item">#}
+{#                <a href="{% url 'member' content_object.id %}">{{ content_object.name }}</a>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
 {% endblock %}

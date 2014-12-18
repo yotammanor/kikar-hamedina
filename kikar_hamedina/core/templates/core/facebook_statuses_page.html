@@ -130,15 +130,15 @@
             <br>
             <br>
             {% block sidebar %}
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות
-                        האחרונות: </b></li>
-                    {% for member in side_bar_list.all %}
-                        <li class="list-group-item">
-                            <a href="{% url 'member' member.id %}">{{ member.name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
+{#                <ul class="list-group">#}
+{#                    <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות#}
+{#                        האחרונות: </b></li>#}
+{#                    {% for member in side_bar_list.all %}#}
+{#                        <li class="list-group-item">#}
+{#                            <a href="{% url 'member' member.id %}">{{ member.name }}</a>#}
+{#                        </li>#}
+{#                    {% endfor %}#}
+{#                </ul>#}
             {% endblock sidebar %}
         </div>
     </div>
