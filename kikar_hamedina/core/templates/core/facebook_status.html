@@ -209,14 +209,34 @@
             </p>
         </div>
         {% if status.has_attachment %}
-            <div class="post-image-container">
-                {# {{ status.attachment.type }} <br> #}
-                {# {{ status.attachment.link }} #}
-                <img src="{{ status.attachment.picture }}" alt="" class="post-image" />
-            </div>
+            {% if status.attachment.type == "photo" %}
+                <div class="post-image-container">
+                    <img src="{{ status.attachment.picture }}" alt="" class="post-image" />
+                </div>
+            {% elif status.attachment.type == "video" %}
+                <div class="post-image-container">
+                    <img src="{{ status.attachment.picture }}" alt="" class="post-image" />
+                    <p>
+                        <a href="{{ status.attachment.link }}">{{ status.attachment.caption }}</a>
+                    </p>
+                </div>
+            {% elif status.attachment.type == "link" %}
+                <a href="{{ status.attachment.source }}">{{ status.attachment.source }}</a>
+            {% elif status.attachment.type == "status" %}
+            
+            {% endif %}
+
+            <p>Link: {{ status|link }}</p>
+            <p>Type: {{ status.attachment.type }}</p>
+            <p>Source: {{ status.attachment.source }}</p>
+            <p>Source height: {{ status.attachment.source_height }}</p>
+            <p>Source width: {{ status.attachment.source_width }}</p>
         {% endif %}
         {# {{ status|link }} #}
         {# {{ status.id }} #}
+        <!-- <a href="{% url 'status-detail' status.status_id %}">permalink</a> -->
+        {# {{ status.is_comment }} #}
+        {# {{ status.feed.id }} #}
     </div>
     <div class="post-social-stats">
         <!-- not the intended icons for use. the share icon currently used is quite different to the

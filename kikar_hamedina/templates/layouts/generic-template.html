@@ -10,16 +10,8 @@
 
     <title>כיכר המדינה | {% block title %}{% endblock title %}</title>
 
-    <!-- Not actually using Bootstrap at the moment. Only the reset.css bit of it.
-    Remove the BS stuff we don't need to keep the css file size down. -->
     <!-- Bootstrap core CSS -->
     <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
-    <!--<link href="../css/snap.css" rel="stylesheet">-->
-    <!--<link href="../css/bootstrap-rtl.min.css" rel="stylesheet">-->
-    <!-- <link href="../css/bootstrap-theme.css" rel="stylesheet"> -->
-
-    <!-- Custom styles for this template -->
-    <!-- <link href="../css/main.css" rel="stylesheet"> -->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -32,10 +24,22 @@
     {# <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/> #}
 
     <!-- Fonts -->
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    {# <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"> #}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
+    <!-- JS -->
 
+    <!-- Load jQuery from the cdn and fallback to local if no internet available -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <!-- FALLBACK NOT WORKING FOR SOME REASON
+    <script>window.jQuery && document.write('<script src="{{ STATIC_URL }}js/libs/jquery/jquery-2.0.3.min.js"><\/script>')</script>
+    -->
 
+    <!-- Load bootstrap from the cdn and fallback to local if no internet available -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <!-- FALLBACK NOT WORKING FOR SOME REASON
+    <script>$.fn.modal || document.write('<script src="{{ STATIC_URL }}js/libs/bootstrap/3.3.1/bootstrap.min.js"><\/script>')</script>
+    -->
     {#    {% load staticfiles %}#}
     {% load kikartags_extras %}
 </head>
@@ -58,7 +62,7 @@
                        data-toggle="dropdown"
                        autocomplete="off"
                        role="search"
-                       placeholder="חפש חבר כנסת, נושא מתויג, אומילים שח״כים אומרים"/>
+                       placeholder="חפש חבר כנסת, נושא מתויג, או מילים שח״כים אומרים"/>
                  <ul id="search-results-list">
                 </ul> 
                 <!-- <ul id="search-results-list">
@@ -152,12 +156,6 @@
     {% block main_content %}
     {% endblock main_content %}
 </div>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <script>
     $(function () {

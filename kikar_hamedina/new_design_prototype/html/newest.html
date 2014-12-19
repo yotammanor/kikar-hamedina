@@ -44,20 +44,13 @@
       <nav class="nav-bar">
         <div class="search">
           <span class="glyphicon glyphicon-search"></span>
-          <input type="text" role="search" placeholder="חפש חבר כנסת, נושא מתויג, אומילים שח״כים אומרים"/>
+          <input type="text" role="search" placeholder="חפש חבר כנסת, נושא מתויג, או מילים שח״כים אומרים"/>
         </div>
 
         <ul class="nav-bar-items">
           <li><a href="#">אודות</a></li>
           <li><a href="#">המצעד</a></li>
-          <!--remove this. we have a search bar already-->
-          <!--<li><a href="#">חיפוש</a></li>-->
           <li><a href="#">כל העדכונים</a></li>
-
-          <!--In english for testing. Webstorm doesn't work well with Hebrew-->
-          <!--<li><a href="#">About</a></li>-->
-          <!--<li><a href="#">Steps</a></li>-->
-          <!--<li><a href="#">All updates</a></li>-->
         </ul>
       </nav>
 
@@ -196,6 +189,27 @@
 
     <div class="main-area">
 
+      <div class="politician-info-bar clearfix">
+        <img src="../img/netanyahu.jpg" alt="" class="politician-info-bar-photo">
+        <div class="politician-info-bar-name">Yair Lapid - יאיר לפיד</div>
+        <div class="politician-info-bar-party-likes-container">
+          <div class="politician-info-bar-party">
+            <span>מפלגת </span>
+            <span class="bold">
+              יש עתיד
+            </span>
+          </div>
+          <div class="politician-info-bar-likes">
+            <span>
+              לייקים
+            </span>
+            <span class="bold">
+              123,765
+            </span>
+          </div>  
+        </div>
+      </div>
+
       <div class="posts-container">
 
         <div class="posts-vertical-line-left">
@@ -210,6 +224,32 @@
               <li data-order-by="custom" id="order-by-custom" style="display: none;"><a href="#">אחר</a></li>
               <!-- visible only when used -->
             </ul>
+
+    <!--         <select class="form-control" id="filter-by-date-range-options">
+              <option value="/member/878/?range=default">ללא סינון </option>
+              <option value="/member/878/?range=week">בשבוע האחרון </option>
+              <option value="/member/878/?range=two_weeks">בשבועיים האחרונים</option>
+              <option value="/member/878/?range=month">בחודש האחרון</option>
+              <option value="/member/878/?range=current_month">במהלך דצמבר</option>
+              <option value="/member/878/?range=current_year">במהלך 2014</option>
+              <option value="/member/878/?range=protective-edge">במהלך צוק איתן</option>
+            </select> -->
+
+            <div class="btn-group posts-filter" id="filter-by-date-range-options">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="border-radius: 0px;">
+                בשבוע האחרון <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" style="border-radius: 0;">
+                <li><a href="#" value="/member/878/?range=default">ללא סינון </a></li>
+                <li><a href="#" value="/member/878/?range=week">בשבוע האחרון </a></li>
+                <li><a href="#" value="/member/878/?range=two_weeks">בשבועיים האחרונים</a></li>
+                <li><a href="#" value="/member/878/?range=month">בחודש האחרון</a></li>
+                <li><a href="#" value="/member/878/?range=current_month">במהלך דצמבר</a></li>
+                <li><a href="#" value="/member/878/?range=current_year">במהלך 2014</a></li>
+                <li><a href="#" value="/member/878/?range=protective-edge">במהלך צוק איתן</a></li>
+              </ul>
+            </div>
+
           </div>
 
           <div class="posts">
@@ -222,6 +262,11 @@
                 <span class="post-time">
                   לפני שעתיים
                 </span>
+                <div>
+                  <a class="" href="/party/15/">
+                    יש עתיד
+                  </a>
+                </div>
               </div>
               <div class="post-content">
                 <div class="post-text">
@@ -279,7 +324,10 @@
                     &nbsp;&nbsp;&nbsp;<a href="#">קרא עוד>>></a>
                   </p>
                 </div>
-                <img src="../img/ramzor.png" alt="" class="post-image"/>
+                <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Square_on_plane.svg/2000px-Square_on_plane.svg.png"
+                       alt="" class="post-image"/>
+                <!--<img src="http://www.freeimage.in/wp-content/uploads/2014/07/desktop-background-pictures-1.jpg" alt="" class="post-image"/>-->
+                <!--<img src="../img/ramzor.png" alt="" class="post-image"/>-->
               </div>
               <div class="post-social-stats">
                 <!-- not the intended icons for use. the share icon currently used is quite different to the
