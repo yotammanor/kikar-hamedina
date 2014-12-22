@@ -252,19 +252,17 @@ li.result-container:hover a {
   border-top: 1px solid #eeeeee;
 }
 
-.nav-bar-items > li {
+.nav-bar-items > li > a {
   float: right;
-  width: 33.333333%;
+  /*width: 33.333333%;*/
+  width: 50%;
   text-align: center;
   padding: 15px 0;
 }
 
-.nav-bar-items > li:hover {
-  background-color: rgb(0, 81, 144);
-}
-
-.nav-bar-items > li:hover > a {
+.nav-bar-items > li > a:hover {
   color: white;
+  background-color: rgb(0, 81, 144);
 }
 
 @media (min-width: 768px) {
@@ -276,12 +274,17 @@ li.result-container:hover a {
   }
 
   .nav-bar-items > li {
-    float: left;
-    display: block;
+    /*float: left;*/
+    /*display: block;
     position: relative;
-    padding: 0 20px;
-    /*border-right: 1px solid #adadad;*/
+    padding: 0 20px;*/
     /*indented border effect*/
+/*    border-right: 1px solid rgb(232, 232, 232);
+    border-left: 1px solid #fff;
+*/  }
+
+  .nav-bar-items > li > a {
+    padding: 0;
     border-right: 1px solid rgb(232, 232, 232);
     border-left: 1px solid #fff;
   }
@@ -502,7 +505,7 @@ nav.sidebar ul ul li a:hover {
 }
 
 .posts-sortby-container {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   padding: 0 8%;
 }
 
@@ -516,6 +519,7 @@ nav.sidebar ul ul li a:hover {
   float: right;
   margin: 0;
   margin-left: 5px;
+  margin-bottom: 5px;
 }
 
 .posts-sortby > li > a {
@@ -569,6 +573,7 @@ nav.sidebar ul ul li a:hover {
 
 .post-head {
   float: right;
+  width: 100%;
 }
 
 .post-mk-name {
@@ -591,11 +596,33 @@ nav.sidebar ul ul li a:hover {
 
 .post-image-container {
   text-align: center;
+  position: relative;
 }
 
 .post-image {
   max-width: 100%;
   /*max-height: 200px;*/
+}
+
+.play-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  background-color: rgb(0, 81, 144);
+  border-radius: 0;
+}
+
+.play-button > i {
+  color: #fff;
+}
+
+.play-button:hover {
+  background-color: #fff;
+}
+
+.play-button:hover > i {
+  color: rgb(0, 81, 144);
 }
 
 .post-social-stats {

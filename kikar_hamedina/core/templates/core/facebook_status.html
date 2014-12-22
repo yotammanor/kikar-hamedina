@@ -178,9 +178,8 @@
 {#</div>#}
 
 <div class="post clearfix">
-    <img src="{{ status.feed.picture_square }}" alt="" class="post-mk-image"/>
-
     <div class="post-head clearfix">
+        <img src="{{ status.feed.picture_square }}" alt="" class="post-mk-image"/>
         <span class="post-mk-name">
           <a href="{% url 'member' status.feed.persona.object_id %}">{{ status.feed.persona.content_object.name }}</a>
         </span>
@@ -216,6 +215,7 @@
             {% elif status.attachment.type == "video" %}
                 <div class="post-image-container">
                     <img src="{{ status.attachment.picture }}" alt="" class="post-image" />
+                    <button class="btn play-button"><i class="fa fa-play fa-2x"></i></button>
                     <p>
                         <a href="{{ status.attachment.link }}">{{ status.attachment.caption }}</a>
                     </p>

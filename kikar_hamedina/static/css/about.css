@@ -1,0 +1,14 @@
+.about-page-container {
+  padding: 30px;
+}
+
+.hasadna-logo-img {
+  margin-left: 5px;
+  height: 20px;
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  font-size: 18px;
+}

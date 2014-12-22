@@ -23,6 +23,9 @@
     <link href="{{ STATIC_URL }}css/newest.css" rel="stylesheet">
     {# <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/> #}
 
+    {% block extra_css_files %}
+    {% endblock extra_css_files %}
+
     <!-- Fonts -->
     {# <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"> #}
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -91,9 +94,9 @@
 {#                </div>#}
             </div>
             <ul class="nav-bar-items">
-                <li><a href="{% url 'about' %}">אודות</a></li>
                 <li><a href="{% url 'billboards' %}">המצעד</a></li>
-                <li><a href="{% url 'zinnia_entry_archive_index' %}">בלוג</a></li>
+                <li><a href="{% url 'about' %}">אודות</a></li>
+                <!-- <li><a href="{% url 'zinnia_entry_archive_index' %}">בלוג</a></li> -->
             </ul>
         </nav>
 

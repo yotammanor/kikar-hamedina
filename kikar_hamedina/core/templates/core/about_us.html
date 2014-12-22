@@ -1,124 +1,78 @@
-{#<script type="text/javascript">#}
-{#$(document).ready(function () {#}
-{#    alert('here');#}
-{#    $("#details-container").hide();#}
-{#});#}
-{#</script>#}
-
-
 {% extends "layouts/generic-template.html" %}
-
-{% block title %}כיכר המדינה - מי אנחנו{% endblock title %}
-
-{% block context-header %}
-<div class="alert alert-danger alert-dismissible" role="alert">
-  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-  <strong>האתר עדיין בתהליכי בנייה!</strong> יתכנו פערים וטעויות במידע המוצג באתר, לתשומת ליבך.
-</div>
-{% endblock %}
 
 {% load core_extras %}
 
-{#{% block h1 %}#}
-{#    העמוד הראשי החדש#}
-{#{% endblock %}#}
-{#{% block details %}#}
-{#    <div class="h4">#}
-{#        הנושאים החמים#}
-{#    </div>#}
-{#{% endblock %}#}
+{% block extra_css_files %}
+    <link href="{{ STATIC_URL }}css/about.css" rel="stylesheet">
+{% endblock extra_css_files %}
+
 {% block main_content %}
-    <div class="container main-page-frame">
-        <div class="main-page-frame col-lg-12">
+    <div class="about-page-container">
+        <div class="text-center">
             <img src="{{ STATIC_URL }}media/kikar_hamedina_logo.png">
-        </div>
-        <div class="main-page-frame col-lg-12">
             <h1>חברי הכנסת ברשתות החברתיות.</h1>
+
+            <h3>כיום, {{ number_of_mks }} מתוך חברי הכנסת פעילים בפייסבוק באופן קבוע. </h3>
+            <h3>אנחנו מרכזים את כל מה שחברי הכנסת כותבים - ועוזרים לך להבין, ולקחת חלק בשיחה.</h3>
         </div>
-        <div class="main-page-frame col-lg-12">
+
+        <br>
+        <br>
+        <br>
+        
+        <h4>
+            <b>תוהה מה אפשר למצוא אצלנו? אפשר לדעת, למשל: </b>
+        </h4>
+
+        <ul class="features-list">
+            <li>
+                <i class="fa fa-thumbs-o-up"></i>
+                מה נכתב בסטאטוסים הפופולריים ביותר <a href="{% url 'all-statuses' %}?range=week&order_by=-like_count">בשבוע האחרון</a>?
+            </li>
+            <li>
+                <i class="fa fa-thumbs-o-up"></i>
+                על מה מדברים במפלגת <a href="{% url 'party' featured_party.id %}?range=week">{{ featured_party.name }}</a> בימים אלו?
+            </li>
+            <li>
+                <i class="fa fa-thumbs-o-up"></i>
+                אילו חברי כנסת השתמשו לאחרונה במילה <a href='{% url 'search' %}?{{ featured_search.search_value }}'>{{ featured_search.search_name }}</a>?
+            </li>
+            <li>
+                <i class="fa fa-thumbs-o-up"></i>
+                מה גרם ל<a href='{% url "member" top_growth.member.id %}'>{{ top_growth.member.name }}</a> לזכות בעלייה של {{ top_growth.dif | percent }} במספר התומכים בחודש האחרון?
+            </li>
+            <li>
+                <i class="fa fa-thumbs-o-up"></i>
+                ועוד הרבה, רק צריך <a href="{% url 'search-gui' %}">לחפש</a>!
+            </li>
+        </ul>
+
+        <div class="text-center">        
+            
             <br>
-        </div>
-        <div class="main-page-frame container">
-            <div class="main-page-frame col-lg-1">
+            <br>
+            <br>
+
+            <p>
+                חיפשת משהו ולא מצאת? נתקלת בתקלה? יש לך רעיון מדליק לאיך לשפר את האתר? <a href="mailto:yotammanor@gmail.com">נשמח לשמוע</a>!
+            </p>
+            
+            <br>
+            <br>
+            <br>
+
+            <p>
+                אתר זה הוא פרויקט חממה של
                 <br>
-            </div>
-            <div class="col-lg-10 main-page-frame">
-                <h3>כיום, {{ number_of_mks }} מתוך חברי הכנסת פעילים בפייסבוק באופן קבוע. </h3>
-                <h3>אנחנו מרכזים את כל מה שחברי הכנסת כותבים - ועוזרים לך להבין, ולקחת חלק בשיחה.</h3>
-            </div>
-            <div class="main-page-frame col-lg-1">
-                <br>
-            </div>
+                <a href="http://www.hasadna.org.il" rel="nofollow">
+                    <img src="http://www.hasadna.org.il/wp-content/themes/sadna2012/images/sadna-logo.png" class="hasadna-logo-img" alt="">
+                    <span>
+                        הסדנא לידע ציבורי
+                        <span class="small">(ע"ר)</span>
+                    </span>
+                </a>
+            </p>
         </div>
-        <div class="main-page-frame col-lg-12">
-            <br>
-        </div>
-        <div class="container main-page-frame">
-            <div class="col-lg-1 main-page-frame">
-                <br>
-            </div>
-            <div class="col-lg-10">
-                <div class="main-page-frame main-page-frame-links">
-                    <h4><b>תוהה מה אפשר למצוא אצלנו? אפשר לדעת, למשל: </b></h4>
-                </div>
-                <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> מה נכתב בסטאטוסים הפופולריים ביותר <a
-                            href="{% url 'all-statuses' %}?range=week&order_by=-like_count">בשבוע האחרון</a>?
-                    </h4>
-                </div>
-                <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> על מה מדברים במפלגת <a
-                            href="{% url 'party' featured_party.id %}?range=week">{{ featured_party.name }}</a>
-                        בימים אלו?</h4>
-                </div>
-                <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> אילו חברי כנסת השתמשו לאחרונה במילה <a
-                            href='{% url 'search' %}?{{ featured_search.search_value }}'>{{ featured_search.search_name }}</a>?
-                    </h4>
-                </div>
-                <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> מה גרם ל<a
-                            href='{% url "member" top_growth.member.id %}'>{{ top_growth.member.name }}</a> לזכות בעלייה
-                        של {{ top_growth.dif | percent }} במספר התומכים בחודש האחרון?
-                    </h4>
-                </div>
-                <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> ועוד הרבה, רק צריך <a href="{% url 'search-gui' %}">לחפש</a>!
-                    </h4>
-                </div>
-            </div>
-            <div class="col-lg-1 main-page-frame">
-                <br>
-            </div>
-        </div>
-        <div class="main-page-frame col-lg-12 main-page-frame">
-            <br>
-        </div>
-        <div class="main-page-frame col-lg-12">
-            <br>
-            חיפשת משהו ולא מצאת? נתקלת בתקלה? יש לך רעיון מדליק לאיך לשפר את האתר? <a
-                href="mailto:yotammanor@gmail.com">נשמח לשמוע</a>!
-        </div>
-        <div class="main-page-frame col-lg-12">
-            <br>
-            <br>
-            <br>
-            אתר זה הוא פרויקט חממה של
-            <div id="hasadna-logo"><a href="http://www.hasadna.org.il" rel="nofollow"><img
-                    src="http://www.hasadna.org.il/wp-content/themes/sadna2012/images/sadna-logo.png"
-                    id="hasadna-logo-img" alt=""><span>הסדנא לידע ציבורי <span
-                    class="small">(ע"ר)</span></span></a></div>
-        </div>
+
     </div>
 {% endblock %}
-
-{#{% block sidebar %}#}
-{#    <ul class="list-group">#}
-{#        <li class="list-group-item list-group-item-heading"><b> כתבו לאחרונה </b></li>#}
-{#        {% for member in side_bar_list.all %}#}
-{#            <li class="list-group-item">#}
-{#                <a href="{% url 'member' member.id %}">{{ member.name }}</a>#}
-{#            </li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
-{#{% endblock %}#}
