@@ -23,6 +23,9 @@ MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*
 MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
 MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60*10)  # 10 minutes
 
+# tag name regex
+TAG_NAME_CHARSET=u'[\w\s\-:"\'!\?&\.#\u2010-\u201f\u05f3\u05f4]'
+TAG_NAME_REGEX=u'^%s+$' % TAG_NAME_CHARSET
 
 class Facebook_Persona(models.Model):
     content_type = models.ForeignKey(ContentType)
@@ -349,7 +352,6 @@ class User_Token(models.Model):
     date_of_creation = models.DateTimeField(default=timezone.now())
     date_of_expiration = models.DateTimeField(default=timezone.now() + timezone.timedelta(days=60))
     feeds = models.ManyToManyField(Facebook_Feed, related_name='tokens')
-    # is_expired = models.BooleanField(default=False)
 
     @property
     def is_expired(self):
