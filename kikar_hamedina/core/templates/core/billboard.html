@@ -1,22 +1,28 @@
-<h4 class="list-group-item active">{{ billboard.title }}</h4>
-
+{% load core_extras %}
+<div class="list-group-item active">
+    <h4>{% autoescape off %}{{ billboard.title | render_icons  }}{% endautoescape %}</h4>
+    <h6>{{ billboard.second_title }} &nbsp;</h6>
+</div>
 <table class="table table-stripped">
 
     <thead>
-    <tr>
-        <th>#</th>
-        <th>{{ billboard.headers.name }}</th>
-        <th>{{ billboard.headers.value_formatted }}</th>
-    </tr>
+    {#    <tr>#}
+    {#        <th>#</th>#}
+    {#        <th>{{ billboard.headers.name }}</th>#}
+    {#        <th>{{ billboard.headers.value_formatted }}</th>#}
+    {#    </tr>#}
     </thead>
     <tbody>
     {% for object in billboard.data %}
         <tr>
-            <th>{{ forloop.counter }}</th>
-            <th>{{ object.name }}</th>
-            <th><a href={% url billboard.link_uri_name object.value_reference_link %}>{{ object.value_formatted }}</a></th>
+            <td>{{ forloop.counter }}</td>
+            <td><a href={% url billboard.link_uri_name object.value_reference_link %}>{{ object.name }}</a></td>
+            <td>{{ object.value_formatted }}</td>
 
         </tr>
     {% endfor %}
     </tbody>
 </table>
+
+
+{# <span class="extra-billboard-info">(מספר נוסף)</span>#}

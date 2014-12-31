@@ -142,3 +142,7 @@ body {
     max-width: 100%;
     height: auto;
 }
+
+.extra-billboard-info {
+    color: darkgrey;
+}
