@@ -21,7 +21,7 @@ from facebook import GraphAPIError
 from endless_pagination.views import AjaxListView
 
 from facebook_feeds.management.commands import updatestatus
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, TAG_NAME_REGEX
 from facebook_feeds.models import Tag as OldTag
 from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from mks.models import Party, Member
@@ -709,38 +709,37 @@ def add_tag_to_status(request):
     response_data['success'] = False
     status_id = request.GET["id"]
     response_data['id'] = status_id
-    tag_name = request.GET["tag_str"]
-    stripped_tag_name = tag_name.strip()
-    # Kikartags-based tagging
+    tag_name = request.GET["tag_str"].strip()
     try:
-        if stripped_tag_name:
-            taggit_tag, created = Tag.objects.get_or_create(name=stripped_tag_name)
+        if tag_name:
+            # Kikartags-based tagging
+            if not re.match(TAG_NAME_REGEX, tag_name):
+                response_data['error'] = 'invalid characters in tag name'
+                raise Exception("Invalid characters in tag")
+            taggit_tag, created = Tag.objects.get_or_create(name=tag_name)
             if created:
-                taggit_tag.name = stripped_tag_name
+                taggit_tag.name = tag_name
                 taggit_tag.save()
             status = Facebook_Status.objects_no_filters.get(id=status_id)
             status.tags.user_aware_add(request.user, taggit_tag)
             status.save()
             response_data['tag'] = {'id': taggit_tag.id, 'name': taggit_tag.name}
-        response_data['success'] = True
-    except:
-        print "ERROR AT ADDING STATUS TO TAG."
-        print status_id
-    # Old Deprecated Tagging
-    try:
-        if stripped_tag_name:
-            tag, created = OldTag.objects.get_or_create(name=stripped_tag_name)
+            response_data['success'] = True
+
+            # Old Deprecated Tagging
+            tag, created = OldTag.objects.get_or_create(name=tag_name)
             if created:
-                tag.name = stripped_tag_name
+                tag.name = tag_name
                 tag.is_for_main_display = True
                 tag.save()
                 # add status to tag statuses
             tag.statuses.add(status_id)
             tag.save()
-            # response_data['tag'] = {'id': tag.id, 'name': tag.name}
-            # response_data['success'] = True
-    except:
-        print "ERROR AT ADDING STATUS TO TAG"
+        else:
+            response_data['success'] = True  # Nothing to do
+
+    except Exception as e:
+        print "ERROR AT ADDING STATUS TO TAG:", e
         print status_id
 
     finally:
