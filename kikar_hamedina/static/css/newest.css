@@ -64,6 +64,33 @@ a {
   color: rgb(0, 81, 144);
 }
 
+/* bootstrap override */
+
+.btn {
+  border-radius: 0;
+}
+
+.btn-primary {
+  background-color: rgb(0, 81, 144);
+  border: 0;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  background-color: rgb(49, 53, 64);
+}
+
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+  background-color: rgb(0, 81, 144);
+}
+
+/* end of bootstrap override */
+
 .top-bar {
   /*height: 100%;*/
   /*height: 60px;*/
@@ -189,6 +216,10 @@ a {
   height: 28px;
 }
 
+.form-control {
+  border-radius: 0;
+}
+
 /* search dropdown */
 
 #search-results-list {
@@ -252,19 +283,17 @@ li.result-container:hover a {
   border-top: 1px solid #eeeeee;
 }
 
-.nav-bar-items > li {
+.nav-bar-items > li > a {
   float: right;
-  width: 33.333333%;
+  /*width: 33.333333%;*/
+  width: 50%;
   text-align: center;
   padding: 15px 0;
 }
 
-.nav-bar-items > li:hover {
-  background-color: rgb(0, 81, 144);
-}
-
-.nav-bar-items > li:hover > a {
+.nav-bar-items > li > a:hover {
   color: white;
+  background-color: rgb(0, 81, 144);
 }
 
 @media (min-width: 768px) {
@@ -276,12 +305,17 @@ li.result-container:hover a {
   }
 
   .nav-bar-items > li {
-    float: left;
-    display: block;
+    /*float: left;*/
+    /*display: block;
     position: relative;
-    padding: 0 20px;
-    /*border-right: 1px solid #adadad;*/
+    padding: 0 20px;*/
     /*indented border effect*/
+/*    border-right: 1px solid rgb(232, 232, 232);
+    border-left: 1px solid #fff;
+*/  }
+
+  .nav-bar-items > li > a {
+    padding: 0;
     border-right: 1px solid rgb(232, 232, 232);
     border-left: 1px solid #fff;
   }
@@ -432,9 +466,9 @@ nav.sidebar ul ul li a:hover {
   width: 100%;
   height: 100%;
   float: right;
-  /*height: 800px;*/
+  min-height: 800px;
   background-color: #fff ;
-  padding: 30px 0;
+  padding: 0;
   overflow-wrap: break-word;
 }
 @media (min-width: 768px) {
@@ -442,6 +476,52 @@ nav.sidebar ul ul li a:hover {
     width: 80%;
   }
 }
+
+.politician-info-bar {
+  background-color: #fff;
+  height: 100px;
+  border-bottom: 1px solid rgb(232, 232, 232);
+  padding: 10px;
+}
+
+.politician-info-bar-photo {
+  float: right;
+  width: 80px;
+  height: 80px;
+  margin-left: 10px;
+}
+
+.politician-info-bar-name, .politician-info-bar-party, .politician-info-bar-likes {
+  line-height: 40px;
+}
+@media (min-width: 768px) {
+  .politician-info-bar-name, .politician-info-bar-party, .politician-info-bar-likes {
+    line-height: 80px;
+  }
+}
+
+.politician-info-bar-name {
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+  margin-left: 30px;
+}
+
+.politician-info-bar-party, .politician-info-bar-likes {
+  float: right;
+  font-size: 18px;
+  margin-left: 15px;
+}
+@media (min-width: 768px) {
+  .politician-info-bar-party, .politician-info-bar-likes {
+    float: left;
+  }
+}
+
+.posts-container, .extra-info {
+  margin-top: 20px;
+}
+
 
 .posts-container {
   float: right;
@@ -456,24 +536,30 @@ nav.sidebar ul ul li a:hover {
 }
 
 .posts-sortby-container {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  padding: 0 8%;
 }
 
 .posts-sortby {
   float: right;
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .posts-sortby > li {
   float: right;
   margin: 0;
-  margin-left: 10px;
+  margin-left: 5px;
+  margin-bottom: 5px;
 }
 
 .posts-sortby > li > a {
   color: #fff;
   background-color: rgb(0, 81, 144);
+  text-decoration: none;
   padding: 7px 10px;
+  line-height: 33px;
 }
 
 .posts-sortby > li > a:hover {
@@ -483,6 +569,10 @@ nav.sidebar ul ul li a:hover {
 
 .posts-sortby > li.active > a {
   background-color: rgb(49, 53, 64);
+}
+
+.posts-filter {
+  float: left;
 }
 
 /* this gives us a vertical horizontal line next to the posts */
@@ -515,6 +605,7 @@ nav.sidebar ul ul li a:hover {
 
 .post-head {
   float: right;
+  width: 100%;
 }
 
 .post-mk-name {
@@ -537,11 +628,33 @@ nav.sidebar ul ul li a:hover {
 
 .post-image-container {
   text-align: center;
+  position: relative;
 }
 
 .post-image {
   max-width: 100%;
-  max-height: 200px;
+  /*max-height: 200px;*/
+}
+
+.play-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  background-color: rgb(0, 81, 144);
+  border-radius: 0;
+}
+
+.play-button > i {
+  color: #fff;
+}
+
+.play-button:hover {
+  background-color: #fff;
+}
+
+.play-button:hover > i {
+  color: rgb(0, 81, 144);
 }
 
 .post-social-stats {
@@ -589,4 +702,41 @@ nav.sidebar ul ul li a:hover {
 
 .extra-info-group > ul > li {
   list-style: none;
+}
+
+.tags-container {
+  float: right;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.tags-container > ul {
+  padding: 0;
+  list-style: none;
+}
+
+.tags-container > ul > li {
+  float: right;
+  margin: 0 3px 5px 3px;
+  /*overflow: auto;*/
+}
+
+.tag-link {
+  display: inline-block;
+  background-color: rgb(0, 81, 144);
+  color: #fff;
+  padding: 5px 7px;
+}
+
+.tag-link:hover,
+.tag-link:focus {
+  background-color: rgb(49, 53, 64);
+  color: #fff;
+  text-decoration: none;
+}
+
+.add-tags-container {
+  width: 100%;
+  display: inline-block;
+  margin-top: 10px;
 }

@@ -1,25 +1,25 @@
 {# This is the template for an added tag. #}
-{#{% verbatim %}#}
-{#<script id="add-tag-to-status-template" type="text/x-handlebars-template">#}
-{#    <a href="/tag/name/{{name}}">#}
-{#        <span class="label label-info">{{name}}</span>#}
-{#    </a>#}
-{#</script>#}
-{#{% endverbatim %}#}
-{##}
-{##}
-{# This is the template for status tag suggestions #}
-{#{% verbatim %}#}
-{#<script id="add-tag-result-tag-list-item-template" type="text/x-handlebars-template">#}
-{#    <div class="add-tag-result-container">#}
-{#        <button class="result-main-text btn add-tag-from-list" data-tag-name="{{name}}"><span#}
-{#                class="glyphicon glyphicon-tag"></span> {{name}}#}
-{#        </button>#}
-{#    </div>#}
-{#</script>#}
-{#{% endverbatim %}#}
-{##}
-{##}
+{% verbatim %}
+<script id="add-tag-to-status-template" type="text/x-handlebars-template">
+    <a href="/tag/name/{{name}}">
+        <span class="label label-info">{{name}}</span>
+    </a>
+</script>
+{% endverbatim %}
+
+
+ <!-- This is the template for status tag suggestions  -->
+{% verbatim %}
+<script id="add-tag-result-tag-list-item-template" type="text/x-handlebars-template">
+    <div class="add-tag-result-container">
+        <button class="result-main-text btn add-tag-from-list" data-tag-name="{{name}}">
+            <span class="glyphicon glyphicon-tag"></span> {{name}}
+        </button>
+    </div>
+</script>
+{% endverbatim %}
+
+
 {% load humanize %}
 {% load core_extras %}
 {% load kikartags_extras %}
@@ -178,9 +178,8 @@
 {#</div>#}
 
 <div class="post clearfix">
-    <img src="{{ status.feed.picture_square }}" alt="" class="post-mk-image"/>
-
     <div class="post-head clearfix">
+        <img src="{{ status.feed.picture_square }}" alt="" class="post-mk-image"/>
         <span class="post-mk-name">
           <a href="{% url 'member' status.feed.persona.object_id %}">{{ status.feed.persona.content_object.name }}</a>
         </span>
@@ -204,19 +203,41 @@
 
             <p>{{ status.content | linebreaks | truncatewords:50 }}
                 {% if status.content|length > 50 %}
-                    &nbsp;&nbsp;&nbsp;<a href="{{ status|link }}">קרא עוד>>></a>
+                    &nbsp;&nbsp;&nbsp;<a href="{{ status|link }}" target="_blank">קרא עוד>>></a>
                 {% endif %}
             </p>
         </div>
         {% if status.has_attachment %}
-            <div class="post-image-container">
-                {# {{ status.attachment.type }} <br> #}
-                {# {{ status.attachment.link }} #}
-                <img src="{{ status.attachment.picture }}" alt="" class="post-image" />
-            </div>
+            {% if status.attachment.type == "photo" %}
+                <div class="post-image-container">
+                    <img src="{{ status.attachment.picture }}" alt="" class="post-image" />
+                </div>
+            {% elif status.attachment.type == "video" %}
+                <div class="post-image-container">
+                    <img src="{{ status.attachment.picture }}" alt="" class="post-image" />
+                    <button class="btn play-button"><i class="fa fa-play fa-2x"></i></button>
+                    <p>
+                        <a href="{{ status.attachment.link }}">{{ status.attachment.caption }}</a>
+                    </p>
+                </div>
+            {% elif status.attachment.type == "link" %}
+                <a href="{{ status.attachment.source }}">{{ status.attachment.source }}</a>
+            {% elif status.attachment.type == "status" %}
+            
+            {% endif %}
+
+            <p>Link: {{ status|link }}</p>
+            <p>Type: {{ status.attachment.type }}</p>
+            <p>Source: {{ status.attachment.source }}</p>
+            <p>Source height: {{ status.attachment.source_height }}</p>
+            <p>Source width: {{ status.attachment.source_width }}</p>
         {% endif %}
         {# {{ status|link }} #}
         {# {{ status.id }} #}
+        {{ status }}
+        <!-- <a href="{% url 'status-detail' status.status_id %}">permalink</a> -->
+        {# {{ status.is_comment }} #}
+        {# {{ status.feed.id }} #}
     </div>
     <div class="post-social-stats">
         <!-- not the intended icons for use. the share icon currently used is quite different to the
@@ -225,6 +246,45 @@
         <a href="#"><span class="glyphicon glyphicon-comment"></span> {{ status.comment_count|floatformat:1|intcomma|slice:":-2" }}</a>
         <a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> {{ status.like_count|floatformat:1|intcomma|slice:":-2" }}</a>
     </div>
+
+    <div class="tags-container" style="display:{% if status.tags.count > 0 %}inline{% else %}none{% endif %}">
+        <!-- <strong class="pull-right">תגים: </strong> -->
+        <ul id="{{ status.id }}-tags" class="pull-right">
+            {% for tag in status.tags.all %}
+                {% with tag|proper_tag as tag %}
+                    <li>
+                        <a href="{% url 'tag' 'name' tag.name %}" class="tag-link">
+                            {{ tag.name }}
+                        </a>
+                    </li>
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        <!-- Add tags option, visible to authenticated users only -->
+        {% if user.is_authenticated %}
+            <div class="add-tags-container" data-statusid="{{ status.id }}">
+                {% csrf_token %}
+                <div class="form-group pull-right" id="add-tag-dropdown-{{ status.id }}" style="width: 250px;">
+                    <input id="add-tag-{{ status.status_id }}" type="text" name="tag"
+                           class="form-control add-tag-input input-large" autocomplete="off"
+                           placeholder="הכנס תג (comma separated)" data-toggle="dropdown">
+
+                    <div class="add-tag-list dropdown" id="add-tag-list-{{ status.id }}">
+                    </div>
+                </div>
+                <div class="pull-left">
+                    <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">
+                        הוסף תיוגים
+                    </button>
+                </div>
+                <!-- </form> -->
+            </div>
+        {% endif %}
+    </div>
+
 </div>
 
 <hr/>
