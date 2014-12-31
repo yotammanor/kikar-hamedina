@@ -672,3 +672,33 @@ nav.sidebar ul ul li a:hover {
 .extra-info-group > ul > li {
   list-style: none;
 }
+
+.tags-container {
+  float: right;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.tags-container > ul {
+  padding: 0;
+  list-style: none;
+}
+
+.tags-container > ul > li {
+  float: right;
+  margin: 0 3px 5px 3px;
+  /*overflow: auto;*/
+}
+
+.tag-link {
+  display: inline-block;
+  background-color: rgb(0, 81, 144);
+  color: #fff;
+  padding: 5px 7px;
+}
+
+.tag-link:hover, .tag-link:active, .tag-link:visited {
+  background-color: rgb(49, 53, 64);
+  color: #fff;
+  text-decoration: none;
+}

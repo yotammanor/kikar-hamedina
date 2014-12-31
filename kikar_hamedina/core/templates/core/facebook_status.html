@@ -1,25 +1,25 @@
 {# This is the template for an added tag. #}
-{#{% verbatim %}#}
-{#<script id="add-tag-to-status-template" type="text/x-handlebars-template">#}
-{#    <a href="/tag/name/{{name}}">#}
-{#        <span class="label label-info">{{name}}</span>#}
-{#    </a>#}
-{#</script>#}
-{#{% endverbatim %}#}
-{##}
-{##}
-{# This is the template for status tag suggestions #}
-{#{% verbatim %}#}
-{#<script id="add-tag-result-tag-list-item-template" type="text/x-handlebars-template">#}
-{#    <div class="add-tag-result-container">#}
-{#        <button class="result-main-text btn add-tag-from-list" data-tag-name="{{name}}"><span#}
-{#                class="glyphicon glyphicon-tag"></span> {{name}}#}
-{#        </button>#}
-{#    </div>#}
-{#</script>#}
-{#{% endverbatim %}#}
-{##}
-{##}
+{% verbatim %}
+<script id="add-tag-to-status-template" type="text/x-handlebars-template">
+    <a href="/tag/name/{{name}}">
+        <span class="label label-info">{{name}}</span>
+    </a>
+</script>
+{% endverbatim %}
+
+
+ <!-- This is the template for status tag suggestions  -->
+{% verbatim %}
+<script id="add-tag-result-tag-list-item-template" type="text/x-handlebars-template">
+    <div class="add-tag-result-container">
+        <button class="result-main-text btn add-tag-from-list" data-tag-name="{{name}}">
+            <span class="glyphicon glyphicon-tag"></span> {{name}}
+        </button>
+    </div>
+</script>
+{% endverbatim %}
+
+
 {% load humanize %}
 {% load core_extras %}
 {% load kikartags_extras %}
@@ -234,6 +234,7 @@
         {% endif %}
         {# {{ status|link }} #}
         {# {{ status.id }} #}
+        {{ status }}
         <!-- <a href="{% url 'status-detail' status.status_id %}">permalink</a> -->
         {# {{ status.is_comment }} #}
         {# {{ status.feed.id }} #}
@@ -245,6 +246,45 @@
         <a href="#"><span class="glyphicon glyphicon-comment"></span> {{ status.comment_count|floatformat:1|intcomma|slice:":-2" }}</a>
         <a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> {{ status.like_count|floatformat:1|intcomma|slice:":-2" }}</a>
     </div>
+
+    <div class="tags-container" style="display:{% if status.tags.count > 0 %}inline{% else %}none{% endif %}">
+        <!-- <strong class="pull-right">תגים: </strong> -->
+        <ul id="{{ status.id }}-tags" class="pull-right">
+            {% for tag in status.tags.all %}
+                {% with tag|proper_tag as tag %}
+                    <li>
+                        <a href="{% url 'tag' 'name' tag.name %}" class="tag-link">
+                            {{ tag.name }}
+                        </a>
+                    </li>
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        <!-- Add tags option, visible to authenticated users only -->
+        {% if user.is_authenticated %}
+            <div class="" data-statusid="{{ status.id }}">
+                <hr>
+                {% csrf_token %}
+                <div class="form-group col-sm-8" id="add-tag-dropdown-{{ status.id }}">
+                    <input id="add-tag-{{ status.status_id }}" type="text" name="tag"
+                           class="form-control add-tag-input input-large" autocomplete="off"
+                           placeholder="הכנס תג (comma separated)" data-toggle="dropdown">
+
+                    <div class="add-tag-list dropdown" id="add-tag-list-{{ status.id }}">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">הוסף תיוגים
+                    </button>
+                </div>
+                <!-- </form> -->
+            </div>
+        {% endif %}
+    </div>
+
 </div>
 
 <hr/>

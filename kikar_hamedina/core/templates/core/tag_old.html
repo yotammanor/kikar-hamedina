@@ -1,0 +1,30 @@
+{% extends "core/facebook_statuses_page.html" %}
+
+{% block title %}כיכר המדינה - נושא - {{ object.name }}{% endblock title %}
+
+{% block h1 %}
+    נושא:
+    {% if object.logo %}
+        <img src="{{ object.logo.url }}" alt="missing file" width="100" height="100"/>
+    {% endif %}
+    {{ object.name }}
+
+{% endblock %}
+
+{% block details %}
+    <div class="h4">
+        סך הכל:
+        {{ object_list.count }}
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-heading"><b> כתבו בנושא: </b></li>
+        {% for content_object in side_bar_list.all %}
+            <li class="list-group-item">
+                <a href="{% url 'member' content_object.id %}">{{ content_object.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
