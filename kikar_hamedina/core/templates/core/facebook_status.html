@@ -203,7 +203,7 @@
 
             <p>{{ status.content | linebreaks | truncatewords:50 }}
                 {% if status.content|length > 50 %}
-                    &nbsp;&nbsp;&nbsp;<a href="{{ status|link }}">קרא עוד>>></a>
+                    &nbsp;&nbsp;&nbsp;<a href="{{ status|link }}" target="_blank">קרא עוד>>></a>
                 {% endif %}
             </p>
         </div>
@@ -265,10 +265,9 @@
     <div>
         <!-- Add tags option, visible to authenticated users only -->
         {% if user.is_authenticated %}
-            <div class="" data-statusid="{{ status.id }}">
-                <hr>
+            <div class="add-tags-container" data-statusid="{{ status.id }}">
                 {% csrf_token %}
-                <div class="form-group col-sm-8" id="add-tag-dropdown-{{ status.id }}">
+                <div class="form-group pull-right" id="add-tag-dropdown-{{ status.id }}" style="width: 250px;">
                     <input id="add-tag-{{ status.status_id }}" type="text" name="tag"
                            class="form-control add-tag-input input-large" autocomplete="off"
                            placeholder="הכנס תג (comma separated)" data-toggle="dropdown">
@@ -276,8 +275,9 @@
                     <div class="add-tag-list dropdown" id="add-tag-list-{{ status.id }}">
                     </div>
                 </div>
-                <div class="col-sm-4">
-                    <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">הוסף תיוגים
+                <div class="pull-left">
+                    <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">
+                        הוסף תיוגים
                     </button>
                 </div>
                 <!-- </form> -->
