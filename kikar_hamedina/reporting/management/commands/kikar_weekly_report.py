@@ -61,6 +61,9 @@ class Command(BaseCommand):
 
         feeds_data = []
         for feed in feeds:
+            week_status_set = feed.facebook_status_set.filter(
+                published__gte=timezone.now() - timezone.timedelta(days=7))
+
             num_of_weekly_statuses = engine.n_statuses_last_week([feed.id])
             total_like_count_weekly = engine.total_status_likes_last_week([feed.id])
             mean_like_count_weekly = engine.mean_status_likes_last_week([feed.id])
@@ -74,9 +77,15 @@ class Command(BaseCommand):
                                'mean_like_count_this_week': mean_like_count_weekly,
                                'mean_comment_count_this_week': mean_comment_count_weekly,
                                'mean_share_count_this_week': mean_share_count_weekly,
-                               'popularity_count': feed.current_fan_count,
-                               'change_since_last_week': feed.popularity_dif(days_back=7,
-                                                                             return_value='fan_count_dif_nominal')
+                               'top_status_by_like_count_this_week': getattr(week_status_set.order_by(
+                                   '-like_count').first(), 'like_count', 0),
+                               'top_status_by_share_count_this_week': getattr(week_status_set.order_by(
+                                   '-share_count').first(), 'share_count', 0),
+                               'top_status_by_comment_count_this_week': getattr(week_status_set.order_by(
+                                   '-comment_count').first(), 'comment_count', 0),
+                               'current_followers_count': feed.current_fan_count,
+                               'change_in_followers_count_since_last_week': feed.popularity_dif(days_back=7,
+                                                                                                return_value='fan_count_dif_nominal')
 
             })
 
@@ -158,15 +167,21 @@ class Command(BaseCommand):
 
     def statuses_data(self):
         week_ago, month_ago = get_times()
-        week_statuses = Facebook_Status.objects.filter(published__gte=week_ago, like_count__isnull=False)
-        week_statuses_build = [(status.status_id, status.feed.id, status.feed.name, status.published, status.is_deleted,
+        start_date = timezone.datetime(2014, 11, 27, 0, 0, 0, 0, tzinfo=timezone.get_current_timezone())
+        week_statuses = Facebook_Status.objects.filter(published__gte=start_date, like_count__isnull=False)
+        week_statuses_build = [(status.status_id, status.feed.id, status.feed.name,
+                                status.feed.persona.content_object.current_party.id,
+                                status.feed.persona.content_object.current_party.name,
+                                status.published, status.is_deleted,
                                 ';'.join([tagged_item.tag.name for tagged_item in
                                           status.tagged_items.filter(tagged_by__username='karineb')]),
                                 ';'.join([tagged_item.tag.name for tagged_item in
                                           status.tagged_items.all()]),
                                 status.get_link) for
                                status in week_statuses]
-        field_names = ['status_id', 'feed_id', 'feed_name', 'published', 'is_deleted', 'tags_by_karine', 'tags', 'link']
+        field_names = ['status_id', 'feed_id', 'feed_name', 'party_id', 'party_name', 'published', 'is_deleted',
+                       'tags_by_karine', 'tags', 'link',
+                       'like_count', 'share_count', 'comment_count']
         recs = np.core.records.fromrecords(week_statuses_build, names=field_names)
         week_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
         return week_statuses
