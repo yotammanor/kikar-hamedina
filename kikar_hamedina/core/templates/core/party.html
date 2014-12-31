@@ -23,14 +23,14 @@
 {% endblock %}
 
 {%  block sidebar %}
-    <ul class="list-group">
-        {% for member in object.current_members.all %}
-            <li class="list-group-item"> <a href="{% url 'member' member.id %}">
-                <i class="fa fa-user"></i>
-                {{ member.name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+{#    <ul class="list-group">#}
+{#        {% for member in object.current_members.all %}#}
+{#            <li class="list-group-item"> <a href="{% url 'member' member.id %}">#}
+{#                <i class="fa fa-user"></i>#}
+{#                {{ member.name }}</a>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
 {%  endblock %}
 
 {% block scripts %}

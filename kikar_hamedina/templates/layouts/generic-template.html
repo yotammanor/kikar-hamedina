@@ -7,7 +7,7 @@
     <title>כיכר המדינה | {% block title %}{% endblock title %}</title>
 
     <!-- Fonts -->
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Alef:400,700&subset=all' rel='stylesheet' type='text/css'>
 
     <!-- CSS -->
@@ -145,6 +145,12 @@
                         אודות
                     </a>
                 </li>
+                <li class="navbar-nav navbar-right  hidden-md hidden-sm">
+                    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ8ZHE9EVN59Y"
+                       class="navbar-options">
+                        לתרומה
+                    </a>
+                </li>
 
                 {% if user.is_authenticated %}
                     <li class="navbar-nav navbar-right hidden-md hidden-sm">
@@ -169,6 +175,12 @@
                         </li>
                         <li>
                             <a href="{% url 'billboards' %}" class="navbar-options">המצעד</a>
+                        </li>
+                        <li>
+                            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ8ZHE9EVN59Y"
+                               class="navbar-options">
+                                לתרומה
+                            </a>
                         </li>
                         {% if user.is_authenticated %}
                             <li>

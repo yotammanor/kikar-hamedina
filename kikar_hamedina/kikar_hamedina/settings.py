@@ -63,10 +63,11 @@ INSTALLED_APPS = (
     'kikartags',
     'knesset',
     'mks',
-    'persons',
     'facebook_feeds',
     'core',
-    'updater'
+    'updater',
+    'persons',
+    'reporting',
 )
 
 MIDDLEWARE_CLASSES = (

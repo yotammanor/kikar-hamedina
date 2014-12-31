@@ -202,7 +202,7 @@ class Command(BaseCommand):
 
         # Case no args - fetch all feeds
         if len(args) == 0:
-            list_of_feeds = [feed for feed in Facebook_Feed.objects.all()]
+            list_of_feeds = [feed for feed in Facebook_Feed.objects.all().filter(feed_type='PP')]
         # Case arg exists - fetch feed by id supplied
         elif len(args) == 1:
             feed_pk_id = int(args[0])
