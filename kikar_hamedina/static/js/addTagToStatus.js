@@ -5,6 +5,9 @@
  */
 
 function addTag(status_id, tag_name, csrf_token) {
+    // TODO check that the tag only contains valid characters
+    // if the tag contains invalid chars, the tag will be added and you won't be able to load any pages
+
     /*
      The ajax request to add a particular tag, based on received input.
      */
@@ -99,7 +102,7 @@ function tagAddingHandler(obj) {
 
 
 $(document).ready(function () {
-    $("div.row").on("click", ".add-tag-button", function (event) {
+    $(".add-tag-button").on("click", function (event) {
         // event: clicking on the add-tag button
         console.log("adding tag");
         id = $(this).parent().parent().data("statusid");
