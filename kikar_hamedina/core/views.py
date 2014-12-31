@@ -713,7 +713,7 @@ def add_tag_to_status(request):
     try:
         if tag_name:
             # Kikartags-based tagging
-            if not re.match(TAG_NAME_REGEX, tag_name):
+            if not re.match(TAG_NAME_REGEX, tag_name, re.UNICODE):
                 response_data['error'] = 'invalid characters in tag name'
                 raise Exception("Invalid characters in tag")
             taggit_tag, created = Tag.objects.get_or_create(name=tag_name)
