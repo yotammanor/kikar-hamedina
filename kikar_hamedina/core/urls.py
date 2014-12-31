@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
-from facebook_feeds.models import Facebook_Status, Facebook_Feed
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, TAG_NAME_CHARSET
 from kikartags.models import Tag as Tag
 from mks.models import Party, Member
 from django.conf import settings
@@ -49,7 +49,7 @@ urlpatterns = patterns('',
                            kwargs={'variable_column': 'feed__persona__object_id',
                                    'context_object': 'member'},
                            name='member'),
-                       url(r'^tag/(?P<search_field>\w+)/(?P<id>[\w\s\-:"\'!\?&\.#]+)/$', views.TagView.as_view(),
+                       url(r'^tag/(?P<search_field>\w+)/(?P<id>%s+)/$' % TAG_NAME_CHARSET, views.TagView.as_view(),
                            kwargs={'variable_column': 'tags',
                                    'context_object': 'tag'},
                            name='tag'),

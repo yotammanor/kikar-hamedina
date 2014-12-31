@@ -136,10 +136,10 @@
                             <div class="modal-content">
                                 <div class="modal-body text-center">
 
-                                    <div class="fb-post" data-href="{{ status | embed_link }}"
+                                    <div class="fb-post" data-href="{{ status | link }}"
                                          data-width="466">
                                         <div class="fb-xfbml-parse-ignore">
-                                            <a href="{{ status | embed_link }}">פוסט</a> מאת <a
+                                            <a href="{{ status | link }}">פוסט</a> מאת <a
                                                 href="{{ status.feed.link }}">{{ status.feed.persona.content_object.name }}</a>.
                                         </div>
 
@@ -172,9 +172,14 @@
                         <div class="add-tag-list dropdown" id="add-tag-list-{{ status.id }}">
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">הוסף תיוגים
                         </button>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="hidden-object alert alert-danger" role="alert" id="add-tag-error-{{ status.id }}">
+                          <button class="close add-tag-error-close" type="button" class="close add-tag-error-close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><span id="add-tag-error-msg-{{ status.id }}">&nbsp;</span>
+                        </div>
                     </div>
                     <!-- </form> -->
                 </div>
