@@ -68,6 +68,7 @@ INSTALLED_APPS = (
     'updater',
     'persons',
     'reporting',
+    'polyorg',
 )
 
 MIDDLEWARE_CLASSES = (
