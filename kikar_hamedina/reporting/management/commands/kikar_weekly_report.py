@@ -1,3 +1,5 @@
+#encoding: utf-8
+
 import StringIO
 from optparse import make_option, OptionParser
 from time import sleep
@@ -178,12 +180,32 @@ class Command(BaseCommand):
                                           status.tagged_items.filter(tagged_by__username='karineb')]),
                                 ';'.join([tagged_item.tag.name for tagged_item in
                                           status.tagged_items.all()]),
-                                status.get_link) for
+                                status.get_link,
+                               u'שחיתות' in status.content,
+                               u'בטחון' in status.content or u'ביטחון' in status.content,
+                               u'חברה' in status.content or u'חברתי' in status.content,
+                               u'טרור' in status.content,
+                               u'כלכל' in status.content,
+                               u'שקיפות' in status.content,
+                               u'שוויון' in status.content,
+                               u'זכויות' in status.content,
+                               u'שלום' in status.content,
+                               u'פלסטינים' in status.content) for
                                status in week_statuses]
         field_names = ['status_id', 'feed_id', 'feed_name', 'party_id', 'party_name',
                        'published', 'is_deleted',
                        'like_count', 'share_count', 'comment_count',
-                       'tags_by_karine', 'tags', 'link']
+                       'tags_by_karine', 'tags', 'link',
+                       u'has_word_שחיתות',
+                       u'has_word_בטחון_or_ביטחון',
+                       u'has_word_חברה_or_חברתי',
+                       u'has_word_טרור',
+                       u'has_word_כלכל',
+                       u'has_word_שקיפות',
+                       u'has_word_שוויון',
+                       u'has_word_זכויות',
+                       u'has_word_שלום',
+                       u'has_word_פלסטינים']
         recs = np.core.records.fromrecords(week_statuses_build, names=field_names)
         week_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
         return week_statuses
