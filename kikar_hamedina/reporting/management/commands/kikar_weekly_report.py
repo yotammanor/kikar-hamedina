@@ -173,15 +173,17 @@ class Command(BaseCommand):
                                 status.feed.persona.content_object.current_party.id,
                                 status.feed.persona.content_object.current_party.name,
                                 status.published, status.is_deleted,
+                                status.like_count, status.share_count, status.comment_count,
                                 ';'.join([tagged_item.tag.name for tagged_item in
                                           status.tagged_items.filter(tagged_by__username='karineb')]),
                                 ';'.join([tagged_item.tag.name for tagged_item in
                                           status.tagged_items.all()]),
                                 status.get_link) for
                                status in week_statuses]
-        field_names = ['status_id', 'feed_id', 'feed_name', 'party_id', 'party_name', 'published', 'is_deleted',
-                       'tags_by_karine', 'tags', 'link',
-                       'like_count', 'share_count', 'comment_count']
+        field_names = ['status_id', 'feed_id', 'feed_name', 'party_id', 'party_name',
+                       'published', 'is_deleted',
+                       'like_count', 'share_count', 'comment_count',
+                       'tags_by_karine', 'tags', 'link']
         recs = np.core.records.fromrecords(week_statuses_build, names=field_names)
         week_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
         return week_statuses
