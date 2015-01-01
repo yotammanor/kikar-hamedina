@@ -1,5 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext as _
+from django.contrib.contenttypes import generic
+
+from facebook_feeds.models import Facebook_Persona
+
 
 class CandidateList(models.Model):
     candidates = models.ManyToManyField('persons.Person', blank=True, null=True, through='Candidate')
@@ -56,6 +60,13 @@ class Candidate(models.Model):
     ordinal = models.IntegerField(_('Ordinal'))
     party = models.ForeignKey(Party, blank=True, null=True)
     votes = models.IntegerField(_('Elected by #'), null=True, blank=True, help_text=_('How many people voted for this person'))
+
+    #added by kikar-hamedina
+    persona = generic.GenericRelation(Facebook_Persona)
+
+    @property
+    def facebook_persona(self):
+        return self.persona.select_related().first()
 
     class Meta:
         ordering = ('ordinal',)

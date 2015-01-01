@@ -9,6 +9,8 @@ from django.db.models.signals import post_save
 from mks.models import Member, GENDER_CHOICES
 from .managers import PersonManager
 
+from facebook_feeds.models import Facebook_Persona
+
 
 class Title(models.Model):
     name = models.CharField(max_length=64)
