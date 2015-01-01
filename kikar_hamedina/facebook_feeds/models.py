@@ -24,7 +24,7 @@ MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5
 MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60*10)  # 10 minutes
 
 # tag name regex
-TAG_NAME_CHARSET=u'[\w\s\-:"\'!\?&\.#\u2010-\u201f\u05f3\u05f4]'
+TAG_NAME_CHARSET=ur'[\w\s\-:"\'!\?&\.#\u2010-\u201f\u05f3\u05f4]'
 TAG_NAME_REGEX=u'^%s+$' % TAG_NAME_CHARSET
 
 class Facebook_Persona(models.Model):
