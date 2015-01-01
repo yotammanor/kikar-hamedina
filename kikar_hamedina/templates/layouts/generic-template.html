@@ -138,7 +138,9 @@
             <ul class="nav navbar-nav">
 
                 <li class="navbar-nav navbar-right hidden-md hidden-sm">
-                    <a href="{% url 'billboards' %}" class="navbar-options">המצעד</a>
+                    <a href="{% url 'billboards' %}" class="navbar-options">
+                        המצעד
+                    </a>
                 </li>
                 <li class="navbar-nav navbar-right  hidden-md hidden-sm">
                     <a href="{% url 'about' %}" class="navbar-options">
@@ -169,7 +171,12 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="{% url 'index' %}" class="navbar-options">
+                            <a href="{% url 'billboards' %}" class="navbar-options">
+                                המצעד
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'about' %}" class="navbar-options">
                                 אודות
                             </a>
                         </li>
