@@ -71,7 +71,7 @@ class Command(BaseCommand):
         args_for_request = {'limit': post_number_limit,
                             'version': FACEBOOK_API_VERSION,
                             'fields': "from, message, id, created_time, \
-                             updated_time, type, link, caption, picture, description, name,\
+                             updated_time, type, link, caption, picture, full_picture, description, name,\
                              status_type, story, story_tags ,object_id, properties, source, to, shares, \
                              likes.summary(true).limit(1), comments.summary(true).limit(1)"}
 
@@ -150,6 +150,9 @@ class Command(BaseCommand):
             elif attachment.type == 'video':
                 print '\tsetting video source'
                 attachment.source = attachment_defaultdict['source']
+            elif attachment.type == 'link':
+                print '\tsetting link source'
+                attachment.source = attachment_defaultdict['full_picture']
             attachment.save()
         else:
             # if has no link field - then there's no attachment, and it must be deleted
