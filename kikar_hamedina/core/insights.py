@@ -72,10 +72,14 @@ class StatsEngine(object):
         # Note - without like_count!=NULL pandas thinks the column type is object and not number
         month_statuses = Facebook_Status.objects.filter(published__gte=month_ago, like_count__isnull=False)
 
-        field_names = ['id', 'feed', 'published', 'like_count', 'comment_count', 'share_count']
-        recs = np.core.records.fromrecords(month_statuses.values_list(*field_names), names=field_names)
-        self.month_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
-        self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
+        if len(month_statuses) == 0:
+            self.month_statuses = pd.DataFrame()
+            self.week_statuses = pd.DataFrame()
+        else:
+            field_names = ['id', 'feed', 'published', 'like_count', 'comment_count', 'share_count']
+            recs = np.core.records.fromrecords(month_statuses.values_list(*field_names), names=field_names)
+            self.month_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
+            self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
 
     def feeds_statuses(self, statuses, feed_ids):
         """Helper function for that gets a list of statuses and selects only
