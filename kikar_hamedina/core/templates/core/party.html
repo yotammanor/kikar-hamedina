@@ -1,6 +1,34 @@
 {% extends "core/facebook_statuses_page_newdesign.html" %}
 
-{% block title %}מפלגה: {{ object.name }}{% endblock title %}
+{% block title %}
+    מפלגה: {{ object.name }}
+{% endblock title %}
+
+{% block info_bar %}
+  {% with object.facebook_persona.get_main_feed as feed %}
+    <div class="politician-info-bar clearfix">
+      <!-- TODO add image -->
+      <!-- <img src="{{ feed.picture_large }}" alt="" class="politician-info-bar-photo"> -->
+      <div class="politician-info-bar-name">{{ object.name }}</div>
+      <div class="politician-info-bar-party-likes-container">
+        <!-- <div class="politician-info-bar-party">
+          <span>מפלגת </span>
+          <span class="bold">
+            {{ object.current_party.name }}
+          </span>
+        </div> -->
+        <div class="politician-info-bar-likes">
+          <span>
+            לייקים
+          </span>
+          <span class="bold">
+            TODO 123,765
+          </span>
+        </div>  
+      </div>
+    </div>
+  {% endwith %}
+{% endblock info_bar %}
 
 {% block scripts %}
     <script type="text/javascript">
