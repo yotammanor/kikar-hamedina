@@ -257,7 +257,12 @@ class AllStatusesView(StatusListView):
     # paginate_by = 100
 
     def get_queryset(self):
-        return self.apply_request_params(super(AllStatusesView, self).get_queryset())
+        retset = self.apply_request_params(super(AllStatusesView, self).get_queryset())
+        # untagged url is known to be super heavy on the DB. That is why it is hard coded limited to 500 matches.
+        # Agam Rafaeli - 2/1/2015
+        if self.request.resolver_match.url_name == "untagged":
+            retset = retset[:1000]
+        return retset
 
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
