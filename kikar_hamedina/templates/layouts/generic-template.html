@@ -59,7 +59,7 @@
         </div>
 
         <nav class="nav-bar">
-            <div class="search" id="search-bar-form">
+            <form class="search" id="search-bar-form">
                 <span class="glyphicon glyphicon-search"></span>
                 <input type="text" id="navbar-search-box" name="search_str"
                        data-toggle="dropdown"
@@ -92,7 +92,7 @@
 {#                    <button class="btn btn-success" id="search-bar-submit" data-target="{% url 'search' %}"#}
 {#                            type="button"><i class="fa fa-search"></i></button>#}
 {#                </div>#}
-            </div>
+            </form>
             <ul class="nav-bar-items">
                 <li><a href="{% url 'billboards' %}">המצעד</a></li>
                 <li><a href="{% url 'about' %}">אודות</a></li>
@@ -157,6 +157,8 @@
 
 <div class="main-area">
     {% block main_content %}
+        {% block info_bar %}
+        {% endblock info_bar %}
     {% endblock main_content %}
 </div>
 

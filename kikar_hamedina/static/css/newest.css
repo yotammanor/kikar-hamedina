@@ -43,6 +43,10 @@ blue-link-color: rgb(40, 70, 120)
   font-family: 'Alef', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 /*html, body {*/
   /*height: 100%;*/
 /*}*/
@@ -315,17 +319,6 @@ li.result-container:hover a {
     overflow: none;
     border-top: 0;
   }
-
-  .nav-bar-items > li {
-    /*float: left;*/
-    /*display: block;
-    position: relative;
-    /*border-right: 1px solid #adadad;*/
-    padding: 0 20px;*/
-    /*indented border effect*/
-/*    border-right: 1px solid rgb(232, 232, 232);
-    border-left: 1px solid #fff;
-*/  }
 
   .nav-bar-items > li > a {
     padding: 0;
@@ -642,7 +635,7 @@ nav.sidebar ul ul li a:hover {
 }
 
 .post-image {
-  max-width: 100%;
+  max-width: 90%;
   /*max-height: 200px;*/
 }
 
