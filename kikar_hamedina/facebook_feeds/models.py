@@ -30,11 +30,12 @@ TAG_NAME_REGEX=u'^%s+$' % TAG_NAME_CHARSET
 class Facebook_Persona(models.Model):
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
+    content_object = generic.GenericForeignKey()
 
     alt_content_type = models.ForeignKey(ContentType, related_name='alt', null=True, blank=True)
     alt_object_id = models.PositiveIntegerField(null=True, blank=True)
+    alt_content_object = generic.GenericForeignKey(ct_field="alt_content_type", fk_field="alt_object_id")
 
-    content_object = generic.GenericForeignKey()
     main_feed = models.SmallIntegerField(null=True, default=0, blank=True)
 
     @property
@@ -43,6 +44,10 @@ class Facebook_Persona(models.Model):
             return Facebook_Feed.objects.get(id=self.main_feed)
         except:
             return None  # TODO: What should we return here when no main feed is defined/ no feeds exist?
+
+    @property
+    def owner(self):
+        return self.alt_content_object if settings.IS_ELECTIONS_MODE else self.content_object
 
     @property
     def owner_id(self):

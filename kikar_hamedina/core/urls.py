@@ -10,6 +10,7 @@ from django.conf import settings
 from tastypie.api import Api
 from api import *
 from insights import StatsMemberResource, StatsPartyResource
+from core.models import MEMBER_MODEL, PARTY_MODEL
 
 
 v1_api = Api(api_name='v1')

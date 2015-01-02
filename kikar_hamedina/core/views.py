@@ -27,7 +27,7 @@ from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from mks.models import Party, Member
 from core.insights import StatsEngine
 from core.billboards import Billboards
-
+from core.models import MEMBER_MODEL, PARTY_MODEL
 # current knesset number
 CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
 
@@ -265,7 +265,7 @@ class AllStatusesView(StatusListView):
             facebook_status__published__gte=(
                 datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
         context['side_bar_list'] = Member.objects.filter(
-            id__in=[feed.persona.object_id for feed in feeds]).distinct().order_by('name')
+            id__in=[feed.persona.owner_id for feed in feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
 
@@ -438,10 +438,9 @@ class StatusFilterUnifiedView(StatusListView):
         context['object'] = self.parent_model.objects.get(**{search_field: object_id})
         return context
 
-
 class MemberView(StatusFilterUnifiedView):
     template_name = "core/member.html"
-    parent_model = Member
+    parent_model = MEMBER_MODEL
 
     def entry_index(request, template='myapp/entry_index.html'):
         context = {
@@ -451,12 +450,9 @@ class MemberView(StatusFilterUnifiedView):
             template, context, context_instance=RequestContext(request))
 
     def get_queryset(self, **kwargs):
-        search_string = self.kwargs['id']
-
-        self.persona = get_object_or_404(Member, id=search_string).facebook_persona
+        self.persona = get_object_or_404(MEMBER_MODEL, id=self.kwargs['id']).facebook_persona
         if self.persona is None:
             return []
-
         return self.apply_request_params(self.persona.get_main_feed.facebook_status_set)
 
     def get_context_data(self, **kwargs):
@@ -465,7 +461,7 @@ class MemberView(StatusFilterUnifiedView):
         if self.persona is None:  # Member with no facebook persona
             return context
         member_id = self.kwargs['id']
-        feed = Facebook_Feed.objects.get(persona__object_id=member_id)
+        feed = self.persona.get_main_feed
 
         dif_dict = feed.popularity_dif(POPULARITY_DIF_DAYS_BACK)
         context['change_in_popularity'] = dif_dict
@@ -475,12 +471,12 @@ class MemberView(StatusFilterUnifiedView):
 
 class PartyView(StatusFilterUnifiedView):
     template_name = "core/party.html"
-    parent_model = Party
+    parent_model = PARTY_MODEL
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
         order_by = get_order_by(self.request)
-        all_members_for_party = Party.objects.get(id=search_string).current_members()
+        all_members_for_party = PARTY_MODEL.objects.get(id=search_string).current_members()
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         date_range_Q = filter_by_date(request=self.request, datetime_field='published')
