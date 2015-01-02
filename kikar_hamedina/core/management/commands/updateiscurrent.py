@@ -6,47 +6,56 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from mks.models import Member
-from facebook_feeds.models import Facebook_Feed
+from persons.models import Person
+from polyorg.models import Candidate
+from facebook_feeds.models import Facebook_Feed, Facebook_Persona
+
+IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
+
+logger = logging.getLogger('django')
 
 
 class Command(BaseCommand):
     args = '<feed_id>'
     help = "updates facebook_feed's is_current field"
 
-    set_value_manually = make_option('-m',
-                                     '--set-value-manually',
-                                     action='store',
-                                     dest='set-value-manually',
-                                     help='set value of is_current field manualy. usage -m=True')
+    option_list = BaseCommand.option_list + (
+        make_option('-m',
+           '--set-value-manually',
+           action='store',
+           dest='set-value-manually',
+           help='Set value of is_current field manually. Usage -m=True'),
+    )
 
-    option_list_helper = list()
-    for x in BaseCommand.option_list:
-        option_list_helper.append(x)
-    option_list_helper.append(set_value_manually)
-    option_list = tuple(option_list_helper)
+    def is_related_person_current(self, feed):
+        if IS_ELECTIONS_MODE:
+            return Candidate.objects.filter(pk=feed.persona.alt_object_id).exists()
+        else:
+            try:
+                return Member.objects.get(pk=feed.persona.object_id).is_current
+            except Member.DoesNotExist:
+                return False
+
 
     def decide_is_current_field(self, feed, options):
-        is_current_value = bool
-        related_member = Member.objects.get(pk=feed.persona.object_id)
+        is_current_value = False
 
-        if options['set-value-manually']:
-            try:
-                is_current_value = eval(options['set-value-manually'])
-            except KeyError:
-                use_manual_value = False
-            except NameError:
-                warning_msg = "manual input ({0}) is incorrect.".format(options['set-value-manually'])
-                logger = logging.getLogger('django')
+        manual_val = options['set-value-manually']
+        if manual_val is not None:
+            if manual_val.lower() == 'true':
+                is_current_value = True
+            elif manual_val.lower() == 'false':
+                is_current_value = True
+            else:
+                warning_msg = 'manual input "%s" is incorrect, use True or False' % manual_val
                 logger.warning(warning_msg)
-                raise CommandError('manual input "%s" is incorrect, use True or False' % options['set-value-manually'])
+                raise CommandError(warning_msg)
 
-        elif related_member:
-            is_current_value = related_member.is_current
         else:
             # Feed unattached to mk is set to be non-current by default
-            is_current_value = False
+            is_current_value = self.is_related_person_current(feed)
 
-        print 'is_current_value for feed %s is set to: %s' % (feed, is_current_value)
+        print 'is_current_value for feed %s (#%s) is set to: %s' % (feed, feed.id, is_current_value)
         return is_current_value
 
     def handle(self, *args, **options):
