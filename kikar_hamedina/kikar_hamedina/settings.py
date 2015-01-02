@@ -151,7 +151,7 @@ SESSION_COOKIE_NAME = "myplanetid"
 CURRENT_KNESSET_NUMBER = 19
 
 # In elections mode e.g. Knesset candidates are shown instead of Knesset members
-IS_ELECTIONS_MODE = True
+IS_ELECTIONS_MODE = False
 
 LOGGING = {
     'version': 1,

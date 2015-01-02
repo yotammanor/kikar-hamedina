@@ -17,6 +17,7 @@ from slugify import slugify
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
 from kikartags.models import TaggedItem
 
+IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
 # needs_refresh - Constants for quick status refresh
 MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
@@ -47,14 +48,14 @@ class Facebook_Persona(models.Model):
 
     @property
     def owner(self):
-        return self.alt_content_object if settings.IS_ELECTIONS_MODE else self.content_object
+        return self.alt_content_object if IS_ELECTIONS_MODE else self.content_object
 
     @property
     def owner_id(self):
-        return self.alt_object_id if settings.IS_ELECTIONS_MODE else self.object_id
+        return self.alt_object_id if IS_ELECTIONS_MODE else self.object_id
 
     def __unicode__(self):
-        if settings.IS_ELECTIONS_MODE:
+        if IS_ELECTIONS_MODE:
             return "Facebook_Persona: %s %s %s %s" % (self.content_type, self.object_id,
                 self.alt_content_type, self.alt_object_id)
         return "Facebook_Persona: %s %s" % (self.content_type, self.object_id)

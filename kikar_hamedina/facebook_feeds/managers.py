@@ -37,10 +37,3 @@ class Facebook_FeedManager(DataFrameManager):
                 pass
 
         return max_change
-
-
-class Facebook_PersonaManager(DataFrameManager):
-    def get_persona(self, owner_id):
-        if settings.IS_ELECTIONS_MODE:
-            return self.get_queryset
-

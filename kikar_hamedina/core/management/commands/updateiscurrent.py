@@ -10,6 +10,7 @@ from persons.models import Person
 from polyorg.models import Candidate
 from facebook_feeds.models import Facebook_Feed, Facebook_Persona
 
+IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
 logger = logging.getLogger('django')
 
@@ -27,7 +28,7 @@ class Command(BaseCommand):
     )
 
     def is_related_person_current(self, feed):
-        if settings.IS_ELECTIONS_MODE:
+        if IS_ELECTIONS_MODE:
             return Candidate.objects.filter(pk=feed.persona.alt_object_id).exists()
         else:
             try:
