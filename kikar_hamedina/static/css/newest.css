@@ -620,6 +620,10 @@ nav.sidebar ul ul li a:hover {
 
 }
 
+.post-time > a {
+    color: black;
+}
+
 .post-content {
   width: 100%;
   float: right;
@@ -637,6 +641,10 @@ nav.sidebar ul ul li a:hover {
 .post-image {
   max-width: 90%;
   /*max-height: 200px;*/
+}
+
+.post-video {
+  max-width: 100%;
 }
 
 .play-button {

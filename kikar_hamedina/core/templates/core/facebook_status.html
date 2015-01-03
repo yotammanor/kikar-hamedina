@@ -8,7 +8,7 @@
 {% endverbatim %}
 
 
- <!-- This is the template for status tag suggestions  -->
+<!-- This is the template for status tag suggestions  -->
 {% verbatim %}
 <script id="add-tag-result-tag-list-item-template" type="text/x-handlebars-template">
     <div class="add-tag-result-container">
@@ -184,11 +184,12 @@
           <a href="{% url 'member' status.feed.persona.object_id %}">{{ status.feed.persona.content_object.name }}</a>
         </span>
         <span class="post-time">
-          {{ status.published | naturaltime }}
+            <a href="{% url 'status-detail' status.status_id %}">{{ status.published | naturaltime }}</a>
             {% if status.is_deleted %}
                 (הסטטוס נמחק)
             {% endif %}
         </span>
+
         <div>
             <a class="" href="{% url 'party' status.feed.persona.content_object.current_party.id %}">
                 {{ status.feed.persona.content_object.current_party.name }}
@@ -204,6 +205,11 @@
             <p>{{ status.content | linebreaks | truncatewords:50 }}
                 {% if status.content|length > 50 %}
                     &nbsp;&nbsp;&nbsp;<a href="{{ status|link }}" target="_blank">קרא עוד>>></a>
+                    <!-- Button trigger modal -->
+                    <button class="btn btn-link" data-toggle="modal"
+                            data-target="#{{ status.status_id }}_modal">
+                        קרא עוד>>>
+                    </button>
                 {% endif %}
             </p>
         </div>
@@ -214,27 +220,30 @@
                 </div>
             {% elif status.attachment.type == "video" %}
                 <div class="post-image-container">
-                    <img src="{{ status.attachment.picture }}" alt="" class="post-image" />
+                    <img src="{{ status.attachment.picture }}" alt="" class="post-video"/>
                     <button class="btn play-button"><i class="fa fa-play fa-2x"></i></button>
                     <p>
                         <a href="{{ status.attachment.link }}">{{ status.attachment.caption }}</a>
                     </p>
                 </div>
             {% elif status.attachment.type == "link" %}
-                <a href="{{ status.attachment.source }}">{{ status.attachment.source }}</a>
+                <img src="{{ status.attachment.source }}" alt="{{ status.attachment.caption }}" class="post-image"/>
+                {#                <img src="{{ status.attachment.picture }}" alt="{{ status.attachment.caption }}" class="post-image"/>   This is the thumbnail version #}
+                <p><a href="{{ status.attachment.link }}">{{ status.attachment.name }}</a></p>
+                <p>{{ status.attachment.description }} {{ status.attachment.caption }}</p>
             {% elif status.attachment.type == "status" %}
-            
-            {% endif %}
 
-            <p>Link: {{ status|link }}</p>
-            <p>Type: {{ status.attachment.type }}</p>
-            <p>Source: {{ status.attachment.source }}</p>
-            <p>Source height: {{ status.attachment.source_height }}</p>
-            <p>Source width: {{ status.attachment.source_width }}</p>
+            {% endif %}
+            {##}
+            {#            <p>Link: {{ status|link }}</p>#}
+            {#            <p>Type: {{ status.attachment.type }}</p>#}
+            {#            <p>Source: {{ status.attachment.source }}</p>#}
+            {#            <p>Source height: {{ status.attachment.source_height }}</p>#}
+            {#            <p>Source width: {{ status.attachment.source_width }}</p>#}
         {% endif %}
         {# {{ status|link }} #}
         {# {{ status.id }} #}
-        {{ status }}
+        {#        {{ status }}#}
         <!-- <a href="{% url 'status-detail' status.status_id %}">permalink</a> -->
         {# {{ status.is_comment }} #}
         {# {{ status.feed.id }} #}
@@ -242,9 +251,15 @@
     <div class="post-social-stats">
         <!-- not the intended icons for use. the share icon currently used is quite different to the
          one in the pdf design -->
-        <a href="#"><span class="glyphicon glyphicon-share"></span> {{ status.share_count|floatformat:1|intcomma|slice:":-2" }}</a>
-        <a href="#"><span class="glyphicon glyphicon-comment"></span> {{ status.comment_count|floatformat:1|intcomma|slice:":-2" }}</a>
-        <a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> {{ status.like_count|floatformat:1|intcomma|slice:":-2" }}</a>
+        <a href="#"><span
+                class="glyphicon glyphicon-share"></span> {{ status.share_count|floatformat:1|intcomma|slice:":-2" }}
+        </a>
+        <a href="#"><span
+                class="glyphicon glyphicon-comment"></span> {{ status.comment_count|floatformat:1|intcomma|slice:":-2" }}
+        </a>
+        <a href="#"><span
+                class="glyphicon glyphicon-thumbs-up"></span> {{ status.like_count|floatformat:1|intcomma|slice:":-2" }}
+        </a>
     </div>
 
     <div class="tags-container" style="display:{% if status.tags.count > 0 %}inline{% else %}none{% endif %}">
@@ -284,7 +299,56 @@
             </div>
         {% endif %}
     </div>
+    <div class="pull-left">
 
-</div>
+{#        <!-- Button trigger modal -->#}
+{#        <button class="btn btn-link btn-sm" data-toggle="modal"#}
+{#                data-target="#{{ status.status_id }}_modal">#}
+{#            {% if status.has_attachment %}#}
+{#                {% if status.attachment.type == 'photo' %}#}
+{#                    <i class="fa fa-camera"></i>#}
+{#                {% elif status.attachment.type == 'video' %}#}
+{#                    <i class="fa fa-video-camera"></i>#}
+{#                {% elif status.attachment.type == 'link' %}#}
+{#                    <i class="fa fa-link"></i>#}
+{#                {% else %}#}
+{#                    <i class="fa fa-facebook-square"></i>#}
+{#                {% endif %}#}
+{#            {% else %}#}
+{#                <i class="fa fa-facebook-square"></i>#}
+{#            {% endif %}#}
+{##}
+{#        </button>#}
 
-<hr/>
+        <!-- Modal -->
+        <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
+             role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="z-index: 10000">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+
+                        <div class="fb-post" data-href="{{ status | link }}"
+                             data-width="466">
+                            <div class="fb-xfbml-parse-ignore">
+                                <a href="{{ status | link }}">פוסט</a> מאת <a
+                                    href="{{ status.feed.link }}">{{ status.feed.persona.content_object.name }}</a>.
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+
+        </div>
+
+        <hr/>
