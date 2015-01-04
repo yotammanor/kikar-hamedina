@@ -17,12 +17,16 @@
     {#        {% include "core/facebook_status_list.html" with object_list=object_list %}#}
     {#    </div>#}
 
+    {% block info_bar %}
+
+    {% endblock info_bar %}
 
     <div class="posts-container">
         <div class="posts-vertical-line-left">
-            {% block info_bar %}
+            {% block smaller_info_bar %}
 
-            {% endblock info_bar %}
+            {% endblock smaller_info_bar %}
+
             <div class="posts-sortby-container clearfix">
                 {% block sortby_options %}        
                 <ul class="posts-sortby" id="order-by-options">
