@@ -1,0 +1,58 @@
+{% extends "core/facebook_statuses_page_newdesign.html" %}
+
+
+
+{% block info_bar %}
+    <div class="posts-origins-container">
+        <table class="origin-table">
+            {% if search_words %}
+            <tr>
+                <td>
+                    <span class="origin-title-container">מילות חיפוש</span>
+                </td>
+                <td>
+                    {% for word in search_words %}
+                    <span class="origin-actual-container">{{word}}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if members %}
+            <tr>
+                <td>
+                    <span class="origin-title-container">ח״כים</span>
+                </td>
+                <td>
+                    {% for member in members %}
+                    <span class="origin-actual-container">{{member.name}}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if parties %}
+            <tr>
+                <td>
+                    <span class="origin-title-container">מפלגות</span>
+                </td>
+                <td>
+                    {% for party in parties %}
+                    <span class="origin-actual-container">{{party.name}}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if tags %}
+            <tr>
+                <td>
+                    <span class="origin-title-container">תגיות</span>
+                </td>
+                <td>
+                    {% for tag in tags %}
+                    <span class="origin-actual-container">{{tag}}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+{% endblock info_bar %}
