@@ -18,11 +18,14 @@
     {#    </div>#}
 
     {% block info_bar %}
-        {# Will stick politician info here for example #}
+
     {% endblock info_bar %}
-    
+
     <div class="posts-container">
         <div class="posts-vertical-line-left">
+            {% block smaller_info_bar %}
+
+            {% endblock smaller_info_bar %}
 
             <div class="posts-sortby-container clearfix">
                 {% block sortby_options %}        
