@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 from operator import or_, and_
 from unidecode import unidecode
 
@@ -20,12 +21,13 @@ from facebook import GraphAPIError
 from endless_pagination.views import AjaxListView
 
 from facebook_feeds.management.commands import updatestatus
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, TAG_NAME_REGEX
 from facebook_feeds.models import Tag as OldTag
 from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from mks.models import Party, Member
 from core.insights import StatsEngine
-
+from core.billboards import Billboards
+from core.models import MEMBER_MODEL, PARTY_MODEL
 # current knesset number
 CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
 
@@ -53,6 +55,17 @@ NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS = getattr(settings, 'NUMBER_OF_LAST_DAYS_FOR_HO
 MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60 * 60 * 24 * 2)  # 2 days
 MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
 MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60 * 10)  # 10 minutes
+
+# Python regex for splitting words
+RE_SPLIT_WORD_UNICODE = re.compile('\W+', re.UNICODE)
+
+# Postgres regex for word boundaries. Unfortunately Hebrew support is not good, so can't use \W
+# (\W detects Hebrew characters as non-word chars). Including built-in punctuation and whitespace
+# plus a unicode range with some exotic spaces/dashes/quotes
+PG_RE_NON_WORD_CHARS = u'[[:punct:][:space:]\u2000-\u201f]+'
+# Start/end of phrase also allow beginning/end of statue
+PG_RE_PHRASE_START = u'(^|%s)' % (PG_RE_NON_WORD_CHARS,)
+PG_RE_PHRASE_END = u'(%s|$)' % (PG_RE_NON_WORD_CHARS,)
 
 
 def get_date_range_dict():
@@ -97,24 +110,6 @@ NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
 NUMBER_OF_TAGS_TO_PRESENT = 3
 
 NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
-
-
-class NoDefaultProvided(object):
-    pass
-
-
-def getattrd(obj, name, default=NoDefaultProvided):
-    """
-    Same as getattr(), but allows dot notation lookup
-    Discussed in:
-    http://stackoverflow.com/questions/11975781
-    """
-    try:
-        return reduce(getattr, name.split("."), obj)
-    except AttributeError, e:
-        if default != NoDefaultProvided:
-            return default
-        raise
 
 
 def get_order_by(request):
@@ -230,206 +225,20 @@ class BillboardsView(ListView):
     def get_queryset(self, **kwargs):
         return Facebook_Feed.current_feeds.first()
 
-    def create_billboard_data_dict_list(self,
-                                        value_format,
-                                        data_set,
-                                        data_name_attr,
-                                        data_value_int_attr,
-                                        calc_type,
-                                        arguments_for_function,
-                                        link_value_attr):
-
-        if calc_type == 'function':
-            data_dict_list = [
-                {'name': getattrd(object_instance, data_name_attr),
-                 'value_int': float(getattrd(object_instance, data_value_int_attr)(**arguments_for_function) or 0),
-                 'value_formatted': value_format.format(
-                     getattrd(object_instance, data_value_int_attr)(**arguments_for_function) or 0),
-                 'value_reference_link': getattrd(object_instance, link_value_attr),
-                }
-                for object_instance in data_set
-            ]
-
-        elif calc_type == 'stats':
-
-            stats_method = getattrd(self.stats, data_value_int_attr)
-
-            data_dict_list = [
-                {'name': getattrd(object_instance, data_name_attr),
-                 'value_int': float(stats_method([object_instance.id]) or 0),
-                 'value_formatted': value_format.format(stats_method([object_instance.id]) or 0),
-                 'value_reference_link': getattrd(object_instance, link_value_attr),
-                }
-                for object_instance in data_set
-            ]
-        else:
-            # calc_type == 'attribute':
-            data_dict_list = [
-                {'name': getattrd(object_instance, data_name_attr),
-                 'value_int': float(getattrd(object_instance, data_value_int_attr)),
-                 'value_formatted': value_format.format(getattrd(object_instance, data_value_int_attr)),
-                 'value_reference_link': getattrd(object_instance, link_value_attr),
-                }
-                for object_instance in data_set
-            ]
-
-        return data_dict_list
-
-    def create_billboard_dict(self,
-                              title,
-                              header_name,
-                              header_value_formatted,
-                              link_uri_name,
-                              value_format,
-                              data_set,
-                              data_name_attr,
-                              data_value_float_attr,
-                              top_num_of_values,
-                              calc_type,
-                              link_value_attr,
-                              arguments_for_function=None,
-                              is_sorted_reversed=True):
-        billboard_dict = {
-            'title': title,
-            'headers': {
-                'name': header_name,
-                'value_formatted': header_value_formatted,
-            },
-            'link_uri_name': link_uri_name,
-            'data': self.create_billboard_data_dict_list(value_format,
-                                                         data_set,
-                                                         data_name_attr,
-                                                         data_value_float_attr,
-                                                         calc_type,
-                                                         arguments_for_function,
-                                                         link_value_attr),
-        }
-
-        billboard_dict['data'] = sorted(billboard_dict['data'], key=lambda x: x['value_int'],
-                                        reverse=is_sorted_reversed)[
-                                 :top_num_of_values]
-
-        return billboard_dict
-
     def get_context_data(self, **kwargs):
         context = super(BillboardsView, self).get_context_data(**kwargs)
 
-        billboard_1 = self.create_billboard_dict(title='popularity',
-                                                 header_name='Name',
-                                                 header_value_formatted='current_fan_count',
-                                                 link_uri_name='member',
-                                                 value_format="{:,}",
-                                                 top_num_of_values=10,
-                                                 is_sorted_reversed=True,
-                                                 data_set=Facebook_Feed.current_feeds.all(),
-                                                 data_name_attr='persona.content_object.name',
-                                                 data_value_float_attr='current_fan_count',
-                                                 link_value_attr='persona.object_id',
-                                                 calc_type='attribute',
-                                                 arguments_for_function=None,
-        )
-
-        billboard_2 = self.create_billboard_dict(title='popularity_growth',
-                                                 header_name='Name',
-                                                 header_value_formatted='growth popularity',
-                                                 link_uri_name='member',
-                                                 value_format="{:.2%}",
-                                                 top_num_of_values=10,
-                                                 is_sorted_reversed=True,
-                                                 data_set=Facebook_Feed.current_feeds.filter(feed_type='PP'),
-                                                 data_name_attr='persona.content_object.name',
-                                                 data_value_float_attr='popularity_dif',
-                                                 link_value_attr='persona.object_id',
-                                                 calc_type='function',
-                                                 arguments_for_function={'days_back': 7,
-                                                                         'return_value': 'fan_count_dif_growth_rate'},
-        )
-
-        billboard_3 = self.create_billboard_dict(title='popularity_growth_nominal',
-                                                 header_name='Name',
-                                                 header_value_formatted='growth in popularity (likes)',
-                                                 link_uri_name='member',
-                                                 value_format="{:,.0f}",
-                                                 top_num_of_values=10,
-                                                 is_sorted_reversed=True,
-                                                 data_set=Facebook_Feed.current_feeds.all(),
-                                                 data_name_attr='persona.content_object.name',
-                                                 data_value_float_attr='popularity_dif',
-                                                 link_value_attr='persona.object_id',
-                                                 calc_type='function',
-                                                 arguments_for_function={'days_back': 7,
-                                                                         'return_value': 'fan_count_dif_nominal'},
-        )
-
-        billboard_4 = self.create_billboard_dict(title='num_of_statuses',
-                                                 header_name='Name',
-                                                 header_value_formatted='number of statuses last month',
-                                                 link_uri_name='member',
-                                                 value_format="{:,.0f}",
-                                                 top_num_of_values=10,
-                                                 is_sorted_reversed=True,
-                                                 data_set=Facebook_Feed.current_feeds.all(),
-                                                 data_name_attr='persona.content_object.name',
-                                                 data_value_float_attr='n_statuses_last_month',
-                                                 link_value_attr='persona.object_id',
-                                                 calc_type='stats',
-                                                 arguments_for_function=None,
-        )
-
-        billboard_5 = self.create_billboard_dict(title='mean_status_likes_last_month',
-                                                 header_name='Name',
-                                                 header_value_formatted='mean_status_likes_last_month',
-                                                 link_uri_name='member',
-                                                 value_format="{:,.0f}",
-                                                 top_num_of_values=10,
-                                                 is_sorted_reversed=True,
-                                                 data_set=Facebook_Feed.current_feeds.all(),
-                                                 data_name_attr='persona.content_object.name',
-                                                 data_value_float_attr='mean_status_likes_last_month',
-                                                 link_value_attr='persona.object_id',
-                                                 calc_type='stats',
-                                                 arguments_for_function=None,
-        )
-
-        # billboard_6 = self.create_billboard_dict(title='Most popular status',
-        # header_name='Name',
-        # header_value_formatted='likes for most popular status',
-        # value_format="{:,.0f}",
-        # top_num_of_values=10,
-        # is_sorted_reversed=True,
-        # data_set=self.stats.popular_statuses_last_month(
-        # [feed.id for feed in Facebook_Feed.current_feeds.all()], 10),
-        # data_name_attr='persona.content_object.name',
-        # data_value_float_attr='mean_status_likes_last_month',
-        # calc_type='stats',
-        # arguments_for_function=None,
-        # )
-
-        billboard_6 = {
-            'title': 'Most popular status this Month',
-            'headers': {
-                'name': 'Name',
-                'value_formatted': 'likes for most popular status'
-            },
-            'link_uri_name': 'status-detail',
-            'data': [
-                {'name': Facebook_Status.objects.get(id=result_array[0]).feed.persona.content_object.name,
-                 'value_int': float(result_array[1]),
-                 'value_formatted': "{:,.0f}".format(result_array[1]),
-                 'value_reference_link': Facebook_Status.objects.get(id=result_array[0]).status_id,
-                }
-                for result_array in self.stats.popular_statuses_last_month(
-                    [feed.id for feed in Facebook_Feed.current_feeds.all()], 10)
-            ]
-        }
+        billboards = Billboards()
 
         context['list_of_billboards'] = []
-        context['list_of_billboards'].append(billboard_1)
-        context['list_of_billboards'].append(billboard_2)
-        context['list_of_billboards'].append(billboard_3)
-        context['list_of_billboards'].append(billboard_4)
-        context['list_of_billboards'].append(billboard_5)
-        context['list_of_billboards'].append(billboard_6)
+        context['list_of_billboards'].append(billboards.number_of_followers_board)
+        # context['list_of_billboards'].append(billboards.popularity_relative_growth_board)
+        context['list_of_billboards'].append(billboards.popularity_growth_board)
+        context['list_of_billboards'].append(billboards.number_of_status_board)
+        context['list_of_billboards'].append(billboards.median_status_likes_board)
+        context['list_of_billboards'].append(billboards.top_likes_board)
+
+        context['list_of_billboards'] = sorted(context['list_of_billboards'], key=lambda x: x['order_of_board'])
 
         return context
 
@@ -448,7 +257,12 @@ class AllStatusesView(StatusListView):
     # paginate_by = 100
 
     def get_queryset(self):
-        return self.apply_request_params(super(AllStatusesView, self).get_queryset())
+        retset = self.apply_request_params(super(AllStatusesView, self).get_queryset())
+        # untagged url is known to be super heavy on the DB. That is why it is hard coded limited to 500 matches.
+        # Agam Rafaeli - 2/1/2015
+        if self.request.resolver_match.url_name == "untagged":
+            retset = retset[:1000]
+        return retset
 
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
@@ -456,9 +270,14 @@ class AllStatusesView(StatusListView):
             facebook_status__published__gte=(
                 datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
         context['side_bar_list'] = Member.objects.filter(
-            id__in=[feed.persona.object_id for feed in feeds]).distinct().order_by('name')
+            id__in=[feed.persona.owner_id for feed in feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
+
+
+def join_queries(q1, q2, operator):
+    """Join two queries with operator (e.g. or_, and_) while handling empty queries"""
+    return operator(q1, q2) if (q1 and q2) else (q1 or q2)
 
 
 #
@@ -492,22 +311,22 @@ class SearchView(StatusListView):
             tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
 
         # keywords searched for, comma separated
-        words = []
+        phrases = []
         if 'search_str' in self.request.GET.keys():
             search_str_stripped = self.request.GET['search_str'].strip()[1:-1]  # removes quotes from beginning and end.
-            words = [word for word in search_str_stripped.split('","')]
+            phrases = [phrase for phrase in search_str_stripped.split('","')]
 
-        print 'parsed request:', members_ids, parties_ids, tags_ids, words
-        return members_ids, parties_ids, tags_ids, words
+        print 'parsed request:', members_ids, parties_ids, tags_ids, phrases
+        return members_ids, parties_ids, tags_ids, phrases
 
-    def parse_q_object(self, members_ids, parties_ids, tags_ids, words):
+    def parse_q_object(self, members_ids, parties_ids, tags_ids, phrases):
         member_query = Member.objects.filter(id__in=members_ids)
         feeds = Facebook_Feed.objects.filter(persona__object_id__in=[member.id for member in member_query])
 
         # all members asked for (through member search of party search), with OR between them.
-        memebers_OR_parties_Q = Q()
+        members_OR_parties_Q = Q()
         if feeds:
-            memebers_OR_parties_Q = Q(feed__in=feeds)
+            members_OR_parties_Q = Q(feed__in=feeds)
 
         # tags - search for all tags specified by their id
         tags_Q = Q()
@@ -517,65 +336,52 @@ class SearchView(StatusListView):
             tags_to_queries = [Q(tags__id=tag_id) for tag_id in tag_bundle_ids]
             print 'tags_to_queries:', len(tags_to_queries)
             for query_for_single_tag in tags_to_queries:
-                if not tags_Q:
-                    # the first query overrides the empty concatenated query
-                    tags_Q = query_for_single_tag
-                else:
-                    # the rest are concatenated with OR
-                    tags_Q = query_for_single_tag | tags_Q
-        else:
-            tags_Q = Q()
+                # tags_Q is empty for the first iteration
+                tags_Q = join_queries(query_for_single_tag, tags_Q, or_)
 
         print 'tags_Q:', tags_Q
 
         # keywords - searched both in content and in tags of posts.
         search_str_Q = Q()
-        for word in words:
-            if not search_str_Q:
-                search_str_Q = Q(content__contains=word)
-                search_str_Q = Q(tags__name__contains=word) | search_str_Q
+        # If regexes cause security / performance problem - switch this flag
+        # to False to use a (not as good) text search instead
+        use_regex = True
+        for phrase in phrases:
+            if use_regex:
+                # Split into words (remove whitespace, punctuation etc.)
+                words = re.split(RE_SPLIT_WORD_UNICODE, phrase)
+                # If there are no words - ignore this phrase
+                if words:
+                    # Build regex - all words we've found separated by 'non-word' characters
+                    # and also allow VAV and/or HEI in front of each word.
+                    # NOTE: regex syntax is DB dependent - this works on postgres
+                    re_words = [u'\u05D5?\u05D4?' + word for word in words]
+                    regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(re_words) + PG_RE_PHRASE_END
+                    search_str_Q = join_queries(Q(content__iregex=regex), search_str_Q, or_)
             else:
-                search_str_Q = Q(content__contains=word) | search_str_Q
-                search_str_Q = Q(tags__name__contains=word) | search_str_Q
+                # Fallback code to use if we want to disable regex-based search
+                search_str_Q = join_queries(Q(content__icontains=phrase), search_str_Q, or_)
+            search_str_Q = Q(tags__name__contains=phrase) | search_str_Q
 
         # tags query and keyword query concatenated. Logic is set according to request input
-        try:
-            request_operator = self.request.GET['tags_and_search_str_operator']
-        except MultiValueDictKeyError:
-            request_operator = DEFAULT_OPERATOR
+        request_operator = self.request.GET.get('tags_and_search_str_operator', DEFAULT_OPERATOR)
 
         print 'selected_operator:', request_operator
-        if request_operator == 'or_operator':
-            selected_operator = or_
-        else:
-            selected_operator = and_
+        selected_operator = and_ if request_operator == 'and_operator' else or_
 
-        # Handle joining of empty queries
-        search_str_with_tags_Q = Q()
-        if tags_Q and search_str_Q:
-            search_str_with_tags_Q = selected_operator(tags_Q, search_str_Q)
-        elif tags_Q:
-            search_str_with_tags_Q = tags_Q
-        elif search_str_Q:
-            search_str_with_tags_Q = search_str_Q
+        search_str_with_tags_Q = join_queries(tags_Q, search_str_Q, selected_operator)
 
         print 'search_str_with_tags_Q:', search_str_with_tags_Q
         print '\n'
 
-        query_Q = Q()
-        if memebers_OR_parties_Q and search_str_with_tags_Q:
-            query_Q = memebers_OR_parties_Q & search_str_with_tags_Q
-        elif memebers_OR_parties_Q:
-            query_Q = memebers_OR_parties_Q
-        elif search_str_with_tags_Q:
-            query_Q = search_str_with_tags_Q
+        query_Q = join_queries(members_OR_parties_Q, search_str_with_tags_Q, and_)
 
         print 'query to be executed:', query_Q
         return query_Q
 
     def get_queryset(self):
-        members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
-        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
+        members_ids, parties_ids, tags_ids, phrases = self.get_parsed_request()
+        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, phrases)
         print 'get_queryset_executed:', query_Q
 
         return self.apply_request_params(Facebook_Status.objects.filter(query_Q))
@@ -583,15 +389,17 @@ class SearchView(StatusListView):
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
-        members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
-        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
+        members_ids, parties_ids, tags_ids, phrases = self.get_parsed_request()
+        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, phrases)
         context['members'] = Member.objects.filter(id__in=members_ids)
 
         context['parties'] = Party.objects.filter(id__in=parties_ids)
 
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
 
-        context['search_words'] = words
+        context['search_str'] = phrases
+        #this is a conflict
+        context['search_words'] = phrases
 
         context['search_title'] = 'my search'
 
@@ -637,10 +445,9 @@ class StatusFilterUnifiedView(StatusListView):
         context['object'] = self.parent_model.objects.get(**{search_field: object_id})
         return context
 
-
 class MemberView(StatusFilterUnifiedView):
     template_name = "core/member.html"
-    parent_model = Member
+    parent_model = MEMBER_MODEL
 
     def entry_index(request, template='myapp/entry_index.html'):
         context = {
@@ -650,12 +457,9 @@ class MemberView(StatusFilterUnifiedView):
             template, context, context_instance=RequestContext(request))
 
     def get_queryset(self, **kwargs):
-        search_string = self.kwargs['id']
-
-        self.persona = get_object_or_404(Member, id=search_string).facebook_persona
+        self.persona = get_object_or_404(MEMBER_MODEL, id=self.kwargs['id']).facebook_persona
         if self.persona is None:
             return []
-
         return self.apply_request_params(self.persona.get_main_feed.facebook_status_set)
 
     def get_context_data(self, **kwargs):
@@ -664,7 +468,7 @@ class MemberView(StatusFilterUnifiedView):
         if self.persona is None:  # Member with no facebook persona
             return context
         member_id = self.kwargs['id']
-        feed = Facebook_Feed.objects.get(persona__object_id=member_id)
+        feed = self.persona.get_main_feed
 
         dif_dict = feed.popularity_dif(POPULARITY_DIF_DAYS_BACK)
         context['change_in_popularity'] = dif_dict
@@ -674,12 +478,12 @@ class MemberView(StatusFilterUnifiedView):
 
 class PartyView(StatusFilterUnifiedView):
     template_name = "core/party.html"
-    parent_model = Party
+    parent_model = PARTY_MODEL
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
         order_by = get_order_by(self.request)
-        all_members_for_party = Party.objects.get(id=search_string).current_members()
+        all_members_for_party = PARTY_MODEL.objects.get(id=search_string).current_members()
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         date_range_Q = filter_by_date(request=self.request, datetime_field='published')
@@ -908,38 +712,37 @@ def add_tag_to_status(request):
     response_data['success'] = False
     status_id = request.GET["id"]
     response_data['id'] = status_id
-    tag_name = request.GET["tag_str"]
-    stripped_tag_name = tag_name.strip()
-    # Kikartags-based tagging
+    tag_name = request.GET["tag_str"].strip()
     try:
-        if stripped_tag_name:
-            taggit_tag, created = Tag.objects.get_or_create(name=stripped_tag_name)
+        if tag_name:
+            # Kikartags-based tagging
+            if not re.match(TAG_NAME_REGEX, tag_name, re.UNICODE):
+                response_data['error'] = 'invalid characters in tag name'
+                raise Exception("Invalid characters in tag")
+            taggit_tag, created = Tag.objects.get_or_create(name=tag_name)
             if created:
-                taggit_tag.name = stripped_tag_name
+                taggit_tag.name = tag_name
                 taggit_tag.save()
             status = Facebook_Status.objects_no_filters.get(id=status_id)
             status.tags.user_aware_add(request.user, taggit_tag)
             status.save()
             response_data['tag'] = {'id': taggit_tag.id, 'name': taggit_tag.name}
-        response_data['success'] = True
-    except:
-        print "ERROR AT ADDING STATUS TO TAG."
-        print status_id
-    # Old Deprecated Tagging
-    try:
-        if stripped_tag_name:
-            tag, created = OldTag.objects.get_or_create(name=stripped_tag_name)
+            response_data['success'] = True
+
+            # Old Deprecated Tagging
+            tag, created = OldTag.objects.get_or_create(name=tag_name)
             if created:
-                tag.name = stripped_tag_name
+                tag.name = tag_name
                 tag.is_for_main_display = True
                 tag.save()
                 # add status to tag statuses
             tag.statuses.add(status_id)
             tag.save()
-            # response_data['tag'] = {'id': tag.id, 'name': tag.name}
-            # response_data['success'] = True
-    except:
-        print "ERROR AT ADDING STATUS TO TAG"
+        else:
+            response_data['success'] = True  # Nothing to do
+
+    except Exception as e:
+        print "ERROR AT ADDING STATUS TO TAG:", e
         print status_id
 
     finally:
@@ -973,7 +776,8 @@ def search_bar(request):
         # Parties
         query_alternative_names = Q(partyaltname__name__contains=search_text)
         combined_party_name_query = query_direct_name | query_alternative_names
-        parties = Party.objects.filter(combined_party_name_query, knesset__number=CURRENT_KNESSET_NUMBER).order_by(
+        parties = Party.objects.filter(combined_party_name_query,
+                                       knesset__number=CURRENT_KNESSET_NUMBER).distinct().order_by(
             'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
 
         for party in parties:
@@ -984,7 +788,7 @@ def search_bar(request):
         query_alternative_names = Q(memberaltname__name__contains=search_text)
         combined_member_name_query = query_direct_name | query_alternative_names
 
-        members = Member.objects.filter(combined_member_name_query, is_current=True) \
+        members = Member.objects.filter(combined_member_name_query, is_current=True).distinct() \
                       .select_related('current_party').order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for member in members:
             response_data['results'].append(
@@ -993,7 +797,8 @@ def search_bar(request):
         query_tag_synonyms = Q(synonyms__tag__name=search_text)
         combined_tag_name_query = query_direct_name | query_tag_synonyms
 
-        tags = Tag.objects.filter_proper(combined_tag_name_query).order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        tags = Tag.objects.filter_proper(combined_tag_name_query).distinct().order_by('name')[
+               :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
         for tag in tags:
             response_data['results'].append(
                 result_factory(tag.id, tag.name, "tag"))

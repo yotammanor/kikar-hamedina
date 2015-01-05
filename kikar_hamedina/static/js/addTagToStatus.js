@@ -4,6 +4,11 @@
  *
  */
 
+function showAddTagError(status_id, error_msg) {
+    $("#add-tag-error-msg-" + status_id).text('Error: ' + (error_msg || ''));
+    $("#add-tag-error-" + status_id).show();
+}
+
 function addTag(status_id, tag_name, csrf_token) {
     // TODO check that the tag only contains valid characters
     // if the tag contains invalid chars, the tag will be added and you won't be able to load any pages
@@ -30,11 +35,13 @@ function addTag(status_id, tag_name, csrf_token) {
                 $("#" + data['id'] + "-tags").append(html)
             } else {
                 console.log(data);
-                console.log("ERROR AT SERVER")
+                console.log("ERROR AT SERVER");
+                showAddTagError(status_id, data["error"]);
             }
         },
         error: function (data) {
             console.log("BADDDDD ERROR!!")
+            showAddTagError(status_id, "internal error");
         }
     });
 }
@@ -124,5 +131,7 @@ $(document).ready(function () {
         tagAddingHandler($(this))
     }).on("focusin", ".add-tag-input", function (event) {
         tagAddingHandler($(this))
+    }).on("click", ".add-tag-error-close", function (event) {
+        $(this).parent().hide()
     });
 });

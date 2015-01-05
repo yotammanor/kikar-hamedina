@@ -10,7 +10,7 @@ import datetime
 NUMBER_OF_TOP_PARTIES_TO_BRING = 12
 NUMBER_OF_TOP_POLITICIANS_TO_BRING = 12
 NUMBER_OF_TOP_TAGS_TO_BRING = 12
-TAGS_FROM_LAST_DAYS = 31
+TAGS_FROM_LAST_DAYS = 7
 
 
 def generic(request):
@@ -40,15 +40,13 @@ def get_context(request):
     for member in members_with_feed:
         try:
             feed_popularity = member.facebook_persona.get_main_feed.current_fan_count
-            list_of_members.append({'member': member, 'popularity': feed_popularity, 'name': member.name})
+            list_of_members.append({'member': member, 'popularity': feed_popularity})
         except:
             pass
-    sorted_list_of_members_by_name = sorted(list_of_members, key=lambda l: l['name'], reverse=False)
-    sorted_list_of_members_by_popularity = sorted(list_of_members, key=lambda l: l['popularity'], reverse=True)
+    sorted_list_of_members = sorted(list_of_members, key=lambda l: l['popularity'], reverse=True)
 
     return {
-        'navMembers': [x['member'] for x in sorted_list_of_members_by_name],
-        'navMembersTop': [x['member'] for x in sorted_list_of_members_by_popularity],
+        'navMembers': [x['member'] for x in sorted_list_of_members][:NUMBER_OF_TOP_POLITICIANS_TO_BRING],
         'navParties': Party.objects.filter(knesset__number=CURRENT_KNESSET_NUMBER).order_by('-number_of_members')[
                       :NUMBER_OF_TOP_PARTIES_TO_BRING],
         'facebook_app_id': FACEBOOK_APP_ID,
