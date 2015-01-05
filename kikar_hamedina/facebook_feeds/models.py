@@ -387,7 +387,6 @@ class Status_Comment_Pattern(models.Model):
     def __unicode__(self):
         return self.pattern
 
-
 # Deprecated Tags
 class Tag(models.Model):
     name = models.CharField(unique=True, max_length=128)
