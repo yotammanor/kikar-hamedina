@@ -44,7 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       python manage.py syncdb --noinput
       [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
       python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
-      for m in core mks links facebook_feeds video zinnia taggit updater reporting tastypie; do
+      for m in core mks links facebook_feeds  video zinnia taggit updater reporting tastypie; do
         python manage.py migrate $m
       done
       python manage.py migrate kikartags 0004
