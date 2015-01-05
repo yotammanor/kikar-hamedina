@@ -478,6 +478,7 @@ class SearchView(StatusListView):
 
         # adds to member_ids all members belonging to parties explicitly searched for.
         parties_ids = []
+        parties_missing_members = []
         if 'parties' in self.request.GET.keys():
             parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
             parties_missing_members = []
@@ -501,7 +502,7 @@ class SearchView(StatusListView):
         # keywords searched for, comma separated
         words = []
         if 'search_str' in self.request.GET.keys():
-            search_str_stripped = self.request.GET['search_str'].strip()[1:-1]  # removes quotes from beginning and end.
+            search_str_stripped = self.request.GET['search_str']
             words = [word for word in search_str_stripped.split('","')]
 
         print 'parsed request:', members_ids, parties_ids, tags_ids, words
