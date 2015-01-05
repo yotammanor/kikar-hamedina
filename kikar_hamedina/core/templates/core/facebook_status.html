@@ -202,21 +202,23 @@
                 <p style="color:gray" dir="ltr"> {{ status.story }}</p>
             {% endif %}
 
-            <p>{{ status.content | linebreaks | truncatewords:50 }}
-                {% if status.content|length > 50 %}
-                    &nbsp;&nbsp;&nbsp;<a href="{{ status|link }}" target="_blank">קרא עוד>>></a>
-                    <!-- Button trigger modal -->
-                    <button class="btn btn-link" data-toggle="modal"
-                            data-target="#{{ status.status_id }}_modal">
-                        קרא עוד>>>
-                    </button>
-                {% endif %}
+            <p>
+                {{ status.content | linebreaks | truncatewords:50 }}
+                <!-- Button trigger modal -->
+                <button class="btn btn-link" data-toggle="modal"
+                        data-target="#{{ status.status_id }}_modal">
+                    קרא עוד>>>
+                </button>
+                
+                {#{% if status.content|length > 50 %}#}
+                    <!-- &nbsp;&nbsp;&nbsp;<a href="{{ status|link }}" target="_blank">קרא עוד>>></a> -->
+                {#{% endif %}#}
             </p>
         </div>
         {% if status.has_attachment %}
             {% if status.attachment.type == "photo" %}
                 <div class="post-image-container">
-                    <img src="{{ status.attachment.source }}" alt="" class="post-image"/>
+                    <img src="{{ status.attachment.source }}" alt="" class="post-image" />
                 </div>
             {% elif status.attachment.type == "video" %}
                 <div class="post-image-container">
@@ -299,56 +301,33 @@
             </div>
         {% endif %}
     </div>
-    <div class="pull-left">
+    <hr/>
 
-{#        <!-- Button trigger modal -->#}
-{#        <button class="btn btn-link btn-sm" data-toggle="modal"#}
-{#                data-target="#{{ status.status_id }}_modal">#}
-{#            {% if status.has_attachment %}#}
-{#                {% if status.attachment.type == 'photo' %}#}
-{#                    <i class="fa fa-camera"></i>#}
-{#                {% elif status.attachment.type == 'video' %}#}
-{#                    <i class="fa fa-video-camera"></i>#}
-{#                {% elif status.attachment.type == 'link' %}#}
-{#                    <i class="fa fa-link"></i>#}
-{#                {% else %}#}
-{#                    <i class="fa fa-facebook-square"></i>#}
-{#                {% endif %}#}
-{#            {% else %}#}
-{#                <i class="fa fa-facebook-square"></i>#}
-{#            {% endif %}#}
-{##}
-{#        </button>#}
+    <!-- Modal -->
+    <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="z-index: 10000">
+            <div class="modal-content">
+                <div class="modal-body text-center">
 
-        <!-- Modal -->
-        <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
-             role="dialog"
-             aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog" style="z-index: 10000">
-                <div class="modal-content">
-                    <div class="modal-body text-center">
-
-                        <div class="fb-post" data-href="{{ status | link }}"
-                             data-width="466">
-                            <div class="fb-xfbml-parse-ignore">
-                                <a href="{{ status | link }}">פוסט</a> מאת <a
-                                    href="{{ status.feed.link }}">{{ status.feed.persona.content_object.name }}</a>.
-                            </div>
-
+                    <div class="fb-post" data-href="{{ status | link }}"
+                         data-width="466">
+                        <div class="fb-xfbml-parse-ignore">
+                            <a href="{{ status | link }}">פוסט</a> מאת <a
+                                href="{{ status.feed.link }}">{{ status.feed.persona.content_object.name }}</a>.
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default"
-                                    data-dismiss="modal">
-                                Close
-                            </button>
-                        </div>
+
                     </div>
-                    <!-- /.modal-content -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
                 </div>
-                <!-- /.modal-dialog -->
             </div>
-            <!-- /.modal -->
-
         </div>
+    </div>
 
-        <hr/>
+</div>

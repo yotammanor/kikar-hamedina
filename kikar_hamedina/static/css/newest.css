@@ -43,6 +43,10 @@ blue-link-color: rgb(40, 70, 120)
   font-family: 'Alef', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 /*html, body {*/
   /*height: 100%;*/
 /*}*/
@@ -316,17 +320,6 @@ li.result-container:hover a {
     border-top: 0;
   }
 
-  .nav-bar-items > li {
-    /*float: left;*/
-    /*display: block;
-    position: relative;
-    /*border-right: 1px solid #adadad;*/
-    /*padding: 0 20px;*/
-    /*indented border effect*/
-/*    border-right: 1px solid rgb(232, 232, 232);
-    border-left: 1px solid #fff;
-*/  }
-
   .nav-bar-items > li > a {
     padding: 0;
     border-right: 1px solid rgb(232, 232, 232);
@@ -527,6 +520,50 @@ nav.sidebar ul ul li a:hover {
     float: left;
   }
 }
+
+/* Information about the search displayed */
+.posts-origins-container {
+    height: auto;
+    padding: 0 8%;
+    margin-bottom: 20px;
+}
+
+.origin-table > tbody > tr > td{
+    border-bottom: 1px solid rgb(232, 232, 232);
+    padding: 7px 0px;
+}
+
+.origin-table > tbody > tr > td:first-child{
+    width:90px;
+    text-align: center;
+    border-left: 1px solid rgb(232, 232, 232);
+    padding-left: 5px
+}
+
+
+.origin-title-container {
+    padding:0px 6px;
+    margin: 3px 0px;
+    background-color: rgb(51, 191, 132);
+    color: white;
+    vertical-align: middle;
+}
+
+.origin-table > tbody > tr > td:nth-child(2){
+    padding-right: 5px;
+}
+
+.origin-actual-container {
+    padding: 0px 6px;
+    margin: 3px 0px;
+    /*background-color: rgb(40, 70, 120);*/
+    background-color: rgb(0, 81, 144);
+    color: white;
+    line-height: 25px;
+    display: inline-block;
+}
+
+/* Actual posts styling */
 
 .posts-container, .extra-info {
   margin-top: 20px;

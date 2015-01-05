@@ -466,7 +466,7 @@ class SearchView(StatusListView):
     model = Facebook_Status
     # paginate_by = 10
     context_object_name = 'filtered_statuses'
-    template_name = "core/search.html"
+    template_name = "core/search_page_newdesign.html"
 
     def get_parsed_request(self):
         print 'request:', self.request.GET
@@ -591,7 +591,7 @@ class SearchView(StatusListView):
 
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
 
-        context['search_str'] = words
+        context['search_words'] = words
 
         context['search_title'] = 'my search'
 
