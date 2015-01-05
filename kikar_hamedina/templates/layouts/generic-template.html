@@ -10,16 +10,8 @@
 
     <title>כיכר המדינה | {% block title %}{% endblock title %}</title>
 
-    <!-- Not actually using Bootstrap at the moment. Only the reset.css bit of it.
-    Remove the BS stuff we don't need to keep the css file size down. -->
     <!-- Bootstrap core CSS -->
     <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
-    <!--<link href="../css/snap.css" rel="stylesheet">-->
-    <!--<link href="../css/bootstrap-rtl.min.css" rel="stylesheet">-->
-    <!-- <link href="../css/bootstrap-theme.css" rel="stylesheet"> -->
-
-    <!-- Custom styles for this template -->
-    <!-- <link href="../css/main.css" rel="stylesheet"> -->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -31,7 +23,26 @@
     <link href="{{ STATIC_URL }}css/newest.css" rel="stylesheet">
     {# <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/> #}
 
+    {% block extra_css_files %}
+    {% endblock extra_css_files %}
 
+    <!-- Fonts -->
+    {# <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"> #}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- JS -->
+
+    <!-- Load jQuery from the cdn and fallback to local if no internet available -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <!-- FALLBACK NOT WORKING FOR SOME REASON
+    <script>window.jQuery && document.write('<script src="{{ STATIC_URL }}js/libs/jquery/jquery-2.0.3.min.js"><\/script>')</script>
+    -->
+
+    <!-- Load bootstrap from the cdn and fallback to local if no internet available -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <!-- FALLBACK NOT WORKING FOR SOME REASON
+    <script>$.fn.modal || document.write('<script src="{{ STATIC_URL }}js/libs/bootstrap/3.3.1/bootstrap.min.js"><\/script>')</script>
+    -->
     {#    {% load staticfiles %}#}
     {% load kikartags_extras %}
 </head>
@@ -48,13 +59,13 @@
         </div>
 
         <nav class="nav-bar">
-            <div class="search" id="search-bar-form">
+            <form class="search" id="search-bar-form">
                 <span class="glyphicon glyphicon-search"></span>
                 <input type="text" id="navbar-search-box" name="search_str"
                        data-toggle="dropdown"
                        autocomplete="off"
                        role="search"
-                       placeholder="חפש חבר כנסת, נושא מתויג, אומילים שח״כים אומרים"/>
+                       placeholder="חפש חבר כנסת, נושא מתויג, או מילים שח״כים אומרים"/>
                  <ul id="search-results-list">
                 </ul> 
                 <!-- <ul id="search-results-list">
@@ -81,11 +92,11 @@
 {#                    <button class="btn btn-success" id="search-bar-submit" data-target="{% url 'search' %}"#}
 {#                            type="button"><i class="fa fa-search"></i></button>#}
 {#                </div>#}
-            </div>
+            </form>
             <ul class="nav-bar-items">
-                <li><a href="{% url 'about' %}">אודות</a></li>
                 <li><a href="{% url 'billboards' %}">המצעד</a></li>
-                <li><a href="{% url 'zinnia_entry_archive_index' %}">בלוג</a></li>
+                <li><a href="{% url 'about' %}">אודות</a></li>
+                <!-- <li><a href="{% url 'zinnia_entry_archive_index' %}">בלוג</a></li> -->
             </ul>
         </nav>
 
@@ -146,14 +157,10 @@
 
 <div class="main-area">
     {% block main_content %}
+        {% block info_bar %}
+        {% endblock info_bar %}
     {% endblock main_content %}
 </div>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <script>
     $(function () {
@@ -266,6 +273,8 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/searchBar.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/updateStatusPanels.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/addTagToStatus.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/fbInit.js"></script>
+
 
 </body>
 </html>

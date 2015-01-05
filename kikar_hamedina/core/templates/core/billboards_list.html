@@ -2,26 +2,22 @@
 
 {% block title %}Billboards{% endblock title %}
 
+{% block extra_css_files %}
+    <link href="{{ STATIC_URL }}css/billboards.css" rel="stylesheet">
+{% endblock extra_css_files %}
 {% block h1 %}
-    Billboards
+    המצעד
 {% endblock %}
 
 {% block main_content %}
-
     {% load humanize %}
     {% load core_extras %}
-    {#{% load endless %}#}
-    {#{% paginate object_list %}#}
 
-
-
-
-    {% for billboard in list_of_billboards %}
-        <span class="col-lg-4">
-            {% include "core/billboard.html" %}
-                </span>
-    {% endfor %}
-    {#{% show_more "טען עדכונים נוספים" "<span><i class='fa fa-spinner fa-spin'></i> טוען</span>"|escape %}#}
-
-
+    <div class="billboards-page-container">
+        {% for billboard in list_of_billboards %}
+            <div class="col-sm-6 col-md-4">
+                {% include "core/billboard.html" %}
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

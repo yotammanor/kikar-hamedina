@@ -107,3 +107,4 @@ pk,model,requires_user_token,feed_type,vendor_id,is_current,persona,locally_upda
 106,facebook_feeds.facebook_feed,False,PP,368992579826185,True,106,
 107,facebook_feeds.facebook_feed,False,PP,789005101144982,True,107,
 108,facebook_feeds.facebook_feed,False,PP,1523283981271285,True,108,
+109,facebook_feeds.facebook_feed,False,PP,1544176299159896,False,109,

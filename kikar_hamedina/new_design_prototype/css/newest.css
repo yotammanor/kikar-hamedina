@@ -43,6 +43,10 @@ blue-link-color: rgb(40, 70, 120)
   font-family: 'Alef', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 /*html, body {*/
   /*height: 100%;*/
 /*}*/
@@ -379,12 +383,58 @@ nav.sidebar ul ul li a:hover {
   float: right;
   /*height: 800px;*/
   background-color: #fff ;
-  padding: 30px 0;
+  /*padding: 30px 0;*/
+  padding: 0;
 }
 @media (min-width: 768px) {
   .main-area {
     width: 80%;
   }
+}
+
+.politician-info-bar {
+  background-color: #fff;
+  height: 100px;
+  border-bottom: 1px solid rgb(232, 232, 232);
+  padding: 10px;
+}
+
+.politician-info-bar-photo {
+  float: right;
+  width: 80px;
+  height: 80px;
+  margin-left: 10px;
+}
+
+.politician-info-bar-name, .politician-info-bar-party, .politician-info-bar-likes {
+  line-height: 40px;
+}
+@media (min-width: 768px) {
+  .politician-info-bar-name, .politician-info-bar-party, .politician-info-bar-likes {
+    line-height: 80px;
+  }
+}
+
+.politician-info-bar-name {
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+  margin-left: 30px;
+}
+
+.politician-info-bar-party, .politician-info-bar-likes {
+  float: right;
+  font-size: 18px;
+  margin-left: 15px;
+}
+@media (min-width: 768px) {
+  .politician-info-bar-party, .politician-info-bar-likes {
+    float: left;
+  }
+}
+
+.posts-container, .extra-info {
+  margin-top: 20px;
 }
 
 .posts-container {
@@ -401,23 +451,27 @@ nav.sidebar ul ul li a:hover {
 
 .posts-sortby-container {
   margin-bottom: 15px;
+  padding: 0 8%;
 }
 
 .posts-sortby {
   float: right;
   list-style: none;
+  padding: 0;
 }
 
 .posts-sortby > li {
   float: right;
   margin: 0;
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 .posts-sortby > li > a {
   color: #fff;
   background-color: rgb(0, 81, 144);
+  text-decoration: none;
   padding: 7px 10px;
+  line-height: 33px;
 }
 
 .posts-sortby > li > a:hover {
@@ -427,6 +481,10 @@ nav.sidebar ul ul li a:hover {
 
 .posts-sortby > li.active > a {
   background-color: rgb(49, 53, 64);
+}
+
+.posts-filter {
+  float: left;
 }
 
 /* this gives us a vertical horizontal line next to the posts */
@@ -451,8 +509,8 @@ nav.sidebar ul ul li a:hover {
 
 .post-mk-image {
   float: right;
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   margin-left: 10px;
   margin-bottom: 10px;
 }

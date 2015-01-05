@@ -72,30 +72,47 @@ class StatsEngine(object):
         # Note - without like_count!=NULL pandas thinks the column type is object and not number
         month_statuses = Facebook_Status.objects.filter(published__gte=month_ago, like_count__isnull=False)
 
-        field_names = ['id', 'feed', 'published', 'like_count', 'comment_count', 'share_count']
-        recs = np.core.records.fromrecords(month_statuses.values_list(*field_names), names=field_names)
-        self.month_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
-        self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
+        if len(month_statuses) == 0:
+            self.month_statuses = pd.DataFrame()
+            self.week_statuses = pd.DataFrame()
+        else:
+            field_names = ['id', 'feed', 'published', 'like_count', 'comment_count', 'share_count']
+            recs = np.core.records.fromrecords(month_statuses.values_list(*field_names), names=field_names)
+            self.month_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
+            self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
 
     def feeds_statuses(self, statuses, feed_ids):
         """Helper function for that gets a list of statuses and selects only
         the ones that belong to one of the feeds in the given feed list"""
         return statuses[statuses['feed'].isin(feed_ids)]
 
+    # n_statuses
     def n_statuses_last_week(self, feed_ids):
         return len(self.feeds_statuses(self.week_statuses, feed_ids))
 
     def n_statuses_last_month(self, feed_ids):
         return len(self.feeds_statuses(self.month_statuses, feed_ids))
 
-    def mean_status_likes_last_week(self, feed_ids):
-        return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['like_count'].mean())
-
+    # total_status_counts
     def total_status_likes_last_week(self, feed_ids):
         return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['like_count'].sum())
 
+    def total_status_shares_last_week(self, feed_ids):
+        return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['share_count'].sum())
+
+    def total_status_comments_last_week(self, feed_ids):
+        return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['comment_count'].sum())
+
+    # mean_status counts
+    def mean_status_likes_last_week(self, feed_ids):
+        return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['like_count'].mean())
+
     def mean_status_likes_last_month(self, feed_ids):
         return normalize(self.feeds_statuses(self.month_statuses, feed_ids)['like_count'].mean())
+
+    # median status_counts
+    def median_status_likes_last_week(self, feed_ids):
+        return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['like_count'].median())
 
     def mean_status_comments_last_week(self, feed_ids):
         return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['comment_count'].mean())
@@ -103,6 +120,7 @@ class StatsEngine(object):
     def mean_status_shares_last_week(self, feed_ids):
         return normalize(self.feeds_statuses(self.week_statuses, feed_ids)['share_count'].mean())
 
+    # top statuses
     def popular_statuses_last_week(self, feed_ids, num=3):
         ordered = self.feeds_statuses(self.week_statuses, feed_ids).sort('like_count', ascending=False)
         return dataframe_to_lists(ordered[:num][['id', 'like_count']])
@@ -111,12 +129,13 @@ class StatsEngine(object):
         ordered = self.feeds_statuses(self.month_statuses, feed_ids).sort('like_count', ascending=False)
         return dataframe_to_lists(ordered[:num][['id', 'like_count']])
 
-    def popular_feed_last_week(self, feed_ids):
+    # top feeds
+    def popular_feed_last_week_by_mean_like_count(self, feed_ids):
         ordered = self.feeds_statuses(self.week_statuses, feed_ids).groupby('feed')['like_count'].mean().order(
             ascending=False)
         return ordered.index[0] if len(ordered) > 0 else None
 
-    def popular_feed_last_month(self, feed_ids):
+    def popular_feed_last_month_by_mean_like_count(self, feed_ids):
         ordered = self.feeds_statuses(self.month_statuses, feed_ids).groupby('feed')['like_count'].mean().order(
             ascending=False)
         return ordered.index[0] if len(ordered) > 0 else None
@@ -147,8 +166,11 @@ class MemberStats(object):
         self.n_statuses_last_week = engine.n_statuses_last_week([feed.id])
         self.n_statuses_last_month = engine.n_statuses_last_month([feed.id])
         self.total_status_likes_last_week = engine.total_status_likes_last_week([feed.id])
+        self.total_status_shares_last_week = engine.total_status_shares_last_week([feed.id])
+        self.total_status_comments_last_week = engine.total_status_comments_last_week([feed.id])
         self.mean_status_likes_last_week = engine.mean_status_likes_last_week([feed.id])
         self.mean_status_likes_last_month = engine.mean_status_likes_last_month([feed.id])
+        self.median_status_likes_last_week = engine.median_status_likes_last_week([feed.id])
         self.popular_statuses_last_week = engine.popular_statuses_last_week([feed.id])
         self.popular_statuses_last_month = engine.popular_statuses_last_month([feed.id])
 
@@ -180,14 +202,17 @@ class PartyStats(object):
         self.n_statuses_last_week = engine.n_statuses_last_week(feed_ids)
         self.n_statuses_last_month = engine.n_statuses_last_month(feed_ids)
         self.total_status_likes_last_week = engine.total_status_likes_last_week(feed_ids)
+        self.total_status_shares_last_week = engine.total_status_shares_last_week(feed_ids)
+        self.total_status_coments_last_week = engine.total_status_comments_last_week(feed_ids)
         self.mean_status_likes_last_week = engine.mean_status_likes_last_week(feed_ids)
         self.mean_status_comments_last_week = engine.mean_status_comments_last_week(feed_ids)
         self.mean_status_shares_last_week = engine.mean_status_shares_last_week(feed_ids)
         self.mean_status_likes_last_month = engine.mean_status_likes_last_month(feed_ids)
+        self.median_status_likes_last_week = engine.median_status_likes_last_week(feed_ids)
         self.popular_statuses_last_week = engine.popular_statuses_last_week(feed_ids)
         self.popular_statuses_last_month = engine.popular_statuses_last_month(feed_ids)
-        self.popular_member_last_month = feed2member.get(engine.popular_feed_last_month(feed_ids))
-        self.popular_member_last_week = feed2member.get(engine.popular_feed_last_week(feed_ids))
+        self.popular_member_last_month = feed2member.get(engine.popular_feed_last_month_by_mean_like_count(feed_ids))
+        self.popular_member_last_week = feed2member.get(engine.popular_feed_last_week_by_mean_like_count(feed_ids))
 
 
 class Stats(object):
@@ -240,6 +265,7 @@ class StatsMemberResource(Resource):
     n_statuses_last_month = fields.IntegerField(attribute='n_statuses_last_month', null=True)
     mean_status_likes_last_week = fields.FloatField(attribute='mean_status_likes_last_week', null=True)
     mean_status_likes_last_month = fields.FloatField(attribute='mean_status_likes_last_month', null=True)
+    median_status_likes_last_week = fields.FloatField(attribute='median_status_likes_last_week', null=True)
     popular_statuses_last_week = fields.ListField(attribute='popular_statuses_last_week', null=True)
     popular_statuses_last_month = fields.ListField(attribute='popular_statuses_last_month', null=True)
 
@@ -284,6 +310,7 @@ class StatsPartyResource(Resource):
     n_statuses_last_month = fields.IntegerField(attribute='n_statuses_last_month', null=True)
     mean_status_likes_last_week = fields.FloatField(attribute='mean_status_likes_last_week', null=True)
     mean_status_likes_last_month = fields.FloatField(attribute='mean_status_likes_last_month', null=True)
+    median_status_likes_last_week = fields.FloatField(attribute='median_status_likes_last_week', null=True)
     popular_statuses_last_week = fields.ListField(attribute='popular_statuses_last_week', null=True)
     popular_statuses_last_month = fields.ListField(attribute='popular_statuses_last_month', null=True)
     popular_member_last_week = fields.ToOneField(MemberResource, attribute='popular_member_last_week', null=True)

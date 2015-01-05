@@ -1,0 +1,12 @@
+.billboards-page-container {
+
+}
+
+.billboard-title {
+  background-color: rgb(0, 81, 144);
+  color: #fff;
+/*  line-height: 36px;
+  padding: 0 10px;*/
+  padding: 10px 20px;
+}
+

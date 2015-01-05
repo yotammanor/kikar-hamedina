@@ -7,31 +7,84 @@
 {#{% endblock %}#}
 
 {% block main_content %}
-    {##}
+    <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+    <script src="{{ STATIC_URL }}js/renderLinksForStatusListHandlers.js"></script>
+    <script src="{{ STATIC_URL }}js/updateStatusPanelsThroughEndlessPagination.js"></script>
+
     {#    {% load humanize %}#}
     {#    {% load core_extras %}#}
     {#    <div>#}
     {#        {% include "core/facebook_status_list.html" with object_list=object_list %}#}
     {#    </div>#}
 
+    {% block info_bar %}
+
+    {% endblock info_bar %}
 
     <div class="posts-container">
-
         <div class="posts-vertical-line-left">
+            {% block smaller_info_bar %}
 
-            {% block sortby_options %}
+            {% endblock smaller_info_bar %}
+
             <div class="posts-sortby-container clearfix">
+                {% block sortby_options %}        
                 <ul class="posts-sortby" id="order-by-options">
-                    <li data-order-by="-published" class="active"><a href="/member/878/?order_by=published"><i class="fa fa-caret-down" id="dec-asc-published"></i> לפי תאריך</a></li>
-                    <li data-order-by="-like_count"><a href="/member/878/?order_by=-like_count"><i class="fa fa-caret-down" id="dec-asc-likes" style="display: none;"></i> לפי מספר לייקים</a>
-                    </li>
-                    <li data-order-by="-comment_count"><a href="/member/878/?order_by=-comment_count"><i class="fa fa-caret-down" id="dec-asc-comments" style="display: none;"></i> לפי מספר
-                    תגובות</a></li>
-                    <li data-order-by="custom" id="order-by-custom" style="display: none;"><a href="#">אחר</a></li>
-                    <!-- visible only when used - (Eliezer: what is?) -->
+                  <li data-order-by="-published" class="active"><a href="/member/878/?order_by=published"><i class="fa fa-caret-down" id="dec-asc-published"></i> לפי תאריך</a></li>
+                  <li data-order-by="-like_count"><a href="/member/878/?order_by=-like_count"><i class="fa fa-caret-down" id="dec-asc-likes" style="display: none;"></i> לפי מספר לייקים</a>
+                  </li>
+                  <li data-order-by="-comment_count"><a href="/member/878/?order_by=-comment_count"><i class="fa fa-caret-down" id="dec-asc-comments" style="display: none;"></i> לפי מספר
+                      תגובות</a></li>
+                  <li data-order-by="custom" id="order-by-custom" style="display: none;"><a href="#">אחר</a></li>
+                  <!-- visible only when used -->
                 </ul>
+                {% endblock sortby_options %}        
+
+                           <!--      <ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
+                    <li class="heading"><b> סנן לפי זמן: </b></li>
+
+                    <li data-range="default" id="default-filter">
+                        <a href="#">ללא סינון </a>
+
+                    </li>
+                    <li data-range="week">
+                        <a href="#">בשבוע האחרון </a>
+                    </li>
+                    <li data-range="two_weeks">
+                        <a href="#">בשבועיים האחרונים</a>
+                    </li>
+                    <li data-range="month">
+                        <a href="#">בחודש האחרון</a>
+                    </li>
+                    <li data-range="current_month">
+                        <a href="#">במהלך {% now "F" %}</a>
+                    </li>
+                    <li data-range="current_year">
+                        <a href="#">במהלך {% now "Y" %}</a>
+                    </li>
+
+                    <li data-range="protective-edge">
+                        <a href="#">במהלך צוק איתן</a>
+                    </li>
+                </ul> -->
+
+                {% block date_filter %}
+                <div class="btn-group posts-filter">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="border-radius: 0px;">
+                    <span id="posts-filter-text">סינון </span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" style="border-radius: 0;" id="filter-by-date-range-options">
+                        <li data-range="default" id="default-filter"><a href="#">ללא סינון </a></li>
+                        <li data-range="week"><a href="#">בשבוע האחרון </a></li>
+                        <li data-range="two_weeks"><a href="#">בשבועיים האחרונים</a></li>
+                        <li data-range="month"><a href="#">בחודש האחרון</a></li>
+                        <li data-range="current_month"><a href="#">במהלך דצמבר</a></li>
+                        <li data-range="current_year"><a href="#">במהלך 2014</a></li>
+                        <li data-range="protective-edge"><a href="#">במהלך צוק איתן</a></li>
+                    </ul>
+                </div>
+                {% endblock date_filter %}
             </div>
-            {% endblock sortby_options %}
 
             <div class="posts">
                 {% block status_list %}

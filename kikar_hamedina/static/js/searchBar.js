@@ -19,7 +19,7 @@ $(document).ready(function () {
     $("#navbar-search-box").bind({
         input: function (event) {
 //          event - when a letter is typed in, the auto-suggest updates
-            // $('#search-results-dropdown').removeClass("open") // don't think this does anything
+            $('#search-results-dropdown').removeClass("open")
             inputText = $("#navbar-search-box").val()
             url = "/search_bar/?text=" + inputText
             if (inputText.length > 1) {
@@ -44,18 +44,10 @@ $(document).ready(function () {
                             $('#search-results-list').append(html)
                         }
                         if (data['number_of_results'] > 0) {
-                            $('#search-results-list').show();
-                            // $('#search-results-dropdown').addClass("open") // don't think this does anything
-                        } else {
-                            // hides autosearch results if there are no results
-                            // alternatively we could show some kind of error message in the autocomplete bar
-                            $('#search-results-list').hide();
+                            $('#search-results-dropdown').addClass("open")
                         }
                     }
                 });
-            } else {
-                // hides autosearch results if the search was deleted
-                $('#search-results-list').hide();
             }
         },
 

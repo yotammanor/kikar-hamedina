@@ -29,38 +29,34 @@ DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN = 20
 class Command(BaseCommand):
     args = '<feed_id>'
     help = 'Fetches a feed'
-    option_initial = make_option('-i',
-                                 '--initial',
-                                 action='store_true',
-                                 dest='initial',
-                                 default=False,
-                                 help='Flag initial runs fql query with limit of {0} instead of regular limit of {1}.'
-                                 .format(DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN,
-                                         DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN)
+    option_list = BaseCommand.option_list + (
+        make_option('-i',
+                    '--initial',
+                    action='store_true',
+                    dest='initial',
+                    default=False,
+                    help='Flag initial runs fql query with limit of {0} instead of regular limit of {1}.'
+                    .format(DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN,
+                            DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN)),
+        make_option('-f',
+                    '--force-update',
+                    action='store_true',
+                    dest='force-update',
+                    default=False,
+                    help='Use this flag to force updating of status/'),
+        make_option('-a',
+                    '--force-attachment-update',
+                    action='store_true',
+                    dest='force-attachment-update',
+                    default=False,
+                    help='Use this flag to force updating of status attachment'),
+        make_option('-t',
+                    '--request-timeout',
+                    dest='request-timeout',
+                    type='int',
+                    default=60,
+                    help='Timeout for Facebook API requests in seconds'),
     )
-    option_force_update = make_option('-f',
-                                      '--force-update',
-                                      action='store_true',
-                                      dest='force-update',
-                                      default=False,
-                                      help='Use this flag to force updating of status/'
-    )
-    option_force_attachment_update = make_option('-a',
-                                                 '--force-attachment-update',
-                                                 action='store_true',
-                                                 dest='force-attachment-update',
-                                                 default=False,
-                                                 help='Use this flag to force updating of status attachment'
-    )
-    option_list_helper = list()
-    for x in BaseCommand.option_list:
-        option_list_helper.append(x)
-    option_list_helper.append(option_initial)
-    option_list_helper.append(option_force_update)
-    option_list_helper.append(option_force_attachment_update)
-    option_list = tuple(option_list_helper)
-
-    graph = facebook.GraphAPI()
 
     def fetch_status_objects_from_feed(self, feed_id, post_number_limit):
         """
@@ -71,7 +67,7 @@ class Command(BaseCommand):
         args_for_request = {'limit': post_number_limit,
                             'version': FACEBOOK_API_VERSION,
                             'fields': "from, message, id, created_time, \
-                             updated_time, type, link, caption, picture, description, name,\
+                             updated_time, type, link, caption, picture, full_picture, description, name,\
                              status_type, story, story_tags ,object_id, properties, source, to, shares, \
                              likes.summary(true).limit(1), comments.summary(true).limit(1)"}
 
@@ -80,7 +76,7 @@ class Command(BaseCommand):
             try:
                 return_statuses = self.graph.request(path=api_request_path, args=args_for_request)
                 return return_statuses
-            except:
+            except Exception:
                 warning_msg = "Failed first attempt for feed #({0}) from FB API.".format(feed_id)
                 logger = logging.getLogger('django')
                 logger.warning(warning_msg)
@@ -99,7 +95,7 @@ class Command(BaseCommand):
             try:
                 photo_object = self.graph.request(path=api_request_path, args=args_for_request)
                 return photo_object
-            except:
+            except Exception:
                 warning_msg = "Failed first attempt for attachment #({0}) from FB API.".format(attachment.id)
                 logger = logging.getLogger('django')
                 logger.warning(warning_msg)
@@ -150,6 +146,9 @@ class Command(BaseCommand):
             elif attachment.type == 'video':
                 print '\tsetting video source'
                 attachment.source = attachment_defaultdict['source']
+            elif attachment.type == 'link':
+                print '\tsetting link source'
+                attachment.source = attachment_defaultdict['full_picture']
             attachment.save()
         else:
             # if has no link field - then there's no attachment, and it must be deleted
@@ -235,10 +234,7 @@ class Command(BaseCommand):
                 status.story_tags = story_tags
                 status.is_comment = status.set_is_comment
 
-                try:
-                    status.save()
-                except:
-                    raise
+                status.save()
 
                 # update attachment data
                 self.create_or_update_attachment(status, status_object_defaultdict)
@@ -284,7 +280,7 @@ class Command(BaseCommand):
                 token = User_Token_Model.objects.first()
                 self.graph.access_token = token.token
 
-            except:
+            except AttributeError:
                 # Fallback: Set facebook graph access token to app access token
                 self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                         settings.FACEBOOK_SECRET_KEY)
@@ -319,6 +315,8 @@ class Command(BaseCommand):
         Receives either one feed ID and retrieves Statuses for that feed,
         or no feed ID and therefore retrieves all Statuses for all the feeds.
         """
+        self.graph = facebook.GraphAPI(timeout=options['request-timeout'])
+
         feeds_statuses = []
         if options['initial']:
             post_number_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN

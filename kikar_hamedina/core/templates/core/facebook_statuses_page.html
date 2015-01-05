@@ -13,26 +13,7 @@
 
 
     <div id="fb-root"></div>
-    <script>
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: '{{ facebook_app_id }}',
-                status: true,
-                xfbml: true
-            });
-        };
-
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {
-                return;
-            }
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "//connect.facebook.net/en_US/all.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    </script>
+    <script src="{{ STATIC_URL }}js/fbInit.js"></script>
 
     <!-- For autocomplete for tagging. Can be moved somewhere else -->
     <!-- TODO: availableTags. -->
@@ -130,15 +111,15 @@
             <br>
             <br>
             {% block sidebar %}
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות
-                        האחרונות: </b></li>
-                    {% for member in side_bar_list.all %}
-                        <li class="list-group-item">
-                            <a href="{% url 'member' member.id %}">{{ member.name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
+{#                <ul class="list-group">#}
+{#                    <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות#}
+{#                        האחרונות: </b></li>#}
+{#                    {% for member in side_bar_list.all %}#}
+{#                        <li class="list-group-item">#}
+{#                            <a href="{% url 'member' member.id %}">{{ member.name }}</a>#}
+{#                        </li>#}
+{#                    {% endfor %}#}
+{#                </ul>#}
             {% endblock sidebar %}
         </div>
     </div>
