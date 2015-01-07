@@ -21,6 +21,16 @@ class CandidateList(models.Model):
     facebook_url = models.URLField(blank=True, null=True)
     platform = models.TextField(_('Platform'), blank=True, null=True)
 
+    #added by kikar-hamedina
+    party = models.ForeignKey('mks.Party', null=True, blank=True) # Knesset party associated with list
+
+    @property
+    def ok_url(self):
+        """Open Knesset URL (if exists)"""
+        return self.party.ok_url if self.party else None
+
+    #end kikar hamedina
+
     def save(self, *args, **kwargs):
         super(CandidateList, self).save()
         if self.surplus_partner:
@@ -69,6 +79,13 @@ class Candidate(models.Model):
     persona = generic.GenericRelation(Facebook_Persona,
         content_type_field='alt_content_type', object_id_field='alt_object_id')
 
+    def get_mk(self):
+        """Standard way to get mk. Currently this relies on Facebook_Persona,
+        as the mapping, if exists, should be configured there. Another option
+        is to return person.mk, but this might not be configured correctly.
+        Note that in any case, this can be None for non-MK candidates"""
+        return self.facebook_persona.content_object
+
     @property
     def facebook_persona(self):
         return self.persona.select_related().first()
@@ -81,8 +98,15 @@ class Candidate(models.Model):
     def current_party(self):
         return self.candidates_list
 
+    @property
+    def ok_url(self):
+        mk = self.get_mk()
+        return mk.ok_url if mk else None
+    #end kikar hamedina
+
+
     class Meta:
         ordering = ('ordinal',)
 
     def __unicode__(self):
-        return self.person.name
+        return u"%s (%s)" % (self.person.name, self.id)

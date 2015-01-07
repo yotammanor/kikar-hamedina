@@ -97,7 +97,7 @@ class Facebook_Feed(models.Model):
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
 
     def __unicode__(self):
-        return slugify(self.username) + " " + self.vendor_id
+        return "%s %s (%s)" % (slugify(self.username), self.vendor_id, self.id)
 
     def save(self, *args, **kwargs):
         '''On save, update locally_updated fields'''
@@ -199,6 +199,9 @@ class Feed_Popularity(models.Model):
 
     class Meta:
         ordering = ['-date_of_creation']
+        verbose_name_plural = 'Feed_Popularities'
+
+
 
     def __unicode__(self):
         return slugify(self.feed.name) + " " + str(self.date_of_creation.date())
@@ -308,6 +311,9 @@ class Facebook_Status(models.Model):
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
         #     need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
+
+    class Meta:
+        verbose_name_plural = 'Facebook_Statuses'
 
 
 # status_with_photo = '161648040544835_720225251353775'
