@@ -3,8 +3,6 @@ from django.db import models
 from django.conf import settings
 from django_pandas.managers import DataFrameManager
 
-# from mks.models import Member
-
 
 class Facebook_StatusManager(DataFrameManager):
     def get_queryset(self):
