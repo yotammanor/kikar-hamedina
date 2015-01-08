@@ -24,6 +24,9 @@ class CandidateList(models.Model):
     #added by kikar-hamedina
     party = models.ForeignKey('mks.Party', null=True, blank=True) # Knesset party associated with list
 
+    # For compatibility with 'Member' - we need a manager called 'current_knesset'
+    objects = current_knesset = models.Manager()
+
     @property
     def ok_url(self):
         """Open Knesset URL (if exists)"""

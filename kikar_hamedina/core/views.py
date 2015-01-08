@@ -534,7 +534,7 @@ class TagView(StatusFilterUnifiedView):
         all_feeds_for_tag = Facebook_Feed.objects.filter(
             facebook_status__id__in=[status.id for status in context['object_list']]).distinct()
         context['side_bar_list'] = Member.objects.filter(
-            id__in=[feed.persona.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
+            id__in=[feed.persona.owner_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
 
 
@@ -550,7 +550,7 @@ class FacebookStatusDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
-        context['member'] = Member.objects.get(id=context['object'].feed.persona.object_id)
+        context['member'] = Member.objects.get(id=context['object'].feed.persona.owner_id)
         return context
 
 
