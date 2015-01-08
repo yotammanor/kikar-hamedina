@@ -5,6 +5,19 @@ from django.contrib.contenttypes import generic
 from facebook_feeds.models import Facebook_Persona
 
 
+# Added by kikar
+
+class CandidateListAltname(models.Model):
+    member = models.ForeignKey('CandidateList')
+    name = models.CharField(max_length=64)
+
+class CandidateAltname(models.Model):
+    member = models.ForeignKey('Candidate')
+    name = models.CharField(max_length=64)
+
+# end kikar
+
+
 class CandidateList(models.Model):
     candidates = models.ManyToManyField('persons.Person', blank=True, null=True, through='Candidate')
     name = models.CharField(_('Name'), max_length = 80)
@@ -92,6 +105,10 @@ class Candidate(models.Model):
     @property
     def facebook_persona(self):
         return self.persona.select_related().first()
+
+    @property
+    def is_current(self):
+        return True  # Treat all candidates as current for now
 
     @property
     def name(self):
