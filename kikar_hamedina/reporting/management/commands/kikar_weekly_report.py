@@ -72,7 +72,7 @@ class Command(BaseCommand):
             mean_comment_count_weekly = engine.mean_status_comments_last_week([feed.id])
             mean_share_count_weekly = engine.mean_status_shares_last_week([feed.id])
             feeds_data.append({'feed_id': feed.id,
-                               'feed_name': feed.persona.content_object.name,
+                               'feed_name': feed.persona.owner.name,
                                'feed_type': feed.feed_type,
                                'num_of_weekly_statuses': num_of_weekly_statuses,
                                'total_like_count_this_week': total_like_count_weekly,
@@ -172,8 +172,8 @@ class Command(BaseCommand):
         start_date = timezone.datetime(2014, 11, 27, 0, 0, 0, 0, tzinfo=timezone.get_current_timezone())
         week_statuses = Facebook_Status.objects.filter(published__gte=start_date, like_count__isnull=False)
         week_statuses_build = [(status.status_id, status.feed.id, status.feed.name,
-                                status.feed.persona.content_object.current_party.id,
-                                status.feed.persona.content_object.current_party.name,
+                                status.feed.persona.owner.current_party.id,
+                                status.feed.persona.owner.current_party.name,
                                 status.published, status.is_deleted,
                                 status.like_count, status.share_count, status.comment_count,
                                 ';'.join([tagged_item.tag.name for tagged_item in

@@ -16,7 +16,6 @@ def link(status):
 
 @register.filter(name='percent')
 def percent(value):
-    print 'value:', value, type(value)
     if value is None:
         return None
     return floatformat(value * 100.0, 2) + '%'
