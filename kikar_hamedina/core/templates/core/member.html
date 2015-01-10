@@ -41,12 +41,18 @@
                 <span id="ins_mean_likes_week">-</span> לייקים בממוצע
             </span>
         {% endif %}
-        <p>
-            <img src="/static/media/oknesset_icon.png"/>
-            <a href="{{ object.ok_url }}">{{ object.name }}</a> /
-            <a href="{{ object.current_party.ok_url }}">{{ object.current_party.name }}</a>
-            באתר כנסת פתוחה
-        </p>
+        {% if object.ok_url or object.current_party.ok_url %}
+            <p>
+                <img src="/static/media/oknesset_icon.png"/>
+                {% if object.ok_url %}
+                    <a href="{{ object.ok_url }}">{{ object.name }}</a> /
+                {% endif %}
+                {% if object.current_party.ok_url %}
+                    <a href="{{ object.current_party.ok_url }}">{{ object.current_party.name }}</a>
+                {% endif %}
+                באתר כנסת פתוחה
+            </p>
+        {% endif %}
         {#        <p>#}
         {#            <script type="text/javascript">#}
         {#                nv.addGraph(function () {#}

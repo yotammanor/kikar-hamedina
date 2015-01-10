@@ -5,6 +5,19 @@ from django.contrib.contenttypes import generic
 from facebook_feeds.models import Facebook_Persona
 
 
+# Added by kikar
+
+class CandidateListAltname(models.Model):
+    member = models.ForeignKey('CandidateList')
+    name = models.CharField(max_length=64)
+
+class CandidateAltname(models.Model):
+    member = models.ForeignKey('Candidate')
+    name = models.CharField(max_length=64)
+
+# end kikar
+
+
 class CandidateList(models.Model):
     candidates = models.ManyToManyField('persons.Person', blank=True, null=True, through='Candidate')
     name = models.CharField(_('Name'), max_length = 80)
@@ -20,6 +33,19 @@ class CandidateList(models.Model):
     twitter_account = models.CharField(_('Twitter account'), max_length = 80, null=True, blank=True)
     facebook_url = models.URLField(blank=True, null=True)
     platform = models.TextField(_('Platform'), blank=True, null=True)
+
+    #added by kikar-hamedina
+    party = models.ForeignKey('mks.Party', null=True, blank=True) # Knesset party associated with list
+
+    # For compatibility with 'Member' - we need a manager called 'current_knesset'
+    objects = current_knesset = models.Manager()
+
+    @property
+    def ok_url(self):
+        """Open Knesset URL (if exists)"""
+        return self.party.ok_url if self.party else None
+
+    #end kikar hamedina
 
     def save(self, *args, **kwargs):
         super(CandidateList, self).save()
@@ -69,9 +95,20 @@ class Candidate(models.Model):
     persona = generic.GenericRelation(Facebook_Persona,
         content_type_field='alt_content_type', object_id_field='alt_object_id')
 
+    def get_mk(self):
+        """Standard way to get mk. Currently this relies on Facebook_Persona,
+        as the mapping, if exists, should be configured there. Another option
+        is to return person.mk, but this might not be configured correctly.
+        Note that in any case, this can be None for non-MK candidates"""
+        return self.facebook_persona.content_object
+
     @property
     def facebook_persona(self):
         return self.persona.select_related().first()
+
+    @property
+    def is_current(self):
+        return True  # Treat all candidates as current for now
 
     @property
     def name(self):
@@ -81,8 +118,15 @@ class Candidate(models.Model):
     def current_party(self):
         return self.candidates_list
 
+    @property
+    def ok_url(self):
+        mk = self.get_mk()
+        return mk.ok_url if mk else None
+    #end kikar hamedina
+
+
     class Meta:
         ordering = ('ordinal',)
 
     def __unicode__(self):
-        return self.person.name
+        return u"%s (%s)" % (self.person.name, self.id)

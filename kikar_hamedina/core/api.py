@@ -1,9 +1,10 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
-from mks.models import Knesset, Party, Member
+from mks.models import Knesset
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag as OldTag, User_Token, Feed_Popularity
 from kikartags.models import Tag as Tag
 from planet.models import Blog
+from core.models import MEMBER_MODEL, PARTY_MODEL
 
 
 class MemberResource(ModelResource):
@@ -22,21 +23,22 @@ class KnessetResource(ModelResource):
 
 class PartyResource(ModelResource):
     knesset = fields.ForeignKey(KnessetResource, 'knesset', null=True, blank=True)
-    all_members = fields.ManyToManyField(MemberResource, 'all_members')
+    all_members = fields.ManyToManyField(MemberResource, 'all_members',  null=True, blank=True)
 
     class Meta:
-        queryset = Party.objects.all()
+        queryset = PARTY_MODEL.objects.all()
         resource_name = 'party'
 
 
 class MemberResource(ModelResource):
 
     current_party = fields.ForeignKey(PartyResource, 'current_party', null=True, blank=True)
-    parties = fields.ManyToManyField(PartyResource, 'parties')
+    if hasattr(MEMBER_MODEL, 'parties'):
+        parties = fields.ManyToManyField(PartyResource, 'parties')
     blog = fields.OneToOneField(Blog, 'blog', blank=True, null=True)
 
     class Meta:
-        queryset = Member.objects.all()
+        queryset = MEMBER_MODEL.objects.all()
         resource_name = 'member'
 
 
