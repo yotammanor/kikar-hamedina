@@ -29,10 +29,13 @@ TAG_NAME_CHARSET=ur'[\w\s\-:"\'!\?&\.#\u2010-\u201f\u05f3\u05f4]'
 TAG_NAME_REGEX=u'^%s+$' % TAG_NAME_CHARSET
 
 class Facebook_Persona(models.Model):
+
+    # Relation to MKs objects
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = generic.GenericForeignKey()
 
+    # Relation to Candidates objects
     alt_content_type = models.ForeignKey(ContentType, related_name='alt', null=True, blank=True)
     alt_object_id = models.PositiveIntegerField(null=True, blank=True)
     alt_content_object = generic.GenericForeignKey(ct_field="alt_content_type", fk_field="alt_object_id")

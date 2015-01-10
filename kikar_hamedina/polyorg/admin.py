@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 
-from models import Candidate, CandidateList, Party, CandidateAltname, CandidateListAltname
+from models import ElectedKnesset, Candidate, CandidateList, Party, CandidateAltname, CandidateListAltname
 from links.models import Link
 
 
@@ -22,10 +22,19 @@ class LinksInline(generic.GenericTabularInline):
     ct_fk_field = 'object_pk'
     extra = 1
 
+
+class PartyAdminInline(admin.TabularInline):
+    model = Party
+    extra = 1
+
+
 class CandidateListAdmin(admin.ModelAdmin):
-    inlines = [LinksInline, CandidateListAltnameInline]
+    inlines = [LinksInline, CandidateListAltnameInline, PartyAdminInline]
 
 admin.site.register(CandidateList, CandidateListAdmin)
+
+
+
 
 class CandidateAdmin(admin.ModelAdmin):
     inlines = [LinksInline, CandidateAltnameInline]
@@ -33,9 +42,4 @@ class CandidateAdmin(admin.ModelAdmin):
 
 admin.site.register(Candidate, CandidateAdmin)
 
-
-class PartyAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(Party, PartyAdmin)
+admin.site.register(ElectedKnesset)
