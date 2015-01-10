@@ -229,10 +229,31 @@
                     </p>
                 </div>
             {% elif status.attachment.type == "link" %}
-                <img src="{{ status.attachment.source }}" alt="{{ status.attachment.caption }}" class="post-image"/>
+                <div class="post-link">
+                    <img src="{{ status.attachment.source }}" alt="{{ status.attachment.caption }}" class="post-link-image"/>
+                    <div class="post-link-text">
+                        <h3>{{ status.attachment.name }}</h3>
+                        <p>
+                            {{ status.attachment.description }} 
+                            <span class="pull-left post-link-caption">{{ status.attachment.caption }}</span>
+                        </p>
+                    </div>
+                    <a href="{{ status.attachment.link }}">
+                        <span class="link-spanner"></span>
+                    </a>
+                </div>
+
+<!--                 <div class="post-link">
+                    <img src="{{ status.attachment.source }}" alt="{{ status.attachment.caption }}" class="post-image"/>
+                    <h3><a href="{{ status.attachment.link }}">{{ status.attachment.name }}</a></h3>
+                    <p>
+                        {{ status.attachment.description }} 
+                        <a href="">{{ status.attachment.caption }}</a>
+                    </p>
+                </div> -->
+
                 {#                <img src="{{ status.attachment.picture }}" alt="{{ status.attachment.caption }}" class="post-image"/>   This is the thumbnail version #}
-                <p><a href="{{ status.attachment.link }}">{{ status.attachment.name }}</a></p>
-                <p>{{ status.attachment.description }} {{ status.attachment.caption }}</p>
+
             {% elif status.attachment.type == "status" %}
 
             {% endif %}
@@ -301,7 +322,6 @@
             </div>
         {% endif %}
     </div>
-    <hr/>
 
     <!-- Modal -->
     <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
@@ -331,3 +351,5 @@
     </div>
 
 </div>
+
+<hr/>
