@@ -20,7 +20,7 @@ from facebook import GraphAPIError
 from endless_pagination.views import AjaxListView
 
 from facebook_feeds.management.commands import updatestatus
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, Facebook_Persona
 from facebook_feeds.models import Tag as OldTag
 from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from mks.models import Party, Member
@@ -478,13 +478,21 @@ class SearchView(StatusListView):
 
         # adds to member_ids all members belonging to parties explicitly searched for.
         parties_ids = []
+        parties_missing_members = []
         if 'parties' in self.request.GET.keys():
             parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
+            parties_missing_members = []
             parties = Party.objects.filter(id__in=parties_ids)
             for party in parties:
+                party_members_without_feed = []
                 for member in party.current_members():
-                    if member.id not in members_ids:
-                        members_ids.append(member.id)
+                    if Facebook_Persona.objects.filter(object_id__exact=member.id):
+                        if member.id not in members_ids:
+                            members_ids.append(member.id)
+                    else:
+                        party_members_without_feed.append(member)
+                if party_members_without_feed:
+                    parties_missing_members.append((party,party_members_without_feed))
 
         # tags searched for.
         tags_ids = []
@@ -494,11 +502,11 @@ class SearchView(StatusListView):
         # keywords searched for, comma separated
         words = []
         if 'search_str' in self.request.GET.keys():
-            search_str_stripped = self.request.GET['search_str'].strip()[1:-1]  # removes quotes from beginning and end.
+            search_str_stripped = self.request.GET['search_str']
             words = [word for word in search_str_stripped.split('","')]
 
         print 'parsed request:', members_ids, parties_ids, tags_ids, words
-        return members_ids, parties_ids, tags_ids, words
+        return members_ids, parties_ids, parties_missing_members, tags_ids, words
 
     def parse_q_object(self, members_ids, parties_ids, tags_ids, words):
         member_query = Member.objects.filter(id__in=members_ids)
@@ -574,7 +582,7 @@ class SearchView(StatusListView):
         return query_Q
 
     def get_queryset(self):
-        members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
+        members_ids, parties_ids, parties_missing_members, tags_ids, words = self.get_parsed_request()
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
         print 'get_queryset_executed:', query_Q
 
@@ -583,11 +591,13 @@ class SearchView(StatusListView):
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
-        members_ids, parties_ids, tags_ids, words = self.get_parsed_request()
+        members_ids, parties_ids, parties_missing_members, tags_ids, words = self.get_parsed_request()
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, words)
         context['members'] = Member.objects.filter(id__in=members_ids)
 
         context['parties'] = Party.objects.filter(id__in=parties_ids)
+
+        context['parties_missing_members'] = parties_missing_members
 
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
 
@@ -604,7 +614,7 @@ class SearchView(StatusListView):
 
 class SearchGuiView(StatusListView):
     model = Facebook_Status
-    template_name = "core/searchgui.html"
+    template_name = "core/searchgui_page_newdesign.html"
 
 
 class StatusFilterUnifiedView(StatusListView):

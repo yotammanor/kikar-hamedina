@@ -53,6 +53,22 @@
                 </td>
             </tr>
             {% endif %}
+            {% if parties_missing_members %}
+            <tr>
+                <td>
+                    <span class="origin-title-container">הערות</span>
+                </td>
+                <td rowspan={{parties_missing_members.count}}>
+                    {% for party, members_missing_feed in parties_missing_members %}
+                        <span class="origin-actual-container">{{party}} | {{members_missing_feed|length}}/{{party.number_of_members}}</span>
+                        {% for member_missing_feed in members_missing_feed %}
+                            <span class="origin-error-container">{{member_missing_feed}}</span>
+                        {% endfor %}
+                        <span class="clearfix"></span> {# this is here to line break after each party #}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endif %}
         </table>
     </div>
 {% endblock smaller_info_bar %}
