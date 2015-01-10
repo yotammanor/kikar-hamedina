@@ -17,17 +17,26 @@ from slugify import slugify
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
 from kikartags.models import TaggedItem
 
+IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
 # needs_refresh - Constants for quick status refresh
 MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
 MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
 MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60*10)  # 10 minutes
 
+# tag name regex
+TAG_NAME_CHARSET=ur'[\w\s\-:"\'!\?&\.#\u2010-\u201f\u05f3\u05f4]'
+TAG_NAME_REGEX=u'^%s+$' % TAG_NAME_CHARSET
 
 class Facebook_Persona(models.Model):
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
+    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = generic.GenericForeignKey()
+
+    alt_content_type = models.ForeignKey(ContentType, related_name='alt', null=True, blank=True)
+    alt_object_id = models.PositiveIntegerField(null=True, blank=True)
+    alt_content_object = generic.GenericForeignKey(ct_field="alt_content_type", fk_field="alt_object_id")
+
     main_feed = models.SmallIntegerField(null=True, default=0, blank=True)
 
     @property
@@ -37,7 +46,18 @@ class Facebook_Persona(models.Model):
         except:
             return None  # TODO: What should we return here when no main feed is defined/ no feeds exist?
 
+    @property
+    def owner(self):
+        return self.alt_content_object if IS_ELECTIONS_MODE else self.content_object
+
+    @property
+    def owner_id(self):
+        return self.alt_object_id if IS_ELECTIONS_MODE else self.object_id
+
     def __unicode__(self):
+        if IS_ELECTIONS_MODE:
+            return "Facebook_Persona: %s %s %s %s" % (self.content_type, self.object_id,
+                self.alt_content_type, self.alt_object_id)
         return "Facebook_Persona: %s %s" % (self.content_type, self.object_id)
 
 
@@ -349,7 +369,6 @@ class User_Token(models.Model):
     date_of_creation = models.DateTimeField(default=timezone.now())
     date_of_expiration = models.DateTimeField(default=timezone.now() + timezone.timedelta(days=60))
     feeds = models.ManyToManyField(Facebook_Feed, related_name='tokens')
-    # is_expired = models.BooleanField(default=False)
 
     @property
     def is_expired(self):

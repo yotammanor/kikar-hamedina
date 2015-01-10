@@ -178,13 +178,14 @@
 {#</div>#}
 
 <div class="post clearfix">
+    <img src="{{ status.feed.picture_square }}" alt="" class="post-mk-image"/>
+
     <div class="post-head clearfix">
-        <img src="{{ status.feed.picture_square }}" alt="" class="post-mk-image"/>
         <span class="post-mk-name">
           <a href="{% url 'member' status.feed.persona.object_id %}">{{ status.feed.persona.content_object.name }}</a>
         </span>
         <span class="post-time">
-            <a href="{% url 'status-detail' status.status_id %}">{{ status.published | naturaltime }}</a>
+          {{ status.published | naturaltime }}
             {% if status.is_deleted %}
                 (הסטטוס נמחק)
             {% endif %}

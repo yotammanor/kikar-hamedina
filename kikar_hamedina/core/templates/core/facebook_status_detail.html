@@ -2,6 +2,9 @@
 
 {% block title %} סטטוס של {{member.name}} {% endblock title %}
 
+{% block scripts %}
+    <script src="{{ STATIC_URL }}js/fbInit.js"></script>
+{% endblock %}
 
 {% block h1 %}
 סטטוס של {{member.name}}
