@@ -12,6 +12,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/bootstrap-override.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -40,9 +41,11 @@
 
     <!-- Load bootstrap from the cdn and fallback to local if no internet available -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
     <!-- FALLBACK NOT WORKING FOR SOME REASON
     <script>$.fn.modal || document.write('<script src="{{ STATIC_URL }}js/libs/bootstrap/3.3.1/bootstrap.min.js"><\/script>')</script>
     -->
+
     {#    {% load staticfiles %}#}
     {% load kikartags_extras %}
 </head>
@@ -200,8 +203,6 @@
 {% block link %}
 {% endblock %}
 
-{% block scripts %}
-{% endblock %}
 
 <!-- Handelbar Templates -->
 
@@ -275,6 +276,9 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/addTagToStatus.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/fbInit.js"></script>
 
+
+{% block extra_js_files %}
+{% endblock extra_js_files %}
 
 </body>
 </html>

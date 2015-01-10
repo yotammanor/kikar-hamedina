@@ -614,7 +614,7 @@ class SearchView(StatusListView):
 
 class SearchGuiView(StatusListView):
     model = Facebook_Status
-    template_name = "core/searchgui.html"
+    template_name = "core/searchgui_page_newdesign.html"
 
 
 class StatusFilterUnifiedView(StatusListView):
