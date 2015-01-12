@@ -12,6 +12,7 @@ function searchguiAjaxGetSuggestions(inputValue) {
             for (var i = 0; i < data['number_of_results']; i++) {
                 var result = data['results'][i]
                 result["searchgui_type"] = "suggest-parameter"
+                if (result["name"].length > 20) {result["name"] = result["name"].substr(0,25)+"..."}
                 var source = $("#searchgui-add-template").html()
                 var template = Handlebars.compile(source);
                 var html = template(result);
