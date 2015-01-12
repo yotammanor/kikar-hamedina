@@ -872,5 +872,9 @@ nav.sidebar ul ul li a:hover {
     padding: 10px 20px;
     margin: 0px;
     height: 40px;
+}
 
+.searchgui-separation-block {
+    background-color: black;
+    height:3px;
 }
