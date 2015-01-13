@@ -97,9 +97,9 @@
 {#                </div>#}
             </form>
             <ul class="nav-bar-items">
+                <li><a href="{% url 'search-gui' %}">חיפוש</a></li>
                 <li><a href="{% url 'billboards' %}">המצעד</a></li>
                 <li><a href="{% url 'about' %}">אודות</a></li>
-                <!-- <li><a href="{% url 'zinnia_entry_archive_index' %}">בלוג</a></li> -->
             </ul>
         </nav>
 
@@ -108,6 +108,14 @@
 
 {% block sidebar %}
     <nav class="sidebar">
+        <ul class="nav-sidebar-links-container">
+            <!--<li class="nav-sidebar-link">-->
+                <!--<a href="{% url 'zinnia_entry_archive_index' %}">לבלוג שלנו</a>-->
+            <!--</li>-->
+            <li class="nav-sidebar-link">
+                <a href="{% url 'untagged'}">תיוג</a>
+            </li>
+        </ul>
         <ul class="nav-sidebar">
             <li class="nav-sidebar-heading">לפי פוליטיקאי</li>
             {% for member in navMembersTop|slice:":5" %}
@@ -181,7 +189,6 @@
             if (win.width() >= 768) {
                 $('.sidebar').show();
                 $('.nav-bar').show();
-                $('.sidebar').css("padding", "20px 0 20px 0");
             }
             //causes weird behaviour. not essential either way
             // else {
@@ -192,9 +199,6 @@
         $('#pull-menu').click(function () {
             $('.nav-bar').toggle();
             $('.sidebar').toggle();
-
-            // ugly hack, because toggle was removing padding for some reason
-            $('.sidebar').css("padding", "129px 0 20px 0");
         });
     });
 </script>
