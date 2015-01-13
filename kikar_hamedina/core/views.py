@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 import json
 from operator import or_, and_
@@ -253,7 +254,6 @@ class BillboardsView(ListView):
         elif calc_type == 'stats':
 
             stats_method = getattrd(self.stats, data_value_int_attr)
-
             data_dict_list = [
                 {'name': getattrd(object_instance, data_name_attr),
                  'value_int': float(stats_method([object_instance.id]) or 0),
@@ -314,9 +314,9 @@ class BillboardsView(ListView):
     def get_context_data(self, **kwargs):
         context = super(BillboardsView, self).get_context_data(**kwargs)
 
-        billboard_1 = self.create_billboard_dict(title='popularity',
-                                                 header_name='Name',
-                                                 header_value_formatted='current_fan_count',
+        billboard_1 = self.create_billboard_dict(title='מספר לייקים כולל',
+                                                 header_name='שם',
+                                                 header_value_formatted='לייקים',
                                                  link_uri_name='member',
                                                  value_format="{:,}",
                                                  top_num_of_values=10,
@@ -329,9 +329,9 @@ class BillboardsView(ListView):
                                                  arguments_for_function=None,
         )
 
-        billboard_2 = self.create_billboard_dict(title='popularity_growth',
-                                                 header_name='Name',
-                                                 header_value_formatted='growth popularity',
+        billboard_2 = self.create_billboard_dict(title='צמיחה בלייקים בשבוע האחרון',
+                                                 header_name='שם',
+                                                 header_value_formatted='אחוז צמיחה',
                                                  link_uri_name='member',
                                                  value_format="{:.2%}",
                                                  top_num_of_values=10,
@@ -345,9 +345,9 @@ class BillboardsView(ListView):
                                                                          'return_value': 'fan_count_dif_growth_rate'},
         )
 
-        billboard_3 = self.create_billboard_dict(title='popularity_growth_nominal',
-                                                 header_name='Name',
-                                                 header_value_formatted='growth in popularity (likes)',
+        billboard_3 = self.create_billboard_dict(title='לייקים חדשים בשבוע האחרון',
+                                                 header_name='שם',
+                                                 header_value_formatted='לייקים',
                                                  link_uri_name='member',
                                                  value_format="{:,.0f}",
                                                  top_num_of_values=10,
@@ -361,9 +361,9 @@ class BillboardsView(ListView):
                                                                          'return_value': 'fan_count_dif_nominal'},
         )
 
-        billboard_4 = self.create_billboard_dict(title='num_of_statuses',
-                                                 header_name='Name',
-                                                 header_value_formatted='number of statuses last month',
+        billboard_4 = self.create_billboard_dict(title='סה״כ סטטוסים בכל הזמנים',
+                                                 header_name='שם',
+                                                 header_value_formatted='מספר סטטוסים',
                                                  link_uri_name='member',
                                                  value_format="{:,.0f}",
                                                  top_num_of_values=10,
@@ -376,9 +376,9 @@ class BillboardsView(ListView):
                                                  arguments_for_function=None,
         )
 
-        billboard_5 = self.create_billboard_dict(title='mean_status_likes_last_month',
-                                                 header_name='Name',
-                                                 header_value_formatted='mean_status_likes_last_month',
+        billboard_5 = self.create_billboard_dict(title='ממוצע לייקים לסטטוס בחודש האחרון',
+                                                 header_name='שם',
+                                                 header_value_formatted='ממוצע',
                                                  link_uri_name='member',
                                                  value_format="{:,.0f}",
                                                  top_num_of_values=10,
@@ -391,25 +391,11 @@ class BillboardsView(ListView):
                                                  arguments_for_function=None,
         )
 
-        # billboard_6 = self.create_billboard_dict(title='Most popular status',
-        # header_name='Name',
-        # header_value_formatted='likes for most popular status',
-        # value_format="{:,.0f}",
-        # top_num_of_values=10,
-        # is_sorted_reversed=True,
-        # data_set=self.stats.popular_statuses_last_month(
-        # [feed.id for feed in Facebook_Feed.current_feeds.all()], 10),
-        # data_name_attr='persona.content_object.name',
-        # data_value_float_attr='mean_status_likes_last_month',
-        # calc_type='stats',
-        # arguments_for_function=None,
-        # )
-
         billboard_6 = {
-            'title': 'Most popular status this Month',
+            'title': 'הסטטוס הפופולארי ביותר החודש',
             'headers': {
-                'name': 'Name',
-                'value_formatted': 'likes for most popular status'
+                'name': 'שם',
+                'value_formatted': 'לייקים'
             },
             'link_uri_name': 'status-detail',
             'data': [
