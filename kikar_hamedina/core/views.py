@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 import json
 import re
@@ -285,7 +286,7 @@ class SearchView(StatusListView):
     model = Facebook_Status
     # paginate_by = 10
     context_object_name = 'filtered_statuses'
-    template_name = "core/search_page_newdesign.html"
+    template_name = "core/facebook_statuses_page_newdesign.html"
 
     def get_parsed_request(self):
         print 'request:', self.request.GET
