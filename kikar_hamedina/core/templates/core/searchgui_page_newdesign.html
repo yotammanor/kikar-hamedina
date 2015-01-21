@@ -1,0 +1,42 @@
+{% extends "layouts/generic-template.html" %}
+
+{% block extra_js_files %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/searchgui_newdesign.js"></script>
+
+{% verbatim %}
+<script id="searchgui-add-template" type="text/x-handlebars-template">
+    <h4 class="searchgui-suggestion {{searchgui_type}}" id="{{type}}{{id}}"
+        data-id="{{id}}" data-name="{{name}}" data-type="{{type}}">
+        {{name}}
+    </h4>
+</script>
+{% endverbatim %}
+{% endblock extra_js_files %}
+
+
+{% block main_content %}
+        <div class="row">
+            <div class="col-md-9 col-md-offset-1 col-sm-12">
+                <h4 class="searchgui-search-button" onclick="searchguiPostSearch()">חיפוש</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-1 col-sm-5">
+                <h4 class="searchgui-title">הזנה</h4>
+                <input id="searchgui-input" class="searchgui-input" placeholder="מושגים לחיפוש...">
+                <div class="searchgui-separating-block"></div>
+                <h4 class="searchgui-title">הצעות</h4>
+                <span id="searchgui-suggestion-list">
+                    <!-- This is where suggestions are appended dynamically -->
+                </span>
+                <div class="searchgui-separation-block visible-xs"></div>
+            </div>
+            <div class="col-md-4 col-md-offset-1 col-sm-5 col-sm-offset-2">
+                <h4 class="searchgui-title">פרמטרים</h4>
+                <span id="searchgui-parameters-list">
+                    <!-- This is where parameters are appended dynamically -->
+                </span>
+            </div>
+        </div>
+
+{% endblock %}
