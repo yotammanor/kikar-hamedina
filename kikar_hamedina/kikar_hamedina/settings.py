@@ -68,6 +68,7 @@ INSTALLED_APPS = (
     'updater',
     'persons',
     'reporting',
+    'polyorg',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -148,6 +149,10 @@ SESSION_COOKIE_NAME = "myplanetid"
 
 
 CURRENT_KNESSET_NUMBER = 19
+CURRENT_ELECTED_KNESSET_NUMBER = CURRENT_KNESSET_NUMBER + 1
+
+# In elections mode e.g. Knesset candidates are shown instead of Knesset members
+IS_ELECTIONS_MODE = False
 
 LOGGING = {
     'version': 1,

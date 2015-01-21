@@ -27,7 +27,7 @@
                 <td>{{ obj.tagged_by }}</td>
                 {% with obj.content_object as status %}
                     <td><a href={% url 'status-detail' status.status_id %}>סטאטוס</a>
-                        של {{ status.feed.persona.content_object.name }}<br>
+                        של {{ status.feed.persona.owner.name }}<br>
                         {{ status.content|truncatewords:10 }}
                     </td>
                 {% endwith %}

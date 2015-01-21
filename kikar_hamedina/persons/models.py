@@ -1,24 +1,126 @@
+from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
+from django.forms.fields import IntegerField
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
-# Create your models here.
-from facebook_feeds.models import Facebook_Feed
-from django.contrib.contenttypes import generic
+from mks.models import Member, GENDER_CHOICES
+from .managers import PersonManager
 
-#
-# class Party(models.Model):
-#     name = models.CharField(unique=True, max_length=128)
-#     slug = models.SlugField(unique=True)
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#
-# class Person(models.Model):
-#     name = models.CharField(unique=True, max_length=128)
-#     slug = models.SlugField(unique=True)
-#     party = models.ForeignKey('Party', related_name='persons')
-#     # feeds = generic.GenericRelation(Facebook_Feed)
-#
-#     def __unicode__(self):
-#         return self.name
+from facebook_feeds.models import Facebook_Persona
 
+
+class Title(models.Model):
+    name = models.CharField(max_length=64)
+
+    def __unicode__(self):
+        return self.name
+
+
+
+class PersonAltname(models.Model):
+    person = models.ForeignKey('Person')
+    name = models.CharField(max_length=64)
+
+GENDER_CHOICES = (
+    (u'M', _('Male')),
+    (u'F', _('Female')),
+)
+
+
+class Person(models.Model):
+    name = models.CharField(max_length=64)
+    mk = models.ForeignKey('mks.Member', blank=True, null=True, related_name='person')
+    titles = models.ManyToManyField(Title, blank=True, null=True, related_name='persons')
+    # TODO: change to an ImageField
+    img_url = models.URLField(blank=True, null=True)
+    phone = models.CharField(blank=True, null=True, max_length=20)
+    fax = models.CharField(blank=True, null=True, max_length=20)
+    email = models.EmailField(blank=True, null=True)
+    family_status = models.CharField(blank=True, null=True,max_length=10)
+    number_of_children = models.IntegerField(blank=True, null=True)
+    date_of_birth  = models.DateField(blank=True, null=True)
+    place_of_birth = models.CharField(blank=True, null=True, max_length=100)
+    date_of_death  = models.DateField(blank=True, null=True)
+    year_of_aliyah = models.IntegerField(blank=True, null=True)
+    place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
+    area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
+    place_of_residence_lat = models.CharField(blank=True, null=True, max_length=16)
+    place_of_residence_lon = models.CharField(blank=True, null=True, max_length=16)
+    residence_centrality = models.IntegerField(blank=True, null=True)
+    residence_economy = models.IntegerField(blank=True, null=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+
+    objects = PersonManager()
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('Person')
+        verbose_name_plural = _('Persons')
+
+    def get_absolute_url(self):
+        if self.mk:
+            return self.mk.get_absolute_url()
+        else:
+            return reverse('person-detail', kwargs={'pk': self.id})
+
+    def number_of_meetings(self):
+        return self.protocol_parts.values('meeting').distinct().count()
+
+    def number_of_committees(self):
+        return self.protocol_parts.values('meeting__committee').distinct().count()
+
+    def merge(self, other):
+        """make other into an alias of self"""
+        if other.mk:
+            if self.mk and self.mk != other.mk:
+                # something is wrong, we are trying to merge two persons with non matching MKs
+                raise ValidationError('Trying to merge persons with non matching MKs')
+            self.mk = other.mk
+        for title in other.titles.all():
+            self.titles.add(title)
+        for role in other.roles.all():
+            role.person = self
+            role.save()
+        (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
+        if created:
+            pa.save()
+        for part in other.protocol_parts.all():
+            part.speaker = self
+            part.save()
+        other.delete()
+        self.save()
+
+
+@receiver(post_save, sender=Member)
+def member_post_save(sender, **kwargs):
+    instance = kwargs['instance']
+    person = Person.objects.get_or_create(mk=instance)[0]
+    for field in instance._meta.fields:
+        if field.name != 'id' and hasattr(person, field.name):
+            setattr(person, field.name, getattr(instance, field.name))
+
+    person.save()
+
+
+class Role(models.Model):
+    start_date  = models.DateField(null=True)
+    end_date  = models.DateField(blank=True, null=True)
+    text = models.CharField(blank=True, null=True, max_length=1024)
+    org = models.TextField(blank=True, null=True)
+    person = models.ForeignKey(Person, related_name='roles')
+
+    def __unicode__(self):
+        return _('{person} serverd as {text} in {org} from {start_date} to {end_date}').format(
+                person=self.person, text=self.text, org=self.org,
+                start_date=self.start_date, end_date=self.end_date)
+
+class ProcessedProtocolPart(models.Model):
+    """This model is used to keep track of protocol parts already searched for creating persons.
+       There should be only 1 record in it, with the max id of a protocol part searched"""
+    protocol_part_id = models.IntegerField()
