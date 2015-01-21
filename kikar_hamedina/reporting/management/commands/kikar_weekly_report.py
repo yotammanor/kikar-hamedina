@@ -1,4 +1,4 @@
-#encoding: utf-8
+# encoding: utf-8
 
 import StringIO
 from optparse import make_option, OptionParser
@@ -14,7 +14,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from core.insights import StatsEngine, Stats, get_times
-from mks.models import Party
+from core.models import MEMBER_MODEL, PARTY_MODEL
+
 from facebook_feeds.models import Facebook_Feed, Facebook_Status
 
 from reporting.models import WeeklyReportRecipients
@@ -22,6 +23,8 @@ from reporting.models import WeeklyReportRecipients
 
 def split_by_comma(option, opt, value, parser):
     setattr(parser.values, option.dest, [x.strip() for x in value.split(',')])
+
+IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
 
 class Command(BaseCommand):
@@ -94,7 +97,8 @@ class Command(BaseCommand):
         parties_data = list()
         party_ids = dict()
         for party in stats.party_list:
-            all_members_for_party = Party.objects.get(id=party.party.id).current_members()
+            print party.n_statuses_last_week
+            all_members_for_party = PARTY_MODEL.objects.get(id=party.party.id).current_members()
             all_feeds_for_party = [member.facebook_persona.get_main_feed.id for member in
                                    all_members_for_party if member.facebook_persona]
             party_ids[party.party.id] = all_feeds_for_party
@@ -109,45 +113,98 @@ class Command(BaseCommand):
             })
 
         PARTY_NAME_FORMAT = '; '
-
-        factions = [{'id': 1,
-                     'name': 'right_side',
-                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[14, 17])]),
-                     'feeds': party_ids[14] + party_ids[17],
-                     'size': Party.objects.get(id=14).number_of_seats +
-                             Party.objects.get(id=17).number_of_seats
-                    },
-                    {'id': 2,
-                     'name': 'center_side',
-                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[15, 25])]),
-                     'feeds': party_ids[15] + party_ids[25],
-                     'size': Party.objects.get(id=15).number_of_seats +
-                             Party.objects.get(id=25).number_of_seats
-                    },
-                    {'id': 3,
-                     'name': 'left_side',
-                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[16, 20, 21])]),
-                     'feeds': party_ids[16] + party_ids[20] + party_ids[21],
-                     'size': Party.objects.get(id=16).number_of_seats +
-                             Party.objects.get(id=20).number_of_seats +
-                             Party.objects.get(id=21).number_of_seats
-                    },
-                    {'id': 4,
-                     'name': 'arab_parties',
-                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[22, 23, 24])]),
-                     'feeds': party_ids[22] + party_ids[23] + party_ids[24],
-                     'size': Party.objects.get(id=22).number_of_seats +
-                             Party.objects.get(id=23).number_of_seats +
-                             Party.objects.get(id=24).number_of_seats
-                    },
-                    {'id': 5,
-                     'name': 'haredi_parties',
-                     'members': PARTY_NAME_FORMAT.join([x.name for x in Party.objects.filter(id__in=[18, 19])]),
-                     'feeds': party_ids[18] + party_ids[19],
-                     'size': Party.objects.get(id=18).number_of_seats + Party.objects.get(id=19).number_of_seats
-                    },
-        ]
-
+        print 'is election mode:', IS_ELECTIONS_MODE
+        print party_ids
+        if not IS_ELECTIONS_MODE:
+            factions = [{'id': 1,
+                         'name': 'right_side',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[14, 17])]),
+                         'feeds': party_ids[14] + party_ids[17],
+                         'size': PARTY_MODEL.objects.get(id=14).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=17).number_of_seats
+                        },
+                        {'id': 2,
+                         'name': 'center_side',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[15, 25])]),
+                         'feeds': party_ids[15] + party_ids[25],
+                         'size': PARTY_MODEL.objects.get(id=15).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=25).number_of_seats
+                        },
+                        {'id': 3,
+                         'name': 'left_side',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[16, 20, 21])]),
+                         'feeds': party_ids[16] + party_ids[20] + party_ids[21],
+                         'size': PARTY_MODEL.objects.get(id=16).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=20).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=21).number_of_seats
+                        },
+                        {'id': 4,
+                         'name': 'arab_parties',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[22, 23, 24])]),
+                         'feeds': party_ids[22] + party_ids[23] + party_ids[24],
+                         'size': PARTY_MODEL.objects.get(id=22).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=23).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=24).number_of_seats
+                        },
+                        {'id': 5,
+                         'name': 'haredi_parties',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[18, 19])]),
+                         'feeds': party_ids[18] + party_ids[19],
+                         'size': PARTY_MODEL.objects.get(id=18).number_of_seats + PARTY_MODEL.objects.get(
+                             id=19).number_of_seats
+                        },
+            ]
+        else:  # IS_ELECTION_MODE
+            factions = [{'id': 1,
+                         'name': 'right_side',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[26, 28, 29])]),
+                         'feeds': party_ids[26] + party_ids[28] + party_ids[29],
+                         'size': PARTY_MODEL.objects.get(id=26).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=28).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=29).number_of_seats
+                        },
+                        {'id': 2,
+                         'name': 'center_side',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[30, 31, 39])]),
+                         'feeds': party_ids[30] + party_ids[31] + party_ids[39],
+                         'size': PARTY_MODEL.objects.get(id=30).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=31).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=39).number_of_seats
+                        },
+                        {'id': 3,
+                         'name': 'left_side',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[27, 32])]),
+                         'feeds': party_ids[27] + party_ids[32],
+                         'size': PARTY_MODEL.objects.get(id=27).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=32).number_of_seats
+                        },
+                        {'id': 4,
+                         'name': 'arab_parties',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[36, 37, 38])]),
+                         'feeds': party_ids[36] + party_ids[37] + party_ids[38],
+                         'size': PARTY_MODEL.objects.get(id=36).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=37).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=38).number_of_seats
+                        },
+                        {'id': 5,
+                         'name': 'haredi_parties',
+                         'members': PARTY_NAME_FORMAT.join(
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[33, 34, 35])]),
+                         'feeds': party_ids[33] + party_ids[34] + party_ids[35],
+                         'size': PARTY_MODEL.objects.get(id=33).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=34).number_of_seats +
+                                 PARTY_MODEL.objects.get(id=35).number_of_seats
+                        },
+            ]
         factions_data = list()
         for fact in factions:
             factions_data.append({
@@ -181,16 +238,29 @@ class Command(BaseCommand):
                                 ';'.join([tagged_item.tag.name for tagged_item in
                                           status.tagged_items.all()]),
                                 status.get_link,
-                               u'שחיתות' in status.content,
-                               u'בטחון' in status.content or u'ביטחון' in status.content,
-                               u'חברה' in status.content or u'חברתי' in status.content,
-                               u'טרור' in status.content,
-                               u'כלכל' in status.content,
-                               u'שקיפות' in status.content,
-                               u'שוויון' in status.content,
-                               u'זכויות' in status.content,
-                               u'שלום' in status.content,
-                               u'פלסטינים' in status.content) for
+                                u'שחיתות' in status.content,
+                                u'בטחון' in status.content or u'ביטחון' in status.content,
+                                u'חברה' in status.content or u'חברתי' in status.content,
+                                u'טרור' in status.content,
+                                u'כלכל' in status.content,
+                                u'שקיפות' in status.content,
+                                u'שוויון' in status.content,
+                                u'זכויות' in status.content,
+                                u'שלום' in status.content,
+                                u'פלסטינים' in status.content,
+                                u'יהודי' in status.content or u'יהדות' in status.content,
+                                u'ריבונ' in status.content,
+                                u'סיפוח' in status.content,
+                                u'מסורת' in status.content,
+                                u'דת' in status.content,
+                                u'כבוד' in status.content,
+                                u'מלחמ' in status.content,
+                                u'ציונ' in status.content,
+                                u'חינוך' in status.content,
+                                u'בריאות' in status.content,
+                                u'תעסוק' in status.content,
+                                u'רווחה' in status.content
+                               ) for
                                status in week_statuses]
         field_names = ['status_id', 'feed_id', 'feed_name', 'party_id', 'party_name',
                        'published', 'is_deleted',
@@ -205,7 +275,21 @@ class Command(BaseCommand):
                        u'has_word_שוויון',
                        u'has_word_זכויות',
                        u'has_word_שלום',
-                       u'has_word_פלסטינים']
+                       u'has_word_פלסטינים',
+                       u'has_word_יהודי_or_יהדות',
+                       u'has_word_ריבונ',
+                       u'has_word_סיפוח',
+                       u'has_word_מסורת',
+                       u'has_word_דת',
+                       u'has_word_כבוד',
+                       u'has_word_מלחמ',
+                       u'has_word_ציונ',
+                       u'has_word_חינוך',
+                       u'has_word_בריאות',
+                       u'has_word_תעסוק',
+                       u'has_word_רווחה'
+
+        ]
         recs = np.core.records.fromrecords(week_statuses_build, names=field_names)
         week_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
         return week_statuses
