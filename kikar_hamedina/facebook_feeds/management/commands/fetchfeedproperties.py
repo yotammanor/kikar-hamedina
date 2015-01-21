@@ -47,7 +47,7 @@ class Command(BaseCommand):
         Receives a feed_id for a facebook
         Returns properties about this feed
         """
-        api_request = "{0}".format(feed_id)
+        api_request = str(feed_id)
 
         args_for_request = {
             'version': FACEBOOK_API_VERSION,
@@ -62,10 +62,12 @@ class Command(BaseCommand):
         try:
             user_profile_properties = self.graph.request(path=api_request, args=args_for_request)
             large_pic_response = self.graph.request(path=api_request, args=args_for_large_pic_request)
-        except facebook.GraphAPIError:
+        except facebook.GraphAPIError as e:
             self.errors_count =+ 1
-            _LOGGER_SCRAPING.warning('Fetch Feed Properties: GraphAPI error, feed #{0}. {1}'
-                                     .format(feed_id, 'processing anyway...' if is_insist else 'process aborted.'))
+            _LOGGER_SCRAPING.warning('Fetch Feed Properties: GraphAPI error, feed #%s. %s: %s',
+                                     feed_id,
+                                     'processing anyway...' if is_insist else 'process aborted.',
+                                     e)
             if is_insist:
                 user_profile_properties = {}
                 large_pic_response = {'picture': {'data': {'url': ''}}}
@@ -166,7 +168,7 @@ class Command(BaseCommand):
                 # Set facebook graph access token to most up-to-date user token in db
                 token = User_Token.objects.first()
                 self.graph.access_token = token.token
-            except:
+            except Exception as e:
                 if feed.requires_user_token:
                     self.warning_count += 1
                     # If the Feed is set to require a user-token, and none exist in our db, the feed is skipped.

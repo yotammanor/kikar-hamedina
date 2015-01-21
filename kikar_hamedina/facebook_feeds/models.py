@@ -17,6 +17,7 @@ from slugify import slugify
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
 from kikartags.models import TaggedItem
 
+IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
 # needs_refresh - Constants for quick status refresh
 MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
@@ -28,9 +29,17 @@ TAG_NAME_CHARSET=ur'[\w\s\-:"\'!\?&\.#\u2010-\u201f\u05f3\u05f4]'
 TAG_NAME_REGEX=u'^%s+$' % TAG_NAME_CHARSET
 
 class Facebook_Persona(models.Model):
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
+
+    # Relation to MKs objects
+    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = generic.GenericForeignKey()
+
+    # Relation to Candidates objects
+    alt_content_type = models.ForeignKey(ContentType, related_name='alt', null=True, blank=True)
+    alt_object_id = models.PositiveIntegerField(null=True, blank=True)
+    alt_content_object = generic.GenericForeignKey(ct_field="alt_content_type", fk_field="alt_object_id")
+
     main_feed = models.SmallIntegerField(null=True, default=0, blank=True)
 
     @property
@@ -40,7 +49,18 @@ class Facebook_Persona(models.Model):
         except:
             return None  # TODO: What should we return here when no main feed is defined/ no feeds exist?
 
+    @property
+    def owner(self):
+        return self.alt_content_object if IS_ELECTIONS_MODE else self.content_object
+
+    @property
+    def owner_id(self):
+        return self.alt_object_id if IS_ELECTIONS_MODE else self.object_id
+
     def __unicode__(self):
+        if IS_ELECTIONS_MODE:
+            return "Facebook_Persona: %s %s %s %s" % (self.content_type, self.object_id,
+                self.alt_content_type, self.alt_object_id)
         return "Facebook_Persona: %s %s" % (self.content_type, self.object_id)
 
 
@@ -80,7 +100,7 @@ class Facebook_Feed(models.Model):
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
 
     def __unicode__(self):
-        return slugify(self.username) + " " + self.vendor_id
+        return "%s %s (%s)" % (slugify(self.username), self.vendor_id, self.id)
 
     def save(self, *args, **kwargs):
         '''On save, update locally_updated fields'''
@@ -182,6 +202,9 @@ class Feed_Popularity(models.Model):
 
     class Meta:
         ordering = ['-date_of_creation']
+        verbose_name_plural = 'Feed_Popularities'
+
+
 
     def __unicode__(self):
         return slugify(self.feed.name) + " " + str(self.date_of_creation.date())
@@ -292,6 +315,9 @@ class Facebook_Status(models.Model):
         #     need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
 
+    class Meta:
+        verbose_name_plural = 'Facebook_Statuses'
+
 
 # status_with_photo = '161648040544835_720225251353775'
 # status_with_youtube_link = '161648040544835_723225304387103'
@@ -369,7 +395,6 @@ class Status_Comment_Pattern(models.Model):
 
     def __unicode__(self):
         return self.pattern
-
 
 # Deprecated Tags
 class Tag(models.Model):

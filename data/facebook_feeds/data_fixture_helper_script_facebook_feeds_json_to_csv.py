@@ -11,7 +11,10 @@ facebook_persona_dict = [x for x in json_data if x['model'] == 'facebook_feeds.f
 facebook_feed_dict = [x for x in json_data if x['model'] == 'facebook_feeds.facebook_feed']
 tag_dict = [x for x in json_data if x['model'] == 'facebook_feeds.tag']
 
-all_dicts = [facebook_persona_dict, facebook_feed_dict, tag_dict]
+all_dicts = [facebook_persona_dict,
+             facebook_feed_dict,
+             tag_dict
+]
 
 
 def insert_to_csv(chosen_dict):

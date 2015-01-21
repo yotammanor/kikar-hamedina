@@ -13,7 +13,7 @@ import numpy as np
 import tastypie
 from tastypie import fields
 from tastypie.resources import Resource, Bundle
-from mks.models import Party, Member
+from core.models import MEMBER_MODEL, PARTY_MODEL
 from facebook_feeds.models import Facebook_Status
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
@@ -72,10 +72,14 @@ class StatsEngine(object):
         # Note - without like_count!=NULL pandas thinks the column type is object and not number
         month_statuses = Facebook_Status.objects.filter(published__gte=month_ago, like_count__isnull=False)
 
-        field_names = ['id', 'feed', 'published', 'like_count', 'comment_count', 'share_count']
-        recs = np.core.records.fromrecords(month_statuses.values_list(*field_names), names=field_names)
-        self.month_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
-        self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
+        if len(month_statuses) == 0:
+            self.month_statuses = pd.DataFrame()
+            self.week_statuses = pd.DataFrame()
+        else:
+            field_names = ['id', 'feed', 'published', 'like_count', 'comment_count', 'share_count']
+            recs = np.core.records.fromrecords(month_statuses.values_list(*field_names), names=field_names)
+            self.month_statuses = pd.DataFrame.from_records(recs, coerce_float=True)
+            self.week_statuses = self.month_statuses[self.month_statuses['published'] > week_ago]
 
     def feeds_statuses(self, statuses, feed_ids):
         """Helper function for that gets a list of statuses and selects only
@@ -223,9 +227,9 @@ class Stats(object):
         self.engine = StatsEngine()
 
         print timezone.now(), "Calculating stats..."
-        self.member_list = [MemberStats(member, self.engine) for member in Member.objects.all()]
+        self.member_list = [MemberStats(member, self.engine) for member in MEMBER_MODEL.objects.all()]
         self.member_dict = dict((m.member.id, m) for m in self.member_list)
-        self.party_list = [PartyStats(member, self.engine) for member in Party.current_knesset.all()]
+        self.party_list = [PartyStats(member, self.engine) for member in PARTY_MODEL.current_knesset.all()]
         self.party_dict = dict((p.party.id, p) for p in self.party_list)
         print timezone.now(), "Done loading stats"
 
