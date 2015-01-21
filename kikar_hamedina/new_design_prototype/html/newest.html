@@ -433,7 +433,6 @@
           if (win.width() >= 768) {
             $('.sidebar').show();
             $('.nav-bar').show();
-            $('.sidebar').css( "padding", "20px 0 20px 0" );
           }
           //causes weird behaviour. not essential either way
           // else {
@@ -444,9 +443,6 @@
         $('#pull-menu').click(function() {
           $('.nav-bar').toggle();
           $('.sidebar').toggle();
-
-          // ugly hack, because toggle was removing padding for some reason
-          $('.sidebar').css( "padding", "129px 0 20px 0" );
         });
       });
     </script>

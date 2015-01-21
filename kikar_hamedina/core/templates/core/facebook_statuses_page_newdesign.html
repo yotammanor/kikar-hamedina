@@ -23,9 +23,7 @@
 
     <div class="posts-container">
         <div class="posts-vertical-line-left">
-            {% block smaller_info_bar %}
-
-            {% endblock smaller_info_bar %}
+            {% include 'core/search_page_newdesign.html' with display="small" %}
 
             <div class="posts-sortby-container clearfix">
                 {% block sortby_options %}        
@@ -96,9 +94,7 @@
     </div>
 
     <div class="extra-info">
-        {% block extra_info %}
-
-        {% endblock extra_info %}
+        {% include 'core/search_page_newdesign.html' with display="large" %}
     </div>
 
 
