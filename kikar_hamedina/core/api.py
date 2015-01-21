@@ -1,5 +1,5 @@
 from tastypie import fields
-from tastypie.resources import ModelResource
+from tastypie.resources import ModelResource, Bundle
 from mks.models import Knesset
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag as OldTag, User_Token, Feed_Popularity
 from kikartags.models import Tag as Tag
@@ -13,6 +13,13 @@ class MemberResource(ModelResource):
 
 class Facebook_StatusResource(ModelResource):
     pass
+
+
+def get_resource_uri(obj, field):
+    if obj is None:
+        return None
+    resource = field.get_related_resource(obj)
+    return resource.dehydrate_resource_uri(Bundle(obj=obj))
 
 
 class KnessetResource(ModelResource):
@@ -30,22 +37,36 @@ class PartyResource(ModelResource):
         resource_name = 'party'
 
 
+class Facebook_FeedResource(ModelResource):
+    owner = fields.ToOneField(MemberResource, attribute='owner', null=True)
+
+    class Meta:
+        queryset = Facebook_Feed.objects.all()
+        resource_name = 'facebook_feed'
+
+    def dehydrate_owner(self, bundle):
+        persona = bundle.obj.persona
+        if persona is not None:
+            return get_resource_uri(persona.owner, self.owner)
+        return None
+
+
 class MemberResource(ModelResource):
 
     current_party = fields.ForeignKey(PartyResource, 'current_party', null=True, blank=True)
     if hasattr(MEMBER_MODEL, 'parties'):
         parties = fields.ManyToManyField(PartyResource, 'parties')
-    blog = fields.OneToOneField(Blog, 'blog', blank=True, null=True)
+    main_feed = fields.ToOneField(Facebook_FeedResource, attribute='main_feed', null=True)
 
     class Meta:
         queryset = MEMBER_MODEL.objects.all()
         resource_name = 'member'
 
-
-class Facebook_FeedResource(ModelResource):
-    class Meta:
-        queryset = Facebook_Feed.objects.all()
-        resource_name = 'facebook_feed'
+    def dehydrate_main_feed(self, bundle):
+        persona = bundle.obj.facebook_persona
+        if persona is not None:
+            return get_resource_uri(persona.get_main_feed, self.main_feed)
+        return None
 
 
 class TagResource(ModelResource):
@@ -64,6 +85,9 @@ class Facebook_StatusResource(ModelResource):
     class Meta:
         queryset = Facebook_Status.objects.all()
         resource_name = 'facebook_status'
+        filtering = {
+            "feed": ["exact"]
+        }
 
     def dehydrate(self, bundle):
         bundle.data['facebook_link'] = bundle.obj.get_link
