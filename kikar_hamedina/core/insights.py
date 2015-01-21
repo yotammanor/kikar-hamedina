@@ -13,7 +13,7 @@ import numpy as np
 import tastypie
 from tastypie import fields
 from tastypie.resources import Resource, Bundle
-from mks.models import Party, Member
+from core.models import MEMBER_MODEL, PARTY_MODEL
 from facebook_feeds.models import Facebook_Status
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
@@ -227,9 +227,9 @@ class Stats(object):
         self.engine = StatsEngine()
 
         print timezone.now(), "Calculating stats..."
-        self.member_list = [MemberStats(member, self.engine) for member in Member.objects.all()]
+        self.member_list = [MemberStats(member, self.engine) for member in MEMBER_MODEL.objects.all()]
         self.member_dict = dict((m.member.id, m) for m in self.member_list)
-        self.party_list = [PartyStats(member, self.engine) for member in Party.current_knesset.all()]
+        self.party_list = [PartyStats(member, self.engine) for member in PARTY_MODEL.current_knesset.all()]
         self.party_dict = dict((p.party.id, p) for p in self.party_list)
         print timezone.now(), "Done loading stats"
 

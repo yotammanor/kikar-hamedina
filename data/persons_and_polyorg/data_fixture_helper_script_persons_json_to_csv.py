@@ -6,18 +6,17 @@ from pprint import pprint
 
 
 
-json_data = json.load(open('data_fixture_facebook_feeds.json', mode='r'))  # insert name of json
-facebook_persona_dict = [x for x in json_data if x['model'] == 'facebook_feeds.facebook_persona']
-facebook_feed_dict = [x for x in json_data if x['model'] == 'facebook_feeds.facebook_feed']
-tag_dict = [x for x in json_data if x['model'] == 'facebook_feeds.tag']
+json_data = json.load(open('data_fixture_persons.json', mode='r'))  # insert name of json
+person_dict = [x for x in json_data if x['model'] == 'persons.person']
+person_altname_dict = [x for x in json_data if x['model'] == 'persons.personaltname']
+title_dict = [x for x in json_data if x['model'] == 'persons.title']
 
-all_dicts = [facebook_persona_dict,
-             facebook_feed_dict,
-             tag_dict
-]
+
+all_dicts = [person_dict, title_dict, person_altname_dict]
 
 
 def insert_to_csv(chosen_dict):
+    print 'chosen_dict:', chosen_dict
     field_names = chosen_dict[0].keys()[:-1]
     for field in chosen_dict[0]['fields'].keys():
         field_names.append(field)
@@ -50,15 +49,9 @@ def insert_to_csv(chosen_dict):
         csv_data.writerow({k: unicode(v).encode('utf-8') for k, v in flat_dict.items()})
     output_file.close()
 
-for i, json_dict in enumerate(all_dicts):
-    print '%d of %d' % (i+1, len(all_dicts))
-    if json_dict:
-        insert_to_csv(json_dict)
-    else:
-        print 'json file empty'
+for json_dict in all_dicts:
+    insert_to_csv(json_dict)
 
-print len(facebook_persona_dict), \
-    len(facebook_feed_dict), \
-    len(tag_dict)
+
 
 

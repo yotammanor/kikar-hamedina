@@ -54,8 +54,14 @@ class Command(BaseCommand):
                     '--request-timeout',
                     dest='request-timeout',
                     type='int',
-                    default=60,
+                    default=20,
                     help='Timeout for Facebook API requests in seconds'),
+        make_option('-c',
+                    '--current-only',
+                    action='store_true',
+                    dest='current-only',
+                    default=False,
+                    help='Whether to update only feeds of current members (false means all members)'),
     )
 
     def fetch_status_objects_from_feed(self, feed_id, post_number_limit):
@@ -327,7 +333,8 @@ class Command(BaseCommand):
         list_of_feeds = list()
         # Case no args - fetch all feeds
         if len(args) == 0:
-            list_of_feeds = [feed for feed in Facebook_Feed_Model.objects.all()]
+            manager = Facebook_Feed_Model.current_feeds if options['current-only'] else Facebook_Feed_Model.objects
+            list_of_feeds = [feed for feed in manager.all()]
         # Case arg exists - fetch feed by id supplied
         elif len(args) == 1:
             feed_id = int(args[0])

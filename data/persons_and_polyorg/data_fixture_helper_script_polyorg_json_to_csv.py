@@ -6,14 +6,19 @@ from pprint import pprint
 
 
 
-json_data = json.load(open('data_fixture_persons.json', mode='r'))  # insert name of json
-party_dict = [x for x in json_data if x['model'] == 'persons.party']
-person_dict = [x for x in json_data if x['model'] == 'persons.person']
+json_data = json.load(open('data_fixture_polyorg.json', mode='r'))  # insert name of json
+candidate_dict = [x for x in json_data if x['model'] == 'polyorg.candidate']
+candidate_list_dict = [x for x in json_data if x['model'] == 'polyorg.candidatelist']
+elected_knesset_dict = [x for x in json_data if x['model'] == 'polyorg.electedknesset']
+candidate_list_altname_dict = [x for x in json_data if x['model'] == 'polyorg.candidatelistaltname']
 
-all_dicts = [party_dict, person_dict]
+all_dicts = [candidate_dict, candidate_list_dict, elected_knesset_dict,
+             candidate_list_altname_dict
+]
 
 
 def insert_to_csv(chosen_dict):
+    print 'chosen_dict:', chosen_dict
     field_names = chosen_dict[0].keys()[:-1]
     for field in chosen_dict[0]['fields'].keys():
         field_names.append(field)
@@ -49,7 +54,6 @@ def insert_to_csv(chosen_dict):
 for json_dict in all_dicts:
     insert_to_csv(json_dict)
 
-print len(party_dict), \
-    len(person_dict)
+
 
 

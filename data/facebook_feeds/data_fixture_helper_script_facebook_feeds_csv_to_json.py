@@ -7,12 +7,12 @@ import csv
 
 json_data_facebook_feeds = open('data_fixture_facebook_feeds.json', mode='wb')
 
-facebook_feed_csv = csv.DictReader(open('data_from_json_facebook_feeds.facebook_feed.csv', 'r'))
 facebook_persona_csv = csv.DictReader(open(
     'data_from_json_facebook_feeds.facebook_persona.csv', 'r'))
+facebook_feed_csv = csv.DictReader(open('data_from_json_facebook_feeds.facebook_feed.csv', 'r'))
 tag_csv = csv.DictReader(open('data_from_json_facebook_feeds.tag.csv', 'r'))
 
-all_csv = [facebook_feed_csv, facebook_persona_csv, tag_csv]
+all_csv = [facebook_persona_csv, facebook_feed_csv, tag_csv]
 
 
 def turn_csv_to_dict(dict_reader_object):
@@ -23,11 +23,18 @@ def turn_csv_to_dict(dict_reader_object):
         full_dict['model'] = row.pop('model')
         fields_dict = dict()
         for key, value in row.items():
-            if key == 'content_type'\
-                    or key == 'requires_user_token'\
-                    or key == 'is_current':
+            if key in [
+                    'content_type',
+                    'requires_user_token',
+                    'is_current',
+                    'object_id',
+                    'content_type',
+                    'alt_object_id',
+                    'alt_content_type',
+
+            ]:
                 fields_dict[key] = eval(value)
-            elif key == 'locally_updated':
+            elif key in ('locally_updated',):
                 fields_dict[key] = None
             else:
                 fields_dict[key] = value
@@ -46,7 +53,7 @@ def main():
     # # turn_csv_to_dict(tag_csv)
 
     for i, csv_data in enumerate(all_csv):
-        print '%d of %d' % (i+1, len(all_csv))
+        print '%d of %d' % (i + 1, len(all_csv))
         if csv_data:
             new_dict = turn_csv_to_dict(csv_data)
             all_facebook_feeds_data_for_insertion += new_dict
@@ -57,6 +64,7 @@ def main():
     pprint(all_facebook_feeds_data_for_insertion)
     json.dump(all_facebook_feeds_data_for_insertion, json_data_facebook_feeds, encoding='utf-8', indent=4)
     json_data_facebook_feeds.close()
+
 
 if __name__ == "__main__":
     main()

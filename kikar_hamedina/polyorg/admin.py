@@ -1,32 +1,48 @@
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 
-from models import Candidate, CandidateList, Party
+from models import ElectedKnesset, Candidate, CandidateList, Party, CandidateListAltname
 from links.models import Link
+from facebook_feeds.admin import Facebook_FeedAdminInline, Facebook_PersonaAdminInline
 
+
+class CandidateListAltnameInline(admin.TabularInline):
+    model = CandidateListAltname
+    extra = 1
 
 class MembershipInline(admin.TabularInline):
     model = CandidateList.candidates.through
     extra = 1
+
 
 class LinksInline(generic.GenericTabularInline):
     model = Link
     ct_fk_field = 'object_pk'
     extra = 1
 
+
+class PartyAdminInline(admin.TabularInline):
+    model = Party
+    extra = 1
+
+
+class CandidateAdminInline(admin.TabularInline):
+    model = Candidate
+    extra = 1
+
+
 class CandidateListAdmin(admin.ModelAdmin):
-    pass
+    inlines = [CandidateListAltnameInline, CandidateAdminInline]
 
 admin.site.register(CandidateList, CandidateListAdmin)
 
+
+
+
 class CandidateAdmin(admin.ModelAdmin):
-    inlines = [LinksInline,]
+    inlines = [LinksInline, ]
 
 
 admin.site.register(Candidate, CandidateAdmin)
 
-
-class PartyAdmin(admin.ModelAdmin):
-    pass
-
-admin.site.register(Party, PartyAdmin)
+admin.site.register(ElectedKnesset)

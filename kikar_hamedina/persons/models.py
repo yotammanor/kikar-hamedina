@@ -19,12 +19,10 @@ class Title(models.Model):
         return self.name
 
 
-class PersonAlias(models.Model):
-    name = models.CharField(max_length=64)
-    person = models.ForeignKey('Person', related_name='aliases')
 
-    def __unicode__(self):
-        return "%s -> %s" % (self.name, self.person.name)
+class PersonAltname(models.Model):
+    person = models.ForeignKey('Person')
+    name = models.CharField(max_length=64)
 
 GENDER_CHOICES = (
     (u'M', _('Male')),
@@ -37,7 +35,7 @@ class Person(models.Model):
     mk = models.ForeignKey('mks.Member', blank=True, null=True, related_name='person')
     titles = models.ManyToManyField(Title, blank=True, null=True, related_name='persons')
     # TODO: change to an ImageField
-    img_url = models.URLField(blank=True)
+    img_url = models.URLField(blank=True, null=True)
     phone = models.CharField(blank=True, null=True, max_length=20)
     fax = models.CharField(blank=True, null=True, max_length=20)
     email = models.EmailField(blank=True, null=True)
