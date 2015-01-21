@@ -15,10 +15,6 @@ class CandidateListAltname(models.Model):
     name = models.CharField(max_length=64)
 
 
-class CandidateAltname(models.Model):
-    member = models.ForeignKey('Candidate')
-    name = models.CharField(max_length=64)
-
 
 class ElectedKnesset(models.Model):
     number = models.IntegerField(_('Elected Knesset number'), primary_key=True)

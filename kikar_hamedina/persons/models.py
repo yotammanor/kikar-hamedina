@@ -19,12 +19,10 @@ class Title(models.Model):
         return self.name
 
 
-class PersonAlias(models.Model):
-    name = models.CharField(max_length=64)
-    person = models.ForeignKey('Person', related_name='aliases')
 
-    def __unicode__(self):
-        return "%s -> %s" % (self.name, self.person.name)
+class PersonAltname(models.Model):
+    person = models.ForeignKey('Person')
+    name = models.CharField(max_length=64)
 
 GENDER_CHOICES = (
     (u'M', _('Male')),

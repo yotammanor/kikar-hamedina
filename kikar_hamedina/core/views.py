@@ -823,7 +823,7 @@ def search_bar_members(search_text):
     query_direct_name = Q(name__contains=search_text)
 
     if IS_ELECTIONS_MODE:
-        query_alternative_names = Q(candidatealtname__name__contains=search_text)
+        query_alternative_names = Q(person__peresonaltname__name__contains=search_text)
         combined_member_name_query = Q(person__name__contains=search_text) | query_alternative_names
         member_query = combined_member_name_query
         member_order_by = 'person__name'
