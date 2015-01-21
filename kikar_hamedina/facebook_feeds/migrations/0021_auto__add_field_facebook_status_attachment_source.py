@@ -13,26 +13,10 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.TextField')(null=True, blank=True),
                       keep_default=False)
 
-        # Adding field 'Facebook_Status_Attachment.source_width'
-        db.add_column(u'facebook_feeds_facebook_status_attachment', 'source_width',
-                      self.gf('django.db.models.fields.PositiveSmallIntegerField')(max_length=4, null=True, blank=True),
-                      keep_default=False)
-
-        # Adding field 'Facebook_Status_Attachment.source_height'
-        db.add_column(u'facebook_feeds_facebook_status_attachment', 'source_height',
-                      self.gf('django.db.models.fields.PositiveSmallIntegerField')(max_length=4, null=True, blank=True),
-                      keep_default=False)
-
 
     def backwards(self, orm):
         # Deleting field 'Facebook_Status_Attachment.source'
         db.delete_column(u'facebook_feeds_facebook_status_attachment', 'source')
-
-        # Deleting field 'Facebook_Status_Attachment.source_width'
-        db.delete_column(u'facebook_feeds_facebook_status_attachment', 'source_width')
-
-        # Deleting field 'Facebook_Status_Attachment.source_height'
-        db.delete_column(u'facebook_feeds_facebook_status_attachment', 'source_height')
 
 
     models = {
@@ -97,14 +81,12 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'picture': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'source': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'source_height': ('django.db.models.fields.PositiveSmallIntegerField', [], {'max_length': '4', 'null': 'True', 'blank': 'True'}),
-            'source_width': ('django.db.models.fields.PositiveSmallIntegerField', [], {'max_length': '4', 'null': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'attachment'", 'unique': 'True', 'to': u"orm['facebook_feeds.Facebook_Status']"}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '16', 'null': 'True', 'blank': 'True'})
         },
         u'facebook_feeds.feed_popularity': {
             'Meta': {'ordering': "['-date_of_creation']", 'object_name': 'Feed_Popularity'},
-            'date_of_creation': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 12, 11, 0, 0)'}),
+            'date_of_creation': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 12, 19, 0, 0)'}),
             'fan_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'feed': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['facebook_feeds.Facebook_Feed']"}),
             'followers_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -126,8 +108,8 @@ class Migration(SchemaMigration):
         },
         u'facebook_feeds.user_token': {
             'Meta': {'object_name': 'User_Token'},
-            'date_of_creation': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 12, 11, 0, 0)'}),
-            'date_of_expiration': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2015, 2, 9, 0, 0)'}),
+            'date_of_creation': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 12, 19, 0, 0)'}),
+            'date_of_expiration': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2015, 2, 17, 0, 0)'}),
             'feeds': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'tokens'", 'symmetrical': 'False', 'to': u"orm['facebook_feeds.Facebook_Feed']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'token': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),

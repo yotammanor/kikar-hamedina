@@ -54,9 +54,9 @@ class CurrentKnessetCandidateListManager(models.Manager):
     def get_query_set(self):
         # caching won't help here, as the query set will be re-run on each
         # request, and we may need to further run queries down the road
-        from mks.models import Knesset
+        from polyorg.models import ElectedKnesset
         qs = super(CurrentKnessetCandidateListManager, self).get_query_set()
-        qs = qs.filter(knesset=Knesset.objects.current_knesset())
+        qs = qs.filter(knesset=ElectedKnesset.objects.current_knesset())
         return qs
 
     @property
