@@ -7,6 +7,7 @@ import csv
 
 json_data_persons = open('../persons_and_polyorg/data_fixture_polyorg.json', mode='wb')
 
+elected_knesset_csv = csv.DictReader(open('../persons_and_polyorg/data_from_json_polyorg.electedknesset.csv', 'r'))
 candidate_csv = csv.DictReader(open('../persons_and_polyorg/data_from_json_polyorg.candidate.csv', 'r'))
 candidate_list_csv = csv.DictReader(open('../persons_and_polyorg/data_from_json_polyorg.candidatelist.csv', 'r'))
 candidate_list_altname_csv = csv.DictReader(open('../persons_and_polyorg/data_from_json_polyorg.candidatelistaltname.csv', 'r'))
@@ -37,7 +38,9 @@ def turn_csv_to_dict(dict_reader_object):
 
 
 def main():
-    all_persons_data_for_insertion = turn_csv_to_dict(candidate_csv) + \
+    all_persons_data_for_insertion = \
+        turn_csv_to_dict(elected_knesset_csv) + \
+        turn_csv_to_dict(candidate_csv) + \
         turn_csv_to_dict(candidate_list_csv) + \
         turn_csv_to_dict(candidate_list_altname_csv)
 

@@ -1,12 +1,21 @@
 [
     {
+        "pk": "20", 
+        "model": "polyorg.electedknesset", 
+        "fields": {
+            "election_date": "2015-03-17", 
+            "start_date": null, 
+            "end_date": null
+        }
+    }, 
+    {
         "pk": "1", 
         "model": "polyorg.candidate", 
         "fields": {
             "ordinal": "3", 
             "person": "1", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -15,8 +24,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "41", 
-            "votes": null, 
-            "candidates_list": "34"
+            "candidates_list": "34", 
+            "votes": null
         }
     }, 
     {
@@ -25,8 +34,8 @@
         "fields": {
             "ordinal": "9", 
             "person": "45", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -35,8 +44,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "63", 
-            "votes": null, 
-            "candidates_list": "35"
+            "candidates_list": "35", 
+            "votes": null
         }
     }, 
     {
@@ -45,8 +54,8 @@
         "fields": {
             "ordinal": "10", 
             "person": "64", 
-            "votes": "15903", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "15903"
         }
     }, 
     {
@@ -55,8 +64,8 @@
         "fields": {
             "ordinal": "4", 
             "person": "69", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -65,8 +74,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "90", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -75,8 +84,8 @@
         "fields": {
             "ordinal": "8", 
             "person": "105", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -85,8 +94,8 @@
         "fields": {
             "ordinal": "6", 
             "person": "122", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -95,8 +104,8 @@
         "fields": {
             "ordinal": "2", 
             "person": "200", 
-            "votes": null, 
-            "candidates_list": "32"
+            "candidates_list": "32", 
+            "votes": null
         }
     }, 
     {
@@ -105,8 +114,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "201", 
-            "votes": null, 
-            "candidates_list": "32"
+            "candidates_list": "32", 
+            "votes": null
         }
     }, 
     {
@@ -115,8 +124,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "208", 
-            "votes": null, 
-            "candidates_list": "37"
+            "candidates_list": "37", 
+            "votes": null
         }
     }, 
     {
@@ -125,8 +134,8 @@
         "fields": {
             "ordinal": "17", 
             "person": "212", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -135,8 +144,8 @@
         "fields": {
             "ordinal": "2", 
             "person": "213", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -145,8 +154,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "214", 
-            "votes": null, 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": null
         }
     }, 
     {
@@ -155,8 +164,8 @@
         "fields": {
             "ordinal": "24", 
             "person": "230", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -165,8 +174,8 @@
         "fields": {
             "ordinal": "13", 
             "person": "695", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -175,8 +184,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "720", 
-            "votes": null, 
-            "candidates_list": "39"
+            "candidates_list": "39", 
+            "votes": null
         }
     }, 
     {
@@ -185,8 +194,8 @@
         "fields": {
             "ordinal": "14", 
             "person": "723", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -195,8 +204,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "731", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -205,8 +214,8 @@
         "fields": {
             "ordinal": "2", 
             "person": "734", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -215,8 +224,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "740", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -225,8 +234,8 @@
         "fields": {
             "ordinal": "8", 
             "person": "768", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -235,8 +244,8 @@
         "fields": {
             "ordinal": "20", 
             "person": "771", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -245,8 +254,8 @@
         "fields": {
             "ordinal": "3", 
             "person": "780", 
-            "votes": null, 
-            "candidates_list": "36"
+            "candidates_list": "36", 
+            "votes": null
         }
     }, 
     {
@@ -255,8 +264,8 @@
         "fields": {
             "ordinal": "3", 
             "person": "782", 
-            "votes": "22865", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "22865"
         }
     }, 
     {
@@ -265,8 +274,8 @@
         "fields": {
             "ordinal": "7", 
             "person": "823", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -275,8 +284,8 @@
         "fields": {
             "ordinal": "12", 
             "person": "826", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -285,8 +294,8 @@
         "fields": {
             "ordinal": "10", 
             "person": "828", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -295,8 +304,8 @@
         "fields": {
             "ordinal": "15", 
             "person": "830", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -305,8 +314,8 @@
         "fields": {
             "ordinal": "5", 
             "person": "831", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -315,8 +324,8 @@
         "fields": {
             "ordinal": "2", 
             "person": "846", 
-            "votes": null, 
-            "candidates_list": "38"
+            "candidates_list": "38", 
+            "votes": null
         }
     }, 
     {
@@ -325,8 +334,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "864", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -335,8 +344,8 @@
         "fields": {
             "ordinal": "7", 
             "person": "865", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -345,8 +354,8 @@
         "fields": {
             "ordinal": "3", 
             "person": "867", 
-            "votes": null, 
-            "candidates_list": "38"
+            "candidates_list": "38", 
+            "votes": null
         }
     }, 
     {
@@ -355,8 +364,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "868", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -365,8 +374,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "877", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -375,8 +384,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "878", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -385,8 +394,8 @@
         "fields": {
             "ordinal": "12", 
             "person": "882", 
-            "votes": "15421", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "15421"
         }
     }, 
     {
@@ -395,8 +404,8 @@
         "fields": {
             "ordinal": "3", 
             "person": "888", 
-            "votes": null, 
-            "candidates_list": "32"
+            "candidates_list": "32", 
+            "votes": null
         }
     }, 
     {
@@ -405,8 +414,8 @@
         "fields": {
             "ordinal": "4", 
             "person": "895", 
-            "votes": null, 
-            "candidates_list": "32"
+            "candidates_list": "32", 
+            "votes": null
         }
     }, 
     {
@@ -415,8 +424,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "900", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -425,8 +434,8 @@
         "fields": {
             "ordinal": "4", 
             "person": "903", 
-            "votes": "21588", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "21588"
         }
     }, 
     {
@@ -435,8 +444,8 @@
         "fields": {
             "ordinal": "11", 
             "person": "907", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -445,8 +454,8 @@
         "fields": {
             "ordinal": "16", 
             "person": "908", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -455,8 +464,8 @@
         "fields": {
             "ordinal": "18", 
             "person": "909", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -465,8 +474,8 @@
         "fields": {
             "ordinal": "19", 
             "person": "910", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -475,8 +484,8 @@
         "fields": {
             "ordinal": "21", 
             "person": "911", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -485,8 +494,8 @@
         "fields": {
             "ordinal": "22", 
             "person": "912", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -495,8 +504,8 @@
         "fields": {
             "ordinal": "23", 
             "person": "913", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -505,8 +514,8 @@
         "fields": {
             "ordinal": "25", 
             "person": "914", 
-            "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "26", 
+            "votes": null
         }
     }, 
     {
@@ -515,8 +524,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "915", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -525,8 +534,8 @@
         "fields": {
             "ordinal": "6", 
             "person": "916", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -535,8 +544,8 @@
         "fields": {
             "ordinal": "4", 
             "person": "917", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -545,8 +554,8 @@
         "fields": {
             "ordinal": "5", 
             "person": "918", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -555,8 +564,8 @@
         "fields": {
             "ordinal": "2", 
             "person": "919", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -565,8 +574,8 @@
         "fields": {
             "ordinal": "3", 
             "person": "920", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -575,8 +584,8 @@
         "fields": {
             "ordinal": "7", 
             "person": "921", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -585,8 +594,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "922", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -595,8 +604,8 @@
         "fields": {
             "ordinal": "5", 
             "person": "901", 
-            "votes": "18193", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "18193"
         }
     }, 
     {
@@ -605,8 +614,8 @@
         "fields": {
             "ordinal": "6", 
             "person": "866", 
-            "votes": "17955", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "17955"
         }
     }, 
     {
@@ -615,8 +624,8 @@
         "fields": {
             "ordinal": "9", 
             "person": "881", 
-            "votes": "17936", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "17936"
         }
     }, 
     {
@@ -625,8 +634,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "923", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -635,8 +644,8 @@
         "fields": {
             "ordinal": "13", 
             "person": "896", 
-            "votes": "14427", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "14427"
         }
     }, 
     {
@@ -645,8 +654,8 @@
         "fields": {
             "ordinal": "14", 
             "person": "924", 
-            "votes": "7915", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "7915"
         }
     }, 
     {
@@ -655,8 +664,8 @@
         "fields": {
             "ordinal": "15", 
             "person": "925", 
-            "votes": "6950", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "6950"
         }
     }, 
     {
@@ -665,8 +674,8 @@
         "fields": {
             "ordinal": "16", 
             "person": "926", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -675,8 +684,8 @@
         "fields": {
             "ordinal": "17", 
             "person": "927", 
-            "votes": "8495", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "8495"
         }
     }, 
     {
@@ -685,8 +694,8 @@
         "fields": {
             "ordinal": "18", 
             "person": "928", 
-            "votes": "5467", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "5467"
         }
     }, 
     {
@@ -695,8 +704,8 @@
         "fields": {
             "ordinal": "19", 
             "person": "862", 
-            "votes": "7111", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "7111"
         }
     }, 
     {
@@ -705,8 +714,8 @@
         "fields": {
             "ordinal": "20", 
             "person": "818", 
-            "votes": "11983", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "11983"
         }
     }, 
     {
@@ -715,8 +724,8 @@
         "fields": {
             "ordinal": "21", 
             "person": "929", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -725,8 +734,8 @@
         "fields": {
             "ordinal": "22", 
             "person": "930", 
-            "votes": "6676", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "6676"
         }
     }, 
     {
@@ -735,8 +744,8 @@
         "fields": {
             "ordinal": "23", 
             "person": "931", 
-            "votes": "11972", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "11972"
         }
     }, 
     {
@@ -745,8 +754,8 @@
         "fields": {
             "ordinal": "24", 
             "person": "932", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -755,8 +764,8 @@
         "fields": {
             "ordinal": "25", 
             "person": "933", 
-            "votes": "0", 
-            "candidates_list": "27"
+            "candidates_list": "27", 
+            "votes": "0"
         }
     }, 
     {
@@ -765,8 +774,8 @@
         "fields": {
             "ordinal": "2", 
             "person": "713", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -775,8 +784,8 @@
         "fields": {
             "ordinal": "3", 
             "person": "904", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -785,8 +794,8 @@
         "fields": {
             "ordinal": "4", 
             "person": "863", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -795,8 +804,8 @@
         "fields": {
             "ordinal": "5", 
             "person": "92", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -805,8 +814,8 @@
         "fields": {
             "ordinal": "6", 
             "person": "845", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -815,8 +824,8 @@
         "fields": {
             "ordinal": "7", 
             "person": "934", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -825,8 +834,8 @@
         "fields": {
             "ordinal": "8", 
             "person": "879", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -835,8 +844,8 @@
         "fields": {
             "ordinal": "9", 
             "person": "935", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -845,8 +854,8 @@
         "fields": {
             "ordinal": "10", 
             "person": "873", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -855,8 +864,8 @@
         "fields": {
             "ordinal": "11", 
             "person": "870", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -865,8 +874,8 @@
         "fields": {
             "ordinal": "12", 
             "person": "936", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -875,8 +884,8 @@
         "fields": {
             "ordinal": "13", 
             "person": "937", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -885,8 +894,8 @@
         "fields": {
             "ordinal": "14", 
             "person": "884", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -895,8 +904,8 @@
         "fields": {
             "ordinal": "15", 
             "person": "938", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -905,8 +914,8 @@
         "fields": {
             "ordinal": "16", 
             "person": "939", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -915,8 +924,8 @@
         "fields": {
             "ordinal": "17", 
             "person": "940", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -925,8 +934,8 @@
         "fields": {
             "ordinal": "18", 
             "person": "893", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -935,8 +944,8 @@
         "fields": {
             "ordinal": "19", 
             "person": "941", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -945,8 +954,8 @@
         "fields": {
             "ordinal": "20", 
             "person": "942", 
-            "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "28", 
+            "votes": null
         }
     }, 
     {
@@ -955,8 +964,8 @@
         "fields": {
             "ordinal": "5", 
             "person": "871", 
-            "votes": null, 
-            "candidates_list": "32"
+            "candidates_list": "32", 
+            "votes": null
         }
     }, 
     {
@@ -965,8 +974,8 @@
         "fields": {
             "ordinal": "6", 
             "person": "943", 
-            "votes": null, 
-            "candidates_list": "32"
+            "candidates_list": "32", 
+            "votes": null
         }
     }, 
     {
@@ -975,8 +984,8 @@
         "fields": {
             "ordinal": "7", 
             "person": "944", 
-            "votes": null, 
-            "candidates_list": "32"
+            "candidates_list": "32", 
+            "votes": null
         }
     }, 
     {
@@ -985,8 +994,8 @@
         "fields": {
             "ordinal": "8", 
             "person": "945", 
-            "votes": null, 
-            "candidates_list": "32"
+            "candidates_list": "32", 
+            "votes": null
         }
     }, 
     {
@@ -995,8 +1004,8 @@
         "fields": {
             "ordinal": "2", 
             "person": "832", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1005,8 +1014,8 @@
         "fields": {
             "ordinal": "3", 
             "person": "78", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1015,8 +1024,8 @@
         "fields": {
             "ordinal": "4", 
             "person": "946", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1025,8 +1034,8 @@
         "fields": {
             "ordinal": "5", 
             "person": "947", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1035,8 +1044,8 @@
         "fields": {
             "ordinal": "6", 
             "person": "837", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1045,8 +1054,8 @@
         "fields": {
             "ordinal": "7", 
             "person": "793", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1055,8 +1064,8 @@
         "fields": {
             "ordinal": "8", 
             "person": "948", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1065,8 +1074,8 @@
         "fields": {
             "ordinal": "9", 
             "person": "949", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1075,8 +1084,8 @@
         "fields": {
             "ordinal": "10", 
             "person": "950", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1085,8 +1094,8 @@
         "fields": {
             "ordinal": "11", 
             "person": "785", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1095,8 +1104,8 @@
         "fields": {
             "ordinal": "12", 
             "person": "813", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1105,8 +1114,8 @@
         "fields": {
             "ordinal": "13", 
             "person": "951", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1115,8 +1124,8 @@
         "fields": {
             "ordinal": "14", 
             "person": "859", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1125,8 +1134,8 @@
         "fields": {
             "ordinal": "15", 
             "person": "952", 
-            "votes": "1", 
-            "candidates_list": "29"
+            "candidates_list": "29", 
+            "votes": "1"
         }
     }, 
     {
@@ -1135,8 +1144,8 @@
         "fields": {
             "ordinal": "8", 
             "person": "953", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -1145,8 +1154,8 @@
         "fields": {
             "ordinal": "9", 
             "person": "954", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -1155,8 +1164,8 @@
         "fields": {
             "ordinal": "10", 
             "person": "955", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -1165,8 +1174,8 @@
         "fields": {
             "ordinal": "11", 
             "person": "956", 
-            "votes": null, 
-            "candidates_list": "31"
+            "candidates_list": "31", 
+            "votes": null
         }
     }, 
     {
@@ -1175,8 +1184,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "899", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1185,8 +1194,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "886", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1195,8 +1204,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "868", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1205,8 +1214,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "900", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1215,8 +1224,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "874", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1225,8 +1234,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "875", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1235,8 +1244,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "887", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1245,8 +1254,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "897", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1255,8 +1264,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "860", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1265,8 +1274,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "876", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1275,8 +1284,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "892", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "30", 
+            "votes": null
         }
     }, 
     {
@@ -1285,8 +1294,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "756", 
-            "votes": null, 
-            "candidates_list": "38"
+            "candidates_list": "38", 
+            "votes": null
         }
     }, 
     {
@@ -1295,8 +1304,8 @@
         "fields": {
             "ordinal": "2", 
             "person": "957", 
-            "votes": null, 
-            "candidates_list": "36"
+            "candidates_list": "36", 
+            "votes": null
         }
     }, 
     {
@@ -1305,8 +1314,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "958", 
-            "votes": null, 
-            "candidates_list": "36"
+            "candidates_list": "36", 
+            "votes": null
         }
     }, 
     {
@@ -1315,8 +1324,8 @@
         "fields": {
             "ordinal": "4", 
             "person": "959", 
-            "votes": null, 
-            "candidates_list": "36"
+            "candidates_list": "36", 
+            "votes": null
         }
     }, 
     {
@@ -1325,8 +1334,8 @@
         "fields": {
             "ordinal": "5", 
             "person": "960", 
-            "votes": null, 
-            "candidates_list": "36"
+            "candidates_list": "36", 
+            "votes": null
         }
     }, 
     {
@@ -1335,8 +1344,8 @@
         "fields": {
             "ordinal": "4", 
             "person": "961", 
-            "votes": null, 
-            "candidates_list": "38"
+            "candidates_list": "38", 
+            "votes": null
         }
     }, 
     {
@@ -1345,8 +1354,8 @@
         "fields": {
             "ordinal": "1", 
             "person": "216", 
-            "votes": null, 
-            "candidates_list": "33"
+            "candidates_list": "33", 
+            "votes": null
         }
     }, 
     {
@@ -1355,8 +1364,8 @@
         "fields": {
             "ordinal": "99", 
             "person": "898", 
-            "votes": null, 
-            "candidates_list": "35"
+            "candidates_list": "35", 
+            "votes": null
         }
     }, 
     {
@@ -1369,12 +1378,12 @@
             "name": "\u05d4\u05dc\u05d9\u05db\u05d5\u05d3", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05de\u05d7\u05dc", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05de\u05d7\u05dc", 
             "knesset": "20"
         }
     }, 
@@ -1388,12 +1397,12 @@
             "name": "\u05d4\u05de\u05d7\u05e0\u05d4 \u05d4\u05e6\u05d9\u05d5\u05e0\u05d9", 
             "wikipedia_page": "http://he.wikipedia.org/wiki/%D7%94%D7%9E%D7%97%D7%A0%D7%94_%D7%94%D7%A6%D7%99%D7%95%D7%A0%D7%99", 
             "mpg_html_report": "", 
-            "ballot": "\u05d0\u05de\u05ea", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05d0\u05de\u05ea", 
             "knesset": "20"
         }
     }, 
@@ -1407,12 +1416,12 @@
             "name": "\u05d4\u05d1\u05d9\u05ea \u05d4\u05d9\u05d4\u05d5\u05d3\u05d9", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05d8\u05d1", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05d8\u05d1", 
             "knesset": "20"
         }
     }, 
@@ -1426,12 +1435,12 @@
             "name": "\u05d9\u05e9\u05e8\u05d0\u05dc \u05d1\u05d9\u05ea\u05e0\u05d5", 
             "wikipedia_page": "http://he.wikipedia.org/wiki/%D7%99%D7%A9%D7%A8%D7%90%D7%9C_%D7%91%D7%99%D7%AA%D7%A0%D7%95", 
             "mpg_html_report": "", 
-            "ballot": "\u05dc", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": "31", 
-            "img_url": "", 
+            "ballot": "\u05dc", 
             "knesset": "20"
         }
     }, 
@@ -1445,12 +1454,12 @@
             "name": "\u05d9\u05e9 \u05e2\u05ea\u05d9\u05d3", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05e4\u05d4", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05e4\u05d4", 
             "knesset": "20"
         }
     }, 
@@ -1464,12 +1473,12 @@
             "name": "\u05db\u05d5\u05dc\u05e0\u05d5", 
             "wikipedia_page": "http://he.wikipedia.org/wiki/%D7%9B%D7%95%D7%9C%D7%A0%D7%95_%D7%91%D7%A8%D7%90%D7%A9%D7%95%D7%AA_%D7%9E%D7%A9%D7%94_%D7%9B%D7%97%D7%9C%D7%95%D7%9F", 
             "mpg_html_report": "", 
-            "ballot": "NA", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": "29", 
-            "img_url": "", 
+            "ballot": "NA", 
             "knesset": "20"
         }
     }, 
@@ -1483,12 +1492,12 @@
             "name": "\u05de\u05e8\u05e6", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05de\u05e8\u05e6", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05de\u05e8\u05e6", 
             "knesset": "20"
         }
     }, 
@@ -1502,12 +1511,12 @@
             "name": "\u05d9\u05d4\u05d3\u05d5\u05ea \u05d4\u05ea\u05d5\u05e8\u05d4", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05d2", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05d2", 
             "knesset": "20"
         }
     }, 
@@ -1521,12 +1530,12 @@
             "name": "\u05e9\"\u05e1", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05e9\u05e1", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05e9\u05e1", 
             "knesset": "20"
         }
     }, 
@@ -1540,12 +1549,12 @@
             "name": "\u05d4\u05e2\u05dd \u05d0\u05d9\u05ea\u05e0\u05d5", 
             "wikipedia_page": "http://he.wikipedia.org/wiki/%D7%94%D7%A2%D7%9D_%D7%90%D7%99%D7%AA%D7%A0%D7%95", 
             "mpg_html_report": "", 
-            "ballot": "NA", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "NA", 
             "knesset": "20"
         }
     }, 
@@ -1559,12 +1568,12 @@
             "name": "\u05d7\u05d3\"\u05e9", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05d5", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05d5", 
             "knesset": "20"
         }
     }, 
@@ -1578,12 +1587,12 @@
             "name": "\u05e8\u05e2\"\u05de - \u05ea\u05e2\"\u05dc", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05e2\u05dd", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05e2\u05dd", 
             "knesset": "20"
         }
     }, 
@@ -1597,12 +1606,12 @@
             "name": "\u05d1\u05dc\"\u05d3", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05d3", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05d3", 
             "knesset": "20"
         }
     }, 
@@ -1616,12 +1625,12 @@
             "name": "\u05e7\u05d3\u05d9\u05de\u05d4", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
-            "ballot": "\u05db\u05df", 
+            "img_url": "", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
             "surplus_partner": null, 
-            "img_url": "", 
+            "ballot": "\u05db\u05df", 
             "knesset": "20"
         }
     }, 
