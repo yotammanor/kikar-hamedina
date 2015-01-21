@@ -28,6 +28,7 @@ from core.insights import StatsEngine
 from core.billboards import Billboards
 from core.models import MEMBER_MODEL, PARTY_MODEL
 # current knesset number
+MAX_UNTAGGED_POSTS = 1000
 CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
 
 # Elections mode (use candidates instead of MKs)
@@ -261,10 +262,11 @@ class AllStatusesView(StatusListView):
 
     def get_queryset(self):
         retset = self.apply_request_params(super(AllStatusesView, self).get_queryset())
-        # untagged url is known to be super heavy on the DB. That is why it is hard coded limited to 500 matches.
+        # untagged url is known to be super heavy on the DB.
+        # That is why it is hard coded limited to MAX_UNTAGGED matches.
         # Agam Rafaeli - 2/1/2015
         if self.request.resolver_match.url_name == "untagged":
-            retset = retset[:1000]
+            retset = retset[:MAX_UNTAGGED_POSTS]
         return retset
 
     def get_context_data(self, **kwargs):
@@ -449,6 +451,7 @@ class StatusFilterUnifiedView(StatusListView):
         search_field = self.kwargs.get('search_field', 'id')
         context['object'] = self.parent_model.objects.get(**{search_field: object_id})
         return context
+
 
 class MemberView(StatusFilterUnifiedView):
     template_name = "core/member.html"
@@ -816,7 +819,7 @@ def search_bar_parties(search_text):
 
 
 def search_bar_members(search_text):
-   # Members
+    # Members
     query_direct_name = Q(name__contains=search_text)
 
     if IS_ELECTIONS_MODE:
@@ -831,7 +834,7 @@ def search_bar_members(search_text):
         member_order_by = 'name'
 
     return MEMBER_MODEL.objects.filter(member_query).distinct().select_related('current_party') \
-                    .order_by(member_order_by)[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+               .order_by(member_order_by)[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
 
 
 def search_bar_tags(search_text):
