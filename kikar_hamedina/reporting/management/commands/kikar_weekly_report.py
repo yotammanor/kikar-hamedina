@@ -97,7 +97,6 @@ class Command(BaseCommand):
         parties_data = list()
         party_ids = dict()
         for party in stats.party_list:
-            print party.n_statuses_last_week
             all_members_for_party = PARTY_MODEL.objects.get(id=party.party.id).current_members()
             all_feeds_for_party = [member.facebook_persona.get_main_feed.id for member in
                                    all_members_for_party if member.facebook_persona]
@@ -105,16 +104,15 @@ class Command(BaseCommand):
             parties_data.append({
                 'party_id': party.party.id,
                 'party_name': party.party.name,
-                'num_of_weekly_statuses': party.n_statuses_last_week,
-                'total_like_count_this_week': party.total_status_likes_last_week,
-                'mean_like_count_this_week': party.mean_status_likes_last_week,
-                'mean_comment_count_this_week': party.mean_status_comments_last_week,
-                'mean_share_count_this_week': party.mean_status_shares_last_week,
+                'num_of_weekly_statuses': getattr(party, 'n_statuses_last_week', 0),
+                'total_like_count_this_week': getattr(party, 'total_status_likes_last_week', 0),
+                'mean_like_count_this_week': getattr(party, 'mean_status_likes_last_week', 0),
+                'mean_comment_count_this_week': getattr(party,' mean_status_comments_last_week', 0),
+                'mean_share_count_this_week': getattr(party, 'mean_status_shares_last_week', 0)
             })
 
         PARTY_NAME_FORMAT = '; '
         print 'is election mode:', IS_ELECTIONS_MODE
-        print party_ids
         if not IS_ELECTIONS_MODE:
             factions = [{'id': 1,
                          'name': 'right_side',
@@ -165,44 +163,44 @@ class Command(BaseCommand):
                          'members': PARTY_NAME_FORMAT.join(
                              [x.name for x in PARTY_MODEL.objects.filter(id__in=[26, 28, 29])]),
                          'feeds': party_ids[26] + party_ids[28] + party_ids[29],
-                         'size': PARTY_MODEL.objects.get(id=26).number_of_seats +
-                                 PARTY_MODEL.objects.get(id=28).number_of_seats +
-                                 PARTY_MODEL.objects.get(id=29).number_of_seats
+                         'size': PARTY_MODEL.objects.get(id=26).candidates.count() +
+                                 PARTY_MODEL.objects.get(id=28).candidates.count() +
+                                 PARTY_MODEL.objects.get(id=29).candidates.count()
                         },
                         {'id': 2,
                          'name': 'center_side',
                          'members': PARTY_NAME_FORMAT.join(
                              [x.name for x in PARTY_MODEL.objects.filter(id__in=[30, 31, 39])]),
                          'feeds': party_ids[30] + party_ids[31] + party_ids[39],
-                         'size': PARTY_MODEL.objects.get(id=30).number_of_seats +
-                                 PARTY_MODEL.objects.get(id=31).number_of_seats +
-                                 PARTY_MODEL.objects.get(id=39).number_of_seats
+                         'size': PARTY_MODEL.objects.get(id=30).candidates.count() +
+                                 PARTY_MODEL.objects.get(id=31).candidates.count() +
+                                 PARTY_MODEL.objects.get(id=39).candidates.count()
                         },
                         {'id': 3,
                          'name': 'left_side',
                          'members': PARTY_NAME_FORMAT.join(
                              [x.name for x in PARTY_MODEL.objects.filter(id__in=[27, 32])]),
                          'feeds': party_ids[27] + party_ids[32],
-                         'size': PARTY_MODEL.objects.get(id=27).number_of_seats +
-                                 PARTY_MODEL.objects.get(id=32).number_of_seats
+                         'size': PARTY_MODEL.objects.get(id=27).candidates.count() +
+                                 PARTY_MODEL.objects.get(id=32).candidates.count()
                         },
                         {'id': 4,
                          'name': 'arab_parties',
                          'members': PARTY_NAME_FORMAT.join(
                              [x.name for x in PARTY_MODEL.objects.filter(id__in=[36, 37, 38])]),
                          'feeds': party_ids[36] + party_ids[37] + party_ids[38],
-                         'size': PARTY_MODEL.objects.get(id=36).number_of_seats +
-                                 PARTY_MODEL.objects.get(id=37).number_of_seats +
-                                 PARTY_MODEL.objects.get(id=38).number_of_seats
+                         'size': PARTY_MODEL.objects.get(id=36).candidates.count() +
+                                 PARTY_MODEL.objects.get(id=37).candidates.count() +
+                                 PARTY_MODEL.objects.get(id=38).candidates.count()
                         },
                         {'id': 5,
                          'name': 'haredi_parties',
                          'members': PARTY_NAME_FORMAT.join(
                              [x.name for x in PARTY_MODEL.objects.filter(id__in=[33, 34, 35])]),
                          'feeds': party_ids[33] + party_ids[34] + party_ids[35],
-                         'size': PARTY_MODEL.objects.get(id=33).number_of_seats +
-                                 PARTY_MODEL.objects.get(id=34).number_of_seats +
-                                 PARTY_MODEL.objects.get(id=35).number_of_seats
+                         'size': PARTY_MODEL.objects.get(id=33).candidates.count() +
+                                 PARTY_MODEL.objects.get(id=34).candidates.count() +
+                                 PARTY_MODEL.objects.get(id=35).candidates.count()
                         },
             ]
         factions_data = list()
