@@ -48,7 +48,7 @@ class CandidateList(models.Model):
                                        help_text=_('The MPG report on the list, can use html'))
     img_url = models.URLField(blank=True)
     youtube_user = models.CharField(_('YouTube user'), max_length=80, null=True, blank=True)
-    wikipedia_page = models.CharField(_('Wikipedia page'), max_length=80, null=True, blank=True)
+    wikipedia_page = models.CharField(_('Wikipedia page'), max_length=512, null=True, blank=True)
     twitter_account = models.CharField(_('Twitter account'), max_length=80, null=True, blank=True)
     facebook_url = models.URLField(blank=True, null=True)
     platform = models.TextField(_('Platform'), blank=True, null=True)
