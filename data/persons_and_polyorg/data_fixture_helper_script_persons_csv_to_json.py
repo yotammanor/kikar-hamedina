@@ -5,10 +5,10 @@ import json
 import csv
 
 
-json_data_persons = open('../persons/data_fixture_persons.json', mode='wb')
+json_data_persons = open('../persons/election_mode_fixture_1.json', mode='wb')
 
-party_csv = csv.DictReader(open('../persons/data_from_json_persons.party.csv', 'r'))
-person_csv = csv.DictReader(open('../persons/data_from_json_persons.person.csv', 'r'))
+person_csv = csv.DictReader(open('../persons_and_polyorg/data_from_json_persons.person.csv', 'r'))
+title_csv = csv.DictReader(open('../persons_and_polyorg/data_from_json_persons.title.csv', 'r'))
 
 
 def turn_csv_to_dict(dict_reader_object):
@@ -19,8 +19,12 @@ def turn_csv_to_dict(dict_reader_object):
         full_dict['model'] = row.pop('model')
         fields_dict = dict()
         for key, value in row.items():
-            if key == 'content_type':
+            if key in ['content_type', 'titles'] or value == "None":
                 fields_dict[key] = eval(value)
+            elif value == "TRUE":
+                fields_dict[key] = True
+            elif value == "FALSE":
+                fields_dict[key] = False
             else:
                 fields_dict[key] = value
         full_dict['fields'] = fields_dict
@@ -31,12 +35,11 @@ def turn_csv_to_dict(dict_reader_object):
 
 
 def main():
-    all_persons_data_for_insertion =  turn_csv_to_dict(party_csv) + \
-        turn_csv_to_dict(person_csv)
+    all_persons_data_for_insertion = turn_csv_to_dict(person_csv) + turn_csv_to_dict(title_csv)
 
     print 'creating persons data fixture'
     pprint(all_persons_data_for_insertion)
-    json.dump(all_persons_data_for_insertion, json_data_persons, encoding='utf-8')
+    json.dump(all_persons_data_for_insertion, json_data_persons, encoding='utf-8', indent=4)
     json_data_persons.close()
 
 
