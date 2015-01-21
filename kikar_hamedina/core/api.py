@@ -30,7 +30,7 @@ class KnessetResource(ModelResource):
 
 class PartyResource(ModelResource):
     knesset = fields.ForeignKey(KnessetResource, 'knesset', null=True, blank=True)
-    all_members = fields.ManyToManyField(MemberResource, 'all_members',  null=True, blank=True)
+    all_members = fields.ManyToManyField(MemberResource, 'all_members', null=True, blank=True)
 
     class Meta:
         queryset = PARTY_MODEL.objects.all()
@@ -52,7 +52,6 @@ class Facebook_FeedResource(ModelResource):
 
 
 class MemberResource(ModelResource):
-
     current_party = fields.ForeignKey(PartyResource, 'current_party', null=True, blank=True)
     if hasattr(MEMBER_MODEL, 'parties'):
         parties = fields.ManyToManyField(PartyResource, 'parties')
@@ -78,7 +77,6 @@ class TagResource(ModelResource):
 
 
 class Facebook_StatusResource(ModelResource):
-
     feed = fields.ForeignKey(Facebook_FeedResource, 'feed')
     tags = fields.ManyToManyField(TagResource, 'tags')
 
