@@ -29,10 +29,13 @@ TAG_NAME_CHARSET=ur'[\w\s\-:"\'!\?&\.#\u2010-\u201f\u05f3\u05f4]'
 TAG_NAME_REGEX=u'^%s+$' % TAG_NAME_CHARSET
 
 class Facebook_Persona(models.Model):
+
+    # Relation to MKs objects
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = generic.GenericForeignKey()
 
+    # Relation to Candidates objects
     alt_content_type = models.ForeignKey(ContentType, related_name='alt', null=True, blank=True)
     alt_object_id = models.PositiveIntegerField(null=True, blank=True)
     alt_content_object = generic.GenericForeignKey(ct_field="alt_content_type", fk_field="alt_object_id")
@@ -97,7 +100,7 @@ class Facebook_Feed(models.Model):
         ordering = ['feed_type']  # This will create a preference for Public Page over User Profile when both exist.
 
     def __unicode__(self):
-        return slugify(self.username) + " " + self.vendor_id
+        return "%s %s (%s)" % (slugify(self.username), self.vendor_id, self.id)
 
     def save(self, *args, **kwargs):
         '''On save, update locally_updated fields'''
@@ -199,6 +202,9 @@ class Feed_Popularity(models.Model):
 
     class Meta:
         ordering = ['-date_of_creation']
+        verbose_name_plural = 'Feed_Popularities'
+
+
 
     def __unicode__(self):
         return slugify(self.feed.name) + " " + str(self.date_of_creation.date())
@@ -308,6 +314,9 @@ class Facebook_Status(models.Model):
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
         #     need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
+
+    class Meta:
+        verbose_name_plural = 'Facebook_Statuses'
 
 
 # status_with_photo = '161648040544835_720225251353775'

@@ -1,0 +1,241 @@
+pk,model,fax,residence_economy,name,gender,area_of_residence,mk,place_of_residence_lat,family_status,phone,place_of_residence_lon,titles,place_of_residence,date_of_death,date_of_birth,place_of_birth,year_of_aliyah,residence_centrality,number_of_children,img_url,email
+1,persons.person,02-6758919,4,יולי - יואל אדלשטיין,M,,1,31.65487,נשוי,,35.125257,[],אלון שבות,None,1958-08-05,אוקראינה,1987,5,2,http://www.knesset.gov.il/mk/images/members/edelstein_yoel-s.jpg,yedelstein@knesset.gov.il
+5,persons.person,,7,חיים אורון,M,,5,31.379361,,,34.871292,[],קיבוץ להב,None,1940-03-26,"תל אביב, ישראל",None,5,None,http://www.knesset.gov.il/mk/images/members/oron_chaim-s.jpg,
+7,persons.person,02-6753908,4,דוד אזולאי,M,,7,32.9206,נשוי,,35.1003,[],עכו,None,1954-05-05,מרוקו,1963,4,4,http://www.knesset.gov.il/mk/images/members/azoulay_david-s.jpg,dazulay@knesset.gov.il
+8,persons.person,,4,דליה איציק,F,None,8,31.7857,,,35.2007,[],ירושלים,None,1952-10-20,"ירושלים, ישראל",None,9,None,http://www.knesset.gov.il/mk/images/members/itzik_dalia-s.jpg,
+9,persons.person,,5,מיכאל איתן,M,,9,31.523432,,,34.595282,[],שדרות,None,1944-03-06,"תל אביב, ישראל",None,5,None,http://www.knesset.gov.il/mk/images/members/eitan_michael-s.jpg,
+13,persons.person,,1,טלב אלסאנע,M,None,13,31.3249,,,34.866228,[],לקיה,None,1960-12-25,"תל-ערד, ישראל",None,4,None,http://www.knesset.gov.il/mk/images/members/elsana_taleb-s.jpg,
+14,persons.person,,4,זאב בנימין  בגין,M,,14,31.7857,,,35.2007,[],ירושלים,None,1943-03-01,"ירושלים, ישראל",None,9,None,http://www.knesset.gov.il/mk/images/members/begin_beni-s.jpg,
+16,persons.person,,8,זאב בוים,M,,16,32.1682,,,34.8125,[],הרצליה,None,1943-04-30,"ירושלים, ישראל",None,8,None,http://www.knesset.gov.il/mk/images/members/boim_zev-s.jpg,
+20,persons.person,02-6662908,7,בנימין (פואד) בן-אליעזר,M,,20,31.9621389,נשוי,,34.8045361,[],ראשון לציון,None,1936-02-12,"בצרה, עיראק",1950,9,5,http://www.knesset.gov.il/mk/images/members/beneliezer_binyamin-s.jpg,binyaminb@knesset.gov.il
+28,persons.person,,8,אהוד ברק,M,,28,32.0554,,,34.7595,[],תל אביב,None,1942-02-12,"קיבוץ משמר השרון, ישראל",None,10,None,http://www.knesset.gov.il/mk/images/members/barak_ehud-s.jpg,
+35,persons.person,02-6408901,2,משה גפני,M,None,35,32.0833333,נשוי,,34.8333333,[],בני ברק,None,1952-05-05,"תל אביב, ישראל",None,10,3,http://www.knesset.gov.il/mk/images/members/gafni_moshe-s.jpg,mgafni@knesset.gov.il
+41,persons.person,,None,אריה דרעי,M,,41,,נשוי,,,[],,None,1959-02-17,"מקנס, מרוקו",1968,None,8,http://www.knesset.gov.il/mk/images/members/deri_aryeh-s.jpg,aderey@knesset.gov.il
+45,persons.person,,8,צחי הנגבי,M,,45,31.7994444,נשוי,,35.1488889,[],מבשרת ציון,None,1957-02-26,"ירושלים, ישראל",None,7,4,http://www.knesset.gov.il/mk/images/members/hanegbi_tzahi-s.jpg,zhanegbi@knesset.gov.il
+50,persons.person,02-6496079,5,יצחק וקנין,M,,50,33.0669444,נשוי,,35.1847222,[],יערה,None,1958-05-12,ישראל,None,3,5,http://www.knesset.gov.il/mk/images/members/vaknin_yizhak-s.jpg,yvaknin@knesset.gov.il
+63,persons.person,02-6662909,4,אליהו ישי,M,,63,31.7857,נשוי,,35.2007,[],ירושלים,None,1962-12-26,ישראל,None,9,5,http://www.knesset.gov.il/mk/images/members/yishai_eli-s.jpg,eyishay@knesset.gov.il
+64,persons.person,02-6496118,6,איתן כבל,M,None,64,32.099299,נשוי,,34.953175,[],ראש העין,None,1959-08-23,"ראש העין, ישראל",None,8,4,http://www.knesset.gov.il/mk/images/members/cabel_eitan-s.jpg,ecabel@knesset.gov.il
+65,persons.person,02-6706157,5,יצחק כהן,M,,65,31.6666667,נשוי,,34.5666667,[],אשקלון,None,1951-10-02,"אשקלון, ישראל",None,6,10,http://www.knesset.gov.il/mk/images/members/cohen_yitzhak-s.jpg,izchakec@knesset.gov.il
+69,persons.person,02-6496525,6,ישראל כץ,M,,69,31.7447222,נשוי,,34.7575,[],כפר אחים,None,1955-09-21,"אשקלון, ישראל",None,6,2,http://www.knesset.gov.il/mk/images/members/katz_yisrael-s.jpg,yiskatz@knesset.gov.il
+70,persons.person,02-6496406,8,לימור לבנת,F,,70,32.0554,בזוגיות,,34.7595,[],תל אביב,None,1950-09-22,"חיפה, ישראל",None,10,2,http://www.knesset.gov.il/mk/images/members/livnat_limor-s.jpg,llivnat@knesset.gov.il
+77,persons.person,,8,עוזי לנדאו,M,None,77,32.1833333,נשוי,,34.8666667,[],רעננה,None,1943-08-02,"חיפה, ישראל",None,8,3,http://www.knesset.gov.il/mk/images/members/landau_uzi-s.jpg,ulandau@KNESSET.GOV.IL
+78,persons.person,02-6496744,5,סופה לנדבר,F,None,78,31.8198,אלמנה,,34.6696,[],אשדוד,None,1949-10-28,"לנינגרד, רוסיה",1979,7,1,http://www.knesset.gov.il/mk/images/members/landver_sofa-s.jpg,slandver@knesset.gov.il
+88,persons.person,,4,דן מרידור,M,None,88,31.7857,,,35.2007,[],ירושלים,None,1947-04-23,"ירושלים, ישראל",None,9,None,http://www.knesset.gov.il/mk/images/members/meridor_dan-s.jpg,
+90,persons.person,,4,בנימין נתניהו,M,,90,31.7857,נשוי,,35.2007,[],ירושלים,None,1949-10-21,"תל אביב, ישראל",None,9,3,http://www.knesset.gov.il/mk/images/members/netanyahu_bibi-s.jpg,bnetanyahu@knesset.gov.il
+91,persons.person,,5,מרינה סולודקין,F,,91,31.6666667,,,34.5666667,[],אשקלון,None,1952-05-31,"מוסקבה, ברית המועצות",1991,6,None,http://oknesset.org/static/img/mks/marina-solodkin.jpg,
+92,persons.person,,None,ניסן סלומינסקי,M,,92,,נשוי,,,[],,None,None,רמת גן,None,None,5,http://www.knesset.gov.il/mk/images/members/slomiansky_nisan-s.jpg,nslomiansky@KNESSET.GOV.IL
+96,persons.person,,8,גדעון עזרא,M,,96,32.220934,,,34.992399,[],כוכב יאיר,None,1937-06-30,"ירושלים, ישראל",None,7,None,http://www.knesset.gov.il/mk/images/members/ezra_gidon-s.jpg,
+100,persons.person,,8,אופיר פינס-פז,M,,100,,,,,[],,None,1961-07-11,"ראשון לציון, ישראל",None,8,None,http://www.knesset.gov.il/mk/images/members/pinespaz_ofir-s.jpg,
+103,persons.person,,4,מאיר פרוש,M,,103,31.7857,נשוי,,35.2007,[],ירושלים,None,1955-06-11,"ירושלים, ישראל",None,9,12,http://www.knesset.gov.il/mk/images/members/porush_meir-s.jpg,mporush@knesset.gov.il
+105,persons.person,,5,עמיר פרץ,M,,105,31.523432,נשוי,,34.595282,[],שדרות,None,1952-03-09,"בוזר, מרוקו",1956,5,4,http://www.knesset.gov.il/mk/images/members/peretz_amir-s.jpg,aperetz@knesset.gov.il
+114,persons.person,02-6496193,4,ראובן ריבלין,M,,114,31.7857,נשוי,,35.2007,[],ירושלים,None,1939-09-09,"ירושלים, ישראל",None,9,4,http://www.knesset.gov.il/mk/images/members/rivlin_rubi-s.jpg,rrivlin@knesset.gov.il
+115,persons.person,,None,חיים רמון,M,,115,,,,,[],,None,1950-04-10,"יפו, ישראל",None,None,None,http://www.knesset.gov.il/mk/images/members/ramon_haim-s.jpg,
+119,persons.person,02-6408920,6,מאיר שטרית,M,,119,31.8833333,נשוי,,34.7333333,[],יבנה,None,1948-10-10,"קסר-אסוק, מרוקו",1957,7,2,http://www.knesset.gov.il/mk/images/members/shitrit_meir-s.jpg,mshitrit@knesset.gov.il
+122,persons.person,,8,סילבן שלום,M,None,122,32.070065,נשוי,,34.8246,[],רמת גן,None,1958-08-04,"גבס, טוניסיה",1959,10,5,http://www.knesset.gov.il/mk/images/members/shalom_silvan-s.jpg,sshalom@knesset.gov.il
+123,persons.person,,5,שלום שמחון,M,,123,33.0738889,,,35.295,[],אבן מנחם,None,1956-12-07,ישראל,None,3,None,http://www.knesset.gov.il/mk/images/members/simhon_shalom-s.jpg,
+194,persons.person,,4,זבולון אורלב,M,None,194,31.7857,,,35.2007,[],ירושלים,None,1945-11-09,"רחובות, ישראל",None,9,None,http://www.knesset.gov.il/mk/images/members/orlev_zevulun-s.jpg,
+197,persons.person,02-6408911,3,מוחמד ברכה,M,None,197,32.802713,נשוי,,35.169038,[],שפרעם,None,1955-07-25,ישראל,None,5,3,http://www.knesset.gov.il/mk/images/members/baraka_mohamed-s.jpg,mbarakeh@knesset.gov.il
+200,persons.person,,5,אילן גילאון,M,,200,31.8198,נשוי,,34.6696,[],אשדוד,None,1956-05-12,רומניה,None,7,4,http://www.knesset.gov.il/mk/images/members/gilon_ilan-s.jpg,igilon@knesset.gov.il
+201,persons.person,,None,זהבה גלאון,F,מרכז,201,,נשואה,,,[],פתח תקווה,None,1956-04-01,ברית-המועצות,1960,6,2,http://www.knesset.gov.il/mk/images/members/galon_zahava-s.jpg,zgalon@knesset.gov.il
+204,persons.person,,6,מתן וילנאי,M,,204,31.7966,,,35.0653,[],מושב שורש,None,1944-05-20,"ירושלים, ישראל",None,6,None,http://www.knesset.gov.il/mk/images/members/vilnai_matan-s.jpg,
+206,persons.person,02-6496549,4,נסים זאב,M,None,206,31.7857,נשוי,,35.2007,[],ירושלים,None,1951-09-09,ישראל,None,9,None,http://www.knesset.gov.il/mk/images/members/zeev_nissim-s.jpg,nzeev@knesset.gov.il
+208,persons.person,02-6496199,3,אחמד טיבי,M,None,208,32.2666667,נשוי,,35,[],טייבה,None,1958-12-19,ישראל,None,7,2,http://www.knesset.gov.il/mk/images/members/tibi_ahmed-s.jpg,atibi@knesset.gov.il
+210,persons.person,02-6408927,4,אמנון כהן,M,None,210,31.9333333,נשוי,,34.8666667,[],רמלה,None,1960-06-01,אוזבקיסטן,1973,8,4,http://www.knesset.gov.il/mk/images/members/cohen_amnon-s.jpg,amncohen@knesset.gov.il
+212,persons.person,02-6408142,8,חיים כץ,M,None,212,31.9966655,נשוי,,34.9427814,[],שוהם,None,1947-12-21,גרמניה,1949,7,3,http://www.knesset.gov.il/mk/images/members/katz_haim-s.jpg,hkatz@knesset.gov.il
+213,persons.person,,8,ציפי לבני,F,,213,32.0554,נשואה,,34.7595,[],תל אביב,None,1958-07-08,ישראל,None,10,2,http://www.knesset.gov.il/mk/images/members/livnee_zipi-s.jpg,zlivni@knesset.gov.il
+214,persons.person,02-6408921,4,אביגדור ליברמן,M,,214,31.64533,נשוי,,35.244065,[],נוקדים,None,1958-06-05,ברית המועצות,1978,5,3,http://www.knesset.gov.il/mk/images/members/liberman_avigdor-s.jpg,aliberman@knesset.gov.il
+216,persons.person,02-6753730,4,יעקב ליצמן,M,None,216,31.7857,נשוי,,35.2007,[],ירושלים,None,1948-09-02,גרמניה,None,9,5,http://www.knesset.gov.il/mk/images/members/lizman_yaakov-s.jpg,ylitzman@knesset.gov.il
+222,persons.person,02-6496447,4,משולם נהרי,M,None,222,31.7857,נשוי,,35.2007,[],ירושלים,None,1951-05-07,ישראל,None,9,5,http://www.knesset.gov.il/mk/images/members/nahari_meshulam-s.jpg,mnahari@knesset.gov.il
+230,persons.person,,4,איוב קרא,M,None,230,32.6930556,,,35.0494444,[],דאלית-אל-כרמל,None,1955-03-12,ישראל,None,5,None,http://www.knesset.gov.il/mk/images/members/kara_ayoob-s.jpg,
+695,persons.person,02-6496579,8,יובל שטייניץ,M,None,695,31.7994444,נשוי,,35.1488889,[],מבשרת ציון,None,1958-04-10,ישראל,None,7,3,http://www.knesset.gov.il/mk/images/members/steinitz_yuval-s.jpg,ysteinitz@knesset.gov.il
+697,persons.person,,8,יולי תמיר,F,,697,,,,,[],תל אביב?,None,1954-02-26,ישראל,None,10,None,http://www.knesset.gov.il/mk/images/members/tamir_yuli-s.jpg,
+713,persons.person,02-6753738,4,אורי יהודה אריאל,M,,713,31.819085,נשוי,,35.349369,[],כפר אדומים,None,1952-12-22,"עפולה, ישראל",None,6,6,http://www.knesset.gov.il/mk/images/members/ariel_uri-yehuda-s.jpg,uria@knesset.gov.il
+717,persons.person,,9,אורית נוקד,F,,717,32.2169444,,,34.8247222,[],קיבוץ שפיים,None,1952-10-25,ישראל,None,7,None,http://www.knesset.gov.il/mk/images/members/noked_orit-s.jpg,
+720,persons.person,02-6496421,8,שאול מופז,M,None,720,32.220934,נשוי,,34.992399,[],כוכב יאיר,None,None,"איראן, איראן",1957,7,4,http://www.knesset.gov.il/mk/images/members/mofaz_shaul-s.jpg,shaulm@knesset.gov.il
+723,persons.person,,8,גילה גמליאל,F,None,723,32.0554,נשואה,,34.7595,[],תל אביב,None,1974-02-24,"גדרה, ישראל",None,10,None,http://www.knesset.gov.il/mk/images/members/gamliel_gila-s.jpg,ggamliel@knesset.gov.il
+724,persons.person,,7,רוחמה אברהם בלילא,F,,724,31.9621389,,,34.8045361,[],ראשון לציון,None,1964-01-29,"ראשון-לציון, ישראל",None,9,None,http://www.knesset.gov.il/mk/images/members/avraham_ruhama-s.jpg,
+725,persons.person,02-6496578,8,גדעון סער,M,None,725,32.0554,גרוש,,34.7595,[],תל אביב,None,1966-12-09,"תל אביב, ישראל",None,10,2,http://www.knesset.gov.il/mk/images/members/saar_gidon-s.jpg,gsaar@knesset.gov.il
+727,persons.person,,3,מגלי והבה,M,None,727,32.965683,,,35.381298,[],בית ג'אן,None,1954-02-12,ישראל,None,4,None,http://www.knesset.gov.il/mk/images/members/whbee_majalli-s.jpg,
+728,persons.person,,5,יעקב אדרי,M,None,728,32.5,,,34.9166667,[],אור עקיבא,None,1950-11-25,מרוקו,1959,6,None,http://www.knesset.gov.il/mk/images/members/edri_yaakov-s.jpg,
+730,persons.person,,5,אלי אפללו,M,,730,32.6077778,,,35.2897222,[],עפולה,None,1952-09-08,"קזבלנקה, מרוקו",1962,5,None,http://www.knesset.gov.il/mk/images/members/aflalo_eli-s.jpg,
+731,persons.person,,7,משה כחלון,M,None,731,32.7938,,,35.0282,[],חיפה,None,1960-11-19,ישראל,None,6,None,http://www.knesset.gov.il/mk/images/members/cahlon_moshe-s.jpg,
+734,persons.person,02-6753982,5,גלעד ארדן,M,None,734,31.6666667,נשוי,,34.5666667,[],אשקלון,None,1970-09-30,"אשקלון, ישראל",None,6,2,http://www.knesset.gov.il/mk/images/members/erdan_gilad-s.jpg,gerdan@knesset.gov.il
+735,persons.person,,6,רוני בר-און,M,,735,31.793589,,,35.157002,[],מוצא עילית,None,1948-06-02,"תל אביב, ישראל",None,6,None,http://www.knesset.gov.il/mk/images/members/baron_roni-s.jpg,
+738,persons.person,,8,לאה נס,F,None,738,32.0780556,,,34.8488889,[],גבעת שמואל,None,1961-12-27,ישראל,None,9,None,http://www.knesset.gov.il/mk/images/members/nass_lea-s.jpg,
+739,persons.person,,None,עמרם מצנע,M,,739,,נשוי,,,[],,None,1945-02-20,עפולה,None,None,3,http://www.knesset.gov.il/mk/images/members/mitzna_amram-s.jpg,amitzna@knesset.gov.il
+740,persons.person,02-6496080,8,יצחק הרצוג,M,,740,32.0554,נשוי,,34.7595,[],תל אביב,None,1960-09-22,"תל אביב, ישראל",None,10,3,http://www.knesset.gov.il/mk/images/members/herzog_yitzhak-s.jpg,iherzog@knesset.gov.il
+751,persons.person,02-6753759,4,יעקב מרגי,M,None,751,31.4488889,נשוי,,34.7125,[],מושב שדה צבי,None,1960-11-18,מרוקו,1962,4,2,http://www.knesset.gov.il/mk/images/members/margi_yaakov-s.jpg,ymargi@knesset.gov.il
+752,persons.person,,4,אריה אלדד,M,None,752,31.819085,,,35.349369,[],כפר אדומים,None,1950-05-01,"תל אביב, ישראל",None,6,None,http://www.knesset.gov.il/mk/images/members/eldad_aryeh-s.jpg,
+754,persons.person,02-6408475,4,ישראל אייכלר,M,,754,,נשוי,,,[],ירושלים,None,1955-03-27,ירושלים,None,9,14,http://www.knesset.gov.il/mk/images/members/eichler_israel-s.jpg,ieichler@knesset.gov.il
+756,persons.person,02-6496617,4,ג`מאל זחאלקה,M,,756,32.505517,נשוי,,35.054252,[],כפר קרע,None,1955-01-11,ישראל,None,6,3,http://www.knesset.gov.il/mk/images/members/zahalka_jamal-s.jpg,jzhalka@knesset.gov.il
+758,persons.person,,4,ראלב מג`אדלה,M,,758,32.4203278,,,35.0421806,[],באקה אל גרבייה,None,1953-04-05,באקה אל גרביה,None,6,None,http://www.knesset.gov.il/mk/images/members/majadele_ralev-s.jpg,
+768,persons.person,02-6496438,4,זאב אלקין,M,,768,31.7857,נשוי,,35.2007,[],ירושלים,None,1971-04-03,"חרקוב, ברית המועצות",None,9,3,http://www.knesset.gov.il/mk/images/members/elkin_zeev-s.jpg,Zelkin@knesset.gov.il
+771,persons.person,,5,אבי (משה) דיכטר,M,,771,31.6666667,,,34.5666667,[],אשקלון,None,1952-12-14,"אשקלון, ישראל",None,6,None,http://www.knesset.gov.il/mk/images/members/dicter_abraham-s.jpg,
+772,persons.person,,8,יואל חסון,M,None,772,32.0554,,,34.7595,[],תל אביב,None,1973-04-02,"תל אביב, ישראל",None,10,None,http://www.knesset.gov.il/mk/images/members/hasson_yoel-s.jpg,
+773,persons.person,,None,אביגדור יצחקי,M,,773,,,,,[],,None,1949-09-13,תל אביב,None,None,None,http://www.knesset.gov.il/mk/images/members/itzchaky_avigdor-s.jpg,
+774,persons.person,,8,רונית תירוש,F,None,774,32.070065,,,34.8246,[],רמת גן,None,1953-12-08,"תל אביב, ישראל",None,10,None,http://www.knesset.gov.il/mk/images/members/tirosh_ronit-s.jpg,
+776,persons.person,,3,עתניאל שנלר,M,None,776,31.87913,,,35.305904,[],מעלה מכמש,None,1952-01-28,"ירושלים, ישראל",None,6,None,http://www.knesset.gov.il/mk/images/members/schneller_otniel-s.jpg,
+780,persons.person,02-6408126,8,דב חנין,M,None,780,32.0554,נשוי,,34.7595,[],תל אביב,None,1958-01-10,"פתח-תקווה, ישראל",None,10,3,http://www.knesset.gov.il/mk/images/members/khenin_dov-s.jpg,dhanin@knesset.gov.il
+781,persons.person,02-6496585,9,ישראל חסון,M,None,781,32.7238889,נשוי,,35.1272222,[],טבעון,None,1955-04-27,"דמשק, סוריה",None,5,4,http://www.knesset.gov.il/mk/images/members/hasson_israel-s.jpg,ahason@knesset.gov.il
+782,persons.person,02-6753721,8,שלי יחימוביץ,F,,782,32.0554,לא נשואה,,34.7595,[],תל אביב,None,1960-03-28,"כפר-סבא, ישראל",None,10,2,http://www.knesset.gov.il/mk/images/members/yacimovich_shelly-s.jpg,syechimovich@knesset.gov.il
+784,persons.person,02-6753961,5,אברהם מיכאלי,M,,784,32.0333333,,,34.85,[],אור יהודה,None,1957-03-29,"קולשי, גרוזיה",None,8,None,http://www.knesset.gov.il/mk/images/members/michaeli_avraham-s.jpg,amichaeli@knesset.gov.il
+785,persons.person,,6,אלכס מילר,M,None,785,32.10468,,,35.174446,[],אריאל,None,1977-04-04,"מוסקבה, ברית המועצות",None,6,None,http://www.knesset.gov.il/mk/images/members/Miller_Alex-s.jpg,
+786,persons.person,,7,סטס מיסז`ניקוב,M,,786,31.9621389,,,34.8045361,[],ראשון לציון,None,1969-02-28,"מוסקבה, ברית המועצות",None,9,None,http://www.knesset.gov.il/mk/images/members/miznikov_stas-s.jpg,
+789,persons.person,02-6496163,4,חנא סוייד,M,None,789,32.838058,נשוי,,35.400009,[],עילבון,None,1955-03-27,"עילבון, ישראל",None,4,3,http://www.knesset.gov.il/mk/images/members/swaid_hana-s.jpg,hswaid@knesset.gov.il
+790,persons.person,02-6496188,8,יצחק אהרונוביץ,M,None,790,32.270025,נשוי,,34.8874278,[],אבן יהודה,None,1950-08-22,"ירושלים, ישראל",None,7,4,http://www.knesset.gov.il/mk/images/members/aharonovitch_yitzhak-s.jpg,iaharon@knesset.gov.il
+791,persons.person,02-6496713,4,אריאל אטיאס,M,,791,31.7857,נשוי,,35.2007,[],ירושלים,None,1970-11-13,"תל אביב, ישראל",None,9,4,http://www.knesset.gov.il/mk/images/members/atias_ariel-s.jpg,aatias@knesset.gov.il
+793,persons.person,02-6753689,6,רוברט אילטוב,M,None,793,32.3462,נשוי,,34.8615,[],נתניה,None,1971-11-12,"אנדיז`אן, ברית המועצות",None,7,1,http://www.knesset.gov.il/mk/images/members/ilatov_robert-s.jpg,rilatov@knesset.gov.il
+795,persons.person,,4,חיים אמסלם,M,,795,31.7857,,,35.2007,[],ירושלים,None,1959-10-12,"אורן, אלג`יר",1970,9,None,http://www.knesset.gov.il/mk/images/members/amsalem_haim-s.jpg,
+797,persons.person,02-6408440,8,אבישי ברוורמן,M,None,797,32.0554,נשוי,,34.7595,[],תל אביב,None,1948-01-15,ישראל,None,10,2,http://www.knesset.gov.il/mk/images/members/braverman_avishay-s.jpg,abraverman@knesset.gov.il
+800,persons.person,02-6408908,3,אברהים צרצור,M,,800,32.1151,נשוי,,34.9751,[],כפר קאסם,None,1959-02-02,"כפר קאסם, ישראל",None,7,1,http://www.knesset.gov.il/mk/images/members/sarsur_ibrahim-s.jpg,isarsur@knesset.gov.il
+802,persons.person,,6,ליה שמטוב,F,,802,32.71667,,,35.3334,[],נצרת עילית,None,1958-05-25,"צ`רנוביץ, אוקראינה",1980,5,None,http://www.knesset.gov.il/mk/images/members/shemtov_lia-s.jpg,
+804,persons.person,,7,שי חרמש,M,None,804,31.483429,,,34.532304,[],כפר עזה,None,1944-03-23,ישראל,None,5,None,http://www.knesset.gov.il/mk/images/members/hermesh_shai-s.jpg,
+805,persons.person,02-6496506,6,דוד רותם,M,None,805,31.653528,נשוי,,35.149899,[],אפרת,None,1949-01-11,ישראל,None,5,5,http://www.knesset.gov.il/mk/images/members/David_Rotem-s.jpg,drotem@knesset.gov.il
+807,persons.person,,3,סעיד נפאע,M,None,807,32.965683,,,35.381298,[],בית ג'אן,None,1953-04-01,ישראל,None,4,None,http://www.knesset.gov.il/mk/images/members/naffa_said-s.jpg,
+809,persons.person,,8,יוחנן פלסנר,M,None,809,32.15,,,34.8833333,[],הוד השרון,None,1972-01-17,אנגליה,None,8,None,http://www.knesset.gov.il/mk/images/members/Plesner_yohanan-s.jpg,
+810,persons.person,,7,שלמה (נגוסה) מולה,M,,810,31.9621389,,,34.8045361,[],ראשון לציון,None,1965-11-21,אתיופיה,1984,9,None,http://www.knesset.gov.il/mk/images/members/molla_shlomo-s.jpg,
+812,persons.person,,None,שכיב שנאן,M,,812,,,,,[],,None,1960-06-20,ישראל,None,None,None,http://www.knesset.gov.il/mk/images/members/Shnaan_Shachiv-s.jpg,
+813,persons.person,,None,לאון ליטינצקי,M,,813,,נשוי,0,,[],,None,1970-01-01,None,None,None,0,None,
+814,persons.person,02-6496514,4,אורי מקלב,M,None,814,31.7857,נשוי,,35.2007,[],ירושלים,None,1957-01-10,ישראל,None,9,5,http://www.knesset.gov.il/mk/images/members/uri_maklev-s.jpg,umaklev@knesset.gov.il
+817,persons.person,,8,זאב בילסקי,M,None,817,32.1833333,,,34.8666667,[],רעננה,None,1949-03-13,ישראל,None,8,None,http://www.knesset.gov.il/mk/images/members/Bielski_Zeev-s.jpg,
+818,persons.person,02-6496157,8,נחמן שי,M,,818,31.7994444,נשוי,,35.1488889,[],מבשרת ציון,None,1946-11-28,ישראל,None,7,3,http://www.knesset.gov.il/mk/images/members/nachman_shai-s.jpg,nshai@knesset.gov.il
+819,persons.person,,4,רוברט טיבייב,M,None,819,31.2833333,,,34.6166667,[],אופקים,None,1961-06-22,ברית המועצות,1994,4,None,http://www.knesset.gov.il/mk/images/members/Tiviaev_Robert-s.jpg,
+820,persons.person,,8,רחל אדטו,F,None,820,31.7994444,,,35.1488889,[],מבשרת ציון,None,None,"חיפה, ישראל",None,7,None,http://www.knesset.gov.il/mk/images/members/Adatto_Rachel-s.jpg,
+821,persons.person,,6,אריה ביבי,M,None,821,32.0888278,,,34.8863333,[],פתח תקווה,None,1943-04-28,עיראק,1950,9,None,http://www.knesset.gov.il/mk/images/members/Bibi_Arie-s.jpg,
+822,persons.person,,7,אורית זוארץ,F,None,822,32.2833333,,,34.9166667,[],קדימה צורן,None,1967-02-21,ברית המועצות,1971,7,None,http://www.knesset.gov.il/mk/images/members/Zuaretz_Orit-s.jpg,
+823,persons.person,,8,משה יעלון,M,None,823,31.888854,נשוי,,35.025144,[],מכבים רעות,None,1950-06-24,ישראל,None,7,3,http://www.knesset.gov.il/mk/images/members/yaalon_moshe-s.jpg,myaalon@knesset.gov.il
+824,persons.person,,8,יוסי פלד,M,None,824,32.0554,,,34.7595,[],תל אביב,None,1941-01-18,בלגיה,None,10,None,http://www.knesset.gov.il/mk/images/members/Peled_Yossi-s.jpg,
+825,persons.person,02-6408329,6,ציפי חוטובלי,F,None,825,31.892772,רווקה,,34.811274,[],רחובות,None,1978-12-02,ישראל,None,8,None,http://www.knesset.gov.il/mk/images/members/Hotovely_Tzipi-s.jpg,zhotovely@knesset.gov.il
+826,persons.person,02-6408394,8,יריב לוין,M,None,826,32.109878,נשוי,,34.895582,[],מודיעין,None,1969-06-22,ישראל,None,7,3,http://www.knesset.gov.il/mk/images/members/levin_yariv-s.jpg,ylevin@knesset.gov.il
+827,persons.person,,5,ציון פיניאן,M,,827,32.7897222,,,35.5247222,[],טבריה,None,1951-01-01,מרוקו,1956,4,None,http://www.knesset.gov.il/mk/images/members/Pinyan_Zion-s.jpg,
+828,persons.person,02-6496044,8,דני דנון,M,,828,32.227578,נשוי,,34.922061,[],מושב משמרת,None,1971-05-08,ישראל,None,7,3,http://www.knesset.gov.il/mk/images/members/danon_danny-s.jpg,ddanon@knesset.gov.il
+829,persons.person,,8,כרמל שאמה,M,,829,32.070065,,,34.8246,[],רמת גן,None,1973-08-16,ישראל,None,10,None,http://www.knesset.gov.il/mk/images/members/Shama_Carmel-s.jpg,
+830,persons.person,02-6753717,8,אופיר אקוניס,M,None,830,32.0554,נשוי,,34.7595,[],תל אביב,None,1973-05-28,ישראל,None,10,2,http://www.knesset.gov.il/mk/images/members/akunis_ofir-s.jpg,oakunis@knesset.gov.il
+831,persons.person,,6,מירי רגב,F,,831,32.099299,נשואה,,34.953175,[],ראש העין,None,1965-05-26,ישראל,None,8,3,http://www.knesset.gov.il/mk/images/members/regev_miri-s.jpg,mregev@knesset.gov.il
+832,persons.person,02-6753570,5,אורלי לוי-אבקסיס,F,,832,32.497361,נשואה,,35.474653,[],קיבוץ מסילות,None,1973-11-11,ישראל,None,4,3,http://www.knesset.gov.il/mk/images/members/Levy_Orli-s.jpg,olevy@knesset.gov.il
+833,persons.person,,8,דניאל אילון,M,,833,32.15,,,34.8833333,[],הוד השרון,None,1955-12-17,ישראל,None,8,None,http://www.knesset.gov.il/mk/images/members/Ayalon_Daniel-s.jpg,
+834,persons.person,,7,אנסטסיה מיכאלי,F,None,834,31.9621389,,,34.8045361,[],ראשון לציון,None,1975-07-12,"סנט פטרבורג, רוסיה",None,9,None,http://www.knesset.gov.il/mk/images/members/Michaeli_Anastassia-s.jpg,
+835,persons.person,,3,פאינה (פניה) קירשנבאום,F,,835,,נשואה,,,[],,None,1955-11-27,ברית המועצות,None,6,3,http://www.knesset.gov.il/mk/images/members/Kirshenbaum_Faina-s.jpg,fkirshenbaum@knesset.gov.il
+836,persons.person,,8,דניאל בן-סימון,M,,836,32.0554,,,34.7595,[],תל אביב,None,1954-04-29,מרוקו,1969,10,None,http://www.knesset.gov.il/mk/images/members/Ben_Simon_Daniel-s.jpg,
+837,persons.person,02-6496054,3,חמד עמאר,M,None,837,32.802713,נשוי,,35.169038,[],שפרעם,None,1964-11-05,ישראל,None,5,3,http://www.knesset.gov.il/mk/images/members/Amar_Hamad-s.jpg,amarh@knesset.gov.il
+838,persons.person,,8,משה מוץ מטלון,M,,838,32.7166667,,,35.3333333,[],הרצליה,None,1953-05-12,ישראל,None,8,None,http://www.knesset.gov.il/mk/images/members/matalon_moshe_mutz-s.jpg,
+839,persons.person,,4,מנחם אליעזר מוזס,M,None,839,31.7857,נשוי,,35.2007,[],ירושלים,None,1946-10-20,ישראל,None,9,10,http://www.knesset.gov.il/mk/images/members/moses_menachem-s.jpg,mmozes@knesset.gov.il
+840,persons.person,,4,יעקב (כצל`ה) כ”ץ,M,,840,31.941602,,,35.222726,[],בית אל,None,1951-09-29,ישראל,None,5,None,http://www.knesset.gov.il/mk/images/members/Yaakov_Katzeleh_Katz-s.jpg,
+841,persons.person,,6,מיכאל בן-ארי,M,,841,32.171544,,,35.097456,[],קרני שומרון,None,1963-10-12,ישראל,None,5,None,http://www.knesset.gov.il/mk/images/members/Ben_Ari_Michael-s.jpg,
+842,persons.person,,2,עפו אגבאריה,M,None,842,32.5194444,נשוי,,35.1536111,[],אום אל פאחם,None,1949-05-13,ישראל,None,6,3,http://www.knesset.gov.il/mk/images/members/Agbaria_Afou-s.jpg,aagbariya@knesset.gov.il
+843,persons.person,02-6496085,8,ניצן הורוביץ,M,None,843,32.0554,בזוגיות,,34.7595,[],תל אביב,None,1965-02-24,ישראל,None,10,None,http://www.knesset.gov.il/mk/images/members/Horowitz_Nitzan-s.jpg,nhorowitz@knesset.gov.il
+844,persons.person,02-6496189,2,מסעוד גנאים,M,None,844,32.8666667,נשוי,,35.3,[],סכנין,None,1965-02-14,ישראל,None,4,3,http://www.knesset.gov.il/mk/images/members/Ganaim_Masud-s.jpg,mganaeim@knesset.gov.il
+845,persons.person,02-6408167,8,אורי אורבך,M,None,845,32.109878,נשוי,,34.895582,[],מודיעין,None,1960-03-28,ישראל,None,7,4,http://www.knesset.gov.il/mk/images/members/Orbach_Uri-s.jpg,uorbach@knesset.gov.il
+846,persons.person,02-6496595,4,חנין זועבי,F,None,846,32.6975,רווקה,,35.3069,[],נצרת,None,1969-05-23,ישראל,None,6,None,http://www.knesset.gov.il/mk/images/members/Zuabi_Hanin-s.jpg,hzoaby@knesset.gov.il
+847,persons.person,,7,דניאל הרשקוביץ,M,None,847,32.7938,,,35.0282,[],חיפה,None,1953-01-02,ישראל,None,6,None,http://www.knesset.gov.il/mk/images/members/Hershkowitz_Daniel-s.jpg,
+848,persons.person,,8,יוליה שמאלוב ברקוביץ`,F,,848,32.1682,,,34.8125,[],הרצליה,None,1964-04-01,,None,8,None,http://www.knesset.gov.il/mk/images/members/Shamalov_Berkovich_Yulia-s.jpg,
+849,persons.person,,8,עינת וילף,F,,849,32.0554,,,34.7595,[],תל אביב,None,1970-12-11,"ירושלים, ישראל",None,10,None,http://www.knesset.gov.il/mk/images/members/Einat_Wilf-s.jpg,
+850,persons.person,,None,נינו אבסדזה,F,השרון,850,,,,,[],צור יגאל - כוכב יאיר,None,1965-04-12,ברית המועצות,1996,None,None,http://www.knesset.gov.il/mk/images/members/Nino_Abesadze-s.jpg,
+851,persons.person,,8,דורון אביטל,M,,851,,,,,[],תל אביב,None,1959-01-22,ישראל,None,10,None,http://www.knesset.gov.il/mk/images/members/avital_doron-s.jpg,
+852,persons.person,,None,אברהם (אבי) דואן,M,,852,,,,,[],,None,None,,None,None,None,http://www.knesset.gov.il/mk/images/members/Avraham_Duan-s.jpg,
+853,persons.person,,None,יובל צלנר,M,,853,,,,,[],תל אביב,None,None,ישראל,None,None,None,http://www.knesset.gov.il/mk/images/members/ZellnerYuval.jpg,
+854,persons.person,,None,אכרם חסון,M,,854,,,,,[],,None,1956-01-01,,None,None,None,http://www.knesset.gov.il/mk/images/members/Akram_Hasoon-s.jpg,
+857,persons.person,,None,טלב אבו עראר,M,,857,,,,,[],,None,1967-05-04,ישראל,None,None,None,http://www.knesset.gov.il/mk/images/members/AbuArar_Talab-s.jpg,tabuarar@KNESSET.GOV.IL
+859,persons.person,,None,שמעון אוחיון,M,,859,,,,,[],,None,None,,None,None,None,http://www.knesset.gov.il/mk/images/members/Ohayon_Shimon-s.jpg,sochaion@knesset.gov.il
+860,persons.person,,9,קארין אלהרר,F,גוש דן,860,,נשואה,02-6408878,,[],קרית אונו,None,1977-10-09,יפו,None,None,None,http://www.knesset.gov.il/mk/images/members/Alharar_Karin-s.jpg,kelharrar@knesset.gov.il
+861,persons.person,,None,יעקב אשר,M,,861,,נשוי,,,[],,None,1965-07-02,רמת גן,None,None,7,http://www.knesset.gov.il/mk/images/members/Asher_Yakov-s.jpg,yasher@knesset.gov.il
+862,persons.person,,None,מיכל בירן,F,,862,,,,,[],,None,None,,None,None,None,http://www.knesset.gov.il/mk/images/members/Biran_Michal-s.jpg,mbiran@knesset.gov.il
+863,persons.person,,None,אלי בן-דהן,M,,863,,נשוי,,,[],,None,1954-02-11,"קזבלנקה, מרוקו",1956,None,None,http://www.knesset.gov.il/mk/images/members/BenDahan_Eliahu-s.jpg,ebendehan@knesset.gov.il
+864,persons.person,,None,נפתלי בנט,M,,864,,נשוי,,,[],,None,1972-03-25,חיפה,None,None,4,http://www.knesset.gov.il/mk/images/members/Bennett_Naftali-s.jpg,nbenet@knesset.gov.il
+865,persons.person,,None,חיליק בר,M,,865,,נשוי,,,[],,None,1975-09-04,צפת,None,None,1,http://www.knesset.gov.il/mk/images/members/Bar_Yechiel-s.jpg,ybar@knesset.gov.il
+866,persons.person,,None,עמר בר-לב,M,,866,,,,,[],,None,None,,None,None,None,http://www.knesset.gov.il/mk/images/members/BarLev_Omer-s.jpg,obarlev@knesset.gov.il
+867,persons.person,,None,באסל גטאס,M,,867,,נשוי,,,[],,None,1956-03-23,נצרת,None,None,1,http://www.knesset.gov.il/mk/images/members/Jitas_Basil-s.jpg,gbasel@knesset.gov.il
+868,persons.person,,7,יעל גרמן,F,,868,,,02-6408341,,[],הרצליה,None,1955-05-08,"חיפה, ישראל",None,None,2,http://www.knesset.gov.il/mk/images/members/German_Yael-s.jpg,ygerman@knesset.gov.il
+869,persons.person,,8,רונן הופמן,M,,869,,גרוש,02-6408106,,[],הרצליה,None,1963-07-19,עפולה,None,None,2,http://www.knesset.gov.il/mk/images/members/Hoffman_Ronen-s.jpg,rhoffman@knesset.gov.il
+870,persons.person,,None,אבי וורצמן,M,,870,,נשוי,,,[],,None,1970-10-29,באר שבע,None,None,4,http://www.knesset.gov.il/mk/images/members/Wortzman_Avi-s.jpg,avertzman@knesset.gov.il
+871,persons.person,,None,תמר זנדברג,F,,871,,גרושה,,,[],,None,1976-04-29,רמת גן,None,None,None,http://www.knesset.gov.il/mk/images/members/Zandberg_Tamar-s.jpg,tzandberg@knesset.gov.il
+872,persons.person,,8,בועז טופורובסקי,M,תל אביב,872,,נשוי,02-6408027,,[],תל אביב,None,1980-07-17,ראשון לציון,None,None,None,http://www.knesset.gov.il/mk/images/members/Toporovsky_Boaz-s.jpg,btoporovsky@KNESSET.GOV.IL
+873,persons.person,,None,מרדכי יוגב,M,,873,,נשוי,,,[],,None,1956-02-22,חיפה,None,None,9,http://www.knesset.gov.il/mk/images/members/Yogev_Mordechai-s.jpg,myogev@knesset.gov.il
+874,persons.person,,4,מאיר כהן,M,נגב,874,,נשוי,02-6408008,,[],דימונה,None,1955-11-15,"מוגדור, מרוקו",1962,None,3,http://www.knesset.gov.il/mk/images/members/cohen_meir1-s.jpg,cohenmeir@knesset.gov.il
+875,persons.person,,6,עליזה לביא,F,השרון,875,,נשואה,02-6408065,,[],נתניה,None,1964-09-23,כפר סבא,None,None,4,http://www.knesset.gov.il/mk/images/members/Lavie_Aliza-s.jpg,alavie@knesset.gov.il
+876,persons.person,,None,מיקי לוי,M,,876,,נשוי,02-640805,,[],,None,1951-05-21,ירושלים,None,None,4,http://www.knesset.gov.il/mk/images/members/Levy_Mickey-s.jpg,mickeylevy@knesset.gov.il
+877,persons.person,,3,דב ליפמן,M,,877,,נשוי,02-6408809,,[],בית שמש,None,1971-09-09,"וושינגטון, ארצות הברית",None,None,4,http://www.knesset.gov.il/mk/images/members/Lipman_Dov-s.jpg,dlifman@knesset.gov.il
+878,persons.person,,8,יאיר לפיד,M,,878,,נשוי,02-6408385,,[],תל אביב,None,1963-11-05,תל אביב,None,None,3,http://www.knesset.gov.il/mk/images/members/Lapid_Yair-s.jpg,ylapid@knesset.gov.il
+879,persons.person,,None,שולי מועלם-רפאלי,F,,879,,נשואה,,,[],,None,1965-02-08,חיפה,None,None,7,http://www.knesset.gov.il/mk/images/members/Moalem_Shuli-s.jpg,smooalem@knesset.gov.il
+880,persons.person,,None,משה מזרחי,M,,880,,נשוי,,,[],,None,1950-09-20,טבריה,None,None,5,http://www.knesset.gov.il/mk/images/members/Mizrahi_Moshe-s.jpg,mmizrachy@knesset.gov.il
+881,persons.person,,None,מרב מיכאלי,F,,881,,רווקה,,,[],,None,1966-11-24,פתח תקווה,None,None,None,http://www.knesset.gov.il/mk/images/members/Michaeli_Meirav-s.jpg,michaelim@knesset.gov.il
+882,persons.person,,None,אראל מרגלית,M,,882,,,,,[],,None,None,,None,None,None,http://www.knesset.gov.il/mk/images/members/Margalit_Erel-s.jpg,amargalit@knesset.gov.il
+883,persons.person,,5,שמעון סולומון,M,,883,,גרוש,02-6408052,,[],אשדוד,None,1968-08-05,אתיופיה,1980,None,3,http://www.knesset.gov.il/mk/images/members/Solomon_Shimon-s.jpg,ssolomon@knesset.gov.il
+884,persons.person,,None,אורית סטרוק,F,,884,,,,,[],,None,None,,None,None,None,http://www.knesset.gov.il/mk/images/members/Strock_Orit-s.jpg,ostruk@knesset.gov.il
+885,persons.person,,None,משה זלמן פייגלין,M,,885,,נשוי,,,[],,None,1962-07-31,חיפה,None,None,5,http://www.knesset.gov.il/mk/images/members/Feiglin_Moshe-s.jpg,mfeiglin@knesset.gov.il
+886,persons.person,,7,שי פירון,M,,886,,נשוי,02-6408433,,[],אורנית,None,1965-01-25,כפר ויתקין,None,None,6,http://www.knesset.gov.il/mk/images/members/Piron_Shai-s.jpg,spiron@knesset.gov.il
+887,persons.person,,8,יעקב פרי,M,תל אביב,887,,נשוי,02-6408422,,[],תל אביב,None,1944-02-20,תל אביב,None,None,None,http://www.knesset.gov.il/mk/images/members/Peri_Yaakov-s.jpg,ypery@knesset.gov.il
+888,persons.person,,None,עיסאווי פריג`,M,,888,,נשוי,,,[],,None,1963-12-14,כפר קאסם,None,None,7,http://www.knesset.gov.il/mk/images/members/Farij_Issawi-s.jpg,ifarig@knesset.gov.il
+889,persons.person,,6,רינה פרנקל,F,גליל מערבי,889,,אלמנה,02-6408388,,[],נהריה,None,1956-09-17,"סמולנסק, ברית-המועצות",1990,None,1,http://www.knesset.gov.il/mk/images/members/Frankel_Rena-s.jpg,rfrenkel@knesset.gov.il
+890,persons.person,,None,דוד צור,M,,890,,אלמן,,,[],,None,1959-07-12,"איסטנבול, טורקיה",None,None,3,http://www.knesset.gov.il/mk/images/members/Tzur_David-s.jpg,dtzur@knesset.gov.il
+891,persons.person,,8,עדי קול,F,תל אביב,891,,נשואה,02-6408041,,[],תל אביב,None,1976-03-19,ירושלים,None,None,None,http://www.knesset.gov.il/mk/images/members/Kohl_Adi-s.jpg,akol@knesset.gov.il
+892,persons.person,,8,רות קלדרון,F,תל אביב,892,,גרושה,02-6408798,,[],תל אביב,None,1961-09-25,תל אביב,None,None,3,http://www.knesset.gov.il/mk/images/members/Calderon_Ruth-s.jpg,rkalderon@knesset.gov.il
+893,persons.person,,None,זבולון כלפה,M,,893,,נשוי,,,[],,None,1962-09-26,באר-שבע,None,None,6,http://s24.postimg.org/l7xicp3td/image.jpg,zkalfa@knesset.gov.il
+894,persons.person,,8,יפעת קריב,F,השרון,894,,נשואה,02-6408309,,[],הוד השרון,None,1973-11-23,באר שבע,None,None,4,http://www.knesset.gov.il/mk/images/members/Kariv_Yifat-s.jpg,ykariv@knesset.gov.il
+895,persons.person,,None,מיכל רוזין,F,,895,,,,,[],,None,None,,None,None,None,http://www.knesset.gov.il/mk/images/members/Rozin_Michal-s.jpg,mruzin@knesset.gov.il
+896,persons.person,,None,מיקי רוזנטל,M,,896,,נשוי,,,[],,None,1955-02-04,תל-אביב,None,None,3,http://www.knesset.gov.il/mk/images/members/Rosenthal_Mickey-s.jpg,mrosenthal@knesset.gov.il
+897,persons.person,,6,יואל רזבוזוב,M,השרון,897,,נשוי,02-6408853,,[],נתניה,None,1980-07-05,"בירוביג`אן, רוסיה",1991,None,2,http://www.knesset.gov.il/mk/images/members/Rozbozov_Yoel-s.jpg,yrazbuzov@knesset.gov.il
+898,persons.person,,None,יוני שטבון,M,,898,,נשוי,,,[],,None,1979-03-13,נהריה,None,None,6,http://www.knesset.gov.il/mk/images/members/Chetboun_Yoni-s.jpg,ysetbon@knesset.gov.il
+899,persons.person,,None,אלעזר שטרן,M,,899,,נשוי,,,[],,None,1956-08-25,ישראל,None,None,5,http://www.knesset.gov.il/mk/images/members/Stern_Eliezer-s.jpg,sterne@knesset.gov.il
+900,persons.person,,8,עפר שלח,M,,900,,אלמן,,,[],"מושב גינתון, מ.א. חבל מודיעין",None,1960-02-09,קרית ביאליק,None,None,2,http://www.knesset.gov.il/mk/images/members/Shelach_Ofer-s.jpg,oshelach@knesset.gov.il
+901,persons.person,,None,איציק שמולי,M,,901,,רווק,,,[],,None,1980-02-08,תל-אביב,None,None,None,http://www.knesset.gov.il/mk/images/members/Shmuli_Itzik-s.jpg,ishmuli@knesset.gov.il
+902,persons.person,,None,יאיר שמיר,M,,902,,נשוי,,,[],,None,1945-08-18,רמת-גן,None,None,3,http://www.knesset.gov.il/mk/images/members/Shamir_Yair-s.jpg,yshamir@knesset.gov.il
+903,persons.person,,None,סתיו שפיר,F,,903,,,,,[],,None,None,,None,None,None,http://www.knesset.gov.il/mk/images/members/Shafir_Stav-s.jpg,sshaffir@knesset.gov.il
+904,persons.person,,None,איילת שקד,F,,904,,נשואה,,,[],,None,1976-05-07,תל-אביב,None,None,2,http://www.knesset.gov.il/mk/images/members/Shaked_Ayelet-s.jpg,ashaked@knesset.gov.il
+905,persons.person,,6,פנינה תמנו-שטה,F,,905,,נשואה,02-6408227,,[],פתח תקווה,None,1981-01-01,"ווזאבה, אתיופיה",1984,None,2,http://www.knesset.gov.il/mk/images/members/Tamnu-Shata_Penina-s.jpg,ptamano@knesset.gov.il
+906,persons.person,,None,יואב בן צור,M,,906,,נשוי,,,[],"שכונת הר נוף, ירושלים",None,1958-01-01,כפר-סבא,None,None,7,http://www.knesset.gov.il/mk/images/members/Yoav_Ben_Tzur.jpg,
+907,persons.person,,None,מועמד מס 11 בליכוד,None,,None,,,,,[],,None,None,,None,None,None,,
+908,persons.person,,None,דוד ביטן,None,,None,,,,,[],,None,None,,None,None,None,,
+909,persons.person,,None,ז'קי לוי,None,,None,,,,,[],,None,None,,None,None,None,,
+910,persons.person,,None,יואב קיש,None,,None,,,,,[],,None,None,,None,None,None,,
+911,persons.person,,None,דוד אמסלם,None,,None,,,,,[],,None,None,,None,None,None,,
+912,persons.person,,None,מיקי זוהר,None,,None,,,,,[],,None,None,,None,None,None,,
+913,persons.person,,None,מועמד מס 23 בליכוד,None,,None,,,,,[],,None,None,,None,None,None,,
+914,persons.person,,None,נאווה בוקר,None,,None,,,,,[],,None,None,,None,None,None,,
+915,persons.person,,None,מנואל טרכטנברג,None,,None,,,,,[],,None,None,,None,None,None,,
+916,persons.person,,None,אלי אלאלוף,None,,None,,,,,[],,None,None,,None,None,None,,
+917,persons.person,,None,מייקל אורן,None,,None,,,,,[],,None,None,,None,None,None,,
+918,persons.person,,None,רחל עזריה,None,,None,,,,,[],,None,None,,None,None,None,,
+919,persons.person,,None,יואב גלנט,None,,None,,,,,[],,None,None,,None,None,None,,
+920,persons.person,,None,צגה מלקו,None,,None,,,,,[],,None,None,,None,None,None,,
+921,persons.person,,None,יפעת שאשא ביטון,None,,None,,,,,[1],,None,None,,None,None,None,,
+922,persons.person,,None,חיים ילין,None,,None,,,,,[],,None,None,,None,None,None,,
+923,persons.person,,None,עמוס ידלין,None,,None,,,,,[2],,None,None,,None,None,None,,
+924,persons.person,,None,רויטל סויד,None,,None,,,,,[3],,None,None,,None,None,None,,
+925,persons.person,,None,דני עטר,None,,None,,,,,[],,None,None,,None,None,None,,
+926,persons.person,,None,מועמד מס 16 במחנה הציוני,None,,None,,,,,[],,None,None,,None,None,None,,
+927,persons.person,,None,זוהיר בהלול,None,,None,,,,,[],,None,None,,None,None,None,,
+928,persons.person,,None,איתן ברושי,None,,None,,,,,[],,None,None,,None,None,None,,
+929,persons.person,,None,מועמד מס 21 במחנה הציוני,None,,None,,,,,[],,None,None,,None,None,None,,
+930,persons.person,,None,איילת נחמיאס ורבין,None,,None,,,,,[],,None,None,,None,None,None,,
+931,persons.person,,None,יוסי יונה,None,,None,,,,,[4],,None,None,,None,None,None,,
+932,persons.person,,None,מועמד מס 24 במחנה הציוני,None,,None,,,,,[],,None,None,,None,None,None,,
+933,persons.person,,None,מועמד מס 25 במחנה הציוני,None,,None,,,,,[],,None,None,,None,None,None,,
+934,persons.person,,None,ינון מגל,None,,None,,,,,[],,None,None,,None,None,None,,
+935,persons.person,,None,בצלאל סמוטריץ',None,,None,,,,,[],,None,None,,None,None,None,,
+936,persons.person,,None,ניר אורבך,None,,None,,,,,[],,None,None,,None,None,None,,
+937,persons.person,,None,אביחי רונצקי,None,,None,,,,,[],,None,None,,None,None,None,,
+938,persons.person,,None,מועמד מס 15 בבית היהודי,None,,None,,,,,[],,None,None,,None,None,None,,
+939,persons.person,,None,רונן שובל,None,,None,,,,,[],,None,None,,None,None,None,,
+940,persons.person,,None,מועמד מס 17 בבית היהודי,None,,None,,,,,[],,None,None,,None,None,None,,
+941,persons.person,,None,אביחי בוארון,None,,None,,,,,[],,None,None,,None,None,None,,
+942,persons.person,,None,משה סלומון,None,,None,,,,,[],,None,None,,None,None,None,,
+943,persons.person,,None,מוסי רז,None,,None,,,,,[],,None,None,,None,None,None,,
+944,persons.person,,None,גבי לסקי,None,,None,,,,,[],,None,None,,None,None,None,,
+945,persons.person,,None,אבי דבוש,None,,None,,,,,[],,None,None,,None,None,None,,
+946,persons.person,,None,אילן שוחט,None,,None,,,,,[],,None,None,,None,None,None,,
+947,persons.person,,None,שרון גל,None,,None,,,,,[],,None,None,,None,None,None,,
+948,persons.person,,None,עודד פורר,None,,None,,,,,[],,None,None,,None,None,None,,
+949,persons.person,,None,יוליה מלינובסקי,None,,None,,,,,[],,None,None,,None,None,None,,
+950,persons.person,,None,שירה מיסטריאל,None,,None,,,,,[],,None,None,,None,None,None,,
+951,persons.person,,None,ארקדי פומרנץ,None,,None,,,,,[],,None,None,,None,None,None,,
+952,persons.person,,None,שאדי חלול,None,,None,,,,,[],,None,None,,None,None,None,,
+953,persons.person,,None,אלי כהן,None,,None,,,,,[],,None,None,,None,None,None,,
+954,persons.person,,None,רועי פולקמן,None,,None,,,,,[],,None,None,,None,None,None,,
+955,persons.person,,None,מירב בן-ארי,None,,None,,,,,[],,None,None,,None,None,None,,
+956,persons.person,,None,"שי באב""ד",None,,None,,,,,[],,None,None,,None,None,None,,
+957,persons.person,,None,עאידה תומא סלימאן,None,,None,,,,,[],,None,None,,None,None,None,,
+958,persons.person,,None,איימן עודה,None,,None,,,,,[3],,None,None,,None,None,None,,
+959,persons.person,,None,יוסוף ג'בארין,None,,None,,,,,[1],,None,None,,None,None,None,,
+960,persons.person,,None,עבדאללה אבו-מערוף,None,,None,,,,,[1],,None,None,,None,None,None,,
+961,persons.person,,None,ג'ומעה זבארקה,None,,None,,,,,[],,None,None,,None,None,None,,

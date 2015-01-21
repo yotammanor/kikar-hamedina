@@ -33,15 +33,6 @@ def slugify_name(name):
     return smart_str(name).replace("'",'"').replace(' ','-')
 
 
-def comment_post_wrapper(request):
-    # Clean the request to prevent form spoofing
-    if request.user.is_authenticated():
-        if (('name' in request.POST and (request.user.get_full_name() != request.POST['name'])) or \
-                ('email' in request.POST and (request.user.email == request.POST['email']))):
-            return HttpResponse("Access denied")
-        return post_comment(request)
-    return HttpResponse("Access denied")
-
 @login_required
 def delete(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)

@@ -44,16 +44,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       python manage.py syncdb --noinput
       [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
       python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
-      for m in core mks links facebook_feeds  video zinnia taggit updater reporting tastypie; do
+      for m in core mks links facebook_feeds  persons polyorg video zinnia taggit updater reporting tastypie; do
         python manage.py migrate $m
       done
       python manage.py migrate kikartags 0004
-      for f in sites data_fixture_planet data_fixture_mks data_fixture_mks_altnames data_fixture_facebook_feeds data_fixture_status_comment_pattern 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007 1004_1008; do
+      for f in sites data_fixture_planet data_fixture_mks data_fixture_mks_altnames data_fixture_facebook_feeds data_fixture_persons data_fixture_polyorg data_fixture_status_comment_pattern 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007 1004_1008; do
         python manage.py loaddata $f
        done
       python manage.py migrate kikartags
       python manage.py convert_tags_data_to_kikartags
       python manage.py fetchfeedproperties || true
+      python manage.py update_facebook_personas
+      python manage.py update_is_current_feed
     EOS
   end
 

@@ -24,12 +24,15 @@ from facebook_feeds.management.commands import updatestatus
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, TAG_NAME_REGEX
 from facebook_feeds.models import Tag as OldTag
 from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
-from mks.models import Party, Member
 from core.insights import StatsEngine
 from core.billboards import Billboards
 from core.models import MEMBER_MODEL, PARTY_MODEL
 # current knesset number
+MAX_UNTAGGED_POSTS = 1000
 CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
+
+# Elections mode (use candidates instead of MKs)
+IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
 # used for calculating top gainer of fan_count
 MIN_FAN_COUNT_FOR_REL_COMPARISON = getattr(settings, 'MIN_FAN_COUNT_FOR_REL_COMPARISON', 5000)
@@ -168,17 +171,18 @@ class AboutUsView(ListView):
         new_statuses_last_day = Facebook_Status.objects.filter(published__gte=(
             datetime.date.today() - datetime.timedelta(days=1))).count()
         context['statuses_last_day'] = new_statuses_last_day
-        members = Member.objects.filter(is_current=True)
-        members_with_persona = [member for member in members if member.facebook_persona]
+        members = MEMBER_MODEL.objects.all()
+        members_with_persona = [member for member in members if member.facebook_persona and member.is_current]
         members_with_feed = [member for member in members_with_persona if member.facebook_persona.feeds.all()]
         context['number_of_mks'] = len(members_with_feed)
-        context['featured_party'] = Party.objects.get(id=16)
+        featured_party_id = 2 if IS_ELECTIONS_MODE else 16
+        context['featured_party'] = PARTY_MODEL.objects.get(id=featured_party_id)
         context['featured_search'] = {'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
                                       'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
         max_change = Facebook_Feed.current_feeds.get_largest_fan_count_difference(POPULARITY_DIF_DAYS_BACK,
                                                                                   DEFAULT_POPULARITY_DIF_COMPARISON_TYPE,
                                                                                   MIN_FAN_COUNT_FOR_REL_COMPARISON)
-        max_change['member'] = Member.objects.get(persona=max_change['feed'].persona)
+        max_change['member'] = MEMBER_MODEL.objects.get(persona=max_change['feed'].persona)
         context['top_growth'] = max_change
         return context
 
@@ -258,10 +262,11 @@ class AllStatusesView(StatusListView):
 
     def get_queryset(self):
         retset = self.apply_request_params(super(AllStatusesView, self).get_queryset())
-        # untagged url is known to be super heavy on the DB. That is why it is hard coded limited to 500 matches.
+        # untagged url is known to be super heavy on the DB.
+        # That is why it is hard coded limited to MAX_UNTAGGED matches.
         # Agam Rafaeli - 2/1/2015
         if self.request.resolver_match.url_name == "untagged":
-            retset = retset[:1000]
+            retset = retset[:MAX_UNTAGGED_POSTS]
         return retset
 
     def get_context_data(self, **kwargs):
@@ -269,7 +274,7 @@ class AllStatusesView(StatusListView):
         feeds = Facebook_Feed.objects.filter(
             facebook_status__published__gte=(
                 datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
-        context['side_bar_list'] = Member.objects.filter(
+        context['side_bar_list'] = MEMBER_MODEL.objects.filter(
             id__in=[feed.persona.owner_id for feed in feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
@@ -299,7 +304,7 @@ class SearchView(StatusListView):
         parties_ids = []
         if 'parties' in self.request.GET.keys():
             parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
-            parties = Party.objects.filter(id__in=parties_ids)
+            parties = PARTY_MODEL.objects.filter(id__in=parties_ids)
             for party in parties:
                 for member in party.current_members():
                     if member.id not in members_ids:
@@ -320,8 +325,12 @@ class SearchView(StatusListView):
         return members_ids, parties_ids, tags_ids, phrases
 
     def parse_q_object(self, members_ids, parties_ids, tags_ids, phrases):
-        member_query = Member.objects.filter(id__in=members_ids)
-        feeds = Facebook_Feed.objects.filter(persona__object_id__in=[member.id for member in member_query])
+        member_query = MEMBER_MODEL.objects.filter(id__in=members_ids)
+        member_ids = [member.id for member in member_query]
+        if IS_ELECTIONS_MODE:
+            feeds = Facebook_Feed.objects.filter(persona__alt_object_id__in=member_ids)
+        else:
+            feeds = Facebook_Feed.objects.filter(persona__object_id__in=member_ids)
 
         # all members asked for (through member search of party search), with OR between them.
         members_OR_parties_Q = Q()
@@ -391,9 +400,9 @@ class SearchView(StatusListView):
 
         members_ids, parties_ids, tags_ids, phrases = self.get_parsed_request()
         query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, phrases)
-        context['members'] = Member.objects.filter(id__in=members_ids)
+        context['members'] = MEMBER_MODEL.objects.filter(id__in=members_ids)
 
-        context['parties'] = Party.objects.filter(id__in=parties_ids)
+        context['parties'] = PARTY_MODEL.objects.filter(id__in=parties_ids)
 
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
 
@@ -442,6 +451,7 @@ class StatusFilterUnifiedView(StatusListView):
         search_field = self.kwargs.get('search_field', 'id')
         context['object'] = self.parent_model.objects.get(**{search_field: object_id})
         return context
+
 
 class MemberView(StatusFilterUnifiedView):
     template_name = "core/member.html"
@@ -538,8 +548,8 @@ class TagView(StatusFilterUnifiedView):
         context = super(TagView, self).get_context_data(**kwargs)
         all_feeds_for_tag = Facebook_Feed.objects.filter(
             facebook_status__id__in=[status.id for status in context['object_list']]).distinct()
-        context['side_bar_list'] = Member.objects.filter(
-            id__in=[feed.persona.object_id for feed in all_feeds_for_tag]).distinct().order_by('name')
+        context['side_bar_list'] = MEMBER_MODEL.objects.filter(
+            id__in=[feed.persona.owner_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
 
 
@@ -555,18 +565,18 @@ class FacebookStatusDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
-        context['member'] = Member.objects.get(id=context['object'].feed.persona.object_id)
+        context['member'] = MEMBER_MODEL.objects.get(id=context['object'].feed.persona.owner_id)
         return context
 
 
 class AllMembers(ListView):
     template_name = 'core/all_members.html'
-    model = Member
+    model = MEMBER_MODEL
 
 
 class AllParties(ListView):
     template_name = 'core/all_parties.html'
-    model = Party
+    model = PARTY_MODEL
 
 
 class AllTags(ListView):
@@ -769,36 +779,68 @@ def search_bar(request):
             response_data['number_of_results'] += 1
             return result
 
-        query_direct_name = Q(name__contains=search_text)
+        try:
+            for party in search_bar_parties(search_text):
+                response_data['results'].append(
+                    result_factory(party.id, party.name, "party"))
 
-        # Parties
-        query_alternative_names = Q(partyaltname__name__contains=search_text)
-        combined_party_name_query = query_direct_name | query_alternative_names
-        parties = Party.objects.filter(combined_party_name_query,
-                                       knesset__number=CURRENT_KNESSET_NUMBER).distinct().order_by(
-            'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+            for member in search_bar_members(search_text):
+                response_data['results'].append(
+                    result_factory(member.id, member.name, "member", party=member.current_party.name))
 
-        for party in parties:
-            response_data['results'].append(
-                result_factory(party.id, party.name, "party"))
+            for tag in search_bar_tags(search_text):
+                response_data['results'].append(
+                    result_factory(tag.id, tag.name, "tag"))
 
-        # Members
-        query_alternative_names = Q(memberaltname__name__contains=search_text)
-        combined_member_name_query = query_direct_name | query_alternative_names
-
-        members = Member.objects.filter(combined_member_name_query, is_current=True).distinct() \
-                      .select_related('current_party').order_by('name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
-        for member in members:
-            response_data['results'].append(
-                result_factory(member.id, member.name, "member", party=member.current_party.name))
-        # Tags
-        query_tag_synonyms = Q(synonyms__tag__name=search_text)
-        combined_tag_name_query = query_direct_name | query_tag_synonyms
-
-        tags = Tag.objects.filter_proper(combined_tag_name_query).distinct().order_by('name')[
-               :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
-        for tag in tags:
-            response_data['results'].append(
-                result_factory(tag.id, tag.name, "tag"))
+        except Exception as e:
+            print "search bar exception:", e
+            raise
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+def search_bar_parties(search_text):
+    query_direct_name = Q(name__contains=search_text)
+
+    if IS_ELECTIONS_MODE:
+        query_alternative_names = Q(candidatelistaltname__name__contains=search_text)
+    else:
+        query_alternative_names = Q(partyaltname__name__contains=search_text)
+
+    combined_party_name_query = query_direct_name | query_alternative_names
+
+    if IS_ELECTIONS_MODE:
+        party_query = combined_party_name_query
+    else:
+        party_query = combined_party_name_query & Q(knesset__number=CURRENT_KNESSET_NUMBER)
+
+    return PARTY_MODEL.objects.filter(party_query).distinct().order_by(
+        'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+
+
+def search_bar_members(search_text):
+    # Members
+    query_direct_name = Q(name__contains=search_text)
+
+    if IS_ELECTIONS_MODE:
+        query_alternative_names = Q(person__personaltname__name__contains=search_text)
+        combined_member_name_query = Q(person__name__contains=search_text) | query_alternative_names
+        member_query = combined_member_name_query
+        member_order_by = 'person__name'
+    else:
+        query_alternative_names = Q(memberaltname__name__contains=search_text)
+        combined_member_name_query = query_direct_name | query_alternative_names
+        member_query = combined_member_name_query & Q(is_current=True)
+        member_order_by = 'name'
+
+    return MEMBER_MODEL.objects.filter(member_query).distinct().select_related('current_party') \
+               .order_by(member_order_by)[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+
+
+def search_bar_tags(search_text):
+    query_direct_name = Q(name__contains=search_text)
+    query_tag_synonyms = Q(synonyms__tag__name=search_text)
+    combined_tag_name_query = query_direct_name | query_tag_synonyms
+
+    return Tag.objects.filter_proper(combined_tag_name_query).distinct().order_by('name')[
+           :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
