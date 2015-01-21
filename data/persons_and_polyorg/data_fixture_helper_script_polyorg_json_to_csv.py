@@ -11,10 +11,8 @@ candidate_dict = [x for x in json_data if x['model'] == 'polyorg.candidate']
 candidate_list_dict = [x for x in json_data if x['model'] == 'polyorg.candidatelist']
 elected_knesset_dict = [x for x in json_data if x['model'] == 'polyorg.electedknesset']
 candidate_list_altname_dict = [x for x in json_data if x['model'] == 'polyorg.candidatelistaltname']
-# candidate_altname_dict = [x for x in json_data if x['model'] == 'polyorg.candidatealtname']
 
 all_dicts = [candidate_dict, candidate_list_dict, elected_knesset_dict,
-             # candidate_altname_dict,
              candidate_list_altname_dict
 ]
 

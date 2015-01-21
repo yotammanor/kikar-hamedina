@@ -8,10 +8,11 @@ from pprint import pprint
 
 json_data = json.load(open('data_fixture_persons.json', mode='r'))  # insert name of json
 person_dict = [x for x in json_data if x['model'] == 'persons.person']
+person_altname_dict = [x for x in json_data if x['model'] == 'persons.personaltname']
 title_dict = [x for x in json_data if x['model'] == 'persons.title']
 
 
-all_dicts = [person_dict, title_dict]
+all_dicts = [person_dict, title_dict, person_altname_dict]
 
 
 def insert_to_csv(chosen_dict):

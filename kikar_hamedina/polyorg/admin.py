@@ -1,14 +1,10 @@
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 
-from models import ElectedKnesset, Candidate, CandidateList, Party, CandidateAltname, CandidateListAltname
+from models import ElectedKnesset, Candidate, CandidateList, Party, CandidateListAltname
 from links.models import Link
 from facebook_feeds.admin import Facebook_FeedAdminInline, Facebook_PersonaAdminInline
 
-
-class CandidateAltnameInline(admin.TabularInline):
-    model = CandidateAltname
-    extra = 1
 
 class CandidateListAltnameInline(admin.TabularInline):
     model = CandidateListAltname
@@ -44,7 +40,7 @@ admin.site.register(CandidateList, CandidateListAdmin)
 
 
 class CandidateAdmin(admin.ModelAdmin):
-    inlines = [LinksInline, CandidateAltnameInline]
+    inlines = [LinksInline, ]
 
 
 admin.site.register(Candidate, CandidateAdmin)

@@ -5,9 +5,10 @@ import json
 import csv
 
 
-json_data_persons = open('../persons/election_mode_fixture_1.json', mode='wb')
+json_data_persons = open('../persons_and_polyorg/data_fixture_persons.json', mode='wb')
 
 person_csv = csv.DictReader(open('../persons_and_polyorg/data_from_json_persons.person.csv', 'r'))
+person_atlname_csv = csv.DictReader(open('../persons_and_polyorg/data_from_json_persons.personaltname.csv', 'r'))
 title_csv = csv.DictReader(open('../persons_and_polyorg/data_from_json_persons.title.csv', 'r'))
 
 
@@ -35,7 +36,9 @@ def turn_csv_to_dict(dict_reader_object):
 
 
 def main():
-    all_persons_data_for_insertion = turn_csv_to_dict(person_csv) + turn_csv_to_dict(title_csv)
+    all_persons_data_for_insertion = turn_csv_to_dict(person_csv) + \
+                                     turn_csv_to_dict(title_csv) + \
+                                     turn_csv_to_dict(person_atlname_csv)
 
     print 'creating persons data fixture'
     pprint(all_persons_data_for_insertion)
