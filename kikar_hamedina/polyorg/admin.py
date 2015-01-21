@@ -3,6 +3,7 @@ from django.contrib.contenttypes import generic
 
 from models import ElectedKnesset, Candidate, CandidateList, Party, CandidateAltname, CandidateListAltname
 from links.models import Link
+from facebook_feeds.admin import Facebook_FeedAdminInline, Facebook_PersonaAdminInline
 
 
 class CandidateAltnameInline(admin.TabularInline):
@@ -17,6 +18,7 @@ class MembershipInline(admin.TabularInline):
     model = CandidateList.candidates.through
     extra = 1
 
+
 class LinksInline(generic.GenericTabularInline):
     model = Link
     ct_fk_field = 'object_pk'
@@ -28,8 +30,13 @@ class PartyAdminInline(admin.TabularInline):
     extra = 1
 
 
+class CandidateAdminInline(admin.TabularInline):
+    model = Candidate
+    extra = 1
+
+
 class CandidateListAdmin(admin.ModelAdmin):
-    inlines = [LinksInline, CandidateListAltnameInline, PartyAdminInline]
+    inlines = [CandidateListAltnameInline, CandidateAdminInline]
 
 admin.site.register(CandidateList, CandidateListAdmin)
 
