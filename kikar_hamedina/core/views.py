@@ -22,7 +22,8 @@ from facebook import GraphAPIError
 from endless_pagination.views import AjaxListView
 
 from facebook_feeds.management.commands import updatestatus
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, TAG_NAME_REGEX, Facebook_Persona
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, TAG_NAME_REGEX, \
+    Facebook_Persona
 from facebook_feeds.models import Tag as OldTag
 from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from core.insights import StatsEngine
@@ -171,12 +172,18 @@ class AboutUsView(ListView):
         context = super(AboutUsView, self).get_context_data(**kwargs)
         new_statuses_last_day = Facebook_Status.objects.filter(published__gte=(
             datetime.date.today() - datetime.timedelta(days=1))).count()
+        context['IS_ELECTION_MODE'] = IS_ELECTIONS_MODE
         context['statuses_last_day'] = new_statuses_last_day
         members = MEMBER_MODEL.objects.all()
         members_with_persona = [member for member in members if member.facebook_persona and member.is_current]
-        members_with_feed = [member for member in members_with_persona if member.facebook_persona.feeds.all()]
+        members_with_feed = [member for member in members_with_persona if
+                             member.facebook_persona.feeds.filter(feed_type='PP')]
         context['number_of_mks'] = len(members_with_feed)
-        featured_party_id = 2 if IS_ELECTIONS_MODE else 16
+
+        party_ids = [x['id'] for x in PARTY_MODEL.objects.all().values('id')]
+        import random
+
+        featured_party_id = random.choice(party_ids)
         context['featured_party'] = PARTY_MODEL.objects.get(id=featured_party_id)
         context['featured_search'] = {'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
                                       'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
@@ -317,7 +324,7 @@ class SearchView(StatusListView):
                     else:
                         party_members_without_feed.append(member)
                 if party_members_without_feed:
-                    parties_missing_members.append((party,party_members_without_feed))
+                    parties_missing_members.append((party, party_members_without_feed))
 
         # tags searched for.
         tags_ids = []
@@ -418,7 +425,7 @@ class SearchView(StatusListView):
         context['tags'] = Tag.objects.filter(id__in=tags_ids)
 
         context['search_str'] = phrases
-        #this is a conflict
+        # this is a conflict
         context['search_words'] = phrases
 
         context['search_title'] = 'my search'

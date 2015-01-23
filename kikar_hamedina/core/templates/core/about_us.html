@@ -1,24 +1,37 @@
+<meta charset="UTF-8">
+
 {% extends "layouts/generic-template.html" %}
 
-{% load core_extras %}
+{% block title %}כיכר המדינה - מי אנחנו{% endblock title %}
 
 {% block extra_css_files %}
     <link href="{{ STATIC_URL }}css/about.css" rel="stylesheet">
 {% endblock extra_css_files %}
 
+{% load core_extras %}
+
 {% block main_content %}
     <div class="about-page-container">
         <div class="text-center">
             <img src="{{ STATIC_URL }}media/kikar_hamedina_logo.png" class="about-page-logo">
-            <h1>חברי הכנסת ברשתות החברתיות.</h1>
+            {% if IS_ELECTION_MODE %}
+                <h1>המועמדים לכנסת ברשתות החברתיות</h1>
 
-            <h3>כיום, {{ number_of_mks }} מתוך חברי הכנסת פעילים בפייסבוק באופן קבוע. </h3>
-            <h3>אנחנו מרכזים את כל מה שחברי הכנסת כותבים - ועוזרים לך להבין, ולקחת חלק בשיחה.</h3>
+                <h3>כיום, {{ number_of_mks }} מהמועמדים והמועמדות לכנסת מנהלים דף פייסבוק פומבי וכותבים בו באופן
+                    קבוע.</h3>
+                <h3>אנחנו מרכזים את כל מה שהם כותבים, ועוזרים לך לקחת חלק בשיחה.</h3>
+            {% else %}
+                <h1>חברי הכנסת ברשתות החברתיות.</h1>
+
+                <h3>כיום, {{ number_of_mks }} מתוך חברי הכנסת פעילים בפייסבוק באופן קבוע. </h3>
+                <h3>אנחנו מרכזים את כל מה שחברי הכנסת כותבים - ועוזרים לך להבין, ולקחת חלק בשיחה.</h3>
+
+            {% endif %}
         </div>
 
         <br>
         <br>
-        
+
         <h4>
             <b>תוהה מה אפשר למצוא אצלנו? אפשר לדעת, למשל: </b>
         </h4>
@@ -26,35 +39,46 @@
         <ul class="features-list">
             <li>
                 <i class="fa fa-thumbs-o-up"></i>
-                מה נכתב בסטאטוסים הפופולריים ביותר <a href="{% url 'all-statuses' %}?range=week&order_by=-like_count">בשבוע האחרון</a>?
+                מה נכתב בסטאטוסים הפופולריים ביותר <a href="{% url 'all-statuses' %}?range=week&order_by=-like_count">בשבוע
+                האחרון</a>?
             </li>
             <li>
                 <i class="fa fa-thumbs-o-up"></i>
-                על מה מדברים במפלגת <a href="{% url 'party' featured_party.id %}?range=week">{{ featured_party.name }}</a> בימים אלו?
+                על מה מדברים במפלגת <a
+                    href="{% url 'party' featured_party.id %}?range=week">{{ featured_party.name }}</a> בימים אלו?
             </li>
             <li>
                 <i class="fa fa-thumbs-o-up"></i>
-                אילו חברי כנסת השתמשו לאחרונה במילה <a href='{% url 'search' %}?{{ featured_search.search_value }}'>{{ featured_search.search_name }}</a>?
+                אילו חברי כנסת השתמשו לאחרונה במילה <a
+                    href='{% url 'search' %}?{{ featured_search.search_value }}'>{{ featured_search.search_name }}</a>?
             </li>
             <li>
                 <i class="fa fa-thumbs-o-up"></i>
-                מה גרם ל<a href='{% url "member" top_growth.member.id %}'>{{ top_growth.member.name }}</a> לזכות בעלייה של {{ top_growth.dif | percent }} במספר התומכים בחודש האחרון?
+                מה גרם ל<a href='{% url "member" top_growth.member.id %}'>{{ top_growth.member.name }}</a> לזכות בעלייה
+                של {{ top_growth.dif | percent }} במספר התומכים בחודש האחרון?
             </li>
+            {%  if user.is_authenticated %}
+            <li>
+                <i class="fa fa-thumbs-o-up"></i>
+                אנחנו מחזיקים במאגר <a href="{% url 'all-statuses' %}">{{ statuses_last_day }}</a> סטאטוסים שנכתבו ביממה האחרונה
+            </li>
+            {% endif %}
             <li>
                 <i class="fa fa-thumbs-o-up"></i>
                 ועוד הרבה, רק צריך <a href="{% url 'search-gui' %}">לחפש</a>!
             </li>
         </ul>
 
-        <div class="text-center">        
-            
+        <div class="text-center">
+
             <br>
             <br>
 
             <p>
-                חיפשת משהו ולא מצאת? נתקלת בתקלה? יש לך רעיון מדליק לאיך לשפר את האתר? <a href="mailto:yotammanor@gmail.com">נשמח לשמוע</a>!
+                חיפשת משהו ולא מצאת? נתקלת בתקלה? יש לך רעיון מדליק לאיך לשפר את האתר? <a
+                    href="mailto:yotammanor@gmail.com">נשמח לשמוע</a>!
             </p>
-            
+
             <br>
             <br>
 
@@ -62,13 +86,16 @@
                 אתר זה הוא פרויקט חממה של
                 <br>
                 <a href="http://www.hasadna.org.il" rel="nofollow">
-                    <img src="http://www.hasadna.org.il/wp-content/themes/sadna2012/images/sadna-logo.png" class="hasadna-logo-img" alt="">
+                    <img src="http://www.hasadna.org.il/wp-content/themes/sadna2012/images/sadna-logo.png"
+                         class="hasadna-logo-img" alt="">
                     <span>
                         הסדנא לידע ציבורי
                         <span class="small">(ע"ר)</span>
                     </span>
                 </a>
             </p>
+
+            <div>{% include 'core/donate_button.html' %}</div>
         </div>
 
     </div>

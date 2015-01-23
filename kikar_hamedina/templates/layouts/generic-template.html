@@ -69,8 +69,8 @@
                        autocomplete="off"
                        role="search"
                        placeholder="חפש חבר כנסת, נושא מתויג, או מילים שח״כים אומרים"/>
-                 <ul id="search-results-list">
-                </ul> 
+                <ul id="search-results-list">
+                </ul>
                 <!-- <ul id="search-results-list">
                     <li class="result-container">
                         <a href="/member/831">
@@ -91,15 +91,17 @@
                         </a>
                     </li>
                 </ul> -->
-{#                <div class="input-group-btn">#}
-{#                    <button class="btn btn-success" id="search-bar-submit" data-target="{% url 'search' %}"#}
-{#                            type="button"><i class="fa fa-search"></i></button>#}
-{#                </div>#}
+                {#                <div class="input-group-btn">#}
+                {#                    <button class="btn btn-success" id="search-bar-submit" data-target="{% url 'search' %}"#}
+                {#                            type="button"><i class="fa fa-search"></i></button>#}
+                {#                </div>#}
             </form>
             <ul class="nav-bar-items">
-                <li><a href="{% url 'search-gui' %}">חיפוש</a></li>
                 <li><a href="{% url 'billboards' %}">המצעד</a></li>
                 <li><a href="{% url 'about' %}">אודות</a></li>
+                <li>
+                    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ8ZHE9EVN59Y">תרומה</a>
+                </li>
             </ul>
         </nav>
 
@@ -110,11 +112,19 @@
     <nav class="sidebar">
         <ul class="nav-sidebar-links-container">
             <!--<li class="nav-sidebar-link">-->
-                <!--<a href="{% url 'zinnia_entry_archive_index' %}">לבלוג שלנו</a>-->
+            <!--<a href="{% url 'zinnia_entry_archive_index' %}">לבלוג שלנו</a>-->
             <!--</li>-->
             <li class="nav-sidebar-link">
-                <a href="{% url 'untagged' %}">תיוג</a>
+                <a href="{% url 'search-gui' %}">חיפוש מתקדם</a>
             </li>
+            {% if user.is_authenticated %}
+                <li class="nav-sidebar-link">
+                    <a href="{% url 'untagged' %}">תיוג</a>
+                </li>
+                <li class="nav-sidebar-link">
+                    <a href="{% url 'zinnia_entry_archive_index' %}">בלוג</a>
+                </li>
+            {% endif %}
         </ul>
         <ul class="nav-sidebar">
             <li class="nav-sidebar-heading">לפי פוליטיקאי</li>

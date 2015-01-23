@@ -23,7 +23,7 @@
 {% endblock content %}
 {% endblock blog_content %}
 
-{% block sidebar %}
+{% block blog_sidebar %}
 <div id="widget-rss" class="widget">
   <a href="{% url 'zinnia_entry_latest_feed' %}" title="{% trans "RSS Feed of latest entries" %}" class="feeds">
     {% trans "RSS Feed" %}
@@ -73,4 +73,4 @@
   </ul>
 </div>
 {% endif %}
-{% endblock sidebar %}
+{% endblock blog_sidebar %}

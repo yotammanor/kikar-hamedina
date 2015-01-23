@@ -2,7 +2,8 @@ from core.models import PARTY_MODEL, MEMBER_MODEL
 from facebook_feeds.models import Tag as OldTag, Facebook_Status, Facebook_Feed, Feed_Popularity
 from kikartags.models import Tag as Tag
 from django.db.models import Count
-from kikar_hamedina.settings import FACEBOOK_APP_ID, CURRENT_KNESSET_NUMBER
+from kikar_hamedina.settings import FACEBOOK_APP_ID, CURRENT_KNESSET_NUMBER, CURRENT_ELECTED_KNESSET_NUMBER, \
+    IS_ELECTIONS_MODE
 from django.core.cache import cache
 import datetime
 
@@ -11,6 +12,11 @@ NUMBER_OF_TOP_PARTIES_TO_BRING = 12
 NUMBER_OF_TOP_POLITICIANS_TO_BRING = 12
 NUMBER_OF_TOP_TAGS_TO_BRING = 12
 TAGS_FROM_LAST_DAYS = 7
+
+if IS_ELECTIONS_MODE:
+    KNESSET_NUMBER = CURRENT_ELECTED_KNESSET_NUMBER
+else:
+    KNESSET_NUMBER = CURRENT_KNESSET_NUMBER
 
 
 def generic(request):
@@ -41,15 +47,21 @@ def get_context(request):
     for member in members_with_feed:
         try:
             feed_popularity = member.facebook_persona.get_main_feed.current_fan_count
-            list_of_members.append({'member': member, 'popularity': feed_popularity})
+            list_of_members.append({'member': member, 'popularity': feed_popularity, 'name': member.name})
         except:
             pass
-    sorted_list_of_members = sorted(list_of_members, key=lambda l: l['popularity'], reverse=True)
+    sorted_list_of_members_by_name = sorted(list_of_members, key=lambda l: l['name'], reverse=False)
+    sorted_list_of_members_by_popularity = sorted(list_of_members, key=lambda l: l['popularity'], reverse=True)
+
+    if IS_ELECTIONS_MODE:
+        nav_parties = PARTY_MODEL.objects.filter(knesset__number=KNESSET_NUMBER).annotate(
+            num_of_members=Count('candidates')).order_by('-num_of_members')
+    else:
+        nav_parties = PARTY_MODEL.objects.filter(knesset__number=KNESSET_NUMBER).order_by('-number_of_members')
 
     return {
-        'navMembers': [x['member'] for x in sorted_list_of_members][:NUMBER_OF_TOP_POLITICIANS_TO_BRING],
-        'navParties': PARTY_MODEL.objects.filter(knesset__number=CURRENT_KNESSET_NUMBER)
-                          # .order_by('-number_of_members')[
-                          [:NUMBER_OF_TOP_PARTIES_TO_BRING],
+        'navMembers': [x['member'] for x in sorted_list_of_members_by_name],
+        'navMembersTop': [x['member'] for x in sorted_list_of_members_by_popularity],
+        'navParties': nav_parties,
         'facebook_app_id': FACEBOOK_APP_ID,
     }
