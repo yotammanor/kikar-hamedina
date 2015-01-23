@@ -1,6 +1,7 @@
-<h4 class="billboard-title">{{ billboard.title }}</h4>
+{#<h4 class="billboard-title">{{ billboard.title }}</h4>#}
 
 {% load core_extras %}
+<br/>
 <div class="list-group-item active">
     <h4>{% autoescape off %}{{ billboard.title | render_icons  }}{% endautoescape %}</h4>
     <h6>{{ billboard.second_title }} &nbsp;</h6>

@@ -1,4 +1,4 @@
-from mks.models import Party, Member
+from core.models import PARTY_MODEL, MEMBER_MODEL
 from facebook_feeds.models import Tag as OldTag, Facebook_Status, Facebook_Feed, Feed_Popularity
 from kikartags.models import Tag as Tag
 from django.db.models import Count
@@ -33,7 +33,8 @@ def generic(request):
 
 
 def get_context(request):
-    members = Member.objects.filter(is_current=True)
+    # members = MEMBER_MODEL.objects.filter(is_current=True)
+    members = MEMBER_MODEL.objects.all()
     members_with_persona = [member for member in members if member.facebook_persona]
     members_with_feed = [member for member in members_with_persona if member.facebook_persona.feeds.all()]
     list_of_members = list()
@@ -47,7 +48,8 @@ def get_context(request):
 
     return {
         'navMembers': [x['member'] for x in sorted_list_of_members][:NUMBER_OF_TOP_POLITICIANS_TO_BRING],
-        'navParties': Party.objects.filter(knesset__number=CURRENT_KNESSET_NUMBER).order_by('-number_of_members')[
-                      :NUMBER_OF_TOP_PARTIES_TO_BRING],
+        'navParties': PARTY_MODEL.objects.filter(knesset__number=CURRENT_KNESSET_NUMBER)
+                          # .order_by('-number_of_members')[
+                          [:NUMBER_OF_TOP_PARTIES_TO_BRING],
         'facebook_app_id': FACEBOOK_APP_ID,
     }

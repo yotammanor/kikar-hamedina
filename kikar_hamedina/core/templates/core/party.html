@@ -1,5 +1,4 @@
-{% extends "core/facebook_statuses_page.html" %}
-
+{% extends "core/facebook_statuses_page_newdesign.html" %}
 
 {% block title %}
     מפלגה: {{ object.name }}
@@ -18,48 +17,18 @@
             {{ object.current_party.name }}
           </span>
         </div> -->
-        <div class="politician-info-bar-likes">
-          <span>
-            לייקים
-          </span>
-          <span class="bold">
-            TODO 123,765
-          </span>
-        </div>  
+{#        <div class="politician-info-bar-likes">#}
+{#          <span>#}
+{#            לייקים#}
+{#          </span>#}
+{#          <span class="bold">#}
+{#            TODO 123,765#}
+{#          </span>#}
+{#        </div>#}
       </div>
     </div>
   {% endwith %}
 {% endblock info_bar %}
-
-{% block h1 %}
-    <i class="fa fa-group"></i> {{ object.name }}
-{% endblock %}
-
-{% block details %}
-    <div class="h4">
-        מספר דפים במפלגה: {{ object.current_members.count }}
-    </div>
-    <p id="insights" style="display: none">
-        <i class="fa fa-bar-chart-o"></i>
-        <b>בחודש האחרון:</b>
-        <span id="ins_n_month">-</span> סטטוסים,
-        <span id="ins_mean_likes_month">-</span> לייקים בממוצע
-        <b style="padding-right: 2em">בשבוע האחרון:</b>
-        <span id="ins_n_week">-</span> סטטוסים,
-        <span id="ins_mean_likes_week">-</span> לייקים בממוצע
-    </p>
-{% endblock %}
-
-{%  block sidebar %}
-{#    <ul class="list-group">#}
-{#        {% for member in object.current_members.all %}#}
-{#            <li class="list-group-item"> <a href="{% url 'member' member.id %}">#}
-{#                <i class="fa fa-user"></i>#}
-{#                {{ member.name }}</a>#}
-{#            </li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
-{%  endblock %}
 
 {% block scripts %}
     <script type="text/javascript">
@@ -76,3 +45,82 @@
     });
     </script>
 {% endblock %}
+
+{#{% extends "core/facebook_statuses_page_newdesign.html" %}#}
+{##}
+{##}
+{#{% block title %}#}
+{#    מפלגה: {{ object.name }}#}
+{#{% endblock title %}#}
+{##}
+{#{% block info_bar %}#}
+{#  {% with object.facebook_persona.get_main_feed as feed %}#}
+{#    <div class="politician-info-bar clearfix">#}
+{#      <!-- TODO add image -->#}
+{#      <!-- <img src="{{ feed.picture_large }}" alt="" class="politician-info-bar-photo"> -->#}
+{#      <div class="politician-info-bar-name">{{ object.name }}</div>#}
+{#      <div class="politician-info-bar-party-likes-container">#}
+{#        <!-- <div class="politician-info-bar-party">#}
+{#          <span>מפלגת </span>#}
+{#          <span class="bold">#}
+{#            {{ object.current_party.name }}#}
+{#          </span>#}
+{#        </div> -->#}
+{#        <div class="politician-info-bar-likes">#}
+{#          <span>#}
+{#            לייקים#}
+{#          </span>#}
+{#          <span class="bold">#}
+{#            TODO 123,765#}
+{#          </span>#}
+{#        </div>  #}
+{#      </div>#}
+{#    </div>#}
+{#  {% endwith %}#}
+{#{% endblock info_bar %}#}
+{##}
+{#{% block h1 %}#}
+{#    <i class="fa fa-group"></i> {{ object.name }}#}
+{#{% endblock %}#}
+{##}
+{#{% block details %}#}
+{#    <div class="h4">#}
+{#        מספר דפים במפלגה: {{ object.current_members.count }}#}
+{#    </div>#}
+{#    <p id="insights" style="display: none">#}
+{#        <i class="fa fa-bar-chart-o"></i>#}
+{#        <b>בחודש האחרון:</b>#}
+{#        <span id="ins_n_month">-</span> סטטוסים,#}
+{#        <span id="ins_mean_likes_month">-</span> לייקים בממוצע#}
+{#        <b style="padding-right: 2em">בשבוע האחרון:</b>#}
+{#        <span id="ins_n_week">-</span> סטטוסים,#}
+{#        <span id="ins_mean_likes_week">-</span> לייקים בממוצע#}
+{#    </p>#}
+{#{% endblock %}#}
+{##}
+{#{%  block sidebar %}#}
+{#    <ul class="list-group">#}
+{#        {% for member in object.current_members.all %}#}
+{#            <li class="list-group-item"> <a href="{% url 'member' member.id %}">#}
+{#                <i class="fa fa-user"></i>#}
+{#                {{ member.name }}</a>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#{%  endblock %}#}
+{##}
+{#{% block scripts %}#}
+{#    <script type="text/javascript">#}
+{#        $('#insights').toggle(true);#}
+{#    function int2str(num) { return $.isNumeric(num) ? num : 0; }#}
+{#    function float2str(num) { return $.isNumeric(num) ? num.toFixed(1) : 0; }#}
+{#    $.getJSON('/api/v1/insights/party/{{ object.id }}/?format=json', function( data ) {#}
+{#        $("#ins_n_month").text(int2str(data.n_statuses_last_month));#}
+{#        $("#ins_mean_likes_month").text(float2str(data.mean_status_likes_last_month));#}
+{#        $("#ins_n_week").text(int2str(data.n_statuses_last_week));#}
+{#        $("#ins_mean_likes_week").text(float2str(data.mean_status_likes_last_week));#}
+{#        $('#insights').toggle(true);#}
+{#        return;#}
+{#    });#}
+{#    </script>#}
+{#{% endblock %}#}

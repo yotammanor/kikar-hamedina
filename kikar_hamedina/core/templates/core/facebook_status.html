@@ -28,13 +28,13 @@
 {#    <div class="panel-heading col-lg-12">#}
 {#        <div class="row">#}
 {#            <div class="col-lg-1">#}
-{#                <a href="{% url 'member' status.feed.persona.object_id %}">#}
+{#                <a href="{% url 'member' status.feed.persona.owner_id %}">#}
 {#                    <img src="{{ status.feed.picture_square }}" class="profile-photo img-rounded">#}
 {#                </a>#}
 {#            </div>#}
 {#            <div class="col-lg-9">#}
 {#                <div class="row" id="name-row-container">#}
-{#                    <a class="link-on-blue" href="{% url 'member' status.feed.persona.object_id %}">#}
+{#                    <a class="link-on-blue" href="{% url 'member' status.feed.persona.owner_id %}">#}
 {#                        <h4>{{ status.feed.persona.content_object.name }}</h4>#}
 {#                    </a>#}
 {#                </div>#}
@@ -182,7 +182,7 @@
 
     <div class="post-head clearfix">
         <span class="post-mk-name">
-          <a href="{% url 'member' status.feed.persona.object_id %}">{{ status.feed.persona.content_object.name }}</a>
+          <a href="{% url 'member' status.feed.persona.owner_id %}">{{ status.feed.persona.owner.name }}</a>
         </span>
         <span class="post-time">
           {{ status.published | naturaltime }}
@@ -192,8 +192,8 @@
         </span>
 
         <div>
-            <a class="" href="{% url 'party' status.feed.persona.content_object.current_party.id %}">
-                {{ status.feed.persona.content_object.current_party.name }}
+            <a class="" href="{% url 'party' status.feed.persona.owner.current_party.id %}">
+                {{ status.feed.persona.owner.current_party.name }}
             </a>
         </div>
     </div>
@@ -336,7 +336,7 @@
                          data-width="466">
                         <div class="fb-xfbml-parse-ignore">
                             <a href="{{ status | link }}">פוסט</a> מאת <a
-                                href="{{ status.feed.link }}">{{ status.feed.persona.content_object.name }}</a>.
+                                href="{{ status.feed.link }}">{{ status.feed.persona.owner.name }}</a>.
                         </div>
 
                     </div>
