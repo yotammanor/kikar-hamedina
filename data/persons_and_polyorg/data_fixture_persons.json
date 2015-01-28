@@ -5310,32 +5310,6 @@
         }
     }, 
     {
-        "pk": "926", 
-        "model": "persons.person", 
-        "fields": {
-            "place_of_residence_lat": "", 
-            "residence_economy": null, 
-            "name": "\u05de\u05d5\u05e2\u05de\u05d3 \u05de\u05e1 16 \u05d1\u05de\u05d7\u05e0\u05d4 \u05d4\u05e6\u05d9\u05d5\u05e0\u05d9", 
-            "phone": "", 
-            "gender": null, 
-            "place_of_residence_lon": "", 
-            "fax": "", 
-            "date_of_death": null, 
-            "area_of_residence": "", 
-            "family_status": "", 
-            "date_of_birth": null, 
-            "residence_centrality": null, 
-            "titles": [], 
-            "place_of_residence": "", 
-            "mk": null, 
-            "place_of_birth": "", 
-            "year_of_aliyah": null, 
-            "number_of_children": null, 
-            "img_url": "", 
-            "email": ""
-        }
-    }, 
-    {
         "pk": "927", 
         "model": "persons.person", 
         "fields": {
@@ -5393,9 +5367,9 @@
         "fields": {
             "place_of_residence_lat": "", 
             "residence_economy": null, 
-            "name": "\u05de\u05d5\u05e2\u05de\u05d3 \u05de\u05e1 21 \u05d1\u05de\u05d7\u05e0\u05d4 \u05d4\u05e6\u05d9\u05d5\u05e0\u05d9", 
+            "name": "\u05e7\u05e1\u05e0\u05d9\u05d4 \u05e1\u05d1\u05d8\u05dc\u05d5\u05d1\u05d4", 
             "phone": "", 
-            "gender": null, 
+            "gender": "F", 
             "place_of_residence_lon": "", 
             "fax": "", 
             "date_of_death": null, 
@@ -5473,9 +5447,9 @@
         "fields": {
             "place_of_residence_lat": "", 
             "residence_economy": null, 
-            "name": "\u05de\u05d5\u05e2\u05de\u05d3 \u05de\u05e1 24 \u05d1\u05de\u05d7\u05e0\u05d4 \u05d4\u05e6\u05d9\u05d5\u05e0\u05d9", 
+            "name": "\u05d9\u05e2\u05dc \u05db\u05d4\u05df \u05e4\u05d0\u05e8\u05df", 
             "phone": "", 
-            "gender": null, 
+            "gender": "F", 
             "place_of_residence_lon": "", 
             "fax": "", 
             "date_of_death": null, 
@@ -6254,6 +6228,84 @@
         }
     }, 
     {
+        "pk": "962", 
+        "model": "persons.person", 
+        "fields": {
+            "place_of_residence_lat": "", 
+            "residence_economy": null, 
+            "name": "\u05d0\u05dc\u05d9 \u05d0\u05d5\u05d7\u05e0\u05d4", 
+            "phone": "", 
+            "gender": "M", 
+            "place_of_residence_lon": "", 
+            "fax": "", 
+            "date_of_death": null, 
+            "area_of_residence": "", 
+            "family_status": "", 
+            "date_of_birth": null, 
+            "residence_centrality": null, 
+            "titles": [], 
+            "place_of_residence": "", 
+            "mk": null, 
+            "place_of_birth": "", 
+            "year_of_aliyah": null, 
+            "number_of_children": null, 
+            "img_url": "", 
+            "email": ""
+        }
+    }, 
+    {
+        "pk": "963", 
+        "model": "persons.person", 
+        "fields": {
+            "place_of_residence_lat": "", 
+            "residence_economy": null, 
+            "name": "\u05de\u05e9\u05d4 \u05d4\u05d2\u05e8", 
+            "phone": "", 
+            "gender": "M", 
+            "place_of_residence_lon": "", 
+            "fax": "", 
+            "date_of_death": null, 
+            "area_of_residence": "", 
+            "family_status": "", 
+            "date_of_birth": null, 
+            "residence_centrality": null, 
+            "titles": [], 
+            "place_of_residence": "", 
+            "mk": null, 
+            "place_of_birth": "", 
+            "year_of_aliyah": null, 
+            "number_of_children": null, 
+            "img_url": "", 
+            "email": ""
+        }
+    }, 
+    {
+        "pk": "964", 
+        "model": "persons.person", 
+        "fields": {
+            "place_of_residence_lat": "", 
+            "residence_economy": null, 
+            "name": "\u05de\u05d9\u05db\u05d0\u05dc \u05e2\u05d9\u05d9\u05e9", 
+            "phone": "", 
+            "gender": "M", 
+            "place_of_residence_lon": "", 
+            "fax": "", 
+            "date_of_death": null, 
+            "area_of_residence": "", 
+            "family_status": "", 
+            "date_of_birth": null, 
+            "residence_centrality": null, 
+            "titles": [], 
+            "place_of_residence": "", 
+            "mk": null, 
+            "place_of_birth": "", 
+            "year_of_aliyah": null, 
+            "number_of_children": null, 
+            "img_url": "", 
+            "email": ""
+        }
+    }, 
+    {
         "pk": "1", 
         "model": "persons.title", 
         "fields": {
@@ -6503,6 +6555,94 @@
         "fields": {
             "person": "810", 
             "name": "\u05e9\u05dc\u05de\u05d4 \u05de\u05d5\u05dc\u05d4"
+        }
+    }, 
+    {
+        "pk": "29", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "932", 
+            "name": "\u05d9\u05e2\u05dc \u05e4\u05d0\u05e8\u05df-\u05db\u05d4\u05df"
+        }
+    }, 
+    {
+        "pk": "30", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "932", 
+            "name": "\u05d9\u05e2\u05dc \u05db\u05d4\u05df-\u05e4\u05d0\u05e8\u05df"
+        }
+    }, 
+    {
+        "pk": "31", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "932", 
+            "name": "\u05d9\u05e2\u05dc \u05e4\u05d0\u05e8\u05df \u05db\u05d4\u05df"
+        }
+    }, 
+    {
+        "pk": "32", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "962", 
+            "name": "\u05d0\u05dc\u05d9\u05d4\u05d5 (\u05d0\u05dc\u05d9) \u05d0\u05d5\u05d7\u05e0\u05d4"
+        }
+    }, 
+    {
+        "pk": "33", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "962", 
+            "name": "\u05d0\u05dc\u05d9\u05d4\u05d5 \u05d0\u05d5\u05d7\u05e0\u05d4"
+        }
+    }, 
+    {
+        "pk": "34", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "962", 
+            "name": "\u05d0\u05dc\u05d9\u05d4\u05d5 \u05d0\u05dc\u05d9 \u05d0\u05d5\u05d7\u05e0\u05d4"
+        }
+    }, 
+    {
+        "pk": "35", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "963", 
+            "name": "\u05d4\u05e8\u05d1 \u05de\u05e9\u05d4 \u05d4\u05d2\u05e8"
+        }
+    }, 
+    {
+        "pk": "36", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "963", 
+            "name": "\u05de\u05e9\u05d4 \u05d4\u05d2\u05e8-\u05dc\u05d0\u05d5"
+        }
+    }, 
+    {
+        "pk": "37", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "963", 
+            "name": "\u05de\u05e9\u05d4 \u05d4\u05d2\u05e8 \u05dc\u05d0\u05d5"
+        }
+    }, 
+    {
+        "pk": "38", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "963", 
+            "name": "\u05d4\u05e8\u05d1 \u05de\u05e9\u05d4 \u05d4\u05d2\u05e8-\u05dc\u05d0\u05d5"
+        }
+    }, 
+    {
+        "pk": "39", 
+        "model": "persons.personaltname", 
+        "fields": {
+            "person": "963", 
+            "name": "\u05d4\u05e8\u05d1 \u05de\u05e9\u05d4 \u05d4\u05d2\u05e8 \u05dc\u05d0\u05d5"
         }
     }
 ]

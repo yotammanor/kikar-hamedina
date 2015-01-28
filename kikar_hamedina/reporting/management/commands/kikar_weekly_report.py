@@ -187,11 +187,9 @@ class Command(BaseCommand):
                         {'id': 4,
                          'name': 'arab_parties',
                          'members': PARTY_NAME_FORMAT.join(
-                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[36, 37, 38])]),
-                         'feeds': party_ids[36] + party_ids[37] + party_ids[38],
-                         'size': PARTY_MODEL.objects.get(id=36).candidates.count() +
-                                 PARTY_MODEL.objects.get(id=37).candidates.count() +
-                                 PARTY_MODEL.objects.get(id=38).candidates.count()
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[36])]),
+                         'feeds': party_ids[36],
+                         'size': PARTY_MODEL.objects.get(id=36).candidates.count()
                         },
                         {'id': 5,
                          'name': 'haredi_parties',
