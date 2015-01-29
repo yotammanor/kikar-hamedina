@@ -255,7 +255,8 @@ class Command(BaseCommand):
                                 u'חינוך' in status.content,
                                 u'בריאות' in status.content,
                                 u'תעסוק' in status.content,
-                                u'רווחה' in status.content
+                                u'רווחה' in status.content,
+                                u'מזרחי' in status.content
                                ) for
                                status in week_statuses]
         field_names = ['status_id', 'feed_id', 'feed_name', 'party_id', 'party_name',
@@ -283,7 +284,8 @@ class Command(BaseCommand):
                        u'has_word_חינוך',
                        u'has_word_בריאות',
                        u'has_word_תעסוק',
-                       u'has_word_רווחה'
+                       u'has_word_רווחה',
+                       u'has_word_מזרחי'
 
         ]
         recs = np.core.records.fromrecords(week_statuses_build, names=field_names)
