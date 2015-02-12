@@ -95,7 +95,13 @@ def get_date_range_dict():
                            'start_date': timezone.datetime(timezone.now().year, 1, 1, tzinfo=timezone.utc),
                            'end_date': filter_by_date_default_end_date
                        },
-                       'protective_edge': {
+                       'elections_20': {
+                           # Dates are set based on information from Wikipedia:
+                           # he.wikipedia.org/wiki/%D7%94%D7%91%D7%97%D7%99%D7%A8%D7%95%D7%AA_%D7%9C%D7%9B%D7%A0%D7%A1%D7%AA_%D7%94%D7%A2%D7%A9%D7%A8%D7%99%D7%9D
+                           'start_date': timezone.datetime(2014, 12, 8, tzinfo=timezone.utc),
+                           'end_date': timezone.datetime(2015, 3, 17, tzinfo=timezone.utc)
+                       },
+                       'protective-edge': {
                            # Dates are set based on information from Wikipedia:
                            # he.wikipedia.org/wiki/%D7%9E%D7%91%D7%A6%D7%A2_%D7%A6%D7%95%D7%A7_%D7%90%D7%99%D7%AA%D7%9F
                            'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
@@ -170,12 +176,18 @@ class AboutUsView(ListView):
         context = super(AboutUsView, self).get_context_data(**kwargs)
         new_statuses_last_day = Facebook_Status.objects.filter(published__gte=(
             datetime.date.today() - datetime.timedelta(days=1))).count()
+        context['IS_ELECTION_MODE'] = IS_ELECTIONS_MODE
         context['statuses_last_day'] = new_statuses_last_day
         members = MEMBER_MODEL.objects.all()
         members_with_persona = [member for member in members if member.facebook_persona and member.is_current]
-        members_with_feed = [member for member in members_with_persona if member.facebook_persona.feeds.all()]
+        members_with_feed = [member for member in members_with_persona if
+                             member.facebook_persona.feeds.filter(feed_type='PP')]
         context['number_of_mks'] = len(members_with_feed)
-        featured_party_id = 2 if IS_ELECTIONS_MODE else 16
+
+        party_ids = [x['id'] for x in PARTY_MODEL.objects.all().values('id')]
+        import random
+
+        featured_party_id = random.choice(party_ids)
         context['featured_party'] = PARTY_MODEL.objects.get(id=featured_party_id)
         context['featured_search'] = {'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
                                       'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}

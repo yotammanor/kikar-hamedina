@@ -187,11 +187,9 @@ class Command(BaseCommand):
                         {'id': 4,
                          'name': 'arab_parties',
                          'members': PARTY_NAME_FORMAT.join(
-                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[36, 37, 38])]),
-                         'feeds': party_ids[36] + party_ids[37] + party_ids[38],
-                         'size': PARTY_MODEL.objects.get(id=36).candidates.count() +
-                                 PARTY_MODEL.objects.get(id=37).candidates.count() +
-                                 PARTY_MODEL.objects.get(id=38).candidates.count()
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[36])]),
+                         'feeds': party_ids[36],
+                         'size': PARTY_MODEL.objects.get(id=36).candidates.count()
                         },
                         {'id': 5,
                          'name': 'haredi_parties',
@@ -257,7 +255,8 @@ class Command(BaseCommand):
                                 u'חינוך' in status.content,
                                 u'בריאות' in status.content,
                                 u'תעסוק' in status.content,
-                                u'רווחה' in status.content
+                                u'רווחה' in status.content,
+                                u'מזרחי' in status.content
                                ) for
                                status in week_statuses]
         field_names = ['status_id', 'feed_id', 'feed_name', 'party_id', 'party_name',
@@ -285,7 +284,8 @@ class Command(BaseCommand):
                        u'has_word_חינוך',
                        u'has_word_בריאות',
                        u'has_word_תעסוק',
-                       u'has_word_רווחה'
+                       u'has_word_רווחה',
+                       u'has_word_מזרחי'
 
         ]
         recs = np.core.records.fromrecords(week_statuses_build, names=field_names)
