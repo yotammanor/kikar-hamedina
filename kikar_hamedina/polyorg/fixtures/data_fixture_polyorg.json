@@ -19,6 +19,36 @@
         }
     }, 
     {
+        "pk": "7", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "5", 
+            "person": "7", 
+            "votes": null, 
+            "candidates_list": "34"
+        }
+    }, 
+    {
+        "pk": "14", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "11", 
+            "person": "14", 
+            "votes": null, 
+            "candidates_list": "26"
+        }
+    }, 
+    {
+        "pk": "35", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "2", 
+            "person": "35", 
+            "votes": null, 
+            "candidates_list": "33"
+        }
+    }, 
+    {
         "pk": "41", 
         "model": "polyorg.candidate", 
         "fields": {
@@ -32,10 +62,20 @@
         "pk": "45", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "9", 
+            "ordinal": "12", 
             "person": "45", 
             "votes": null, 
             "candidates_list": "26"
+        }
+    }, 
+    {
+        "pk": "50", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "7", 
+            "person": "50", 
+            "votes": null, 
+            "candidates_list": "34"
         }
     }, 
     {
@@ -56,6 +96,16 @@
             "person": "64", 
             "votes": "15903", 
             "candidates_list": "27"
+        }
+    }, 
+    {
+        "pk": "65", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "2", 
+            "person": "65", 
+            "votes": null, 
+            "candidates_list": "34"
         }
     }, 
     {
@@ -96,6 +146,16 @@
             "person": "92", 
             "votes": null, 
             "candidates_list": "28"
+        }
+    }, 
+    {
+        "pk": "103", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "3", 
+            "person": "103", 
+            "votes": null, 
+            "candidates_list": "33"
         }
     }, 
     {
@@ -142,7 +202,7 @@
         "pk": "208", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "4", 
             "person": "208", 
             "votes": null, 
             "candidates_list": "36"
@@ -189,6 +249,16 @@
         }
     }, 
     {
+        "pk": "222", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "3", 
+            "person": "222", 
+            "votes": null, 
+            "candidates_list": "34"
+        }
+    }, 
+    {
         "pk": "230", 
         "model": "polyorg.candidate", 
         "fields": {
@@ -216,16 +286,6 @@
             "person": "713", 
             "votes": null, 
             "candidates_list": "28"
-        }
-    }, 
-    {
-        "pk": "720", 
-        "model": "polyorg.candidate", 
-        "fields": {
-            "ordinal": "1", 
-            "person": "720", 
-            "votes": null, 
-            "candidates_list": "39"
         }
     }, 
     {
@@ -269,10 +329,30 @@
         }
     }, 
     {
+        "pk": "751", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "4", 
+            "person": "751", 
+            "votes": null, 
+            "candidates_list": "34"
+        }
+    }, 
+    {
+        "pk": "754", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "6", 
+            "person": "754", 
+            "votes": null, 
+            "candidates_list": "33"
+        }
+    }, 
+    {
         "pk": "756", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "3", 
             "person": "756", 
             "votes": null, 
             "candidates_list": "36"
@@ -292,17 +372,27 @@
         "pk": "771", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "20", 
+            "ordinal": "26", 
             "person": "771", 
             "votes": null, 
             "candidates_list": "26"
         }
     }, 
     {
+        "pk": "772", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "16", 
+            "person": "772", 
+            "votes": null, 
+            "candidates_list": "27"
+        }
+    }, 
+    {
         "pk": "780", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "8", 
             "person": "780", 
             "votes": null, 
             "candidates_list": "36"
@@ -316,6 +406,16 @@
             "person": "782", 
             "votes": "22865", 
             "candidates_list": "27"
+        }
+    }, 
+    {
+        "pk": "784", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "8", 
+            "person": "784", 
+            "votes": null, 
+            "candidates_list": "34"
         }
     }, 
     {
@@ -349,6 +449,16 @@
         }
     }, 
     {
+        "pk": "814", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "4", 
+            "person": "814", 
+            "votes": null, 
+            "candidates_list": "33"
+        }
+    }, 
+    {
         "pk": "818", 
         "model": "polyorg.candidate", 
         "fields": {
@@ -369,10 +479,20 @@
         }
     }, 
     {
+        "pk": "825", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "20", 
+            "person": "825", 
+            "votes": null, 
+            "candidates_list": "26"
+        }
+    }, 
+    {
         "pk": "826", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "12", 
+            "ordinal": "10", 
             "person": "826", 
             "votes": null, 
             "candidates_list": "26"
@@ -382,7 +502,7 @@
         "pk": "828", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "10", 
+            "ordinal": "9", 
             "person": "828", 
             "votes": null, 
             "candidates_list": "26"
@@ -429,6 +549,26 @@
         }
     }, 
     {
+        "pk": "839", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "5", 
+            "person": "839", 
+            "votes": null, 
+            "candidates_list": "33"
+        }
+    }, 
+    {
+        "pk": "884", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "2", 
+            "person": "844", 
+            "votes": null, 
+            "candidates_list": "36"
+        }
+    }, 
+    {
         "pk": "845", 
         "model": "polyorg.candidate", 
         "fields": {
@@ -442,8 +582,18 @@
         "pk": "846", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "7", 
             "person": "846", 
+            "votes": null, 
+            "candidates_list": "36"
+        }
+    }, 
+    {
+        "pk": "857", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "9", 
+            "person": "857", 
             "votes": null, 
             "candidates_list": "36"
         }
@@ -466,6 +616,16 @@
             "person": "860", 
             "votes": null, 
             "candidates_list": "30"
+        }
+    }, 
+    {
+        "pk": "861", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "7", 
+            "person": "861", 
+            "votes": null, 
+            "candidates_list": "33"
         }
     }, 
     {
@@ -522,7 +682,7 @@
         "pk": "867", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "11", 
             "person": "867", 
             "votes": null, 
             "candidates_list": "36"
@@ -534,6 +694,16 @@
         "fields": {
             "ordinal": "3", 
             "person": "868", 
+            "votes": null, 
+            "candidates_list": "30"
+        }
+    }, 
+    {
+        "pk": "869", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "18", 
+            "person": "869", 
             "votes": null, 
             "candidates_list": "30"
         }
@@ -559,10 +729,20 @@
         }
     }, 
     {
+        "pk": "872", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "14", 
+            "person": "872", 
+            "votes": null, 
+            "candidates_list": "30"
+        }
+    }, 
+    {
         "pk": "873", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "10", 
+            "ordinal": "8", 
             "person": "873", 
             "votes": null, 
             "candidates_list": "28"
@@ -622,7 +802,7 @@
         "pk": "879", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "8", 
+            "ordinal": "10", 
             "person": "879", 
             "votes": null, 
             "candidates_list": "28"
@@ -699,13 +879,13 @@
         }
     }, 
     {
-        "pk": "893", 
+        "pk": "894", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "18", 
-            "person": "893", 
+            "ordinal": "16", 
+            "person": "894", 
             "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "30"
         }
     }, 
     {
@@ -799,13 +979,13 @@
         }
     }, 
     {
-        "pk": "907", 
+        "pk": "906", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "11", 
-            "person": "907", 
+            "ordinal": "6", 
+            "person": "906", 
             "votes": null, 
-            "candidates_list": "26"
+            "candidates_list": "34"
         }
     }, 
     {
@@ -859,16 +1039,6 @@
         }
     }, 
     {
-        "pk": "913", 
-        "model": "polyorg.candidate", 
-        "fields": {
-            "ordinal": "23", 
-            "person": "913", 
-            "votes": null, 
-            "candidates_list": "26"
-        }
-    }, 
-    {
         "pk": "914", 
         "model": "polyorg.candidate", 
         "fields": {
@@ -892,7 +1062,7 @@
         "pk": "916", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "6", 
+            "ordinal": "3", 
             "person": "916", 
             "votes": null, 
             "candidates_list": "31"
@@ -924,16 +1094,6 @@
         "fields": {
             "ordinal": "2", 
             "person": "919", 
-            "votes": null, 
-            "candidates_list": "31"
-        }
-    }, 
-    {
-        "pk": "920", 
-        "model": "polyorg.candidate", 
-        "fields": {
-            "ordinal": "3", 
-            "person": "920", 
             "votes": null, 
             "candidates_list": "31"
         }
@@ -1032,18 +1192,8 @@
         "pk": "932", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "24", 
-            "person": "932", 
-            "votes": "0", 
-            "candidates_list": "27"
-        }
-    }, 
-    {
-        "pk": "933", 
-        "model": "polyorg.candidate", 
-        "fields": {
             "ordinal": "25", 
-            "person": "933", 
+            "person": "932", 
             "votes": "0", 
             "candidates_list": "27"
         }
@@ -1089,16 +1239,6 @@
         }
     }, 
     {
-        "pk": "938", 
-        "model": "polyorg.candidate", 
-        "fields": {
-            "ordinal": "15", 
-            "person": "938", 
-            "votes": null, 
-            "candidates_list": "28"
-        }
-    }, 
-    {
         "pk": "939", 
         "model": "polyorg.candidate", 
         "fields": {
@@ -1109,20 +1249,10 @@
         }
     }, 
     {
-        "pk": "940", 
-        "model": "polyorg.candidate", 
-        "fields": {
-            "ordinal": "17", 
-            "person": "940", 
-            "votes": null, 
-            "candidates_list": "28"
-        }
-    }, 
-    {
         "pk": "941", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "19", 
+            "ordinal": "17", 
             "person": "941", 
             "votes": null, 
             "candidates_list": "28"
@@ -1132,7 +1262,7 @@
         "pk": "942", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "20", 
+            "ordinal": "19", 
             "person": "942", 
             "votes": null, 
             "candidates_list": "28"
@@ -1282,7 +1412,7 @@
         "pk": "957", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "5", 
             "person": "957", 
             "votes": null, 
             "candidates_list": "36"
@@ -1292,7 +1422,7 @@
         "pk": "958", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "1", 
             "person": "958", 
             "votes": null, 
             "candidates_list": "36"
@@ -1302,7 +1432,7 @@
         "pk": "959", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "10", 
             "person": "959", 
             "votes": null, 
             "candidates_list": "36"
@@ -1312,7 +1442,7 @@
         "pk": "960", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "13", 
             "person": "960", 
             "votes": null, 
             "candidates_list": "36"
@@ -1322,7 +1452,7 @@
         "pk": "961", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "0", 
+            "ordinal": "14", 
             "person": "961", 
             "votes": null, 
             "candidates_list": "36"
@@ -1339,61 +1469,41 @@
         }
     }, 
     {
-        "pk": "963", 
-        "model": "polyorg.candidate", 
-        "fields": {
-            "ordinal": "14", 
-            "person": "872", 
-            "votes": null, 
-            "candidates_list": "30"
-        }
-    }, 
-    {
         "pk": "964", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "16", 
-            "person": "894", 
+            "ordinal": "3", 
+            "person": "964", 
             "votes": null, 
-            "candidates_list": "30"
-        }
-    }, 
-    {
-        "pk": "965", 
-        "model": "polyorg.candidate", 
-        "fields": {
-            "ordinal": "18", 
-            "person": "869", 
-            "votes": null, 
-            "candidates_list": "30"
+            "candidates_list": "35"
         }
     }, 
     {
         "pk": "966", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "16", 
-            "person": "772", 
+            "ordinal": "6", 
+            "person": "966", 
             "votes": null, 
-            "candidates_list": "27"
+            "candidates_list": "36"
         }
     }, 
     {
         "pk": "967", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "99", 
-            "person": "962", 
+            "ordinal": "12", 
+            "person": "967", 
             "votes": null, 
-            "candidates_list": "28"
+            "candidates_list": "36"
         }
     }, 
     {
         "pk": "968", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "99", 
-            "person": "963", 
+            "ordinal": "4", 
+            "person": "968", 
             "votes": null, 
             "candidates_list": "35"
         }
@@ -1402,10 +1512,80 @@
         "pk": "969", 
         "model": "polyorg.candidate", 
         "fields": {
-            "ordinal": "3", 
-            "person": "964", 
+            "ordinal": "5", 
+            "person": "969", 
             "votes": null, 
             "candidates_list": "35"
+        }
+    }, 
+    {
+        "pk": "970", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "8", 
+            "person": "970", 
+            "votes": null, 
+            "candidates_list": "33"
+        }
+    }, 
+    {
+        "pk": "971", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "6", 
+            "person": "971", 
+            "votes": null, 
+            "candidates_list": "31"
+        }
+    }, 
+    {
+        "pk": "972", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "15", 
+            "person": "972", 
+            "votes": null, 
+            "candidates_list": "28"
+        }
+    }, 
+    {
+        "pk": "973", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "18", 
+            "person": "973", 
+            "votes": null, 
+            "candidates_list": "28"
+        }
+    }, 
+    {
+        "pk": "974", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "20", 
+            "person": "974", 
+            "votes": null, 
+            "candidates_list": "28"
+        }
+    }, 
+    {
+        "pk": "975", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "24", 
+            "person": "975", 
+            "votes": null, 
+            "candidates_list": "27"
+        }
+    }, 
+    {
+        "pk": "976", 
+        "model": "polyorg.candidate", 
+        "fields": {
+            "ordinal": "23", 
+            "person": "976", 
+            "votes": null, 
+            "candidates_list": "26"
         }
     }, 
     {
@@ -1513,7 +1693,7 @@
             "name": "\u05db\u05d5\u05dc\u05e0\u05d5", 
             "wikipedia_page": "http://he.wikipedia.org/wiki/%D7%9B%D7%95%D7%9C%D7%A0%D7%95_%D7%91%D7%A8%D7%90%D7%A9%D7%95%D7%AA_%D7%9E%D7%A9%D7%94_%D7%9B%D7%97%D7%9C%D7%95%D7%9F", 
             "mpg_html_report": "", 
-            "ballot": "NA", 
+            "ballot": "\u05db", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
@@ -1589,7 +1769,7 @@
             "name": "\u05d9\u05d7\u05d3 \u05d4\u05e2\u05dd \u05d0\u05d9\u05ea\u05e0\u05d5", 
             "wikipedia_page": "http://he.wikipedia.org/wiki/%D7%94%D7%A2%D7%9D_%D7%90%D7%99%D7%AA%D7%A0%D7%95", 
             "mpg_html_report": "", 
-            "ballot": "NA", 
+            "ballot": "\u05d6\u05da", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
@@ -1605,29 +1785,10 @@
             "number_of_seats": null, 
             "twitter_account": "", 
             "youtube_user": "", 
-            "name": "\u05e8\u05e9\u05d9\u05de\u05d4 \u05e2\u05e8\u05d1\u05d9\u05ea \u05de\u05d0\u05d5\u05d7\u05d3\u05ea", 
+            "name": "\u05d4\u05e8\u05e9\u05d9\u05de\u05d4 \u05d4\u05de\u05e9\u05d5\u05ea\u05e4\u05ea", 
             "wikipedia_page": "", 
             "mpg_html_report": "", 
             "ballot": " ", 
-            "facebook_url": "", 
-            "platform": "", 
-            "party": null, 
-            "surplus_partner": null, 
-            "img_url": "", 
-            "knesset": "20"
-        }
-    }, 
-    {
-        "pk": "39", 
-        "model": "polyorg.candidatelist", 
-        "fields": {
-            "number_of_seats": null, 
-            "twitter_account": "", 
-            "youtube_user": "", 
-            "name": "\u05e7\u05d3\u05d9\u05de\u05d4", 
-            "wikipedia_page": "", 
-            "mpg_html_report": "", 
-            "ballot": "\u05db\u05df", 
             "facebook_url": "", 
             "platform": "", 
             "party": null, 
@@ -1882,6 +2043,102 @@
         "fields": {
             "member": "34", 
             "name": "\u05e9\u05e1"
+        }
+    }, 
+    {
+        "pk": "40", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05e8\u05e9\u05d9\u05de\u05d4 \u05e2\u05e8\u05d1\u05d9\u05ea \u05de\u05d0\u05d5\u05d7\u05d3\u05ea"
+        }
+    }, 
+    {
+        "pk": "41", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05e8\u05e9\u05d9\u05de\u05d4 \u05de\u05e9\u05d5\u05ea\u05e4\u05ea"
+        }
+    }, 
+    {
+        "pk": "42", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0645\u0634\u062a\u0631\u0643\u0629"
+        }
+    }, 
+    {
+        "pk": "43", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05d0\u05dc-\u05e7\u05b8\u05d0\u05d0\u05b4\u05de\u05b7\u05d4 \u05d0\u05dc-\u05de\u05bb\u05e9\u05b0\u05ea\u05b7\u05e8\u05b7\u05db\u05b7\u05bc\u05d4"
+        }
+    }, 
+    {
+        "pk": "44", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05d0\u05dc \u05e7\u05d0\u05d0\u05de\u05d4 \u05d0\u05dc \u05de\u05e9\u05ea\u05e8\u05db\u05d4"
+        }
+    }, 
+    {
+        "pk": "45", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05d7\u05d3\"\u05e9"
+        }
+    }, 
+    {
+        "pk": "46", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05d4\u05d7\u05d6\u05d9\u05ea \u05d4\u05d3\u05de\u05d5\u05e7\u05e8\u05d8\u05d9\u05ea \u05dc\u05e9\u05dc\u05d5\u05dd \u05d5\u05dc\u05e9\u05d5\u05d5\u05d9\u05d5\u05df"
+        }
+    }, 
+    {
+        "pk": "47", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05d4\u05d7\u05d6\u05d9\u05ea \u05d4\u05d3\u05de\u05d5\u05e7\u05e8\u05d8\u05d9\u05ea \u05dc\u05e9\u05dc\u05d5\u05dd \u05d5\u05dc\u05e9\u05d9\u05d5\u05d5\u05d9\u05d5\u05df"
+        }
+    }, 
+    {
+        "pk": "48", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05e8\u05e2\"\u05dd"
+        }
+    }, 
+    {
+        "pk": "49", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05ea\u05e2\"\u05dc"
+        }
+    }, 
+    {
+        "pk": "50", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05d1\u05dc\"\u05d3"
+        }
+    }, 
+    {
+        "pk": "51", 
+        "model": "polyorg.candidatelistaltname", 
+        "fields": {
+            "member": "36", 
+            "name": "\u05d1\u05e8\u05d9\u05ea \u05dc\u05d0\u05d5\u05de\u05d9\u05ea \u05d3\u05de\u05d5\u05e7\u05e8\u05d8\u05d9\u05ea"
         }
     }
 ]

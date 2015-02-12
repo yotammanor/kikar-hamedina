@@ -30,11 +30,23 @@ pk,model,person,name
 29,persons.personaltname,932,יעל פארן-כהן
 30,persons.personaltname,932,יעל כהן-פארן
 31,persons.personaltname,932,יעל פארן כהן
-32,persons.personaltname,962,אליהו (אלי) אוחנה
-33,persons.personaltname,962,אליהו אוחנה
-34,persons.personaltname,962,אליהו אלי אוחנה
 35,persons.personaltname,963,הרב משה הגר
 36,persons.personaltname,963,משה הגר-לאו
 37,persons.personaltname,963,משה הגר לאו
 38,persons.personaltname,963,הרב משה הגר-לאו
 39,persons.personaltname,963,הרב משה הגר לאו
+40,persons.personaltname,14,זאב בנימין (בני) בגין
+41,persons.personaltname,14,זאב בנימין בני בגין
+42,persons.personaltname,14,בנימין בגין
+43,persons.personaltname,14,זאב בגין
+44,persons.personaltname,14,בנימין (בני) בגין
+45,persons.personaltname,14,בנימין בני בגין
+46,persons.personaltname,968,ברוך מאיר מרזל
+47,persons.personaltname,969,הרב ששון טרבלסי
+48,persons.personaltname,970,אלעזר סורוצקין
+49,persons.personaltname,970,הרב אליעזר סורוצקין
+50,persons.personaltname,970,הרב אלעזר סורוצקין
+51,persons.personaltname,973,איל נחמן
+52,persons.personaltname,975,איל בן ראובן
+53,persons.personaltname,975,אייל בן-ראובן
+54,persons.personaltname,975,איל בן-ראובן
