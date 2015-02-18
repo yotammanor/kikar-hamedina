@@ -95,7 +95,13 @@ def get_date_range_dict():
                            'start_date': timezone.datetime(timezone.now().year, 1, 1, tzinfo=timezone.utc),
                            'end_date': filter_by_date_default_end_date
                        },
-                       'protective_edge': {
+                       'elections_20': {
+                           # Dates are set based on information from Wikipedia:
+                           # he.wikipedia.org/wiki/%D7%94%D7%91%D7%97%D7%99%D7%A8%D7%95%D7%AA_%D7%9C%D7%9B%D7%A0%D7%A1%D7%AA_%D7%94%D7%A2%D7%A9%D7%A8%D7%99%D7%9D
+                           'start_date': timezone.datetime(2014, 12, 8, tzinfo=timezone.utc),
+                           'end_date': timezone.datetime(2015, 3, 17, tzinfo=timezone.utc)
+                       },
+                       'protective-edge': {
                            # Dates are set based on information from Wikipedia:
                            # he.wikipedia.org/wiki/%D7%9E%D7%91%D7%A6%D7%A2_%D7%A6%D7%95%D7%A7_%D7%90%D7%99%D7%AA%D7%9F
                            'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
@@ -414,7 +420,7 @@ class SearchView(StatusListView):
 
         context['search_str'] = phrases
 
-        context['search_title'] = 'my search'
+        context['search_title'] = ", ".join([x for x in phrases]) or ", ".join(x.name for x in context['tags'])
 
         return_queryset = self.apply_request_params(Facebook_Status.objects.filter(query_Q))
         context['number_of_results'] = return_queryset.count()

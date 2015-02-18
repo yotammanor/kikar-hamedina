@@ -5,6 +5,7 @@ from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag as OldTag,
 from kikartags.models import Tag as Tag
 from planet.models import Blog
 from core.models import MEMBER_MODEL, PARTY_MODEL
+from tastypie.constants import ALL, ALL_WITH_RELATIONS
 
 
 class MemberResource(ModelResource):
@@ -84,7 +85,9 @@ class Facebook_StatusResource(ModelResource):
         queryset = Facebook_Status.objects.all()
         resource_name = 'facebook_status'
         filtering = {
-            "feed": ["exact"]
+            "feed": ["exact"],
+            "content": ["exact", "startswith", "contains"],
+            "published": ['exact', 'gt', 'gte', 'lt', 'lte', 'range']
         }
 
     def dehydrate(self, bundle):
