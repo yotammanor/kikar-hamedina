@@ -420,7 +420,7 @@ class SearchView(StatusListView):
 
         context['search_str'] = phrases
 
-        context['search_title'] = 'my search'
+        context['search_title'] = ", ".join([x for x in phrases]) or ", ".join(x.name for x in context['tags'])
 
         return_queryset = self.apply_request_params(Facebook_Status.objects.filter(query_Q))
         context['number_of_results'] = return_queryset.count()
