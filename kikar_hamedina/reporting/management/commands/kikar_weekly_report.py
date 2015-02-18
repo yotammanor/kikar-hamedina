@@ -170,11 +170,10 @@ class Command(BaseCommand):
                         {'id': 2,
                          'name': 'center_side',
                          'members': PARTY_NAME_FORMAT.join(
-                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[30, 31, 39])]),
-                         'feeds': party_ids[30] + party_ids[31] + party_ids[39],
+                             [x.name for x in PARTY_MODEL.objects.filter(id__in=[30, 31])]),
+                         'feeds': party_ids[30] + party_ids[31],
                          'size': PARTY_MODEL.objects.get(id=30).candidates.count() +
-                                 PARTY_MODEL.objects.get(id=31).candidates.count() +
-                                 PARTY_MODEL.objects.get(id=39).candidates.count()
+                                 PARTY_MODEL.objects.get(id=31).candidates.count()
                         },
                         {'id': 3,
                          'name': 'left_side',
@@ -222,7 +221,7 @@ class Command(BaseCommand):
 
     def statuses_data(self):
         week_ago, month_ago = get_times()
-        start_date = timezone.datetime(2014, 11, 27, 0, 0, 0, 0, tzinfo=timezone.get_current_timezone())
+        start_date = timezone.datetime(2014, 10, 25, 0, 0, 0, 0, tzinfo=timezone.get_current_timezone())
         week_statuses = Facebook_Status.objects.filter(published__gte=start_date, like_count__isnull=False)
         week_statuses_build = [(status.status_id, status.feed.id, status.feed.name,
                                 status.feed.persona.owner.current_party.id,
