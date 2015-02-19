@@ -7,12 +7,14 @@
 {% endblock %}
 
 {% block h1 %}
-סטטוס של {{member.name}}
 {% endblock %}
 
 {% block context-header %}
 {% endblock %}
 
 {% block main_content %}
-	{% include "core/facebook_status.html" with status=object %}
+
+    <div class="container" style="max-width: 800px" id="single-status-container">
+        {% include "core/facebook_status.html" with status=object %}
+    </div>
 {% endblock %}
