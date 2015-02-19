@@ -169,18 +169,19 @@ class Command(BaseCommand):
             # print 'deleting attachment'
             attachment.delete()
 
-    def create_or_update_attachment(self, status, status_object_defaultdict):
+    def create_or_update_attachment(self, status_object, status_object_defaultdict):
         """
         If attachment exists, create or update all relevant fields.
         """
         # print 'create_or_update attachment'
         if status_object_defaultdict['link']:
             attachment, created = Facebook_Status_Attachment.objects.get_or_create(
-                status=status)
+                status=status_object)
             # print 'I have an attachment. Created now: %s; Length of data in field link: %d; \
             #     field picture: %d;  id: %s' % (created, len(status_object_defaultdict['link']),
             #                                    len(str(status_object_defaultdict['picture'])), status.status_id)
             # self.update_status_attachment(attachment, status_object_defaultdict)
+            self.update_status_attachment(attachment, status_object_defaultdict)
         else:
             pass
             # print 'i don''t have an attachment; Link field: %s; Picture field: %s; id: %s' % (
@@ -230,7 +231,7 @@ class Command(BaseCommand):
 
         try:
 
-            if ((status_object.updated < current_time_of_update) or options['force-update'] or
+            if ((status_object.updated <= current_time_of_update) or options['force-update'] or
                 (options['update-deleted'] and status_object.is_deleted)):
                 # If post_id exists but of earlier update time, fields are updated.
                 print 'update status_object'
@@ -252,6 +253,7 @@ class Command(BaseCommand):
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
             elif options['force-attachment-update']:
                 # force update of attachment only, regardless of time
+                print 'Forcing update attachment'
                 status_object.save()
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
                 # If post_id exists but of equal or later time (unlikely, but may happen), disregard
