@@ -16,37 +16,37 @@
     <!-- For autocomplete for tagging. Can be moved somewhere else -->
     <!-- TODO: availableTags. -->
     <script>
-    // not being used... was causing an error in the console when loading politicians page
-    //     $(function () {
-    //         // TODO: make this the list of available tags. at the moment it's suggesting nonsense for autocomplete
-    //         var availableTags = [
-    //             // "ActionScript",
-    //             // "AppleScript",
-    //             // "Asp",
-    //             // "BASIC",
-    //             // "C",
-    //             // "C++",
-    //             // "Clojure",
-    //             // "COBOL",
-    //             // "ColdFusion",
-    //             // "Erlang",
-    //             // "Fortran",
-    //             // "Groovy",
-    //             // "Haskell",
-    //             // "Java",
-    //             // "JavaScript",
-    //             // "Lisp",
-    //             // "Perl",
-    //             // "PHP",
-    //             // "Python",
-    //             // "Ruby",
-    //             // "Scala",
-    //             // "Scheme"
-    //         ];
-    //         $(".add-tag").autocomplete({
-    //             source: availableTags
-    //         });
-    //     });
+        // not being used... was causing an error in the console when loading politicians page
+        //     $(function () {
+        //         // TODO: make this the list of available tags. at the moment it's suggesting nonsense for autocomplete
+        //         var availableTags = [
+        //             // "ActionScript",
+        //             // "AppleScript",
+        //             // "Asp",
+        //             // "BASIC",
+        //             // "C",
+        //             // "C++",
+        //             // "Clojure",
+        //             // "COBOL",
+        //             // "ColdFusion",
+        //             // "Erlang",
+        //             // "Fortran",
+        //             // "Groovy",
+        //             // "Haskell",
+        //             // "Java",
+        //             // "JavaScript",
+        //             // "Lisp",
+        //             // "Perl",
+        //             // "PHP",
+        //             // "Python",
+        //             // "Ruby",
+        //             // "Scala",
+        //             // "Scheme"
+        //         ];
+        //         $(".add-tag").autocomplete({
+        //             source: availableTags
+        //         });
+        //     });
     </script>
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -59,10 +59,13 @@
         <div class="col-sm-9 panel-group">
             <!-- Order-by links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
             <ul class="nav nav-pills" id="order-by-options">
-                <li data-order-by="-published"><a href="#"><i class="fa fa-caret-down" id="dec-asc-published"></i> לפי תאריך</a></li>
-                <li data-order-by="-like_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-likes"></i> לפי מספר לייקים</a>
+                <li data-order-by="-published"><a href="#"><i class="fa fa-caret-down" id="dec-asc-published"></i> לפי
+                    תאריך</a></li>
+                <li data-order-by="-like_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-likes"></i> לפי מספר
+                    לייקים</a>
                 </li>
-                <li data-order-by="-comment_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-comments" ></i> לפי מספר
+                <li data-order-by="-comment_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-comments"></i>
+                    לפי מספר
                     תגובות</a></li>
                 <li data-order-by="custom" id="order-by-custom"><a href="#">אחר</a></li>
                 <!-- visible only when used -->
@@ -71,7 +74,7 @@
             <!-- List of statuses -->
             {% include "core/facebook_status_list.html" with object_list=object_list %}
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-3 visible-lg visible-md">
             <!-- Filter-by-date links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
             <div><br><br></div>
             {% block date_filter %}
@@ -111,15 +114,15 @@
             <br>
             <br>
             {% block sidebar %}
-{#                <ul class="list-group">#}
-{#                    <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות#}
-{#                        האחרונות: </b></li>#}
-{#                    {% for member in side_bar_list.all %}#}
-{#                        <li class="list-group-item">#}
-{#                            <a href="{% url 'member' member.id %}">{{ member.name }}</a>#}
-{#                        </li>#}
-{#                    {% endfor %}#}
-{#                </ul>#}
+                {#                <ul class="list-group">#}
+                {#                    <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות#}
+                {#                        האחרונות: </b></li>#}
+                {#                    {% for member in side_bar_list.all %}#}
+                {#                        <li class="list-group-item">#}
+                {#                            <a href="{% url 'member' member.id %}">{{ member.name }}</a>#}
+                {#                        </li>#}
+                {#                    {% endfor %}#}
+                {#                </ul>#}
             {% endblock sidebar %}
         </div>
     </div>
