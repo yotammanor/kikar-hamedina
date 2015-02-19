@@ -84,6 +84,10 @@ class CandidateList(models.Model):
         ''' return a list of all candidates '''
         return Candidate.objects.filter(candidates_list=self)
 
+    @property
+    def number_of_members(self):
+        return CandidateList.candidates.count()
+
     @models.permalink
     def get_absolute_url(self):
         return ('candidate-list-detail', [self.id])
@@ -109,6 +113,7 @@ class Candidate(models.Model):
     ordinal = models.IntegerField(_('Ordinal'))
     votes = models.IntegerField(_('Elected by #'), null=True, blank=True,
                                 help_text=_('How many people voted for this person'))
+    is_current = models.BooleanField(default=True, db_index=True)
 
     # added by kikar-hamedina
     persona = generic.GenericRelation(Facebook_Persona,
@@ -128,9 +133,6 @@ class Candidate(models.Model):
     def facebook_persona(self):
         return self.persona.select_related().first()
 
-    @property
-    def is_current(self):
-        return True  # Treat all candidates as current for now
 
     @property
     def name(self):
