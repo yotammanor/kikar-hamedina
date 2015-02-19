@@ -11,7 +11,7 @@ from tastypie.api import Api
 from api import *
 from insights import StatsMemberResource, StatsPartyResource
 from core.models import MEMBER_MODEL, PARTY_MODEL
-
+from core.rss_feeds import LatestStatusesRSSFeed, PartyRSSFeed, KeywordsByUserRSSFeed
 
 v1_api = Api(api_name='v1')
 v1_api.register(MemberResource())
@@ -66,7 +66,8 @@ urlpatterns = patterns('',
                        url(r'^tags/$', views.AllTags.as_view(queryset=Tag.objects.all()),
                            name='all-tags'),
                        # urls and views used only indirectly
-                       url(r'^status_permalink/(?P<slug>[-_\w]+)/$', views.FacebookStatusDetailView.as_view(), name='status-detail'),
+                       url(r'^status_permalink/(?P<slug>[-_\w]+)/$', views.FacebookStatusDetailView.as_view(),
+                           name='status-detail'),
                        url(r'^fblogin/$', views.login_page, name='fblogin'),
                        url(r'^fblogin/get-data/$', views.get_data_from_facebook, name='get-data-from-facebook'),
                        url(r'^status_update/(?P<status_id>\w+)/$', views.status_update),
@@ -74,10 +75,16 @@ urlpatterns = patterns('',
                        # unused Views for statuses
                        url(r'^status-comments/$', views.OnlyCommentsView.as_view(), name='status-comments'),
                        url(r'^untagged/$', views.AllStatusesView.as_view(
-                           queryset=Facebook_Status.objects.filter(tags=None, feed__persona__object_id__isnull=False).order_by('-published')),
+                           queryset=Facebook_Status.objects.filter(tags=None,
+                                                                   feed__persona__object_id__isnull=False).order_by(
+                               '-published')),
                            kwargs={'context_object': 'untagged'},
                            name='untagged'),
                        url(r'^review-tags/$', views.ReviewTagsView.as_view(), name='review-tags'),
+                       # rss feeds
+                       url(r'^latest/feed/$', LatestStatusesRSSFeed()),
+                       url(r'^party/(?P<party_id>\d+)/rss/$', PartyRSSFeed()),
+                       url(r'^user/(?P<user_id>\d+)/rss/$', KeywordsByUserRSSFeed()),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = format_suffix_patterns(urlpatterns)

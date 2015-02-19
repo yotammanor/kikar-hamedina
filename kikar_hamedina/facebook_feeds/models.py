@@ -3,10 +3,12 @@ from unidecode import unidecode
 from time import sleep
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+
 
 from django_pandas.managers import DataFrameManager
 from taggit.managers import TaggableManager
@@ -256,6 +258,9 @@ class Facebook_Status(models.Model):
         '''On save, update locally_updated fields'''
         self.locally_updated = timezone.now()
         return super(Facebook_Status, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('status-detail', args=[self.status_id])
 
     @property
     def get_link(self):
