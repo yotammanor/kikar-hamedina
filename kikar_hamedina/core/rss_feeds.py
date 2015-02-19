@@ -42,13 +42,13 @@ class PartyRSSFeed(Feed):
         return u"כיכר המדינה - עדכוני רשימה - %s" % obj.name
 
     def link(self, obj):
-        return 'kikar.org/%s' % reverse('party', args=[obj.id])
+        return reverse('party', args=[obj.id])
 
     def description(self, obj):
         return u"עדכוני פייסבוק של כל המועמדים ברשימה: %s" % obj.name
 
     def item_link(self, item):
-        return 'kikar.org/%s' % reverse('status-detail', args=[item.status_id])
+        return reverse('status-detail', args=[item.status_id])
 
     def items(self, obj):
         return Facebook_Status.objects.filter(
@@ -66,7 +66,7 @@ class KeywordsByUserRSSFeed(Feed):
         return u"סטאטוסים שנבחרו למעקב על ידי %s" % obj
 
     def link(self, obj):
-        return 'kikar.org/%s/?search_str=%s' % (
+        return '%s/?search_str=%s' % (
         reverse('search'), ','.join([x.keyword for x in obj.words_in_rss_feed.all()]))
 
     def description(self, obj):
