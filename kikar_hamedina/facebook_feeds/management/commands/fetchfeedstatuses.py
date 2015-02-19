@@ -158,14 +158,14 @@ class Command(BaseCommand):
             # print 'deleting attachment'
             attachment.delete()
 
-    def create_or_update_attachment(self, status, status_object_defaultdict):
+    def create_or_update_attachment(self, status_object, status_object_defaultdict):
         """
         If attachment exists, create or update all relevant fields.
         """
         # print 'create_or_update attachment'
         if status_object_defaultdict['link']:
             attachment, created = Facebook_Status_Attachment_Model.objects.get_or_create(
-                status=status)
+                status=status_object)
             # print 'I have an attachment. Created now: %s; Length of data in field link: %d; field picture: %d;  id: %s' % (
             # created, len(status_object_defaultdict['link']), len(str(status_object_defaultdict['picture'])),
             # status.status_id)
@@ -221,36 +221,37 @@ class Command(BaseCommand):
 
         try:
             # If post_id already exists in DB
-            status = Facebook_Status_Model.objects_no_filters.get(
+            status_object = Facebook_Status_Model.objects_no_filters.get(
                 status_id=status_object['id'])  # use objects_default manages to get statuses that are comments as well.
 
-            if status.updated < current_time_of_update or options['force-update']:
+            if status_object.updated <= current_time_of_update or options['force-update']:
                 # If post_id exists but of earlier update time, fields are updated.
                 print 'update status'
-                status.content = message
-                status.like_count = like_count
-                status.comment_count = comment_count
-                status.share_count = share_count
-                status.status_type = type_of_status  # note that fb has type AND status_type fields, here is status_type
-                status.updated = current_time_of_update
-                status.story = story
-                status.story_tags = story_tags
-                status.is_comment = status.set_is_comment
+                status_object.content = message
+                status_object.like_count = like_count
+                status_object.comment_count = comment_count
+                status_object.share_count = share_count
+                status_object.status_type = type_of_status  # note that fb has type AND status_type fields, here is status_type
+                status_object.updated = current_time_of_update
+                status_object.story = story
+                status_object.story_tags = story_tags
+                status_object.is_comment = status_object.set_is_comment
 
-                status.save()
+                status_object.save()
 
                 # update attachment data
-                self.create_or_update_attachment(status, status_object_defaultdict)
+                self.create_or_update_attachment(status_object, status_object_defaultdict)
             elif options['force-attachment-update']:
                 # force update of attachment, regardless of time
-                status.save()
-                self.create_or_update_attachment(status, status_object_defaultdict)
+                print 'Forcing update attachment'
+                status_object.save()
+                self.create_or_update_attachment(status_object, status_object_defaultdict)
                 # If post_id exists but of equal or later time (unlikely, but may happen), disregard
                 # Should be an else here for this case but as it is, just disregard
         except Facebook_Status_Model.DoesNotExist:
             # If post_id does not exist at all, create it from data.
             print 'create status'
-            status = Facebook_Status_Model(feed_id=feed_id,
+            status_object = Facebook_Status_Model(feed_id=feed_id,
                                            status_id=status_object['id'],
                                            content=message,
                                            like_count=like_count,
@@ -262,16 +263,16 @@ class Command(BaseCommand):
                                            story=story,
                                            story_tags=story_tags)
 
-            status.is_comment = status.set_is_comment
+            status_object.is_comment = status_object.set_is_comment
 
             if status_object_defaultdict['link']:
                 # There's an attachment
-                status.save()
-                self.insert_status_attachment(status, status_object_defaultdict)
+                status_object.save()
+                self.insert_status_attachment(status_object, status_object_defaultdict)
         finally:
             # save status object.
             print 'saving status'
-            status.save()
+            status_object.save()
 
     def get_feed_statuses(self, feed, post_number_limit):
         """

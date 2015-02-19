@@ -25,56 +25,116 @@
 {% load kikartags_extras %}
 <div class="panel panel-primary status-panel{% if status.needs_refresh %} status-needs-refresh{% endif %}"
      data-statusid="{{ status.status_id }}">
-    <div class="panel-heading col-lg-12">
-        <div class="row">
-            <div class="col-lg-1">
-                <a href="{% url 'member' status.feed.persona.owner_id %}">
-                    <img src="{{ status.feed.picture_square }}" class="profile-photo img-rounded">
+<div class="panel-heading col-lg-12">
+    <div class="row">
+        <div class="col-lg-1">
+            <a href="{% url 'member' status.feed.persona.owner_id %}">
+                <img src="{{ status.feed.picture_square }}" class="profile-photo img-rounded">
+            </a>
+        </div>
+        <div class="col-lg-9">
+            <div class="row" id="name-row-container">
+                <a class="link-on-blue" href="{% url 'member' status.feed.persona.owner_id %}">
+                    <h4>{{ status.feed.persona.owner.name }}</h4>
                 </a>
             </div>
-            <div class="col-lg-9">
-                <div class="row" id="name-row-container">
-                    <a class="link-on-blue" href="{% url 'member' status.feed.persona.owner_id %}">
-                        <h4>{{ status.feed.persona.owner.name }}</h4>
+            <div class="row" id="party-row-container">
+                <h6>
+                    <a class="link-on-blue"
+                       href="{% url 'party' status.feed.persona.owner.current_party.id %}">
+                        {#                            <h6>#}
+                        {{ status.feed.persona.owner.current_party.name }}
+                        {#                            </h6>#}
                     </a>
-                </div>
-                <div class="row" id="party-row-container">
-                    <h6>
-                        <a class="link-on-blue"
-                           href="{% url 'party' status.feed.persona.owner.current_party.id %}">
-                            {#                            <h6>#}
-                            {{ status.feed.persona.owner.current_party.name }}
-                            {#                            </h6>#}
-                        </a>
-                        |
-                        <a class="link-on-blue" title="{{ status.published }}"
-                           href="{% url 'status-detail' status.status_id %}">
-                            {#                            <h6>#}
-                            {{ status.published | naturaltime }}
-                            {#                            </h6>#}
-                        </a>
-                        {% if status.is_deleted %}
-                            (הסטטוס נמחק)
-                        {% endif %}
-                    </h6>
-                </div>
-                {#                <div class="row" id="date-row-container">#}
-                {#                    <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">#}
-                {#                        <h6>{{ status.published | naturaltime }}</h6>#}
-                {#                    </a>#}
-                {#                </div>#}
+                    |
+                    <a class="link-on-blue" title="{{ status.published }}"
+                       href="{% url 'status-detail' status.status_id %}">
+                        {#                            <h6>#}
+                        {{ status.published | naturaltime }}
+                        {#                            </h6>#}
+                    </a>
+                    {% if status.is_deleted %}
+                        (הסטטוס נמחק)
+                    {% endif %}
+                </h6>
             </div>
+            {#                <div class="row" id="date-row-container">#}
+            {#                    <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">#}
+            {#                        <h6>{{ status.published | naturaltime }}</h6>#}
+            {#                    </a>#}
+            {#                </div>#}
         </div>
     </div>
-    <div class="panel-body">
-        {% if status.story %}
-            <p style="color:gray" dir="ltr"> {{ status.story }}</p>
-        {% endif %}
+</div>
+<div class="panel-body">
+    {#    {% if status.story %}#}
+    {#        <p style="color:gray" dir="ltr"> {{ status.story }}</p>#}
+    {#    {% endif %}#}
 
-        <p>{{ status.content | linebreaks }}</p>
+    <p>{{ status.content | urlize | linebreaks }}</p>
 
-        <div class="row">
-            <div class="col-md-4">
+    {% if status.has_attachment %}
+
+        <div class="container">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    {% if status.attachment.type == 'photo' %}
+                        <div class="panel-body">
+                            <div class="container">
+                                <img src="{{ status.attachment.source }}"
+                                     alt="תקלה בטעינת התמונה. אפשר ללחוץ על כפתור הפייסבוק הקטן מצד שמאל כדי לראות."
+                                     style="max-width: 50%;height: auto; margin: auto"
+                                     class="img-responsive center-block img-rounded"></div>
+                        </div>
+
+                        {% if status.story %}
+                            <div class="panel-footer">
+                                <p dir="ltr">{{ status.story }}</p>
+                            </div>
+                        {% endif %}
+
+                    {% elif status.attachment.type == 'video' %}
+                        <div class="panel-body">
+                            <div class="container" style="text-align: center">
+                                <video width="auto" height="auto" controls>
+                                    <source src="{{ status.attachment.source }}" type="video/mp4">
+                                    <source src="{{ status.attachment.source }}" type="video/ogg">
+                                    מתנצלים, הדפדפן שלך אינו תומך בהצגת סרטונים.
+                                </video>
+                            </div>
+                        </div>
+                        {% if status.story %}
+                            <div class="panel-footer">
+                                <p dir="ltr">{{ status.story }}</p>
+                            </div>
+                        {% endif %}
+                    {% elif status.attachment.type == 'link' %}
+
+                        <a href="{{ status.attachment.link }}">
+                            <div class="panel-body">
+                                <div class="container">
+                                    <img src="{{ status.attachment.picture }}"
+                                         style="max-width: 50%;height: auto; margin: auto"
+                                         class="img-responsive center-block img-rounded"></div>
+                            </div>
+                        </a>
+
+                        <div class="panel-footer">
+                            <h4>{{ status.attachment.name }}</h4>
+
+                            <div class="caption pull-left"
+                                 style="color: #999999">{{ status.attachment.caption }}</div>
+                            <p>{{ status.attachment.description }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <br>
+
+        <div class="col-md-4">
 			<span>
 				<b>אהבו: </b> <span
                     id="{{ status.status_id }}-likes">{{ status.like_count|floatformat:1|intcomma|slice:":-2" }}</span>.
@@ -93,10 +153,10 @@
                 <i class="hidden-object fa fa-exclamation"
                    id="status-metrics-is-error-indicator-{{ status.status_id }}"></i>
             </span>
-            </div>
-            <div class="col-md-8">
+        </div>
+        <div class="col-md-8">
 
-                <strong style="display:{% if status.tags.count > 0 %}inline{% else %}none{% endif %}">תגים: </strong>
+            <strong style="display:{% if status.tags.count > 0 %}inline{% else %}none{% endif %}">תגים: </strong>
 			<span id="{{ status.id }}-tags">
 			{% for tag in status.tags.all %}
                 {% with tag|proper_tag as tag %}
@@ -107,84 +167,86 @@
             {% endfor %}
 			</span>
 
-                <div class="pull-left">
+            <div class="pull-left">
 
-                    <!-- Button trigger modal -->
-                    <button class="btn btn-link btn-sm" data-toggle="modal"
-                            data-target="#{{ status.status_id }}_modal">
-                        {% if status.has_attachment %}
-                            {% if status.attachment.type == 'photo' %}
-                                <i class="fa fa-camera"></i>
-                            {% elif status.attachment.type == 'video' %}
-                                <i class="fa fa-video-camera"></i>
-                            {% elif status.attachment.type == 'link' %}
-                                <i class="fa fa-link"></i>
-                            {% else %}
-                               <i class="fa fa-facebook-square"></i>
-                            {% endif %}
-                        {% else %}
-                            <i class="fa fa-facebook-square"></i>
-                        {% endif %}
-
-                    </button>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
-                         role="dialog"
-                         aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-body text-center">
-
-                                    <div class="fb-post" data-href="{{ status | link }}"
-                                         data-width="466">
-                                        <div class="fb-xfbml-parse-ignore">
-                                            <a href="{{ status | link }}">פוסט</a> מאת <a
-                                                href="{{ status.feed.link }}">{{ status.feed.persona.owner.name }}</a>.
-                                        </div>
-
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default"
-                                                data-dismiss="modal">
-                                            Close
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- /.modal-content -->
-                            </div>
-                            <!-- /.modal-dialog -->
-                        </div>
-                        <!-- /.modal -->
-                    </div>
-                </div>
+                <!-- Button trigger modal -->
+                <button class="btn btn-link btn-sm" data-toggle="modal"
+                        data-target="#{{ status.status_id }}_modal">
+                    {#                    {% if status.has_attachment %}#}
+                    {#                        {% if status.attachment.type == 'photo' %}#}
+                    {#                            <i class="fa fa-camera"></i>#}
+                    {#                        {% elif status.attachment.type == 'video' %}#}
+                    {#                            <i class="fa fa-video-camera"></i>#}
+                    {#                        {% elif status.attachment.type == 'link' %}#}
+                    {#                            <i class="fa fa-link"></i>#}
+                    {#                        {% else %}#}
+                    {#                            <i class="fa fa-facebook-square"></i>#}
+                    {#                        {% endif %}#}
+                    {#                    {% else %}#}
+                    {#                        <i class="fa fa-facebook-square"></i>#}
+                    {#                    {% endif %}#}
+                    <i class="fa fa-facebook-square"></i>
+                </button>
             </div>
-            <!-- Add tags option, visible to authenticated users only -->
-            {% if user.is_authenticated %}
-                <div class="col-sm-12" data-statusid="{{ status.id }}">
-                    <hr>
-                    {% csrf_token %}
-                    <div class="form-group col-sm-4" id="add-tag-dropdown-{{ status.id }}">
-                        <input id="add-tag-{{ status.status_id }}" type="text" name="tag"
-                               class="form-control add-tag-input input-large" autocomplete="off"
-                               placeholder="הכנס תג (comma separated)" data-toggle="dropdown">
-
-                        <div class="add-tag-list dropdown" id="add-tag-list-{{ status.id }}">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">הוסף תיוגים
-                        </button>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="hidden-object alert alert-danger" role="alert" id="add-tag-error-{{ status.id }}">
-                          <button class="close add-tag-error-close" type="button" class="close add-tag-error-close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><span id="add-tag-error-msg-{{ status.id }}">&nbsp;</span>
-                        </div>
-                    </div>
-                    <!-- </form> -->
-                </div>
-            {% endif %}
-            <!-- /Add tags option -->
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="{{ status.status_id }}_modal" tabindex="-1"
+             role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+
+                        <div class="fb-post" data-href="{{ status | link }}"
+                             data-width="466">
+                            <div class="fb-xfbml-parse-ignore">
+                                <a href="{{ status | link }}">פוסט</a> מאת <a
+                                    href="{{ status.feed.link }}">{{ status.feed.persona.owner.name }}</a>.
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+        </div>
+        <!-- Add tags option, visible to authenticated users only -->
+        {% if user.is_authenticated %}
+            <div class="col-sm-12" data-statusid="{{ status.id }}">
+                <hr>
+                {% csrf_token %}
+                <div class="form-group col-sm-4" id="add-tag-dropdown-{{ status.id }}">
+                    <input id="add-tag-{{ status.status_id }}" type="text" name="tag"
+                           class="form-control add-tag-input input-large" autocomplete="off"
+                           placeholder="הכנס תג (comma separated)" data-toggle="dropdown">
+
+                    <div class="add-tag-list dropdown" id="add-tag-list-{{ status.id }}">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary add-tag-button" id="add-tag-submit">הוסף תיוגים
+                    </button>
+                </div>
+                <div class="col-sm-6">
+                    <div class="hidden-object alert alert-danger" role="alert" id="add-tag-error-{{ status.id }}">
+                        <button class="close add-tag-error-close" type="button" class="close add-tag-error-close">
+                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <span id="add-tag-error-msg-{{ status.id }}">&nbsp;</span>
+                    </div>
+                </div>
+                <!-- </form> -->
+            </div>
+        {% endif %}
+        <!-- /Add tags option -->
     </div>
+</div>
 </div>
