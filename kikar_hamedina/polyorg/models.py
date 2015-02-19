@@ -80,7 +80,7 @@ class CandidateList(models.Model):
         mks = Candidate.objects.filter(candidates_list=self, person__mk__isnull=False)
         return mks.values_list('person__mk__id', flat=True)
 
-    # def current_members(self):
+    def current_members(self):
         ''' return a list of all candidates '''
         return Candidate.objects.filter(candidates_list=self)
 
