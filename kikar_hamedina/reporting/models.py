@@ -8,3 +8,8 @@ class WeeklyReportRecipients(models.Model):
     is_active = models.BooleanField(null=False, default=True)
     is_beta = models.BooleanField(null=False, default=False)
     date_joined = models.DateTimeField(auto_now=True)
+
+
+class RSSFeedKeyWord(models.Model):
+    user = models.ForeignKey(User, related_name='words_in_rss_feed')
+    keyword = models.CharField(max_length=64, blank=False, null=False, unique=True)

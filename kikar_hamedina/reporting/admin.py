@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from reporting.models import WeeklyReportRecipients
+from reporting.models import WeeklyReportRecipients, RSSFeedKeyWord
 
 
 class WeeklyReportRecipientInline(admin.StackedInline):
@@ -11,8 +11,14 @@ class WeeklyReportRecipientInline(admin.StackedInline):
     verbose_name_plural = "Weekly Report Recipients"
 
 
+class KeywordAdminTabularInline(admin.TabularInline):
+    model = RSSFeedKeyWord
+    extra = 1
+
+
 class UserAdmin(UserAdmin):
-    inlines = (WeeklyReportRecipientInline,)
+    inlines = (WeeklyReportRecipientInline, KeywordAdminTabularInline)
+
 
 
 admin.site.unregister(User)
