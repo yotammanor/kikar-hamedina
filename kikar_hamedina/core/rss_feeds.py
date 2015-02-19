@@ -14,9 +14,9 @@ from django.http.request import HttpRequest
 
 
 class LatestStatusesRSSFeed(Feed):
-    title = "Police beat site news"
-    link = "/?range=week"
-    description = "Updates on changes and additions to police beat central."
+    title = "כיכר המדינה - עדכונים אחרונים"
+    link = "http://kikar.org/?range=week"
+    description = "העדכונים האחרונים של המועמדים לכנסת ה-20 בפייסבוק, דרך כיכר המדינה"
 
     def items(self):
         return Facebook_Status.objects.filter(published__gte=timezone.now() - timezone.timedelta(days=1)).order_by(
@@ -39,16 +39,16 @@ class PartyRSSFeed(Feed):
         return get_object_or_404(PARTY_MODEL, pk=party_id)
 
     def title(self, obj):
-        return "Kikar: facebook_statuses for %s" % obj.name
+        return u"כיכר המדינה - עדכוני רשימה - %s" % obj.name
 
     def link(self, obj):
-        return reverse('party', args=[obj.id])
+        return 'kikar.org/%s' % reverse('party', args=[obj.id])
 
     def description(self, obj):
-        return "Kikar: facebook_statuses for %s" % obj.name
+        return u"עדכוני פייסבוק של כל המועמדים ברשימה: %s" % obj.name
 
     def item_link(self, item):
-        return reverse('status-detail', args=[item.status_id])
+        return 'kikar.org/%s' % reverse('status-detail', args=[item.status_id])
 
     def items(self, obj):
         return Facebook_Status.objects.filter(
@@ -63,16 +63,30 @@ class KeywordsByUserRSSFeed(Feed):
         return get_object_or_404(User, pk=user_id)
 
     def title(self, obj):
-        return "Kikar: facebook_statuses with keywords set by %s" % obj
+        return u"סטאטוסים שנבחרו למעקב על ידי %s" % obj
 
     def link(self, obj):
-        return '%s/?search_str=%s' % (reverse('search'), ','.join([x.keyword for x in obj.words_in_rss_feed.all()]))
+        return 'kikar.org/%s/?search_str=%s' % (
+        reverse('search'), ','.join([x.keyword for x in obj.words_in_rss_feed.all()]))
 
     def description(self, obj):
-        return "Kikar: facebook_statuses with keywords set by %s" % obj
+        return u"סטאטוסים המכילים את המילים: %s" % ', '.join([x.keyword for x in obj.words_in_rss_feed.all()])
 
-    def item_link(self, item):
-        return reverse('status-detail', args=[item.status_id])
+    def item_title(self, item):
+        return u"סטאטוס מאת %s" % item.feed.persona.owner.name
+    #
+    # def item_link(self, item):
+    #     return 'kikar.org/%s' % reverse('status-detail', args=[item.status_id])
+
+    def item_pubdate(self, item):
+        return item.published
+
+    def item_updateddate(self, item):
+        return item.updated
+
+    def item_author_name(self, item):
+        return item.feed.persona.owner.name
+
 
     def items(self, obj):
         search_view = SearchView(request=HttpRequest())
