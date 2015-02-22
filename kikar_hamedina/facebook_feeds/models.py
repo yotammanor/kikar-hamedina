@@ -371,7 +371,6 @@ class Facebook_Status_Attachment(models.Model):
     source_width = models.PositiveSmallIntegerField(null=True, blank=True, max_length=4)
     source_height = models.PositiveSmallIntegerField(null=True, blank=True, max_length=4)
 
-
     @property
     def is_internal_link(self):
         return 'https://www.facebook.com/' in self.link

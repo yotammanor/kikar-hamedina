@@ -85,6 +85,7 @@ class Facebook_StatusResource(ModelResource):
         queryset = Facebook_Status.objects.all()
         resource_name = 'facebook_status'
         filtering = {
+            "status_id": ["exact"],
             "feed": ["exact"],
             "content": ["exact", "startswith", "contains"],
             "published": ['exact', 'gt', 'gte', 'lt', 'lte', 'range']
