@@ -48,7 +48,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         python manage.py migrate $m
       done
       python manage.py migrate kikartags 0004
-      for f in sites data_fixture_planet data_fixture_mks data_fixture_mks_altnames data_fixture_facebook_feeds data_fixture_persons data_fixture_polyorg data_fixture_status_comment_pattern 1001_1001 1001_1002 1001_1003 1001_1004 1003_1007 1004_1008; do
+      for f in sites data_fixture_planet data_fixture_mks data_fixture_mks_altnames data_fixture_facebook_feeds data_fixture_persons data_fixture_polyorg data_fixture_status_comment_pattern 1001_1001 1001_1002 1001_1003 1001_1004 1002_1005 1002_1006 1003_1007 1004_1008; do
         python manage.py loaddata $f
        done
       python manage.py migrate kikartags
@@ -71,7 +71,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     shell.inline = <<-EOS
       cd /vagrant/kikar_hamedina/
       echo 'exec python /vagrant/kikar_hamedina/manage.py runserver 0.0.0.0:8000' > /etc/init/kikar.conf
-      python manage.py fetchfeedstatuses
+      python manage.py fetchfeedstatuses -a -f
     EOS
   end
 end
