@@ -124,11 +124,11 @@ class Command(BaseCommand):
                     break
                 oldest_status = list_of_statuses[-1]
                 oldest_status_so_far = dateutil.parser.parse(oldest_status['created_time'])
-                if hasattr(return_statuses, 'paging'):
+                if 'paging' in return_statuses:
                     next_page = return_statuses['paging']['next']
                 else:
                     next_page = None
-                print 'next_page:', next_page
+                print 'next_page exists:', bool(next_page)
                 while oldest_status_so_far.toordinal() >= from_date_ordinal and \
                                 try_number <= NUMBER_OF_TRIES_FOR_REQUEST and next_page:
                     try:
@@ -142,7 +142,8 @@ class Command(BaseCommand):
                         continue
                     list_of_statuses += response['data']
                     oldest_status_so_far = dateutil.parser.parse(list_of_statuses[-1]['created_time'])
-                    if not hasattr(response, 'paging'):
+                    if not 'paging' in response:
+                        print 'no more pages for this response.'
                         break
                     next_page = response['paging']['next']
                     num_of_pages += 1
