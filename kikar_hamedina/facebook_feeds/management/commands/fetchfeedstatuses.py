@@ -1,4 +1,8 @@
 import datetime
+from time import sleep
+import dateutil
+import urllib2
+import json
 from pprint import pprint
 from optparse import make_option
 from collections import defaultdict
@@ -17,6 +21,8 @@ from ...models import \
     Facebook_Status_Attachment as Facebook_Status_Attachment_Model
 
 FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.1')
+
+SLEEP_TIME = 3
 
 NUMBER_OF_TRIES_FOR_REQUEST = 3
 
@@ -62,13 +68,25 @@ class Command(BaseCommand):
                     dest='current-only',
                     default=False,
                     help='Whether to update only feeds of current members (false means all members)'),
+        make_option('--from-date',
+                    action='store',
+                    type='string',
+                    dest='from-date',
+                    default=None,
+                    help='Specify date from which to update the statuses (inclusive) e.g. 2014-03-31'),
+        make_option('--to-date',
+                    action='store',
+                    type='string',
+                    dest='to-date',
+                    default=None,
+                    help='Specify date until which to update the statuses (exclusive) e.g. 2014-03-31'),
     )
 
-    def fetch_status_objects_from_feed(self, feed_id, post_number_limit):
+    def fetch_status_objects_from_feed(self, feed_id, post_number_limit, date_filters):
         """
         Receives a feed_id for a facebook
         Returns a facebook-sdk fql query, with all status objects published by the page itself.
-                """
+                        """
         api_request_path = "{0}/posts".format(feed_id)
         args_for_request = {'limit': post_number_limit,
                             'version': FACEBOOK_API_VERSION,
@@ -77,16 +95,63 @@ class Command(BaseCommand):
                              status_type, story, story_tags ,object_id, properties, source, to, shares, \
                              likes.summary(true).limit(1), comments.summary(true).limit(1)"}
 
+        use_paging = False
+        if date_filters['from_date']:
+            args_for_request['since'] = date_filters['from_date']
+            use_paging = True
+        if date_filters['to_date']:
+            args_for_request['until'] = date_filters['to_date']
+
         try_number = 1
         while try_number <= NUMBER_OF_TRIES_FOR_REQUEST:
             try:
                 return_statuses = self.graph.request(path=api_request_path, args=args_for_request)
-                return return_statuses
             except Exception:
-                warning_msg = "Failed first attempt for feed #({0}) from FB API.".format(feed_id)
+                warning_msg = "Failed an attempt for feed #({0}) from FB API.".format(feed_id)
                 logger = logging.getLogger('django')
                 logger.warning(warning_msg)
                 try_number += 1
+                continue
+            if not use_paging:
+                return return_statuses
+            else:
+                print 'trying to use paging'
+                from_date_ordinal = dateutil.parser.parse(date_filters['from_date']).toordinal()
+                list_of_statuses = []
+                num_of_pages = 1
+                list_of_statuses += return_statuses['data']
+                if not list_of_statuses:
+                    break
+                oldest_status = list_of_statuses[-1]
+                oldest_status_so_far = dateutil.parser.parse(oldest_status['created_time'])
+                if hasattr(return_statuses, 'paging'):
+                    next_page = return_statuses['paging']['next']
+                else:
+                    next_page = None
+                print 'next_page:', next_page
+                while oldest_status_so_far.toordinal() >= from_date_ordinal and \
+                                try_number <= NUMBER_OF_TRIES_FOR_REQUEST and next_page:
+                    try:
+                        response = json.loads(urllib2.urlopen(next_page).read())
+                    except Exception:
+                        warning_msg = "Failed an attempt for feed #({0}) from FB API.".format(feed_id)
+                        logger = logging.getLogger('django')
+                        logger.warning(warning_msg)
+                        try_number += 1
+                        print 'try_number:', try_number
+                        continue
+                    list_of_statuses += response['data']
+                    oldest_status_so_far = dateutil.parser.parse(list_of_statuses[-1]['created_time'])
+                    if not hasattr(response, 'paging'):
+                        break
+                    next_page = response['paging']['next']
+                    num_of_pages += 1
+                    print num_of_pages, oldest_status_so_far
+                    if not num_of_pages % 5:
+                        print 'sleeping for %d seconds.' % SLEEP_TIME
+                        sleep(SLEEP_TIME)
+                return_statuses = {'data': list_of_statuses}
+                return return_statuses
         error_msg = "Failed three attempts for feed #({0}) from FB API.".format(feed_id)
         logger = logging.getLogger('django.request')
         logger.warning(error_msg)
@@ -252,16 +317,16 @@ class Command(BaseCommand):
             # If post_id does not exist at all, create it from data.
             print 'create status'
             status_object = Facebook_Status_Model(feed_id=feed_id,
-                                           status_id=status_object['id'],
-                                           content=message,
-                                           like_count=like_count,
-                                           comment_count=comment_count,
-                                           share_count=share_count,
-                                           published=published,
-                                           updated=current_time_of_update,
-                                           status_type=type_of_status,
-                                           story=story,
-                                           story_tags=story_tags)
+                                                  status_id=status_object['id'],
+                                                  content=message,
+                                                  like_count=like_count,
+                                                  comment_count=comment_count,
+                                                  share_count=share_count,
+                                                  published=published,
+                                                  updated=current_time_of_update,
+                                                  status_type=type_of_status,
+                                                  story=story,
+                                                  story_tags=story_tags)
 
             status_object.is_comment = status_object.set_is_comment
 
@@ -274,10 +339,10 @@ class Command(BaseCommand):
             print 'saving status'
             status_object.save()
 
-    def get_feed_statuses(self, feed, post_number_limit):
+    def get_feed_statuses(self, feed, post_number_limit, date_filters):
         """
         Returns a Dict object of feed ID. and retrieved status objects.
-        """
+                """
         if feed.feed_type == 'PP':
             try:
                 # Set facebook graph access token to most up-to-date user token in db
@@ -296,7 +361,7 @@ class Command(BaseCommand):
 
                     # Get the data using the pre-set token
             return {'feed_id': feed.id,
-                    'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit)}
+                    'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit, date_filters)}
 
         elif feed.feed_type == 'UP':  # feed_type == 'UP' - User Profile
             # Set facebook graph access token to user access token
@@ -308,7 +373,8 @@ class Command(BaseCommand):
                 print 'using token by user_id: %s' % token.user_id
                 self.graph.access_token = token.token
                 return {'feed_id': feed.id,
-                        'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit)}
+                        'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit,
+                                                                        date_filters)}
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
             print 'Profile %s is of type %s, skipping.' % (feed.id, feed.feed_type)
             return {'feed_id': feed.id, 'statuses': []}
@@ -347,10 +413,14 @@ class Command(BaseCommand):
         # Case invalid args
         else:
             raise CommandError('Please enter a valid feed id')
+
+        date_filters = {'from_date': options['from-date'],
+                        'to_date': options['to-date']}
+
         # Iterate over list_of_feeds
         for feed in list_of_feeds:
-            self.stdout.write('Working on feed: {0}.'.format(feed.pk))
-            feed_statuses = self.get_feed_statuses(feed, post_number_limit)
+            self.stdout.write('Working on feed: {0}, {1}.'.format(feed.pk, feed.vendor_id))
+            feed_statuses = self.get_feed_statuses(feed, post_number_limit, date_filters)
             self.stdout.write('Successfully fetched feed: {0}.'.format(feed.pk))
             if feed_statuses['statuses']:
                 for status in feed_statuses['statuses']['data']:
@@ -361,6 +431,9 @@ class Command(BaseCommand):
             info_msg = "Successfully updated feed: {0}.".format(feed.pk)
             logger = logging.getLogger('django')
             logger.info(info_msg)
+            if date_filters['from_date'] or date_filters['to_date']:
+                print 'sleeping for %d seconds.' % SLEEP_TIME
+                sleep(SLEEP_TIME)
         info_msg = "Successfully saved all statuses to db"
         logger = logging.getLogger('django')
         logger.info(info_msg)
