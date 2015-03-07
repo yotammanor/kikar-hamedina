@@ -25,7 +25,7 @@ pk,model,main_feed,content_type,alt_content_type,alt_object_id,object_id
 24,facebook_feeds.facebook_persona,24,"[u'mks', u'member']",None,None,843
 25,facebook_feeds.facebook_persona,25,"[u'mks', u'member']","[u'polyorg', u'candidate']",897,897
 26,facebook_feeds.facebook_persona,26,"[u'mks', u'member']","[u'polyorg', u'candidate']",64,64
-27,facebook_feeds.facebook_persona,27,"[u'mks', u'member']",None,None,905
+27,facebook_feeds.facebook_persona,27,"[u'mks', u'member']","[u'polyorg', u'candidate']",905,905
 28,facebook_feeds.facebook_persona,28,"[u'mks', u'member']","[u'polyorg', u'candidate']",874,874
 29,facebook_feeds.facebook_persona,29,"[u'mks', u'member']","[u'polyorg', u'candidate']",832,832
 30,facebook_feeds.facebook_persona,30,"[u'mks', u'member']","[u'polyorg', u'candidate']",90,90
@@ -145,3 +145,13 @@ pk,model,main_feed,content_type,alt_content_type,alt_object_id,object_id
 144,facebook_feeds.facebook_persona,144,None,"[u'polyorg', u'candidate']",974,None
 145,facebook_feeds.facebook_persona,145,None,"[u'polyorg', u'candidate']",975,None
 146,facebook_feeds.facebook_persona,146,None,"[u'polyorg', u'candidate']",103,None
+147,facebook_feeds.facebook_persona,147,None,"[u'polyorg', u'candidate']",915,None
+148,facebook_feeds.facebook_persona,148,None,"[u'polyorg', u'candidate']",916,None
+149,facebook_feeds.facebook_persona,149,None,"[u'polyorg', u'candidate']",917,None
+150,facebook_feeds.facebook_persona,150,None,"[u'polyorg', u'candidate']",948,None
+151,facebook_feeds.facebook_persona,151,None,"[u'polyorg', u'candidate']",946,None
+152,facebook_feeds.facebook_persona,152,None,"[u'polyorg', u'candidate']",911,None
+153,facebook_feeds.facebook_persona,153,None,"[u'polyorg', u'candidate']",910,None
+154,facebook_feeds.facebook_persona,154,None,"[u'polyorg', u'candidate']",955,None
+155,facebook_feeds.facebook_persona,155,None,"[u'polyorg', u'candidate']",230,None
+156,facebook_feeds.facebook_persona,156,None,"[u'polyorg', u'candidate']",908,None
