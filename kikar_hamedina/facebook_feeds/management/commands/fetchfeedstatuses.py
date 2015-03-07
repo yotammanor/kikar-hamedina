@@ -7,6 +7,7 @@ from pprint import pprint
 from optparse import make_option
 from collections import defaultdict
 from unidecode import unidecode
+import random
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -218,6 +219,9 @@ class Command(BaseCommand):
                 attachment.source = selected_attachment_object['source']
                 attachment.source_width = selected_attachment_object['width']
                 attachment.source_height = selected_attachment_object['height']
+                if not random.randrange(1, 100) % 5:
+                    print 'sleeping for %d seconds.' % SLEEP_TIME
+                    sleep(SLEEP_TIME)
             elif attachment.type == 'video':
                 print '\tsetting video source'
                 attachment.source = attachment_defaultdict['source']
@@ -402,7 +406,7 @@ class Command(BaseCommand):
         # Case no args - fetch all feeds
         if len(args) == 0:
             manager = Facebook_Feed_Model.current_feeds if options['current-only'] else Facebook_Feed_Model.objects
-            list_of_feeds = [feed for feed in manager.all()]
+            list_of_feeds = [feed for feed in manager.all().order_by('id')]
         # Case arg exists - fetch feed by id supplied
         elif len(args) == 1:
             feed_id = int(args[0])
