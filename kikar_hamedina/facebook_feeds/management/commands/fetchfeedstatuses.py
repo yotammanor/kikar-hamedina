@@ -211,6 +211,9 @@ class Command(BaseCommand):
             if attachment.type == 'photo':
                 print '\tgetting picture source'
                 photo_object = self.get_picture_attachment_json(attachment)
+                if 'images' not in photo_object:
+                    print 'no images'
+                    return
                 selected_attachment_object = sorted(photo_object['images'], key=lambda x: x['height'], reverse=True)[0]
                 attachment.source = selected_attachment_object['source']
                 attachment.source_width = selected_attachment_object['width']
