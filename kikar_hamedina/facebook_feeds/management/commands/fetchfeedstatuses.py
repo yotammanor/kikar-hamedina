@@ -2,11 +2,13 @@ import datetime
 from time import sleep
 import dateutil
 import urllib2
+from urllib2 import HTTPError
 import json
 from pprint import pprint
 from optparse import make_option
 from collections import defaultdict
 from unidecode import unidecode
+import random
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -137,8 +139,8 @@ class Command(BaseCommand):
                         warning_msg = "Failed an attempt for feed #({0}) from FB API.".format(feed_id)
                         logger = logging.getLogger('django')
                         logger.warning(warning_msg)
-                        try_number += 1
                         print 'try_number:', try_number
+                        try_number += 1
                         continue
                     list_of_statuses += response['data']
                     oldest_status_so_far = dateutil.parser.parse(list_of_statuses[-1]['created_time'])
@@ -211,10 +213,16 @@ class Command(BaseCommand):
             if attachment.type == 'photo':
                 print '\tgetting picture source'
                 photo_object = self.get_picture_attachment_json(attachment)
+                if 'images' not in photo_object:
+                    print 'no images'
+                    return
                 selected_attachment_object = sorted(photo_object['images'], key=lambda x: x['height'], reverse=True)[0]
                 attachment.source = selected_attachment_object['source']
                 attachment.source_width = selected_attachment_object['width']
                 attachment.source_height = selected_attachment_object['height']
+                if not random.randrange(1, 100) % 5:
+                    print 'sleeping for %d seconds.' % SLEEP_TIME
+                    sleep(SLEEP_TIME)
             elif attachment.type == 'video':
                 print '\tsetting video source'
                 attachment.source = attachment_defaultdict['source']
@@ -399,7 +407,7 @@ class Command(BaseCommand):
         # Case no args - fetch all feeds
         if len(args) == 0:
             manager = Facebook_Feed_Model.current_feeds if options['current-only'] else Facebook_Feed_Model.objects
-            list_of_feeds = [feed for feed in manager.all()]
+            list_of_feeds = [feed for feed in manager.all().order_by('id')]
         # Case arg exists - fetch feed by id supplied
         elif len(args) == 1:
             feed_id = int(args[0])
