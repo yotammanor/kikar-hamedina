@@ -425,8 +425,11 @@
         "model": "facebook_feeds.facebook_persona", 
         "fields": {
             "main_feed": "27", 
-            "alt_content_type": null, 
-            "alt_object_id": null, 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 905, 
             "content_type": [
                 "mks", 
                 "member"
@@ -2290,6 +2293,146 @@
         }
     }, 
     {
+        "pk": "147", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "147", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 915, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
+        "pk": "148", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "148", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 916, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
+        "pk": "149", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "149", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 917, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
+        "pk": "150", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "150", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 948, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
+        "pk": "151", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "151", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 946, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
+        "pk": "152", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "152", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 911, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
+        "pk": "153", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "153", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 910, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
+        "pk": "154", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "154", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 955, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
+        "pk": "155", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "155", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 230, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
+        "pk": "156", 
+        "model": "facebook_feeds.facebook_persona", 
+        "fields": {
+            "main_feed": "156", 
+            "alt_content_type": [
+                "polyorg", 
+                "candidate"
+            ], 
+            "alt_object_id": 908, 
+            "content_type": null, 
+            "object_id": null
+        }
+    }, 
+    {
         "pk": "1", 
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
@@ -4037,6 +4180,126 @@
             "vendor_id": "459630770783649", 
             "feed_type": "PP", 
             "persona": "146", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "147", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "1444820465778931", 
+            "feed_type": "PP", 
+            "persona": "147", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "148", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "1520793324875444", 
+            "feed_type": "PP", 
+            "persona": "148", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "149", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "115428891854187", 
+            "feed_type": "PP", 
+            "persona": "149", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "150", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "775262769219310", 
+            "feed_type": "PP", 
+            "persona": "150", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "151", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "195437940588631", 
+            "feed_type": "PP", 
+            "persona": "151", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "152", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "151423715003419", 
+            "feed_type": "PP", 
+            "persona": "152", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "153", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "1578176972413229", 
+            "feed_type": "PP", 
+            "persona": "153", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "154", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "1000293466651925", 
+            "feed_type": "PP", 
+            "persona": "154", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "155", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "258598010822055", 
+            "feed_type": "PP", 
+            "persona": "155", 
+            "is_current": true, 
+            "locally_updated": null
+        }
+    }, 
+    {
+        "pk": "156", 
+        "model": "facebook_feeds.facebook_feed", 
+        "fields": {
+            "requires_user_token": false, 
+            "vendor_id": "544236812346549", 
+            "feed_type": "PP", 
+            "persona": "156", 
             "is_current": true, 
             "locally_updated": null
         }
