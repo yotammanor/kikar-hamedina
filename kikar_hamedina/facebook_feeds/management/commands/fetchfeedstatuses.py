@@ -2,6 +2,7 @@ import datetime
 from time import sleep
 import dateutil
 import urllib2
+from urllib2 import HTTPError
 import json
 from pprint import pprint
 from optparse import make_option
@@ -138,8 +139,8 @@ class Command(BaseCommand):
                         warning_msg = "Failed an attempt for feed #({0}) from FB API.".format(feed_id)
                         logger = logging.getLogger('django')
                         logger.warning(warning_msg)
-                        try_number += 1
                         print 'try_number:', try_number
+                        try_number += 1
                         continue
                     list_of_statuses += response['data']
                     oldest_status_so_far = dateutil.parser.parse(list_of_statuses[-1]['created_time'])
