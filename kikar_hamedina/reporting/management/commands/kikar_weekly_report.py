@@ -24,6 +24,7 @@ from reporting.models import WeeklyReportRecipients
 def split_by_comma(option, opt, value, parser):
     setattr(parser.values, option.dest, [x.strip() for x in value.split(',')])
 
+
 IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
 
@@ -89,6 +90,8 @@ class Command(BaseCommand):
                                'top_status_by_comment_count_this_week': getattr(week_status_set.order_by(
                                    '-comment_count').first(), 'comment_count', 0),
                                'current_followers_count': feed.current_fan_count,
+                               'current_talking_about_count': getattr(feed.feed_popularity_set.order_by(
+                                   '-date_of_creation').first(), 'talking_about_count', -1),
                                'change_in_followers_count_since_last_week': feed.popularity_dif(days_back=7,
                                                                                                 return_value='fan_count_dif_nominal')
 
@@ -107,7 +110,7 @@ class Command(BaseCommand):
                 'num_of_weekly_statuses': getattr(party, 'n_statuses_last_week', 0),
                 'total_like_count_this_week': getattr(party, 'total_status_likes_last_week', 0),
                 'mean_like_count_this_week': getattr(party, 'mean_status_likes_last_week', 0),
-                'mean_comment_count_this_week': getattr(party,' mean_status_comments_last_week', 0),
+                'mean_comment_count_this_week': getattr(party, ' mean_status_comments_last_week', 0),
                 'mean_share_count_this_week': getattr(party, 'mean_status_shares_last_week', 0)
             })
 
@@ -217,7 +220,20 @@ class Command(BaseCommand):
 
         meta_data = []
 
-        return feeds_data, parties_data, factions_data, meta_data
+        feed_history_data = list()
+
+        for feed in feeds:
+            for pop in feed.feed_popularity_set.order_by('date_of_creation').all():
+                feed_history_data.append({
+                    'feed_id': feed.id,
+                    'feed_name': feed.persona.owner.name,
+                    'feed_type': feed.feed_type,
+                    'date': pop.date_of_creation,
+                    'fan_count': pop.fan_count,
+                    'talking_about_count': getattr(pop, 'talking_about_count', -1)
+                })
+
+        return feeds_data, parties_data, factions_data, feed_history_data, meta_data
 
     def statuses_data(self):
         week_ago, month_ago = get_times()
@@ -331,7 +347,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        feeds_data, parties_data, factions_data, meta_data = self.feed_and_group_stats()
+        feeds_data, parties_data, factions_data, feed_history_data, meta_data = self.feed_and_group_stats()
         week_statuses = self.statuses_data()
 
         all_data = [{'name': 'feeds_data',
@@ -341,7 +357,9 @@ class Command(BaseCommand):
                     {'name': 'factions_data',
                      'content': factions_data},
                     {'name': 'week_statuses',
-                     'content': week_statuses}]
+                     'content': week_statuses},
+                    {'name': 'popularity_history',
+                     'content': feed_history_data}]
 
         print 'Sending email..'
         self.build_and_send_email(all_data, options)
