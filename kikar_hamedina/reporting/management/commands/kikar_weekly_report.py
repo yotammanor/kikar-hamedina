@@ -221,9 +221,9 @@ class Command(BaseCommand):
         meta_data = []
 
         feed_history_data = list()
-
+        start_date = timezone.datetime(2014, 10, 25, 0, 0, 0, 0, tzinfo=timezone.get_current_timezone())
         for feed in feeds:
-            for pop in feed.feed_popularity_set.order_by('date_of_creation').all():
+            for pop in feed.feed_popularity_set.order_by('date_of_creation').filter(date_of_creation__lge=start_date):
                 feed_history_data.append({
                     'feed_id': feed.id,
                     'feed_name': feed.persona.owner.name,
