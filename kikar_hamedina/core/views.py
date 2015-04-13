@@ -856,3 +856,26 @@ def search_bar_tags(search_text):
 
     return Tag.objects.filter_proper(combined_tag_name_query).distinct().order_by('name')[
            :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+
+
+def return_suggested_tags(status_id):
+    response_data = {
+        'number_of_results': 0,
+        'results': []
+    }
+
+    def result_factory(object_id, name, object_type, **additional_info):
+        result = {
+            'id': object_id,
+            'name': name,
+            'type': object_type
+        }
+        result.update(additional_info)
+        response_data['number_of_results'] += 1
+        return result
+
+    for tag in Facebook_Status.objects.get(status_id=status_id).suggested_tags(n=3):
+        response_data['results'].append(
+            result_factory(tag.id, tag.name, "tag"))
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
