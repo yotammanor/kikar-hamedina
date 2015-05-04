@@ -220,20 +220,7 @@ class Command(BaseCommand):
 
         meta_data = []
 
-        feed_history_data = list()
-        start_date = timezone.datetime(2014, 10, 25, 0, 0, 0, 0, tzinfo=timezone.get_current_timezone())
-        for feed in feeds:
-            for pop in feed.feed_popularity_set.order_by('date_of_creation').filter(date_of_creation__lge=start_date):
-                feed_history_data.append({
-                    'feed_id': feed.id,
-                    'feed_name': feed.persona.owner.name,
-                    'feed_type': feed.feed_type,
-                    'date': pop.date_of_creation,
-                    'fan_count': pop.fan_count,
-                    'talking_about_count': getattr(pop, 'talking_about_count', -1)
-                })
-
-        return feeds_data, parties_data, factions_data, feed_history_data, meta_data
+        return feeds_data, parties_data, factions_data, meta_data
 
     def statuses_data(self):
         week_ago, month_ago = get_times()
@@ -347,7 +334,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        feeds_data, parties_data, factions_data, feed_history_data, meta_data = self.feed_and_group_stats()
+        feeds_data, parties_data, factions_data, meta_data = self.feed_and_group_stats()
         week_statuses = self.statuses_data()
 
         all_data = [{'name': 'feeds_data',
@@ -358,8 +345,7 @@ class Command(BaseCommand):
                      'content': factions_data},
                     {'name': 'week_statuses',
                      'content': week_statuses},
-                    {'name': 'popularity_history',
-                     'content': feed_history_data}]
+        ]
 
         print 'Sending email..'
         self.build_and_send_email(all_data, options)

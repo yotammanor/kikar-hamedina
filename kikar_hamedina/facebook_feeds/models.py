@@ -15,9 +15,12 @@ from taggit.managers import TaggableManager
 from kikartags.managers import _KikarTaggableManager
 from slugify import slugify
 
+from autotag import autotag
 
 from facebook_feeds.managers import Facebook_StatusManager, Facebook_FeedManager
 from kikartags.models import TaggedItem
+
+DEFAULT_THRESHOLD = 0
 
 IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
@@ -319,7 +322,14 @@ class Facebook_Status(models.Model):
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
         #     need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
-
+    
+    def suggested_tags(self, n=3):
+        at = autotag.AutoTag()
+        suggestions = at.test_doc({'text': self.content}, at.get_tags(), DEFAULT_THRESHOLD)
+        print suggestions
+        tags = Tag.objects.filter(id__in=[sug[1] for sug in suggestions[:]])
+        return tags
+    
     class Meta:
         verbose_name_plural = 'Facebook_Statuses'
 
