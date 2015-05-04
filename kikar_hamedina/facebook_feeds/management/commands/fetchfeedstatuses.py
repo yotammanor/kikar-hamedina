@@ -236,15 +236,19 @@ class Command(BaseCommand):
         """
         If attachment exists, create or update all relevant fields.
         """
-        # print 'create_or_update attachment'
+        print 'create_or_update attachment'
         if status_object_defaultdict['link']:
             attachment, created = Facebook_Status_Attachment_Model.objects.get_or_create(
                 status=status_object)
             # print 'I have an attachment. Created now: %s; Length of data in field link: %d; field picture: %d;  id: %s' % (
             # created, len(status_object_defaultdict['link']), len(str(status_object_defaultdict['picture'])),
             # status.status_id)
+            print 'created:', created
+            print 'attachment id:', attachment.id
             self.update_status_attachment(attachment, status_object_defaultdict)
         else:
+            print 'passing:',
+            print status_object_defaultdict['link'], status_object_defaultdict['picture']
             pass
             # print 'i don''t have an attachment; Link field: %s; Picture field: %s; id: %s' % (
             # str(status_object_defaultdict['link']), str(status_object_defaultdict['picture']), status.status_id)
@@ -342,7 +346,7 @@ class Command(BaseCommand):
             if status_object_defaultdict['link']:
                 # There's an attachment
                 status_object.save()
-                self.insert_status_attachment(status_object, status_object_defaultdict)
+                self.create_or_update_attachment(status_object, status_object_defaultdict)
         finally:
             # save status object.
             print 'saving status'
