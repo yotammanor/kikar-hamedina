@@ -5,6 +5,7 @@ import math
 from random import shuffle
 
 NUM_OF_NEGATIVE_OR_POSITIVE_STATUSES = 100
+MINIMAL_NUM_OF_STATUSES = 60
 
 
 class Command(BaseCommand):
@@ -23,8 +24,9 @@ class Command(BaseCommand):
             raise Exception('Too many Tag IDs')
 
         tag_id = args[0]
-
+        print tag_id
         positive_statuses = Facebook_Status.objects.filter(tagged_items__tag__id=tag_id)
+        print positive_statuses.count()
         negative_statuses = Facebook_Status.objects.filter(tagged_items__isnull=False).exclude(
             tagged_items__tag__id=tag_id).order_by('?')[:NUM_OF_NEGATIVE_OR_POSITIVE_STATUSES]
 
@@ -44,6 +46,8 @@ class Command(BaseCommand):
                            'tags': [str(tag.tag.id) for tag in status.tagged_items.all()]}
             status_data.append(status_dict)
 
+        if len(status_data) < MINIMAL_NUM_OF_STATUSES:
+            raise Exception('Not enough statuses: %d' % len(status_data))
         shuffle(status_data)
 
         train_statuses = status_data[0:int(math.floor(len(status_data) / 2.0))]
