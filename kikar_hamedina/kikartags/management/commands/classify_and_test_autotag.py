@@ -36,22 +36,28 @@ class Command(BaseCommand):
             negative_statuses = negative_statuses[:len(positive_statuses)]
 
         status_data = []
+        positive_status_data = []
+        negative_status_data = []
         for status in positive_statuses:
             status_dict = {'id': status.id, 'text': status.content,
                            'tags': [str(tag.tag.id) for tag in status.tagged_items.all()]}
-            status_data.append(status_dict)
+            positive_status_data.append(status_dict)
 
         for status in negative_statuses:
             status_dict = {'id': status.id, 'text': status.content,
                            'tags': [str(tag.tag.id) for tag in status.tagged_items.all()]}
-            status_data.append(status_dict)
+            negative_status_data.append(status_dict)
 
-        if len(status_data) < MINIMAL_NUM_OF_STATUSES:
-            raise Exception('Not enough statuses: %d' % len(status_data))
-        shuffle(status_data)
+        shuffle(positive_status_data)
+        shuffle(negative_status_data)
 
-        train_statuses = status_data[0:int(math.floor(len(status_data) / 2.0))]
-        test_statuses = status_data[int(math.floor(len(status_data)) / 2.0):]
+        train_statuses = positive_status_data[0:int(math.floor(len(positive_status_data) / 2.0))] + negative_status_data[0:int(
+            math.floor(len(negative_status_data) / 2.0))]
+        test_statuses = positive_status_data[int(math.floor(len(positive_status_data)) / 2.0):] + \
+                        negative_status_data[int(math.floor(len(negative_status_data)) / 2.0):]
+
+        if len(train_statuses + test_statuses) < MINIMAL_NUM_OF_STATUSES:
+            raise Exception('Not enough statuses: %d' % len(train_statuses + test_statuses))
 
         print 'length of data: train: %d, test: %d' % (len(train_statuses), len(test_statuses))
         at = autotag.AutoTag()
