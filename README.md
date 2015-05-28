@@ -53,7 +53,7 @@ These commands can be used to manage the django server (these are standard Upsta
 
 ``sudo restart kikar``
 
-``sudo status kika``
+``sudo status kikar``
 
 
 Installation (Deprecated, but might still work)
