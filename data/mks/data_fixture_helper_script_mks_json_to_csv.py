@@ -8,14 +8,22 @@ json_file = open('data_fixture_mks.json', mode='r')
 json_data = json.load(json_file, encoding='utf-8')  # insert name of json
 knesset_dict = [x for x in json_data if x['model'] == 'mks.knesset']
 party_dict = [x for x in json_data if x['model'] == 'mks.party']
+partyaltname_dict = [x for x in json_data if x['model'] == 'mks.partyaltname']
 member_dict = [x for x in json_data if x['model'] == 'mks.member']
 coalitionmembership_dict = [x for x in json_data if x['model'] == 'mks.coalitionmembership']
 membership_dict = [x for x in json_data if x['model'] == 'mks.membership']
 weeklypresence_dict = [x for x in json_data if x['model'] == 'mks.weeklypresence']
 memberaltname_dict = [x for x in json_data if x['model'] == 'mks.memberaltname']
 
-all_dicts = [knesset_dict, party_dict, member_dict, coalitionmembership_dict, membership_dict, weeklypresence_dict,
-             memberaltname_dict]
+all_dicts = [knesset_dict,
+             party_dict,
+             member_dict,
+             coalitionmembership_dict,
+             membership_dict,
+             weeklypresence_dict,
+             partyaltname_dict,
+             memberaltname_dict,
+]
 
 
 def insert_to_csv(chosen_dict):
@@ -52,14 +60,20 @@ def insert_to_csv(chosen_dict):
     output_file.close()
 
 
-for json_dict in all_dicts:
+for i, json_dict in enumerate(all_dicts):
+    print 'dict num', i + 1
     insert_to_csv(json_dict)
 
-print len(knesset_dict), \
-    len(party_dict), \
-    len(member_dict), \
-    len(membership_dict), \
-    len(memberaltname_dict), \
-    len(coalitionmembership_dict), \
-    len(weeklypresence_dict)
+len_of_dics = [
+    len(knesset_dict),
+    len(party_dict),
+    len(partyaltname_dict),
+    len(member_dict),
+    len(membership_dict),
+    len(coalitionmembership_dict),
+    len(weeklypresence_dict),
+    len(memberaltname_dict),
+]
+
+print len_of_dics
 
