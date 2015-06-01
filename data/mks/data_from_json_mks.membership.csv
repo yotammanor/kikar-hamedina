@@ -257,3 +257,9 @@ pk,model,member,party,start_date,end_date,position
 257,mks.membership,720,25,2013-02-05,None,999
 258,mks.membership,782,16,2013-02-05,None,999
 259,mks.membership,829,14,2014-06-15,None,999
+260,mks.membership,878,29,None,None,999
+261,mks.membership,714,32,None,None,999
+262,mks.membership,785,14,None,None,999
+263,mks.membership,702,2,None,None,999
+264,mks.membership,702,14,None,None,999
+265,mks.membership,702,27,None,None,999
