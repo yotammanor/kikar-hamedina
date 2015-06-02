@@ -77,6 +77,9 @@ def get_date_range_dict():
     date_range_dict = {'default': {'start_date': FILTER_BY_DATE_DEFAULT_START_DATE,
                                    'end_date': filter_by_date_default_end_date},
 
+                       'day': {'start_date': timezone.now() - timezone.timedelta(days=1),
+                                'end_date': filter_by_date_default_end_date},
+
                        'week': {'start_date': timezone.now() - timezone.timedelta(days=7),
                                 'end_date': filter_by_date_default_end_date},
 
