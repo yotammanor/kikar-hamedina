@@ -134,7 +134,7 @@ pk,model,requires_user_token,vendor_id,feed_type,persona,is_current,locally_upda
 133,facebook_feeds.facebook_feed,False,625040900863570,PP,133,True,None
 134,facebook_feeds.facebook_feed,False,307391876051483,PP,134,True,None
 135,facebook_feeds.facebook_feed,False,585756267,UP,135,True,None
-136,facebook_feeds.facebook_feed,False,100004118680953,UP,136,True,None
+136,facebook_feeds.facebook_feed,False,1618820118331461,PP,136,True,None
 137,facebook_feeds.facebook_feed,False,602064663,UP,137,True,None
 138,facebook_feeds.facebook_feed,False,433529446712013,PP,138,True,None
 139,facebook_feeds.facebook_feed,False,1556045774612992,PP,139,True,None

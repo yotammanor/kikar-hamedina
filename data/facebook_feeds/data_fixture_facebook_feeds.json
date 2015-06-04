@@ -4135,8 +4135,8 @@
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
             "requires_user_token": false, 
-            "vendor_id": "100004118680953", 
-            "feed_type": "UP", 
+            "vendor_id": "1618820118331461", 
+            "feed_type": "PP", 
             "persona": "136", 
             "is_current": true, 
             "locally_updated": null
