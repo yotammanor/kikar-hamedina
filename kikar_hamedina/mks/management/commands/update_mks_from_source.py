@@ -14,10 +14,15 @@ from django.db.models.loading import get_model
 
 from mks.models import Knesset, Party, Member
 
+
 SOURCE_API_URL = getattr(settings, 'SOURCE_API_URL', 'http://oknesset.org/api')
 SOURCE_API_VERSION = getattr(settings, 'SOURCE_API_VERSION', 'v2')
 DEFAULT_SOURCE_ARGS = getattr(settings, 'DEFAULT_SOURCE_ARGS', {'format': 'json'})
 DATE_FORMAT_AT_SOURCE = getattr(settings, 'DATE_FORMAT_AT_SOURCE', '%Y-%m-%d')
+
+
+LIST_INDEX_START = 0
+SLEEP_TIME = 9
 
 
 class Command(BaseCommand):
@@ -105,6 +110,7 @@ class Command(BaseCommand):
         print 'exist in both:', set_of_local_objects & set_of_source_objects
 
         return list((set_of_local_objects - redundant_objects) | missing_objects)
+        # return list(missing_objects)
 
     def format_date(self, date_string, date_format=DATE_FORMAT_AT_SOURCE):
         try:
@@ -120,7 +126,9 @@ class Command(BaseCommand):
         member_from_source = self.get_request_from_source('member', member_id)
         # pprint.pprint(member_from_source.keys())
 
-        if unidecode(member_from_source['gender']) == 'zkr':
+        if not member_from_source['gender']:
+            parsed_gender_value = None
+        elif unidecode(member_from_source['gender']) == 'zkr':
             parsed_gender_value = 'M'
         else:  # nqbh
             parsed_gender_value = 'F'
@@ -141,6 +149,15 @@ class Command(BaseCommand):
         local_member.number_of_children = member_from_source['number_of_children']
         local_member.date_of_birth = self.format_date(member_from_source['date_of_birth'])
         local_member.place_of_birth = member_from_source['place_of_birth']
+
+        party_id = member_from_source['party_url'].split('/')[2]  # splitting: u'/party/29/'
+        print 'party_id extracted:', party_id
+        try:
+            party = Party.objects.get(id=party_id)
+            party.members.add(local_member)
+        except:
+            print 'missing party id in db'
+            pass
 
         local_member.date_of_death = self.format_date(member_from_source['date_of_death'])
         local_member.year_of_aliyah = member_from_source['year_of_aliyah']
@@ -211,7 +228,7 @@ class Command(BaseCommand):
             for i, party_id in enumerate(list_of_party_ids):
                 print 'working on %d of %d: party: %s' % (i + 1, len(list_of_party_ids), party_id)
                 self.update_party_instance(party_id, options)
-                sleep(3)
+                sleep(SLEEP_TIME)
 
         # update members data
         else:
@@ -249,9 +266,10 @@ class Command(BaseCommand):
                 print list_of_member_ids
 
             # Iterate over list_of_members of direct update on selected members
-            for i, member_id in enumerate(list_of_member_ids):
-                print 'working on %d of %d: member: %s' % (i + 1, len(list_of_member_ids), member_id)
+            for i, member_id in enumerate(list_of_member_ids[LIST_INDEX_START:]):
+                print 'working on %d of %d: member: %s' % (i + LIST_INDEX_START + 1, len(list_of_member_ids[LIST_INDEX_START:]), member_id),
                 self.update_member_instance(member_id)
-                sleep(3)
+                print 'sleep for %d secs' % SLEEP_TIME
+                sleep(SLEEP_TIME)
 
         print 'Done.'

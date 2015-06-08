@@ -24,3 +24,13 @@ pk,model,number_of_seats,name,end_date,knesset,is_coalition,logo,number_of_membe
 23,mks.party,4, רע”מ-תע”ל,None,19,False,,4,None
 24,mks.party,3,ברית לאומית דמוקרטית,None,19,False,,3,None
 25,mks.party,2,קדימה,None,19,False,,2,None
+27,mks.party,None,הליכוד,None,20,True,,30,None
+28,mks.party,None,מרצ,None,20,False,,5,None
+29,mks.party,None,יש עתיד,None,20,False,,11,None
+30,mks.party,None,הבית היהודי,None,20,True,,8,None
+31,mks.party,None,ישראל ביתנו,None,20,False,,6,None
+32,mks.party,None,כולנו,None,20,True,,10,None
+33,mks.party,None,המחנה הציוני ,None,20,False,,24,None
+34,mks.party,None,יהדות התורה,None,20,True,,6,None
+35,mks.party,None,הרשימה המשותפת,None,20,False,,13,None
+36,mks.party,None,תנועת ש”ס,None,20,True,,7,None

@@ -1784,8 +1784,11 @@
                 "candidate"
             ], 
             "alt_object_id": 919, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 921
         }
     }, 
     {
@@ -1798,8 +1801,11 @@
                 "candidate"
             ], 
             "alt_object_id": 920, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 946
         }
     }, 
     {
@@ -1826,8 +1832,11 @@
                 "candidate"
             ], 
             "alt_object_id": 922, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 927
         }
     }, 
     {
@@ -1840,8 +1849,11 @@
                 "candidate"
             ], 
             "alt_object_id": 924, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 935
         }
     }, 
     {
@@ -1854,8 +1866,11 @@
                 "candidate"
             ], 
             "alt_object_id": 925, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 940
         }
     }, 
     {
@@ -1882,8 +1897,11 @@
                 "candidate"
             ], 
             "alt_object_id": 928, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 913
         }
     }, 
     {
@@ -1896,8 +1914,11 @@
                 "candidate"
             ], 
             "alt_object_id": 930, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 933
         }
     }, 
     {
@@ -1910,8 +1931,11 @@
                 "candidate"
             ], 
             "alt_object_id": 931, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 926
         }
     }, 
     {
@@ -1924,8 +1948,11 @@
                 "candidate"
             ], 
             "alt_object_id": 934, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 930
         }
     }, 
     {
@@ -1938,8 +1965,11 @@
                 "candidate"
             ], 
             "alt_object_id": 935, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 936
         }
     }, 
     {
@@ -2078,8 +2108,11 @@
                 "candidate"
             ], 
             "alt_object_id": 947, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 920
         }
     }, 
     {
@@ -2148,8 +2181,11 @@
                 "candidate"
             ], 
             "alt_object_id": 954, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 941
         }
     }, 
     {
@@ -2162,8 +2198,11 @@
                 "candidate"
             ], 
             "alt_object_id": 957, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 948
         }
     }, 
     {
@@ -2176,8 +2215,11 @@
                 "candidate"
             ], 
             "alt_object_id": 958, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 938
         }
     }, 
     {
@@ -2190,8 +2232,11 @@
                 "candidate"
             ], 
             "alt_object_id": 14, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 13
         }
     }, 
     {
@@ -2204,8 +2249,11 @@
                 "candidate"
             ], 
             "alt_object_id": 772, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 772
         }
     }, 
     {
@@ -2232,8 +2280,11 @@
                 "candidate"
             ], 
             "alt_object_id": 971, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 942
         }
     }, 
     {
@@ -2274,8 +2325,11 @@
                 "candidate"
             ], 
             "alt_object_id": 975, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 915
         }
     }, 
     {
@@ -2288,8 +2342,11 @@
                 "candidate"
             ], 
             "alt_object_id": 103, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 103
         }
     }, 
     {
@@ -2302,8 +2359,11 @@
                 "candidate"
             ], 
             "alt_object_id": 915, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 925
         }
     }, 
     {
@@ -2316,8 +2376,11 @@
                 "candidate"
             ], 
             "alt_object_id": 916, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 911
         }
     }, 
     {
@@ -2330,8 +2393,11 @@
                 "candidate"
             ], 
             "alt_object_id": 917, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 910
         }
     }, 
     {
@@ -2386,8 +2452,11 @@
                 "candidate"
             ], 
             "alt_object_id": 910, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 945
         }
     }, 
     {
@@ -2400,8 +2469,11 @@
                 "candidate"
             ], 
             "alt_object_id": 955, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 915
         }
     }, 
     {
@@ -2414,8 +2486,11 @@
                 "candidate"
             ], 
             "alt_object_id": 230, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 230
         }
     }, 
     {
@@ -2428,8 +2503,11 @@
                 "candidate"
             ], 
             "alt_object_id": 908, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 914
         }
     }, 
     {
@@ -4057,8 +4135,8 @@
         "model": "facebook_feeds.facebook_feed", 
         "fields": {
             "requires_user_token": false, 
-            "vendor_id": "100004118680953", 
-            "feed_type": "UP", 
+            "vendor_id": "1618820118331461", 
+            "feed_type": "PP", 
             "persona": "136", 
             "is_current": true, 
             "locally_updated": null
