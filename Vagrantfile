@@ -10,9 +10,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "private_network", ip: "192.168.100.100"
   config.vm.network :forwarded_port, guest: 8000, host: 8000
 
+  config.vm.provision :shell, :inline => "curl -sL https://deb.nodesource.com/setup | sudo bash"
   config.vm.provision :shell, :inline => "apt-get update"
 
-  config.vm.provision :shell, :inline => "apt-get install -y postgresql postgresql-contrib python-dev python-pip libpq-dev git-core build-essential"
+  config.vm.provision :shell, :inline => "apt-get install -y postgresql postgresql-contrib python-dev python-pip libpq-dev git-core build-essential nodejs npm"
+  config.vm.provision :shell, :inline => "curl https://www.npmjs.com/install.sh | sudo sh"
+  config.vm.provision :shell, :inline => "npm install ngrok -g"
 
   # Generate config files and initialize DB
   config.vm.provision :shell do |shell|

@@ -82,9 +82,10 @@ urlpatterns = patterns('',
                            name='untagged'),
                        url(r'^review-tags/$', views.ReviewTagsView.as_view(), name='review-tags'),
                        # rss feeds
-                       url(r'^latest/feed/$', LatestStatusesRSSFeed()),
+                       url(r'^latest/feed/$', LatestStatusesRSSFeed(), name='rss-latest'),
                        url(r'^party/(?P<party_id>\d+)/rss/$', PartyRSSFeed()),
                        url(r'^user/(?P<user_id>\d+)/rss/$', KeywordsByUserRSSFeed()),
+                       url(r'^latest/widget$', views.WidgetView.as_view(), name='rss-widget'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = format_suffix_patterns(urlpatterns)

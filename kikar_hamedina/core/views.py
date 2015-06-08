@@ -10,8 +10,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.utils import timezone
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+from django.views.generic import TemplateView, DetailView, ListView
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from django.db.models import Count, Q
@@ -888,3 +887,7 @@ def return_suggested_tags(status_id):
             result_factory(tag.id, tag.name, "tag"))
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+class WidgetView(TemplateView):
+    template_name = 'core/rss_widget_page.html'
