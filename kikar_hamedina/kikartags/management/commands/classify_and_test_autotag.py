@@ -24,9 +24,9 @@ class Command(BaseCommand):
             raise Exception('Too many Tag IDs')
 
         tag_id = args[0]
-        print tag_id
+        print 'tag_id:', tag_id
         positive_statuses = Facebook_Status.objects.filter(tagged_items__tag__id=tag_id)
-        print positive_statuses.count()
+        print 'num of postive statuses:', positive_statuses.count()
         negative_statuses = Facebook_Status.objects.filter(tagged_items__isnull=False).exclude(
             tagged_items__tag__id=tag_id).order_by('?')[:NUM_OF_NEGATIVE_OR_POSITIVE_STATUSES]
 
