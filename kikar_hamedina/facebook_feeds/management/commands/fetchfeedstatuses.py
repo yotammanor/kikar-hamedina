@@ -270,7 +270,8 @@ class Command(BaseCommand):
         else:
             message = ''
         if status_object_defaultdict['likes']:
-            like_count = status_object_defaultdict['likes']['summary']['total_count']
+
+            like_count = getattr(status_object_defaultdict['likes']['summary'], 'total_count',  0)
         else:
             like_count = 0
         if status_object_defaultdict['comments']:
