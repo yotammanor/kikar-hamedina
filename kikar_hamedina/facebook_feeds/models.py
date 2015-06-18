@@ -1,6 +1,7 @@
 import datetime
 from unidecode import unidecode
 from time import sleep
+import os
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -322,9 +323,9 @@ class Facebook_Status(models.Model):
         return need_refresh
 
     def suggested_tags(self, n=3):
-        at = autotag.AutoTag()
+        myPath = os.path.join(settings.PROJECT_ROOT+"/res")
+        at = autotag.AutoTag(myPath)
         suggestions = at.test_doc({'text': self.content}, at.get_tags(), DEFAULT_THRESHOLD)
-        print suggestions
         tags = Tag.objects.filter(id__in=[sug[1] for sug in suggestions[:]])
         return tags
 

@@ -86,6 +86,7 @@ urlpatterns = patterns('',
                        url(r'^party/(?P<party_id>\d+)/rss/$', PartyRSSFeed()),
                        url(r'^user/(?P<user_id>\d+)/rss/$', KeywordsByUserRSSFeed()),
                        url(r'^latest/widget$', views.WidgetView.as_view(), name='rss-widget'),
+                       url(r'^suggested_tags/(?P<status_id>[-_\w]+)/$', views.return_suggested_tags),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = format_suffix_patterns(urlpatterns)
