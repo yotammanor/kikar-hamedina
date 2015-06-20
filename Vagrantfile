@@ -11,7 +11,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 8000, host: 8000
 
   config.vm.provision :shell, :inline => "apt-get update"
-  config.vm.provision :shell, :inline => "curl -sL https://deb.nodesource.com/setup | sudo bash"
+  config.vm.provision :shell, :inline => "apt-get install -y curl"
+  config.vm.provision :shell, :inline => "curl -sL https://deb.nodesource.com/setup | bash"
 
   config.vm.provision :shell, :inline => "apt-get install -y postgresql postgresql-contrib python-dev python-pip libpq-dev git-core build-essential nodejs"
   #config.vm.provision :shell, :inline => "curl https://www.npmjs.com/install.sh | sudo sh"

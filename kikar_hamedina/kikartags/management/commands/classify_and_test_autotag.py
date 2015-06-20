@@ -60,9 +60,9 @@ class Command(BaseCommand):
             raise Exception('Not enough statuses: %d' % len(train_statuses + test_statuses))
 
         print 'length of data: train: %d, test: %d' % (len(train_statuses), len(test_statuses))
-        at = autotag.AutoTag()
+        at = autotag.AutoTag('cls')
         print 'start training.'
-        at.classify(train_statuses)
+        at.classify(train_statuses, 40)
         print 'finished classifying! Start testing'
 
         a = at.test(test_statuses)
