@@ -114,8 +114,8 @@ pk,model,main_feed,content_type,alt_content_type,alt_object_id,object_id
 113,facebook_feeds.facebook_persona,113,"[u'mks', u'member']","[u'polyorg', u'candidate']",922,927
 114,facebook_feeds.facebook_persona,114,"[u'mks', u'member']","[u'polyorg', u'candidate']",924,935
 115,facebook_feeds.facebook_persona,115,"[u'mks', u'member']","[u'polyorg', u'candidate']",925,940
-116,facebook_feeds.facebook_persona,116,None,"[u'polyorg', u'candidate']",927,None
-117,facebook_feeds.facebook_persona,117,"[u'mks', u'member']","[u'polyorg', u'candidate']",928,913
+116,facebook_feeds.facebook_persona,116,"[u'mks', u'member']","[u'polyorg', u'candidate']",927,913
+117,facebook_feeds.facebook_persona,117,"[u'mks', u'member']","[u'polyorg', u'candidate']",928,917
 118,facebook_feeds.facebook_persona,118,"[u'mks', u'member']","[u'polyorg', u'candidate']",930,933
 119,facebook_feeds.facebook_persona,119,"[u'mks', u'member']","[u'polyorg', u'candidate']",931,926
 120,facebook_feeds.facebook_persona,120,"[u'mks', u'member']","[u'polyorg', u'candidate']",934,930

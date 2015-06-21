@@ -23,10 +23,13 @@ class LatestStatusesRSSFeed(Feed):
             '-published')
 
     def item_title(self, item):
-        return "Status by %s" % item.feed.persona.owner.name
+        return u"סטאטוס מאת %s" % item.feed.persona.owner.name
 
-    def item_description(self, item):
-        return item.content
+    # def item_description(self, item):
+    #     return item.content
+
+    description_template = 'rss/default_status_description.html'
+
 
     def item_link(self, item):
         return reverse('status-detail', args=[item.status_id])

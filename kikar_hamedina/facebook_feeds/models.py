@@ -1,6 +1,7 @@
 import datetime
 from unidecode import unidecode
 from time import sleep
+import os
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -8,7 +9,6 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-
 
 from django_pandas.managers import DataFrameManager
 from taggit.managers import TaggableManager
@@ -24,17 +24,18 @@ DEFAULT_THRESHOLD = 0
 
 IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
+
 # needs_refresh - Constants for quick status refresh
-MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60*60*24*2)  # 2 days
+MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60 * 60 * 24 * 2)  # 2 days
 MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
-MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60*10)  # 10 minutes
+MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60 * 10)  # 10 minutes
 
 # tag name regex
-TAG_NAME_CHARSET=ur'[\w\s\-:"\'!\?&\.#\u2010-\u201f\u05f3\u05f4]'
-TAG_NAME_REGEX=u'^%s+$' % TAG_NAME_CHARSET
+TAG_NAME_CHARSET = ur'[\w\s\-:"\'!\?&\.#\u2010-\u201f\u05f3\u05f4]'
+TAG_NAME_REGEX = u'^%s+$' % TAG_NAME_CHARSET
+
 
 class Facebook_Persona(models.Model):
-
     # Relation to MKs objects
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
@@ -65,7 +66,7 @@ class Facebook_Persona(models.Model):
     def __unicode__(self):
         if IS_ELECTIONS_MODE:
             return "Facebook_Persona: %s %s %s %s" % (self.content_type, self.object_id,
-                self.alt_content_type, self.alt_object_id)
+                                                      self.alt_content_type, self.alt_object_id)
         return "Facebook_Persona: %s %s" % (self.content_type, self.object_id)
 
 
@@ -210,7 +211,6 @@ class Feed_Popularity(models.Model):
         verbose_name_plural = 'Feed_Popularities'
 
 
-
     def __unicode__(self):
         return slugify(self.feed.name) + " " + str(self.date_of_creation.date())
         # strftime("%Y_%M_%D_%H:%m:%s", self.date_of_creation)
@@ -320,16 +320,16 @@ class Facebook_Status(models.Model):
         refresh_interval = (normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
         need_refresh = self.locally_updated + timezone.timedelta(seconds=refresh_interval) < now
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
-        #     need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
+        # need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
-    
+
     def suggested_tags(self, n=3):
-        at = autotag.AutoTag()
+        my_path = os.path.join(settings.CLASSIFICATION_DATA_ROOT)
+        at = autotag.AutoTag(my_path)
         suggestions = at.test_doc({'text': self.content}, at.get_tags(), DEFAULT_THRESHOLD)
-        print suggestions
         tags = Tag.objects.filter(id__in=[sug[1] for sug in suggestions[:]])
         return tags
-    
+
     class Meta:
         verbose_name_plural = 'Facebook_Statuses'
 
@@ -409,6 +409,7 @@ class Status_Comment_Pattern(models.Model):
 
     def __unicode__(self):
         return self.pattern
+
 
 # Deprecated Tags
 class Tag(models.Model):

@@ -16,8 +16,9 @@ from facebook_feeds.models import \
     Feed_Popularity
 from concurrent import futures
 
-FACEBOOK_API_VERSION = 'v2.0'
+FACEBOOK_API_VERSION = 'v2.1'
 _LOGGER_SCRAPING = logging.getLogger('scraping')
+
 
 # Todo: using single transaction (?)
 class Command(BaseCommand):

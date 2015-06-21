@@ -270,9 +270,11 @@ class Command(BaseCommand):
         else:
             message = ''
         if status_object_defaultdict['likes']:
-            like_count = status_object_defaultdict['likes']['summary']['total_count']
+
+            like_count = status_object_defaultdict['likes']['summary'].get('total_count',  0)
         else:
             like_count = 0
+        # print 'like_count:', like_count
         if status_object_defaultdict['comments']:
             comment_count = status_object_defaultdict['comments']['summary']['total_count']
         else:

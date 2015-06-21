@@ -3,6 +3,7 @@ bak/
 *backup.json
 devOps/client_secrets.json
 .idea/
+classification_data/
 *.log
 *.pyc
 .vagrant/
@@ -22,3 +23,4 @@ kikar_hamedina/facebook_feeds/fixtures/1001_1004.json
 data/research/
 kikar_hamedina/media
 kikar_hamedina/kikar_hamedina/local_settings.py
+kikar_hamedina/node_modules
