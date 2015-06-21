@@ -24,6 +24,7 @@ DEFAULT_THRESHOLD = 0
 
 IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
 
+
 # needs_refresh - Constants for quick status refresh
 MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60 * 60 * 24 * 2)  # 2 days
 MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
@@ -323,8 +324,8 @@ class Facebook_Status(models.Model):
         return need_refresh
 
     def suggested_tags(self, n=3):
-        myPath = os.path.join(settings.PROJECT_ROOT+"/res")
-        at = autotag.AutoTag(myPath)
+        my_path = os.path.join(settings.CLASSIFICATION_DATA_ROOT)
+        at = autotag.AutoTag(my_path)
         suggestions = at.test_doc({'text': self.content}, at.get_tags(), DEFAULT_THRESHOLD)
         tags = Tag.objects.filter(id__in=[sug[1] for sug in suggestions[:]])
         return tags

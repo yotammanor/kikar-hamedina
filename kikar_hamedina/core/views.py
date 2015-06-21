@@ -866,7 +866,7 @@ def search_bar_tags(search_text):
            :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
 
 
-def return_suggested_tags(request,status_id):
+def return_suggested_tags(request, status_id):
     response_data = {
         'number_of_results': 0,
         'results': []

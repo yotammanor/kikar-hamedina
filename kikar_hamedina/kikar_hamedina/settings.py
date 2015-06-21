@@ -17,6 +17,9 @@ MEDIA_ROOT = sub_path("media")
 # Configuring STATIC_ROOT
 STATIC_ROOT = sub_path("collected_static")
 
+# Configurion CLASSIFICATION_DATA_ROOT for autoTag and kikartags
+CLASSIFICATION_DATA_ROOT = sub_path("classification_data")
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     sub_path('static'),

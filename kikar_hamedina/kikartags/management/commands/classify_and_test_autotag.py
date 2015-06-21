@@ -3,7 +3,7 @@ from autotag import autotag
 from facebook_feeds.models import Facebook_Status
 import math
 from random import shuffle, sample
-
+from django.conf import settings
 from kikartags.utils import build_classifier_format
 
 NUM_OF_NEGATIVE_OR_POSITIVE_STATUSES = 100
@@ -13,7 +13,7 @@ MINIMAL_NUM_OF_POSITIVE_STATUSES_FOR_TEST = 10
 TOTAL_TRAIN = 100
 TOTAL_TEST = 100
 
-CLASSIFICATION_DATA_PATH = 'classification_data'
+CLASSIFICATION_DATA_PATH = settings.CLASSIFICATION_DATA_ROOT
 
 
 class Command(BaseCommand):
@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
         positive_statuses = Facebook_Status.objects.filter(tagged_items__tag__id=tag_id)
         print 'num of postive statuses:', positive_statuses.count()
-        if positive_statuses < MINIMAL_NUM_OF_POSITIVE_STATUSES_FOR_TRAIN + MINIMAL_NUM_OF_POSITIVE_STATUSES_FOR_TEST:
+        if positive_statuses.count() < MINIMAL_NUM_OF_POSITIVE_STATUSES_FOR_TRAIN + MINIMAL_NUM_OF_POSITIVE_STATUSES_FOR_TEST:
             raise Exception('Not enough positive statuses.')
 
         positive_status_data = [build_classifier_format(x) for x in positive_statuses]
