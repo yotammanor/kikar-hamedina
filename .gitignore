@@ -3,6 +3,7 @@ bak/
 *backup.json
 devOps/client_secrets.json
 .idea/
+classification_data/
 *.log
 *.pyc
 .vagrant/
