@@ -43,7 +43,7 @@ function addTag(status_id, tag_name, csrf_token) {
     });
 }
 
-function addAutosuggestAjaxTags(data, status_id_on_page) {
+function addAutosuggestAjaxTags(data, status_id_on_page, recommended) {
     /*
         @param data - has the returned suggested tags from an Ajax call
         @param status_id_on_page - has the id of the status to add the suggested tags to the autocomplete section
@@ -57,6 +57,7 @@ function addAutosuggestAjaxTags(data, status_id_on_page) {
             continue;
         }
         var result = data['results'][i]
+        result['recommended'] = recommended
         var source = $("#add-tag-result-tag-list-item-template").html()
         var template = Handlebars.compile(source);
         var html = template(result);
@@ -94,7 +95,7 @@ function tagAddingHandler(obj) {
             url: "/search_bar/?text=" + inputText,
             contentType: "application/json",
             success: function (data) {
-                addAutosuggestAjaxTags(data, id)
+                addAutosuggestAjaxTags(data, id, false)
             },
         });
         obj.data("empty","True")
@@ -113,8 +114,8 @@ function tagAddingHandler(obj) {
                 url: "/suggested_tags/" + obj.data("statusid"),
                 contentType: "application/json",
                 success: function (data) {
-                    addAutosuggestAjaxTags(data, id)
-                },
+                    addAutosuggestAjaxTags(data, id, true)
+                }
             });
             obj.data("empty","False")
         }
