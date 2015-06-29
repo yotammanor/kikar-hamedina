@@ -327,7 +327,10 @@ class Facebook_Status(models.Model):
         my_path = os.path.join(settings.CLASSIFICATION_DATA_ROOT)
         at = autotag.AutoTag(my_path)
         suggestions = at.test_doc({'text': self.content}, at.get_tags(), DEFAULT_THRESHOLD)
+        suggestions_dict = dict((id, percent) for (percent,id) in suggestions)
         tags = Tag.objects.filter(id__in=[sug[1] for sug in suggestions[:]])
+        for tag in tags:
+            tag.percent = int(suggestions_dict[str(tag.id)] * 100)
         return tags
 
     class Meta:
