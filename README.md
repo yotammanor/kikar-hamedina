@@ -24,8 +24,10 @@ Run ``vagrant up`` - this can take about 25-30 minutes
 
 For a successful run you should see something like 'kikar start/running, process 10031' in the end.
 
-This means a virtual machine was successfully created by vagrant (it's an Ubuntu server) and a Django server is running on it on port 8000. The virtual machine and HTTP server are connected to the files on your environment so you can use you favorite text editor to change any project files and these will be reflected on the server (Django will apply changes automatically and reload the server).
+This means a virtual machine was successfully created by vagrant (it's an Ubuntu server) and a Django server is running on it on port 8000 (*). The virtual machine and HTTP server are connected to the files on your environment so you can use you favorite text editor to change any project files and these will be reflected on the server (Django will apply changes automatically and reload the server).
 You can now access the server from your browser on http://localhost:8000/
+
+(*) If you want to bind the server to a different port (rather than 8000), you need to edit your Vagrantfile under the root directory. Simply edit the lines containing runserver to work with 0.0.0.0:PORT. 
 
 Using Vagrant After Installation
 ===============================
