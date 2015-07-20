@@ -45,11 +45,11 @@ class LatestStatusesRSSFeed(Feed):
     feed_type = ExtendedRSSFeed
 
     title = "כיכר המדינה - עדכונים אחרונים"
-    link = "http://kikar.org/?range=week"
+    link = "http://kikar.org/?range=day"
     description = "העדכונים האחרונים של המועמדים לכנסת ה-20 בפייסבוק, דרך כיכר המדינה"
 
     def items(self):
-        return Facebook_Status.objects.filter(published__gte=timezone.now() - timezone.timedelta(days=7)).order_by(
+        return Facebook_Status.objects.filter(published__gte=timezone.now() - timezone.timedelta(hours=24)).order_by(
             '-published')
 
     def item_title(self, item):
