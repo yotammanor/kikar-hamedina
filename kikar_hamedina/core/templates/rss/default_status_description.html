@@ -1,1 +1,46 @@
-{{ obj.feed.picture_square }}
+{% load core_extras %}
+{% load humanize %}
+
+
+<div class="status-content" id="status-content-{{ obj.status_id }}">
+    <img src="{{ obj.feed.picture_square }}">
+
+    <p>{{ obj.content|truncatewords_html:80|urlize|linebreaks }}</p>
+
+    {% if obj.has_attachment %}
+        {% if obj.attachment.type == 'photo' %}
+            <div class="panel-body">
+                <div class="container">
+                    <img src="{{ obj.attachment.source }}"
+                         alt="תקלה בטעינת התמונה. אפשר ללחוץ על כפתור הפייסבוק הקטן מצד שמאל כדי לראות."
+                         style="max-width: 90%;height: auto; margin: auto"
+                         class="img-responsive center-block img-rounded"></div>
+            </div>
+
+            {% if obj.story %}
+                <div class="panel-footer">
+                    <p dir="ltr">{{ status.story }}</p>
+                </div>
+            {% endif %}
+        {% elif status.attachment.type == 'link' %}
+
+            <a href="{{ status.attachment.link }}">
+                <div class="panel-body">
+                    <div class="container">
+                        <img src="{{ status.attachment.picture }}"
+                             style="max-width: 50%;height: auto; margin: auto"
+                             class="img-responsive center-block img-rounded"></div>
+                </div>
+            </a>
+
+            <div class="panel-footer">
+                <h4>{{ status.attachment.name }}</h4>
+
+                <div class="caption pull-left"
+                     style="color: #999999">{{ status.attachment.caption }}</div>
+                <p>{{ status.attachment.description }}</p>
+            </div>
+        {% endif %}
+    {% endif %}
+
+</div>
