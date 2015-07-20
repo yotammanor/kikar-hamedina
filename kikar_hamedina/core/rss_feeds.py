@@ -49,7 +49,7 @@ class LatestStatusesRSSFeed(Feed):
     description = "העדכונים האחרונים של המועמדים לכנסת ה-20 בפייסבוק, דרך כיכר המדינה"
 
     def items(self):
-        return Facebook_Status.objects.filter(published__gte=timezone.now() - timezone.timedelta(hours=24)).order_by(
+        return Facebook_Status.objects.filter(published__gte=timezone.now() - timezone.timedelta(days=7)).order_by(
             '-published')
 
     def item_title(self, item):
