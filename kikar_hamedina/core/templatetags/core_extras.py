@@ -6,6 +6,11 @@ from django.template.defaultfilters import floatformat
 
 register = template.Library()
 
+@register.filter(name='normalize')
+def normalize(value):
+    if value:
+        return value
+    return ''
 
 @register.filter(name='link')
 def link(status):

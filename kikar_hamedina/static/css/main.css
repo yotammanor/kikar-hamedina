@@ -156,3 +156,10 @@ body {
 .recommended-tag {
     background-color: #5BC0DE;
 }
+
+
+/* RSS Widget Styles*/
+
+. item-desctiption {
+    color: green;
+}
