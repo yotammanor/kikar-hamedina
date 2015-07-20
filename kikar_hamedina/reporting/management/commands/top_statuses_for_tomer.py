@@ -7,6 +7,7 @@ from facebook_feeds.models import Facebook_Feed
 
 class Command(BaseCommand):
     help = "helper script that calculates top statuses for candidates, and writes them into a csv file. Work in progress"
+    args = '<file_name>'
 
     def handle(self, *args, **options):
 
@@ -25,7 +26,7 @@ class Command(BaseCommand):
                        'published',
                        'like_count', 'share_count', 'comment_count', 'facebook_link', 'kikar_link']
 
-        file_name = 'data_for_tomer'
+        file_name = args[0] or 'data_%s' % timezone.now().strftime('%Y_%m_%d_%H_%M_%S')
         print 'Output file name:', file_name
         f = open('%s.csv' % file_name, 'wb')
 
@@ -34,7 +35,7 @@ class Command(BaseCommand):
         csv_data.writerow(headers)
 
         for status in top_statuses:
-            row_keys = headers
+            row_keys = headers.keys()
             row_values = [status.feed.persona.owner.name,
                           status.feed.persona.owner.current_party.name,
                           status.status_id,

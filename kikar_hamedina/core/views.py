@@ -10,8 +10,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.utils import timezone
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+from django.views.generic import TemplateView, DetailView, ListView
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from django.db.models import Count, Q
@@ -867,17 +866,18 @@ def search_bar_tags(search_text):
            :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
 
 
-def return_suggested_tags(status_id):
+def return_suggested_tags(request, status_id):
     response_data = {
         'number_of_results': 0,
         'results': []
     }
 
-    def result_factory(object_id, name, object_type, **additional_info):
+    def result_factory(object_id, name, object_type, percent, **additional_info):
         result = {
             'id': object_id,
             'name': name,
-            'type': object_type
+            'type': object_type,
+            'percent': percent
         }
         result.update(additional_info)
         response_data['number_of_results'] += 1
@@ -885,6 +885,10 @@ def return_suggested_tags(status_id):
 
     for tag in Facebook_Status.objects.get(status_id=status_id).suggested_tags(n=3):
         response_data['results'].append(
-            result_factory(tag.id, tag.name, "tag"))
+            result_factory(tag.id, tag.name, "tag", tag.percent))
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+class WidgetView(TemplateView):
+    template_name = 'core/rss_widget_page.html'

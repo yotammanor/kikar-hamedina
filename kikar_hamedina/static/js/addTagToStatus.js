@@ -43,6 +43,44 @@ function addTag(status_id, tag_name, csrf_token) {
     });
 }
 
+function addAutosuggestAjaxTags(data, status_id_on_page, recommended) {
+    /*
+        @param data - has the returned suggested tags from an Ajax call
+        @param status_id_on_page - has the id of the status to add the suggested tags to the autocomplete section
+                                    of its tag input field
+     */
+    $('#add-tag-dropdown-' + status_id_on_page).removeClass('open')
+    addTagListElem = $('#add-tag-list-' + status_id_on_page)
+    addTagListElem.html('')
+    for (var i = 0; i < data['number_of_results']; i++) {
+        if (data['results'][i]['type'] != 'tag') {
+            continue;
+        }
+        var result = data['results'][i]
+        result['recommended'] = recommended
+        var source = $("#add-tag-result-tag-list-item-template").html()
+        var template = Handlebars.compile(source);
+        var html = template(result);
+        addTagListElem.append(html)
+    }
+    if (data['number_of_results'] > 0) {
+        $('#add-tag-dropdown-' + status_id_on_page).addClass("open")
+    }
+    // handler for adding the tag from suggestion list
+    $(".add-tag-from-list").bind({
+        click: function () {
+            console.log("adding tag");
+            tag_to_add = $(this);
+//                        var status_id = tag_to_add.data('status-id');
+            var tag_name = tag_to_add.data('tag-name');
+            console.log(status_id_on_page + ' ' + tag_name);
+            addTag(status_id_on_page, tag_name, csrf_token);
+            $('#add-tag-list-' + status_id_on_page).html('')
+            obj.val("")
+        }
+    });
+}
+
 function tagAddingHandler(obj) {
     /*
      adds auto-suggests and activates handler
@@ -51,59 +89,47 @@ function tagAddingHandler(obj) {
     inputText = obj.val();
     var id = obj.parent().parent().data("statusid");
     var csrf_token = obj.parent().siblings("[name=csrfmiddlewaretoken]").attr('value');
-    add_tag_url = "/search_bar/?text=" + inputText;
-
     if (inputText.length > 1) {
-        // auto-suggest ajax request
+        // auto-suggest ajax request based on text in the input
         $.ajax({
-            url: add_tag_url,
+            url: "/search_bar/?text=" + inputText,
             contentType: "application/json",
             success: function (data) {
-                $('#add-tag-dropdown-' + id).removeClass('open')
-                addTagListElem = $('#add-tag-list-' + id)
-                addTagListElem.html('')
-                for (var i = 0; i < data['number_of_results']; i++) {
-                    if (data['results'][i]['type'] != 'tag') {
-                        continue;
-                    }
-                    var result = data['results'][i]
-                    var source = $("#add-tag-result-tag-list-item-template").html()
-                    var template = Handlebars.compile(source);
-                    var html = template(result);
-                    addTagListElem.append(html)
-                }
-                if (data['number_of_results'] > 0) {
-                    $('#add-tag-dropdown-' + id).addClass("open")
-                }
-
-                // handler for adding the tag from suggestion list
-                $(".add-tag-from-list").bind({
-                    click: function () {
-                        console.log("adding tag");
-                        tag_to_add = $(this);
-//                        var status_id = tag_to_add.data('status-id');
-                        var tag_name = tag_to_add.data('tag-name');
-                        console.log(id + ' ' + tag_name);
-                        addTag(id, tag_name, csrf_token);
-                        $('#add-tag-list-' + id).html('')
-                        obj.val("")
-
-                    }
-                });
+                addAutosuggestAjaxTags(data, id, false)
             },
-            error: function (data) {
-                console.log("BADDDDD ERROR!!")
-                console.log(data)
-            }
-
         });
+        obj.data("empty","True")
+    }
+    else if (inputText.length <= 1  && obj.is(":focus")) {
+        if (inputText.length == 0) {
+
+        }
+
+
+        //This if is here so that the AJAX call is made just once when the
+        //input is empty
+        if (obj.data("empty") == "True") {
+            // auto-suggest ajax request based on suggested tags
+            $.ajax({
+                url: "/suggested_tags/" + obj.data("statusid"),
+                contentType: "application/json",
+                success: function (data) {
+                    addAutosuggestAjaxTags(data, id, true)
+                }
+            });
+            obj.data("empty","False")
+        }
     }
     else {
-        // clean suggestion list
         $('#add-tag-list-' + id).html('')
     }
 }
 
+function removeAutocompleteTags(obj) {
+    var id = obj.parent().parent().data("statusid");
+    $('#add-tag-list-' + id).html('')
+    obj.data("empty","True")
+}
 
 $(document).ready(function () {
     $("div.row").on("click", ".add-tag-button", function (event) {
@@ -128,6 +154,10 @@ $(document).ready(function () {
         tagAddingHandler($(this))
     }).on("focusin", ".add-tag-input", function (event) {
         tagAddingHandler($(this))
+    }).on("click", ".add-tag-input", function (event) {
+        tagAddingHandler($(this))
+    }).on("focusout", ".add-tag-input", function (event) {
+        removeAutocompleteTags($(this))
     }).on("click", ".add-tag-error-close", function (event) {
         $(this).parent().hide()
     });
