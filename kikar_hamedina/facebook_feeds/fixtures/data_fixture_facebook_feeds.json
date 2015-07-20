@@ -1883,8 +1883,11 @@
                 "candidate"
             ], 
             "alt_object_id": 927, 
-            "content_type": null, 
-            "object_id": null
+            "content_type": [
+                "mks", 
+                "member"
+            ], 
+            "object_id": 913
         }
     }, 
     {
@@ -1901,7 +1904,7 @@
                 "mks", 
                 "member"
             ], 
-            "object_id": 913
+            "object_id": 917
         }
     }, 
     {

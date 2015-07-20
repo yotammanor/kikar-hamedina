@@ -146,3 +146,20 @@ body {
 .extra-billboard-info {
     color: darkgrey;
 }
+
+
+/* Autosuggest tags */
+.typed-tag {
+    background-color: #428bca;
+}
+
+.recommended-tag {
+    background-color: #5BC0DE;
+}
+
+
+/* RSS Widget Styles*/
+
+. item-desctiption {
+    color: green;
+}
