@@ -14,3 +14,8 @@ def getattrd(obj, name, default=NoDefaultProvided):
         if default != NoDefaultProvided:
             return default
         raise
+
+def join_queries(q1, q2, operator):
+    """Join two queries with operator (e.g. or_, and_) while handling empty queries"""
+    return operator(q1, q2) if (q1 and q2) else (q1 or q2)
+

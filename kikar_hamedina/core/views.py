@@ -10,10 +10,12 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.utils import timezone
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
+from django.core.urlresolvers import resolve
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from django.db.models import Count, Q
+from django.contrib.auth.decorators import user_passes_test
 
 import facebook
 from facebook import GraphAPIError
@@ -25,49 +27,10 @@ from facebook_feeds.models import Tag as OldTag
 from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from core.insights import StatsEngine
 from core.billboards import Billboards
-from core.models import MEMBER_MODEL, PARTY_MODEL
-# current knesset number
-MAX_UNTAGGED_POSTS = 1000
-CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
+from core.models import MEMBER_MODEL, PARTY_MODEL, UserSearch
 
-# Elections mode (use candidates instead of MKs)
-IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
-
-# used for calculating top gainer of fan_count
-MIN_FAN_COUNT_FOR_REL_COMPARISON = getattr(settings, 'MIN_FAN_COUNT_FOR_REL_COMPARISON', 5000)
-DEFAULT_POPULARITY_DIF_COMPARISON_TYPE = getattr(settings, 'DEFAULT_POPULARITY_DIF_COMPARISON_TYPE', 'rel')
-POPULARITY_DIF_DAYS_BACK = getattr(settings, 'POPULARITY_DIF_DAYS_BACK', 30)
-
-# search logic default operator
-DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
-
-# order by default
-DEFAULT_STATUS_ORDER_BY = getattr(settings, 'DEFAULT_STATUS_ORDER_BY', '-published')
-allowed_fields_for_order_by = [field.name for field in Facebook_Status._meta.fields]
-ALLOWED_FIELDS_FOR_ORDER_BY = getattr(settings, 'ALLOWED_FIELDS_FOR_ORDER_BY', allowed_fields_for_order_by)
-
-# filter by date options
-FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_START_DATE',
-                                            timezone.datetime(2000, 1, 1, 0, 0, tzinfo=timezone.utc))
-
-# hot-topics page
-NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS = getattr(settings, 'NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS', 7)
-
-# needs_refresh - Constants for quick status refresh
-MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60 * 60 * 24 * 2)  # 2 days
-MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
-MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60 * 10)  # 10 minutes
-
-# Python regex for splitting words
-RE_SPLIT_WORD_UNICODE = re.compile('\W+', re.UNICODE)
-
-# Postgres regex for word boundaries. Unfortunately Hebrew support is not good, so can't use \W
-# (\W detects Hebrew characters as non-word chars). Including built-in punctuation and whitespace
-# plus a unicode range with some exotic spaces/dashes/quotes
-PG_RE_NON_WORD_CHARS = u'[[:punct:][:space:]\u2000-\u201f]+'
-# Start/end of phrase also allow beginning/end of statue
-PG_RE_PHRASE_START = u'(^|%s)' % (PG_RE_NON_WORD_CHARS,)
-PG_RE_PHRASE_END = u'(%s|$)' % (PG_RE_NON_WORD_CHARS,)
+from core.utils import join_queries
+from core.params import *  # look at params.py for all constants used in Views.
 
 
 def get_date_range_dict():
@@ -115,18 +78,8 @@ def get_date_range_dict():
                            'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
                            'end_date': timezone.datetime(2014, 8, 26, tzinfo=timezone.utc)
                        },
-    }
+                       }
     return date_range_dict
-
-
-# TODO: refactor the next constant to use the pattern above
-HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
-
-NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
-
-NUMBER_OF_TAGS_TO_PRESENT = 3
-
-NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
 
 
 def get_order_by(request):
@@ -300,12 +253,6 @@ class AllStatusesView(StatusListView):
         return context
 
 
-def join_queries(q1, q2, operator):
-    """Join two queries with operator (e.g. or_, and_) while handling empty queries"""
-    return operator(q1, q2) if (q1 and q2) else (q1 or q2)
-
-
-#
 class SearchView(StatusListView):
     model = Facebook_Status
     # paginate_by = 10
@@ -562,7 +509,6 @@ class TagView(StatusFilterUnifiedView):
             raise HasSynonymError('has synonym, redirect', redirect_url=url)
 
         return self.apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_value}))
-
 
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
