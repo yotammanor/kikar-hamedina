@@ -3,7 +3,8 @@ import json
 import re
 from operator import or_, and_
 from unidecode import unidecode
-
+from random import random, choice
+import slugify
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
@@ -16,11 +17,9 @@ from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from django.db.models import Count, Q
 from django.contrib.auth.decorators import user_passes_test
-
 import facebook
 from facebook import GraphAPIError
 from endless_pagination.views import AjaxListView
-
 from facebook_feeds.management.commands import updatestatus
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, TAG_NAME_REGEX
 from facebook_feeds.models import Tag as OldTag
@@ -28,9 +27,9 @@ from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from core.insights import StatsEngine
 from core.billboards import Billboards
 from core.models import MEMBER_MODEL, PARTY_MODEL, UserSearch
-
-from core.utils import join_queries
+from core.utils import join_queries, get_parsed_request, parse_to_q_object
 from core.params import *  # look at params.py for all constants used in Views.
+from core.qserializer import QSerializer
 
 
 def get_date_range_dict():
@@ -146,7 +145,6 @@ class AboutUsView(ListView):
         context['number_of_mks'] = len(members_with_feed)
 
         party_ids = [x['id'] for x in PARTY_MODEL.objects.all().values('id')]
-        import random
 
         featured_party_id = random.choice(party_ids)
         context['featured_party'] = PARTY_MODEL.objects.get(id=featured_party_id)
@@ -231,6 +229,7 @@ class OnlyCommentsView(StatusListView):
 class AllStatusesView(StatusListView):
     model = Facebook_Status
     template_name = 'core/homepage_all_statuses.html'
+
     # paginate_by = 100
 
     def get_queryset(self):
@@ -259,105 +258,9 @@ class SearchView(StatusListView):
     context_object_name = 'filtered_statuses'
     template_name = "core/search.html"
 
-    def get_parsed_request(self):
-        print 'request:', self.request.GET
-
-        # adds all member ids explicitly searched for.
-        members_ids = []
-        if 'members' in self.request.GET.keys():
-            members_ids = [int(member_id) for member_id in self.request.GET['members'].split(',')]
-
-        # adds to member_ids all members belonging to parties explicitly searched for.
-        parties_ids = []
-        if 'parties' in self.request.GET.keys():
-            parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
-            parties = PARTY_MODEL.objects.filter(id__in=parties_ids)
-            for party in parties:
-                for member in party.current_members():
-                    if member.id not in members_ids:
-                        members_ids.append(member.id)
-
-        # tags searched for.
-        tags_ids = []
-        if 'tags' in self.request.GET.keys():
-            tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
-
-        # keywords searched for, comma separated
-        phrases = []
-        if 'search_str' in self.request.GET.keys():
-            search_str_stripped = self.request.GET['search_str'].strip()[1:-1]  # removes quotes from beginning and end.
-            phrases = [phrase for phrase in search_str_stripped.split('","')]
-
-        print 'parsed request:', members_ids, parties_ids, tags_ids, phrases
-        return members_ids, parties_ids, tags_ids, phrases
-
-    def parse_q_object(self, members_ids, parties_ids, tags_ids, phrases):
-        member_query = MEMBER_MODEL.objects.filter(id__in=members_ids)
-        member_ids = [member.id for member in member_query]
-        if IS_ELECTIONS_MODE:
-            feeds = Facebook_Feed.objects.filter(persona__alt_object_id__in=member_ids)
-        else:
-            feeds = Facebook_Feed.objects.filter(persona__object_id__in=member_ids)
-
-        # all members asked for (through member search of party search), with OR between them.
-        members_OR_parties_Q = Q()
-        if feeds:
-            members_OR_parties_Q = Q(feed__in=feeds)
-
-        # tags - search for all tags specified by their id
-        tags_Q = Q()
-        if tags_ids:
-            # | Q(tags__synonyms__proper_form_of_tag__id=tag_id)
-            tag_bundle_ids = [tag.id for tag in Tag.objects.filter_bundle(id__in=tags_ids)]
-            tags_to_queries = [Q(tags__id=tag_id) for tag_id in tag_bundle_ids]
-            print 'tags_to_queries:', len(tags_to_queries)
-            for query_for_single_tag in tags_to_queries:
-                # tags_Q is empty for the first iteration
-                tags_Q = join_queries(query_for_single_tag, tags_Q, or_)
-
-        print 'tags_Q:', tags_Q
-
-        # keywords - searched both in content and in tags of posts.
-        search_str_Q = Q()
-        # If regexes cause security / performance problem - switch this flag
-        # to False to use a (not as good) text search instead
-        use_regex = True
-        for phrase in phrases:
-            if use_regex:
-                # Split into words (remove whitespace, punctuation etc.)
-                words = re.split(RE_SPLIT_WORD_UNICODE, phrase)
-                # If there are no words - ignore this phrase
-                if words:
-                    # Build regex - all words we've found separated by 'non-word' characters
-                    # and also allow VAV and/or HEI in front of each word.
-                    # NOTE: regex syntax is DB dependent - this works on postgres
-                    re_words = [u'\u05D5?\u05D4?' + word for word in words]
-                    regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(re_words) + PG_RE_PHRASE_END
-                    search_str_Q = join_queries(Q(content__iregex=regex), search_str_Q, or_)
-            else:
-                # Fallback code to use if we want to disable regex-based search
-                search_str_Q = join_queries(Q(content__icontains=phrase), search_str_Q, or_)
-            search_str_Q = Q(tags__name__contains=phrase) | search_str_Q
-
-        # tags query and keyword query concatenated. Logic is set according to request input
-        request_operator = self.request.GET.get('tags_and_search_str_operator', DEFAULT_OPERATOR)
-
-        print 'selected_operator:', request_operator
-        selected_operator = and_ if request_operator == 'and_operator' else or_
-
-        search_str_with_tags_Q = join_queries(tags_Q, search_str_Q, selected_operator)
-
-        print 'search_str_with_tags_Q:', search_str_with_tags_Q
-        print '\n'
-
-        query_Q = join_queries(members_OR_parties_Q, search_str_with_tags_Q, and_)
-
-        print 'query to be executed:', query_Q
-        return query_Q
-
     def get_queryset(self):
-        members_ids, parties_ids, tags_ids, phrases = self.get_parsed_request()
-        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, phrases)
+        params_dict = get_parsed_request(get_params=self.request.GET)
+        query_Q = parse_to_q_object(self.request.GET, params_dict)
         print 'get_queryset_executed:', query_Q
 
         return self.apply_request_params(Facebook_Status.objects.filter(query_Q))
@@ -365,17 +268,18 @@ class SearchView(StatusListView):
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
-        members_ids, parties_ids, tags_ids, phrases = self.get_parsed_request()
-        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, phrases)
-        context['members'] = MEMBER_MODEL.objects.filter(id__in=members_ids)
+        params_dict = get_parsed_request(get_params=self.request.GET)
+        query_Q = parse_to_q_object(self.request.GET, params_dict)
+        context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
 
-        context['parties'] = PARTY_MODEL.objects.filter(id__in=parties_ids)
+        context['parties'] = PARTY_MODEL.objects.filter(id__in=params_dict['parties_ids'])
 
-        context['tags'] = Tag.objects.filter(id__in=tags_ids)
+        context['tags'] = Tag.objects.filter(id__in=params_dict['tags_ids'])
 
-        context['search_str'] = phrases
+        context['search_str'] = params_dict['phrases']
 
-        context['search_title'] = ", ".join([x for x in phrases]) or ", ".join(x.name for x in context['tags'])
+        context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
+            x.name for x in context['tags'])
 
         return_queryset = self.apply_request_params(Facebook_Status.objects.filter(query_Q))
         context['number_of_results'] = return_queryset.count()
@@ -838,3 +742,86 @@ def return_suggested_tags(request, status_id):
 
 class WidgetView(TemplateView):
     template_name = 'core/rss_widget_page.html'
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def save_queryset_for_user(request):
+    user = request.user
+    qserializer = QSerializer(base64=True)
+    params_dict = get_parsed_request(request.GET)
+    q_object = parse_to_q_object(request.GET, params_dict)
+    dumped_queryset = qserializer.dumps(q_object)
+    title = 'random title' + str(random())
+    try:
+        UserSearch.objects.get(user=user, queryset=dumped_queryset, title=title)
+    except UserSearch.DoesNotExist as e:
+        print e
+        user_search = UserSearch(user=user, queryset=dumped_queryset, title=title)
+        user_search.save()
+
+    return HttpResponse({'message': 'success'})
+
+
+class CustomView(SearchView):
+    model = Facebook_Status
+    # paginate_by = 10
+    context_object_name = 'filtered_statuses'
+    template_name = "core/custom.html"
+
+    def get_queryset(self, **kwargs):
+        sv = UserSearch.objects.get(title=self.kwargs['title'])
+        qserialzer = QSerializer()
+        query_filter = qserialzer.loads(sv.queryset)
+        return self.apply_request_params(Facebook_Status.objects.filter(query_filter))
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomView, self).get_context_data(**kwargs)
+        sv = UserSearch.objects.get(title=self.kwargs['title'])
+        qserialzer = QSerializer()
+        query_filter = qserialzer.loads(sv.queryset)
+
+        params_dict = get_parsed_request(get_params=self.request.GET)
+
+        # context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
+        # context['parties'] = PARTY_MODEL.objects.filter(id__in=params_dict['parties_ids'])
+        # context['tags'] = Tag.objects.filter(id__in=params_dict['tags_ids'])
+        # context['search_str'] = params_dict['phrases']
+        # context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
+        #     x.name for x in context['tags'])
+
+        context['saved_query'] = sv
+        return_queryset = self.apply_request_params(Facebook_Status.objects.filter(query_filter))
+        context['number_of_results'] = return_queryset.count()
+        context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
+
+        return context
+
+
+class CustomViewByID(CustomView):
+    def get_queryset(self, **kwargs):
+        sv = UserSearch.objects.get(id=self.kwargs['id'])
+        qserialzer = QSerializer()
+        query_filter = qserialzer.loads(sv.queryset)
+        return self.apply_request_params(Facebook_Status.objects.filter(query_filter))
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomView, self).get_context_data(**kwargs)
+        sv = UserSearch.objects.get(id=self.kwargs['id'])
+        qserialzer = QSerializer()
+        query_filter = qserialzer.loads(sv.queryset)
+
+        params_dict = get_parsed_request(get_params=self.request.GET)
+
+        # context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
+        # context['parties'] = PARTY_MODEL.objects.filter(id__in=params_dict['parties_ids'])
+        # context['tags'] = Tag.objects.filter(id__in=params_dict['tags_ids'])
+        # context['search_str'] = params_dict['phrases']
+        # context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
+        #     x.name for x in context['tags'])
+
+        context['saved_query'] = sv
+        return_queryset = self.apply_request_params(Facebook_Status.objects.filter(query_filter))
+        context['number_of_results'] = return_queryset.count()
+        context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
+
+        return context

@@ -35,7 +35,7 @@ class QSerializer(object):
     """
     b64_enabled = False
 
-    def __init__(self, base64=False):
+    def __init__(self, base64=True):
         if base64:
             self.b64_enabled = True
 

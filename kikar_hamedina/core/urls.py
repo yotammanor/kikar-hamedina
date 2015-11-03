@@ -56,6 +56,10 @@ urlpatterns = patterns('',
                            name='tag'),
                        url(r'^search/$', views.SearchView.as_view(),
                            kwargs={'variable_column': 'content', 'context_object': 'search'}, name='search'),
+                       url(r'^custom/id/(?P<id>\d+)/$', views.CustomViewByID.as_view(), name='custom-by-id'),
+                       url(r'^custom/(?P<title>[\w\d\.\s]+)/$', views.CustomView.as_view(), name='custom'),
+                       url(r'^custom/save/$', views.save_queryset_for_user, name='save-custom-request'),
+
                        # Views for all objects of type
                        url(r'^members/$',
                            views.AllMembers.as_view(queryset=Member.objects.filter(is_current=True)),
