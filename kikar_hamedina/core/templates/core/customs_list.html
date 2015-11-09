@@ -1,0 +1,31 @@
+{% extends "layouts/generic-template.html" %}
+
+{% block title %}
+    שליפות מוגדרות מראש
+{% endblock title %}
+
+{% block h1 %}
+    שליפות מוגדרות מראש
+{% endblock %}
+
+{% block details %}
+
+    {% if requested_user %}
+        <h4>
+            משתמש:
+            {{ requested_user.username }}
+        </h4>
+    {% endif %}
+    <h4>
+        מס' שאילתות: {{ object_list.count }}
+    </h4>
+
+{% endblock %}
+
+{% block main_content %}
+    <ul>
+        {% for custom in object_list %}
+            <li><a href="{% url 'custom' custom.title %}">{{ custom.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
