@@ -17,6 +17,8 @@ class UserSearch(models.Model):
     queryset = models.TextField(null=False, default='')
     title = models.SlugField(unique=True, max_length=64)
     description = models.TextField(null=True)
+    date_range = models.TextField(null=True)
+    order_by = models.TextField(null=True)
 
     @property
     def queryset_q(self):
