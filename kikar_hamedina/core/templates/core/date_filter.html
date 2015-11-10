@@ -1,0 +1,35 @@
+<ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
+    <li class="heading"><b> סנן לפי זמן: </b></li>
+
+    <li data-range="default" id="default-filter">
+        <a href="#">ללא סינון </a>
+
+    </li>
+    <li data-range="day">
+        <a href="#">ביממה האחרונה</a>
+    </li>
+    <li data-range="current_day">
+        <a href="#">במהלך ה-{% now "j" %} ל{% now "F" %} (החל מחצות)</a>
+    </li>
+    <li data-range="week">
+        <a href="#">בשבוע האחרון </a>
+    </li>
+    <li data-range="two_weeks">
+        <a href="#">בשבועיים האחרונים</a>
+    </li>
+    <li data-range="month">
+        <a href="#">בחודש האחרון</a>
+    </li>
+    <li data-range="current_month">
+        <a href="#">במהלך {% now "F" %}</a>
+    </li>
+    <li data-range="current_year">
+        <a href="#">במהלך {% now "Y" %}</a>
+    </li>
+    <li data-range="elections_20">
+        <a href="#">במהלך מסע הבחירות לכנסת ה-20</a>
+    </li>
+    <li data-range="protective-edge">
+        <a href="#">במהלך צוק איתן</a>
+    </li>
+</ul>

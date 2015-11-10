@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Alef:400,700&subset=all' rel='stylesheet' type='text/css'>
+
+    <!-- CSS -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS NVD3 -->
+    <link href="{{ STATIC_URL }}css/nv.d3.css" rel="stylesheet">
+    <!-- Bootstrap RTL Theme -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-rtl.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-theme.css"/>
+
+    <!-- JS -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    {#    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>#}
+    {#    <script src="{{ STATIC_URL }}js/libs/nvd3/1.1.15-beta/nv.d3.js"></script>#}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/bootstrap/bootstrap.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/handlebars/handlebars-v1.3.0.js"></script>
+
+    <!-- jQueryUI - autocomplete -->
+    <link rel="stylesheet"
+          href="{{ STATIC_URL }}jquery-ui-1.10.4.custom/css/ui-lightness/jquery-ui-1.10.4.custom.min.css"/>
+    <script type="text/javascript"
+            src="{{ STATIC_URL }}jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
+
+    <!-- Our JS -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/searchBar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/updateStatusPanels.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/addTagToStatus.js"></script>
+
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/>
+
+</head>
+<body>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+<script src="{{ STATIC_URL }}js/renderLinksForStatusListHandlers.js"></script>
+<script src="{{ STATIC_URL }}js/updateStatusPanelsThroughEndlessPagination.js"></script>
+{% load humanize %}
+{% load core_extras %}
+
+
+<div id="fb-root"></div>
+<script src="{{ STATIC_URL }}js/fbInit.js"></script>
+
+<div> {% include "core/facebook_status_list.html" with object_list=object_list %}
+</div>
+</body>
+</html>

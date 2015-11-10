@@ -162,6 +162,7 @@ class AllStatusesView(StatusListView):
         return context
 
 
+
 class SearchView(StatusListView):
     model = Facebook_Status
     # paginate_by = 10
@@ -198,6 +199,12 @@ class SearchView(StatusListView):
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
         return context
+
+
+class SearchPreviewView(SearchView):
+    model = Facebook_Status
+    context_object_name = 'filtered_statuses'
+    template_name = 'core/embedded_container.html'
 
 
 class SearchGuiView(StatusListView):

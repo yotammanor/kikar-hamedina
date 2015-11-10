@@ -3,8 +3,44 @@
 {% extends "core/facebook_statuses_page.html" %}
 
 {% block scripts %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/searchgui.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/searchgui.js" xmlns="http://www.w3.org/1999/html"
+            xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/searchGui.css"/>
+
+    <!-- Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Alef:400,700&subset=all' rel='stylesheet' type='text/css'>
+
+    <!-- CSS -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS NVD3 -->
+    <link href="{{ STATIC_URL }}css/nv.d3.css" rel="stylesheet">
+    <!-- Bootstrap RTL Theme -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-rtl.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-theme.css"/>
+
+    <!-- JS -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    {#    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>#}
+    {#    <script src="{{ STATIC_URL }}js/libs/nvd3/1.1.15-beta/nv.d3.js"></script>#}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/bootstrap/bootstrap.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/handlebars/handlebars-v1.3.0.js"></script>
+
+    <!-- jQueryUI - autocomplete -->
+    <link rel="stylesheet"
+          href="{{ STATIC_URL }}jquery-ui-1.10.4.custom/css/ui-lightness/jquery-ui-1.10.4.custom.min.css"/>
+    <script type="text/javascript"
+            src="{{ STATIC_URL }}jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
+
+    <!-- Our JS -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/searchBar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/updateStatusPanels.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/addTagToStatus.js"></script>
+
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/>
+
 {% endblock %}
 
 {% block title %}מסך חיפוש{% endblock title %}
@@ -13,99 +49,184 @@
 
 {% block handlebar_templates %}
     {% verbatim %}
-    <script id="search-gui-result-list-item-template" type="text/x-handlebars-template">
-        <a href="#" class="list-group-item" id="{{type}}{{id}}" data-name="{{name}}" data-type="{{type}}"
-           data-id="{{id}}" data-icon="{{icon}}">
-            <span class="badge"><i class="fa fa-{{icon}}"></i></span>
-            <span class="badge hidden-badge"><span class="glyphicon glyphicon-arrow-left"></span></span>
-            {{name}}
-        </a>
-    </script>
+        <script id="search-gui-result-list-item-template" type="text/x-handlebars-template">
+            <a href="#" class="list-group-item" id="{{ type }}{{ id }}" data-name="{{ name }}" data-type="{{ type }}"
+               data-id="{{ id }}" data-icon="{{ icon }}">
+                <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
+                <span class="badge hidden-badge"><span class="glyphicon glyphicon-arrow-left"></span></span>
+                {{ name }}
+            </a>
+        </script>
 
-    <script id="search-gui-added-list-item-template" type="text/x-handlebars-template">
-        <a href="#" class="list-group-item" id="{{type}}{{id}}">
-            <span class="badge"><i class="fa fa-{{icon}}"></i></span>
-            <span class="badge hidden-badge result-info" data-id="{{id}}" data-type="{{type}}"
-                  data-name="{{name}}"><span class="glyphicon glyphicon-remove"></span></span>
-            {{name}}
-        </a>
-    </script>
+        <script id="search-gui-added-list-item-template" type="text/x-handlebars-template">
+            <a href="#" class="list-group-item" id="{{ type }}{{ id }}">
+                <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
+            <span class="badge hidden-badge result-info" data-id="{{ id }}" data-type="{{ type }}"
+                  data-name="{{ name }}"><span class="glyphicon glyphicon-remove"></span></span>
+                {{ name }}
+            </a>
+        </script>
 
     {% endverbatim %}
 {% endblock %}
 
 {% block main_content %}
-    <div class="col-sm-2">
+    <div class="row">
+        <div class="col-sm-2">
 
+        </div>
+        <div class="col-sm-8">
+            <div class="col-sm-12">
+                <div class="list-group">
+                    <li class="list-group-item">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchgui-text-input"
+                                   placeholder='חפש חבר כנסת, מפלגה, נושא מתויג, או פשוט מילים שח"כים אומרים'>
+                             <span class="input-group-btn">
+                                 <button class="btn btn-default" type="button" id="searchgui-add-word"
+                                         data-word-num="1">הוסף מילה
+                                 </button>
+                             </span>
+                             <span class="input-group-btn searchgui-execute-btn" id="searchgui-go-button">
+                                <button class="btn btn-success"><i class="fa fa-search"></i></button>
+                             </span>
+                                <span id="searchgui-preview-button" class="searchgui-execute-btn">
+                                    <button class="btn btn-info">Preview</button>
+                                </span>
+                        </div>
+                        <div class="container" id="modifiers-container">
+                            <div class="col-md-12 input-group" id="searchgui-order-by-input">
+                                <div class="col-md-1"><span><b>סידור: </b></span></div>
+                                <div class="col-md-7">
+                                    <input type="radio" class="form-inline"
+                                           id="searchgui-order-by-published"
+                                           name="selected-order-by" value="published" checked> לפי
+                                    תאריך
+                                    </input>
+                                    <input type="radio" class="form-inline" id="searchgui-order-by-like-count"
+                                           name="selected-order-by" value="like_count"> לפי מספר לייקים
+                                    </input>
+                                    <input type="radio" class="form-inline" id="searchgui-order-by-share-count"
+                                           name="selected-order-by" value="share_count"> לפי מספר תגובות
+                                    </input>
+                                </div>
+                                <div class="col-md-4 input-group" id="search-gui-order-by-direction-input">
+                                    <input type="radio" class="form-inline" id="searchgui-order-by-dir-desc"
+                                           name="selected-order-by-dir" value="desc" checked="checked">יורד
+                                    </input>
+                                    <input type="radio" class="form-inline" id="searchgui-order-by-dir-asc"
+                                           name="selected-order-by-dir" value="asc">עולה
+                                    </input>
+                                </div>
+
+                            </div>
+                            <div class="col-md-12 input-group" id="searchgui-date-filter">
+                                <div class="form-group">
+                                    <div class="col-md-1">
+
+                                        <label for="sel1"><span><b>תאריך: </b></span></label>
+                                    </div>
+
+                                    <div class="col-md-4" id="search-gui-date-filter-input">
+                                        {#                                    <input type="radio" class="form-inline"#}
+                                        {#                                           id="searchgui-range-default" name="range"#}
+                                        {#                                           value="default" checked>#}
+                                        {#                                    ללא סינון#}
+                                        {#                                    </input>#}
+                                        {#                                    <input type="radio" class="form-inline" id="searchgui-range-default" name="range"#}
+                                        {#                                           value="day" checked>#}
+                                        {#                                    היום האחרון#}
+                                        {#                                    </input>#}
+                                        <select class="form-control" name="range" id="range-option">
+                                            <option value="bla">ללא סינון</option>
+                                            <option value="day">יממה אחרונה</option>
+                                            <option value="current_day">במהלך ה-{% now "j" %} ל{% now "F" %} (החל מחצות)</option>
+                                            <option value="week">בשבוע האחרון</option>
+                                            <option value="two_week">בשבועיים האחרונים</option>
+                                            <option value="month">בחודש האחרון</option>
+                                            <option value="current_month">במהלך {% now "F" %}</option>
+                                            <option value="current_year">במבמהלך {% now "Y" %}</option>
+                                            <option value="elections_20">במהלך מסע הבחירות לכנסת ה-20</option>
+                                            <option value="protective-edge">במהלך צוק איתן</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 input-group" id="searchgui-operator-input">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-11">
+                                    <input type="radio" class="form-inline"
+                                           id="searchgui-selected-operator-or"
+                                           name="selected-operator" value="or_operator" checked> או
+                                    <input type="radio" class="form-inline" id="searchgui-selected-operator-and"
+                                           name="selected-operator" value="and_operator"> וגם <br>
+                                    <span>
+(מילים וגם/או תגיות חייבות להופיע)
+                                    </span>
+                                </div>
+                            </div>
+                    </li>
+                    <span id="searchgui-search-words"></span>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                {#            <li class="list-group-item alert-info" id="list-of-search_str-title">#}
+                {#                הצעות#}
+                {#                <span class="badge">#}
+                {#                    <span class="glyphicon glyphicon-trash"></span>#}
+                {#                </span>#}
+                {#            </li>#}
+                <span id="search-gui-result-list"></span>
+            </div>
+            <div class="col-sm-12">
+                <div class="list-group">
+                    <li class="list-group-item active" id="list-of-member-title">חברי כנסת</li>
+                    <span id="search-gui-member-added-list"></span>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="list-group">
+                    <li class="list-group-item active" id="list-of-party-title">מפלגות</li>
+                    <span id="search-gui-party-added-list"></span>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="list-group">
+                    <li class="list-group-item active" id="list-of-tag-title">תגים</li>
+                    <span id="search-gui-tag-added-list"></span>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-2">
+
+        </div>
+    </div
+    <div class="row">
+        <div class="container" id="preview-container">
+            <style>.embed-container {
+                position: relative;
+                padding-bottom: 56.25%;
+                height: 0;
+                overflow: hidden;
+                max-width: 100%;
+            }
+
+            .embed-container iframe, .embed-container object, .embed-container embed {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }</style>
+            <div class='embed-container'>
+                <p id="loading" style="text-align: center; display: none"><i class="fa fa-spinner fa-spin fa-4x"></i>
+                </p>
+                <iframe src="" style='border:0' id="preview-iframe" scrolling='yes'></iframe>
+            </div>
+
+        </div>
     </div>
-    <div class="col-sm-8">
-        <div class="col-sm-12">
-            <div class="list-group">
-                <li class="list-group-item">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="searchgui-text-input"
-                               placeholder='חפש חבר כנסת, מפלגה, נושא מתויג, או פשוט מילים שח"כים אומרים'>
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="searchgui-add-word" data-word-num="1">הוסף
-                            מילה
-                        </button>
-                    </span>
-
-                    <span class="input-group-btn" id="searchgui-go-button">
-                       <button class="btn btn-success"><i class="fa fa-search"></i></button>
-                    </span>
-                    </div>
-                    <div class="input-group" id="searchgui-operator-input">
-                        <input type="radio" class="form-inline" id="searchgui-selected-operator-or"
-                               name="selected-operator" value="or_operator" checked> או
-                        <input type="radio" class="form-inline" id="searchgui-selected-operator-and"
-                               name="selected-operator" value="and_operator"> וגם <br>
-                        (מילים ו/או גם תגיות חייבות להופיע)
-                    </div>
-                    <div class="input-group" id="searchgui-order-by-input">
-                        <input type="radio" class="form-inline" id="searchgui-order-by-published"
-                               name="selected-order-by" value="-published" checked> לפי תאריך
-                        <input type="radio" class="form-inline" id="searchgui-order-by-like-count"
-                               name="selected-order-by" value="-like_count"> לפי פופולריות<br>
-                    </div>
-
-                </li>
-                <span id="searchgui-search-words"></span>
-            </div>
-        </div>
-        <div class="col-sm-12">
-{#            <li class="list-group-item alert-info" id="list-of-search_str-title">#}
-{#                הצעות#}
-{#                <span class="badge">#}
-{#                    <span class="glyphicon glyphicon-trash"></span>#}
-{#                </span>#}
-{#            </li>#}
-            <span id="search-gui-result-list"></span>
-        </div>
-        <div class="col-sm-12">
-            <div class="list-group">
-                <li class="list-group-item active" id="list-of-member-title">חברי כנסת</li>
-                <span id="search-gui-member-added-list"></span>
-            </div>
-        </div>
-
-        <div class="col-sm-12">
-            <div class="list-group">
-                <li class="list-group-item active" id="list-of-party-title">מפלגות</li>
-                <span id="search-gui-party-added-list"></span>
-            </div>
-        </div>
-
-        <div class="col-sm-12">
-            <div class="list-group">
-                <li class="list-group-item active" id="list-of-tag-title">תגים</li>
-                <span id="search-gui-tag-added-list"></span>
-            </div>
-        </div>
-
-    </div>
-    <div class="col-sm-2">
-
-    </div>
-
 {% endblock %}
