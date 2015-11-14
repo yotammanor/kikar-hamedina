@@ -27,11 +27,12 @@
         מספר תוצאות: {{ number_of_results }}
     </div>
     <h4>
-        {% if excluded %}
+        {% if excluded %}<p>
             סטאטוסים שסוננו
-            {% for status_id in excluded %}
-                <a href="{% url 'status-detail' status_id %}"> {{ status_id }}</a>{% if not forloop.last %}, {% endif %}
+            {% for status in excluded %}
+                <a href="{% url 'status-detail' status.status_id %}"> {{ status.feed.persona.owner.name }} ({{ status.published|date:"d-m-Y" }})</a>{% if not forloop.last %}, {% endif %}
             {% endfor %}
+            </p>
         {% endif %}
     </h4>
 {% endblock %}

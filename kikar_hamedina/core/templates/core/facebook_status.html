@@ -53,6 +53,9 @@
                         {{ status.published | naturaltime }}
                         {#                            </h6>#}
                     </a>
+                    {% if request.path == '/preview/' %}
+                        <button class="btn btn-sm exclude-status" style="display: none;" data-status-id="{{ status.status_id }}" data-status-name="סטאטוס מאת: {{ status.feed.persona.owner.name }} - {{ status.status_id }}" id="exclude-status-{{ status.status_id }}"> Exclude Me! </button>
+                    {% endif %}
                     {% if status.is_deleted %}
                         (הסטטוס נמחק)
                     {% endif %}

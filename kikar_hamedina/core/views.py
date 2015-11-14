@@ -180,6 +180,7 @@ class SearchView(StatusListView):
         context = super(SearchView, self).get_context_data(**kwargs)
 
         params_dict = get_parsed_request(get_params=self.request.GET)
+        print params_dict
         query_Q = parse_to_q_object(self.request.GET, params_dict)
         context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
 
@@ -189,7 +190,7 @@ class SearchView(StatusListView):
 
         context['search_str'] = params_dict['phrases']
 
-        context['excluded'] = params_dict['excluded']
+        context['excluded'] = Facebook_Status.objects.filter(status_id__in=params_dict['excluded'])
 
         context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
             x.name for x in context['tags'])

@@ -41,14 +41,16 @@
 <body>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
-<script src="{{ STATIC_URL }}js/renderLinksForStatusListHandlers.js"></script>
+{% if request.path == '/preview/' %}
+    <script src="{{ STATIC_URL }}js/renderLinksForStatusListHandlers.js"></script>
+{% endif %}
 <script src="{{ STATIC_URL }}js/updateStatusPanelsThroughEndlessPagination.js"></script>
 {% load humanize %}
 {% load core_extras %}
 
-
-<div id="fb-root"></div>
-<script src="{{ STATIC_URL }}js/fbInit.js"></script>
+{##}
+{#<div id="fb-root"></div>#}
+{#<script src="{{ STATIC_URL }}js/fbInit.js"></script>#}
 
 <div> {% include "core/facebook_status_list.html" with object_list=object_list %}
 </div>

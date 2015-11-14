@@ -90,15 +90,7 @@ body {
     color: white;
 }
 
-#list-of-member-title {
-    display: none;
-}
-
-#list-of-party-title {
-    display: none;
-}
-
-#list-of-tag-title {
+.list-of-elements-title {
     display: none;
 }
 

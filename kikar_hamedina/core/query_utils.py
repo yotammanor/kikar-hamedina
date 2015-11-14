@@ -162,12 +162,14 @@ def parse_to_q_object(get_params, params_dict):
         # | Q(tags__synonyms__proper_form_of_tag__id=tag_id)
         tag_bundle_ids = [tag.id for tag in Tag.objects.filter_bundle(id__in=params_dict['tags_ids'])]
         tags_to_queries = [Q(tags__id=tag_id) for tag_id in tag_bundle_ids]
-        print 'tags_to_queries:', len(tags_to_queries)
+        if settings.DEBUG:
+            print 'tags_to_queries:', len(tags_to_queries)
         for query_for_single_tag in tags_to_queries:
             # tags_Q is empty for the first iteration
             tags_Q = join_queries(query_for_single_tag, tags_Q, or_)
 
-    print 'tags_Q:', tags_Q
+    if settings.DEBUG:
+        print 'tags_Q:', tags_Q
 
     # keywords - searched both in content and in tags of posts.
     search_str_Q = Q()
@@ -194,24 +196,29 @@ def parse_to_q_object(get_params, params_dict):
     # tags query and keyword query concatenated. Logic is set according to request input
     request_operator = get_params.get('tags_and_search_str_operator', DEFAULT_OPERATOR)
 
-    print 'selected_operator:', request_operator
+    if settings.DEBUG:
+        print 'selected_operator:', request_operator
     selected_operator = and_ if request_operator == 'and_operator' else or_
 
     search_str_with_tags_Q = join_queries(tags_Q, search_str_Q, selected_operator)
 
-    print 'search_str_with_tags_Q:', search_str_with_tags_Q
-    print '\n'
+    if settings.DEBUG:
+        print 'search_str_with_tags_Q:', search_str_with_tags_Q
+        print '\n'
 
     query_Q = join_queries(members_OR_parties_Q, search_str_with_tags_Q, and_)
 
     if params_dict['excluded']:
-        print 'here'
         excluded_query = Q(status_id__in=params_dict['excluded'])
         excluded_query.negate()
-        print excluded_query
         query_Q = join_queries(query_Q, excluded_query, and_)
 
-    print 'query to be executed:', query_Q
+    if settings.DEBUG:
+        from qserializer import QSerializer
+        qser = QSerializer()
+        print 'query to be executed:'
+        from pprint import pprint
+        pprint(qser.serialize(query_Q.clone()))
     return query_Q
 
 

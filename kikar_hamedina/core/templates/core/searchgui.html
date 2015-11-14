@@ -71,7 +71,7 @@
 {% endblock %}
 
 {% block main_content %}
-    <div class="row">
+    <div class="row" id="search-container">
         <div class="col-sm-2">
 
         </div>
@@ -82,17 +82,27 @@
                         <div class="input-group">
                             <input type="text" class="form-control" id="searchgui-text-input"
                                    placeholder='חפש חבר כנסת, מפלגה, נושא מתויג, או פשוט מילים שח"כים אומרים'>
-                             <span class="input-group-btn">
+                            <span class="input-group-btn">
                                  <button class="btn btn-default" type="button" id="searchgui-add-word"
                                          data-word-num="1">הוסף מילה
                                  </button>
-                             </span>
-                             <span class="input-group-btn searchgui-execute-btn" id="searchgui-go-button">
+                            </span>
+                            <span class="input-group-btn searchgui-execute-btn" id="searchgui-go-button">
                                 <button class="btn btn-success"><i class="fa fa-search"></i></button>
-                             </span>
-                                <span id="searchgui-preview-button" class="searchgui-execute-btn">
-                                    <button class="btn btn-info">Preview</button>
-                                </span>
+                            </span>
+                            <span id="searchgui-preview-button" class="searchgui-execute-btn">
+                                <button class="btn btn-info">Preview</button>
+                            </span>
+                            <span id="searchgui-exclude-status" style="display: none;" data-status-num="1"></span>
+                            {% if user.is_authenticated %}
+                                <span id="searchgui-save-button" class="searchgui-execute-btn">
+                                <button class="btn btn-danger" data-toggle="modal" data-target="#save-query-modal">Save
+                                    Query
+                                </button>
+                            </span>
+                                {% include 'core/save_query_modal.html' %}
+                            {% endif %}
+
                         </div>
                         <div class="container" id="modifiers-container">
                             <div class="col-md-12 input-group" id="searchgui-order-by-input">
@@ -138,9 +148,11 @@
                                         {#                                    היום האחרון#}
                                         {#                                    </input>#}
                                         <select class="form-control" name="range" id="range-option">
-                                            <option value="bla">ללא סינון</option>
+                                            <option value="default">ללא סינון</option>
                                             <option value="day">יממה אחרונה</option>
-                                            <option value="current_day">במהלך ה-{% now "j" %} ל{% now "F" %} (החל מחצות)</option>
+                                            <option value="current_day">במהלך ה-{% now "j" %} ל{% now "F" %} (החל
+                                                מחצות)
+                                            </option>
                                             <option value="week">בשבוע האחרון</option>
                                             <option value="two_week">בשבועיים האחרונים</option>
                                             <option value="month">בחודש האחרון</option>
@@ -165,6 +177,7 @@
                                     </span>
                                 </div>
                             </div>
+                        </div>
                     </li>
                     <span id="searchgui-search-words"></span>
                 </div>
@@ -180,22 +193,30 @@
             </div>
             <div class="col-sm-12">
                 <div class="list-group">
-                    <li class="list-group-item active" id="list-of-member-title">חברי כנסת</li>
+                    <li class="list-group-item active list-of-elements-title" id="list-of-member-title">חברי כנסת</li>
                     <span id="search-gui-member-added-list"></span>
                 </div>
             </div>
 
             <div class="col-sm-12">
                 <div class="list-group">
-                    <li class="list-group-item active" id="list-of-party-title">מפלגות</li>
+                    <li class="list-group-item active list-of-elements-title" id="list-of-party-title">מפלגות</li>
                     <span id="search-gui-party-added-list"></span>
                 </div>
             </div>
 
             <div class="col-sm-12">
                 <div class="list-group">
-                    <li class="list-group-item active" id="list-of-tag-title">תגים</li>
+                    <li class="list-group-item active list-of-elements-title" id="list-of-tag-title">תגים</li>
                     <span id="search-gui-tag-added-list"></span>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="list-group">
+                    <li class="list-group-item active list-of-elements-title" id="list-of-excluded-title">סינון פוסטים
+                    </li>
+                    <span id="search-gui-excluded-added-list"></span>
                 </div>
             </div>
 
@@ -203,7 +224,7 @@
         <div class="col-sm-2">
 
         </div>
-    </div
+    </div>
     <div class="row">
         <div class="container" id="preview-container">
             <style>.embed-container {
