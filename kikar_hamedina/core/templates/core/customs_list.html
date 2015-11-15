@@ -1,0 +1,49 @@
+{% extends "layouts/generic-template.html" %}
+
+{% block title %}
+    שליפות מוגדרות מראש
+{% endblock title %}
+
+{% block h1 %}
+    שליפות מוגדרות מראש
+{% endblock %}
+
+{% block details %}
+
+    {% if requested_user %}
+        <h4>
+            משתמש:
+            {{ requested_user.username }}
+        </h4>
+    {% endif %}
+    <h4>
+        מס' שאילתות: {{ object_list.count }}
+    </h4>
+
+{% endblock %}
+
+{% block main_content %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>שם</th>
+            <th>יוצר</th>
+            <th>קישור</th>
+            <th>
+                ממשק עריכה
+            </th>
+        </tr>
+        </thead>
+    <tbody>
+    {% for custom in object_list %}
+    <tr>
+    <td>{{ custom.title }}</td>
+    <td>{{ custom.user }}</td>
+    <td><a href="{% url 'custom' custom.title %}"><i class="fa fa-link"></i></a></td>
+        {% load core_extras %}
+    <td><a href="{% url 'search-gui' %}{{ custom.path | path_to_params }}"><i class="fa fa-edit"></i></a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}

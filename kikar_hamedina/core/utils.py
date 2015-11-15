@@ -1,3 +1,4 @@
+
 class NoDefaultProvided(object):
     pass
 
@@ -14,3 +15,4 @@ def getattrd(obj, name, default=NoDefaultProvided):
         if default != NoDefaultProvided:
             return default
         raise
+
