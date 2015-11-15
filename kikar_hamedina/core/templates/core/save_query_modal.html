@@ -9,27 +9,30 @@
             </div>
             <div class="modal-body">
                 <form id="save-query-form">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="form-username">שם משתמש</label>
-                        <input type="text" disabled="disabled" class="form-control" id="form-username"
+                        <input type="text" name="username" disabled="disabled" class="form-control" id="form-username"
                                placeholder="{{ user.username }}">
                     </div>
                     <div class="form-group">
                         <label for="form-query-title">שם השאילתא</label>
-                        <input type="text" dir="ltr" class="form-control" id="form-query-title"
+                        <input type="text" name="title" dir="ltr" class="form-control" id="form-query-title"
                                placeholder="lower-case english letters only">
-
-                        <p class="help-block">Example block-level help text here.</p>
+                        <p class="help-block">שמירה של שאילתא בעלת שם זהה לשאילתא קיימת, תביא לעריכתה, במידה והיא שייכת ליוזר שלך.</p>
+                        <p id="title-error-message" class="inline-error-p"></p>
                     </div>
                     <div class="form-group">
                         <label for="form-query-description">תיאור</label>
-                        <textarea class="form-control" id="form-query-description" dir="ltr" rows="3">Describe your Query here.</textarea>
+                        <textarea class="form-control" name="description" id="form-query-description" dir="ltr" rows="3">Describe your Query here.</textarea>
                     </div>
                     <div class="form-group">
                         <label for="form-query">השאילתא</label>
-                        <textarea class="form-control" id="form-query" dir="ltr" rows="3"></textarea>
+                        <textarea class="form-control" name="query" id="form-query" dir="ltr" rows="3"></textarea>
+                        <p id="query-error-message" class="inline-error-p"></p>
+
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" id="save-query-submit-form-btn" class="btn btn-primary">שמור שאילתא</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">ביטול</button>
                 </form>
             </div>

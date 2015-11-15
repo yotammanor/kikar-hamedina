@@ -5,21 +5,21 @@
 {% block h1 %}
     <i class="fa fa-search"></i></br>
     {{ saved_query.title }}
-{#    {% if members|length > 0 %}#}
-{#    חברי כנסת:{{ members|length }}#}
-{#    {% endif %}#}
-{#    {% if parties|length > 0 %}#}
-{#    מפלגות:{{ parties|length }}#}
-{#    {% endif %}#}
-{#    {% if tags|length > 0 %}#}
-{#    תגיות: {{ tags|length }}#}
-{#    {% endif %}#}
-{#    {% if search_str %}#}
-{#         מילות חיפוש:#}
-{#        {% for search_str_split in search_str %}#}
-{#            {{ search_str_split }}{% if not forloop.last %}, {% endif %}#}
-{#        {% endfor %}#}
-{#    {% endif %}#}
+    {#    {% if members|length > 0 %}#}
+    {#    חברי כנסת:{{ members|length }}#}
+    {#    {% endif %}#}
+    {#    {% if parties|length > 0 %}#}
+    {#    מפלגות:{{ parties|length }}#}
+    {#    {% endif %}#}
+    {#    {% if tags|length > 0 %}#}
+    {#    תגיות: {{ tags|length }}#}
+    {#    {% endif %}#}
+    {#    {% if search_str %}#}
+    {#         מילות חיפוש:#}
+    {#        {% for search_str_split in search_str %}#}
+    {#            {{ search_str_split }}{% if not forloop.last %}, {% endif %}#}
+    {#        {% endfor %}#}
+    {#    {% endif %}#}
 {% endblock %}
 
 {% block details %}
@@ -28,10 +28,14 @@
     </div>
     <div class="h4">
         כותב השאילתא:
-    {{ saved_query.user }}
+        {{ saved_query.user }}
     </div>
     <div class="h4">
-כותרת:
-    {{ saved_query.title }}
+        כותרת:
+        {{ saved_query.title }}
+    </div>
+    <div class="h4">
+תיאור וקישור:
+        <a href="{{ saved_query.path }}"> {{ saved_query.description }}</a>
     </div>
 {% endblock %}

@@ -23,9 +23,27 @@
 {% endblock %}
 
 {% block main_content %}
-    <ul>
-        {% for custom in object_list %}
-            <li><a href="{% url 'custom' custom.title %}">{{ custom.title }}</a></li>
-        {% endfor %}
-    </ul>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>שם</th>
+            <th>יוצר</th>
+            <th>קישור</th>
+            <th>
+                ממשק עריכה
+            </th>
+        </tr>
+        </thead>
+    <tbody>
+    {% for custom in object_list %}
+    <tr>
+    <td>{{ custom.title }}</td>
+    <td>{{ custom.user }}</td>
+    <td><a href="{% url 'custom' custom.title %}"><i class="fa fa-link"></i></a></td>
+        {% load core_extras %}
+    <td><a href="{% url 'search-gui' %}{{ custom.path | path_to_params }}"><i class="fa fa-edit"></i></a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
 {% endblock %}

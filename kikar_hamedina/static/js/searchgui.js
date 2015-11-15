@@ -3,6 +3,122 @@
  * allows for free search, lets you set advanced filtering and order-by.
  * */
 
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+
+function deconstuctURL(fullPath) {
+    //var url;
+    var searchTerms = {'member': [], 'party': [], 'tag': [], 'search_str': [], 'excluded': []};
+    //$(".result-info").each(function () {
+    //    type = $(this).data('type');
+    //    id = $(this).data('id');
+    //    searchTerms[type].push(id)
+    //
+    //});
+
+    //url = baseURL;
+    var memberIDs = getParameterByName('members');
+    memberIDs.length > 0 ? searchTerms['member'] = memberIDs.split(',') : searchTerms['member'] = [];
+
+    var partyIDs = getParameterByName('parties');
+    partyIDs.length > 0 ? searchTerms['party'] = partyIDs.split(',') : searchTerms['party'] = [];
+
+    var TagIDs = getParameterByName('tags');
+    TagIDs.length > 0 ? searchTerms['tag'] = TagIDs.split(',') : searchTerms['tag'] = [];
+
+    var searchStrIDs = getParameterByName('search_str');
+    if (searchStrIDs.length > 0) {
+        var searchStrArray = searchStrIDs.split(',');
+        searchStrArray.forEach(function (elem, index, array) {
+            array[index] = elem.replace(/"/g, '')
+        });
+        searchTerms['search_str'] = searchStrArray
+    }
+
+    var excludedIDs = getParameterByName('excluded');
+    excludedIDs.length > 0 ? searchTerms['excluded'] = excludedIDs.split(',') : searchTerms['excluded'] = [];
+
+
+    for (var dictIndex in searchTerms) {
+        if (searchTerms.hasOwnProperty(dictIndex)) {
+            var attr = searchTerms[dictIndex];
+            attr.forEach(function (elem, index, array) {
+                var id = elem;
+                var type = dictIndex;
+                var icon;
+                var url;
+                var useAjax = true;
+                var baseAPI = '/api/v1/';
+                switch (type) {
+                    case 'member':
+                        icon = 'user';
+                        url = baseAPI + type + '/' + id + '/';
+                        break;
+                    case 'party':
+                        icon = 'group';
+                        url = baseAPI + type + '/' + id + '/';
+                        break;
+                    case 'tag':
+                        icon = 'tag';
+                        url = baseAPI + type + '/' + id + '/';
+                        break;
+                    case 'excluded':
+                        url = baseAPI + 'facebook_status/?status_id=' + id;
+                        icon = 'ban';
+                        break;
+                    default: // case search_str
+                        useAjax = false;
+                        icon = 'comment';
+                }
+                var name;
+                if (useAjax == true) {
+                    $.ajax({
+                        url: url,
+                        method: 'get',
+                        contentType: "application/json",
+                        success: function (data) {
+                            if (type == 'excluded') {
+                                name = 'סטאטוס מאת: ' + data['objects'][0]['member'] + ' - ' + id
+                            } else {
+                                name = data['name'];
+                            }
+
+                            addAutoSuggestElementToFilter(id, name, type, icon)
+                        }
+                    });
+                } else {
+                    name = id;
+                    addWordElementToFilter(name)
+                }
+            });
+        }
+    }
+
+    var orderByFull = getParameterByName('order_by');
+    if (orderByFull.length > 0) {
+        if (orderByFull.indexOf('-') == 0) {
+            $('#searchgui-order-by-dir-desc').attr('checked', 'checked');
+        } else {
+            $('#searchgui-order-by-dir-asc').attr('checked', 'checked')
+        }
+        var orderBy = orderByFull.split('-')[1];
+        $("input:radio[name=selected-order-by][value=" + orderBy + "]").attr('checked', 'checked');
+    }
+
+    var dateRange = getParameterByName('range');
+    dateRange.length > 0 && $('#range-option').val(dateRange);
+
+    var operator = getParameterByName('tags_and_search_str_operator');
+    operator.length > 0 && $('#searchgui-selected-operator-' + operator.split('_operator')[0]).attr('checked', 'checked');
+
+    return searchTerms;
+}
+
 function buildURL(baseURL) {
     var url;
     var searchTerms = {'member': [], 'party': [], 'tag': [], 'search_str': [], 'excluded': []};
@@ -51,8 +167,37 @@ function buildURL(baseURL) {
     }
     var dateRange = $('#range-option').val();
     url += "tags_and_search_str_operator=" + operator + "&order_by=" + orderBy + "&range=" + dateRange;
-    console.log(url);
     return url
+}
+
+function addWordElementToFilter(name) {
+    var context = {};
+    context['id'] = name;
+    context['name'] = name;
+    $(this).data('word-num', context['id'] + 1);
+    context['type'] = 'search_str';
+    context['icon'] = 'comment';
+    var source = $("#search-gui-added-list-item-template").html();
+    var template = Handlebars.compile(source);
+    var html = template(context);
+    $('#searchgui-search-words').append(html);
+
+    var addedElement = $('#searchgui-search-words').find("#" + context['type'] + context['id']);
+    addedElement.find(".glyphicon-remove").parent().click(function () {
+        $('#searchgui-search-words').find("#" + context['type'] + context['id']).remove();
+        updateSearchGUIObjectsVisibility()
+    });
+    addedElement.find(".glyphicon-remove").parent().hover(function () {
+        $(this).toggleClass("alert-danger")
+    });
+    addedElement.hover(function () {
+        $(this).find(".glyphicon-" + context['icon']).parent().toggleClass("alert-success");
+        $(this).find(".glyphicon-remove").parent().toggleClass("hidden-badge")
+    });
+
+
+    $('#searchgui-text-input').val('');
+    updateSearchGUIObjectsVisibility()
 }
 
 function addAutoSuggestElementToFilter(id, name, type, icon) {
@@ -61,10 +206,10 @@ function addAutoSuggestElementToFilter(id, name, type, icon) {
      * */
     var source = $("#search-gui-added-list-item-template").html();
     var template = Handlebars.compile(source);
-    context = {'id': id, 'name': name, 'type': type, 'icon': icon};
+    var context = {'id': id, 'name': name, 'type': type, 'icon': icon};
     var html = template(context);
     $('#search-gui-' + type + '-added-list').append(html);
-    addedElement = $('#search-gui-' + type + '-added-list').find("#" + type + id);
+    var addedElement = $('#search-gui-' + type + '-added-list').find("#" + type + id);
     addedElement.find(".glyphicon-remove").parent().click(function () {
         id = $(this).data('id');
         type = $(this).data('type');
@@ -138,11 +283,53 @@ $(document).ready(function () {
         $('#search-gui-tag-added-list').html('')
     });
 
+    deconstuctURL();
+
+    // Event: click save query button to open modal-dialog form
     $('#searchgui-save-button').click(function () {
         var query = $('#form-query');
-        var url = buildURL("/search/");
+        var url = buildURL("/search/?");
         query.html(url);
-        //console.log(modal)
+    });
+
+    // event: submit save query modal-dialog form
+    $('#save-query-submit-form-btn').click(function () {
+        $('.inline-error-p').html('');
+        var title = $('#form-query-title').val();
+        var url = '/title_exists/?title=' + title;
+        if ($('#form-query').val().length == 0) {
+            $('#query-error-message').html('No Query to save!')
+        }
+        $.ajax({
+            url: url,
+            type: 'get',
+            contentType: "application/json",
+            success: function (data) {
+                if (data['approved'] == true) {
+                    $.ajax({
+                        url: '/custom/save/',
+                        type: 'post',
+                        dataType: 'json',
+                        data: $('form#save-query-form').serialize(),
+                        success: function (data) {
+                            console.log(data);
+                            $('#query-error-message').html('Query Saved Successfuly!')
+
+                        },
+                        error: function (data) {
+                            console.log(data)
+                        }
+                    });
+                } else {
+                    $('#title-error-message').html(data['message'])
+                }
+                console.log(data)
+            },
+            error: function (x, y) {
+                console.log(x);
+                console.log(y)
+            }
+        });
     });
 
 //  hover-effects on submit button
@@ -189,8 +376,6 @@ $(document).ready(function () {
         });
         // event: a status was excluded
         iframe.contents().find("body").on('click', '.exclude-status', function (e) {
-            console.log($(this).data('status-id'));
-
             var context = {};
             context['id'] = $(this).data('status-id');
             context['name'] = $(this).data('status-name');
@@ -232,32 +417,7 @@ $(document).ready(function () {
         if ($('#searchgui-text-input').val().length > 0) {
             var context = {};
             context['name'] = $('#searchgui-text-input').val();
-            context['id'] = $('#searchgui-text-input').val();
-            $(this).data('word-num', context['id'] + 1);
-            console.log($(this).data('word-num'));
-            context['type'] = 'search_str';
-            context['icon'] = 'comment';
-            var source = $("#search-gui-added-list-item-template").html();
-            var template = Handlebars.compile(source);
-            var html = template(context);
-            $('#searchgui-search-words').append(html);
-
-            var addedElement = $('#searchgui-search-words').find("#" + context['type'] + context['id']);
-            addedElement.find(".glyphicon-remove").parent().click(function () {
-                $('#searchgui-search-words').find("#" + context['type'] + context['id']).remove();
-                updateSearchGUIObjectsVisibility()
-            });
-            addedElement.find(".glyphicon-remove").parent().hover(function () {
-                $(this).toggleClass("alert-danger")
-            });
-            addedElement.hover(function () {
-                $(this).find(".glyphicon-" + context['icon']).parent().toggleClass("alert-success");
-                $(this).find(".glyphicon-remove").parent().toggleClass("hidden-badge")
-            });
-
-
-            $('#searchgui-text-input').val('');
-            updateSearchGUIObjectsVisibility()
+            addWordElementToFilter(context['name'])
         }
     });
     // event: auto-suggest on insertion of text

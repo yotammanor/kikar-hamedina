@@ -9,8 +9,8 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils import timezone
-from django.shortcuts import render, render_to_response, get_object_or_404, redirect
-from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, render_to_response, get_object_or_404, redirect, resolve_url
+from django.http import HttpResponseRedirect, HttpResponse, HttpRequest, QueryDict
 from django.core.urlresolvers import resolve
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.decorators.csrf import csrf_protect
@@ -160,7 +160,6 @@ class AllStatusesView(StatusListView):
             id__in=[feed.persona.owner_id for feed in feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
-
 
 
 class SearchView(StatusListView):
@@ -664,27 +663,64 @@ class WidgetView(TemplateView):
     template_name = 'core/rss_widget_page.html'
 
 
+def title_exists(request):
+    if not request.GET.get('title', None):
+        res = {'approved': False, 'message': 'No title supplied!'}
+        return HttpResponse(content=json.dumps(res), content_type="application/json")
+    title = request.GET.get('title', None)
+    try:
+        user_search = UserSearch.objects.get(title=title)
+    except UserSearch.DoesNotExist:
+        res = {'approved': True, 'message': 'ok, no title saved with this name'}
+        return HttpResponse(content=json.dumps(res), content_type="application/json")
+    if user_search.user.id == request.user.id:
+        res = {'approved': True, 'message': 'ok, title belongs to user'}
+    else:
+        res = {'approved': False, 'message': 'This title belongs to another user, please select another one.'}
+    return HttpResponse(content=json.dumps(res), content_type="application/json")
+
+
 @user_passes_test(lambda u: u.is_superuser)
 def save_queryset_for_user(request):
+    # print request.POST
     user = request.user
     qserializer = QSerializer(base64=True)
-    params_dict = get_parsed_request(request.GET)
-    q_object = parse_to_q_object(request.GET, params_dict)
+    query_dict = QueryDict(request.POST.get('query').split('?')[-1])
+    print query_dict
+    fake_request = HttpRequest()
+    fake_request.GET = query_dict
+    # print query_dict
+
+    params_dict = get_parsed_request(query_dict)
+    q_object = parse_to_q_object(query_dict, params_dict)
+    print q_object
     dumped_queryset = qserializer.dumps(q_object)
-    title = 'random title' + str(random())
-    date_range = qserializer.dumps(filter_by_date(request))
-    order_by = json.dumps(get_order_by(request))
+    # print dumped_queryset
 
-    try:
-        UserSearch.objects.get(user=user, queryset=dumped_queryset, title=title, date_range=date_range,
-                               order_by=order_by)
-    except UserSearch.DoesNotExist as e:
-        print e
-        user_search = UserSearch(user=user, queryset=dumped_queryset, title=title, date_range=date_range,
-                                 order_by=order_by)
-        user_search.save()
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    q_object_date = filter_by_date(fake_request)
+    # print q_object_date
+    date_range = qserializer.dumps(q_object_date)
+    order_by = json.dumps(get_order_by(fake_request))
 
-    return HttpResponse({'message': 'success'})
+    # print title, description, date_range, order_by
+
+    us, created = UserSearch.objects.get_or_create(user=user, title=title)
+    if not created and us.user != request.user:
+        return HttpResponse(content=json.dumps({'message': 'failure'}), content_type="application/json")
+        raise Exception('User is not allowed to edit this query!')
+    # print us
+    us.queryset = dumped_queryset
+    us.path = request.POST.get('query')
+    us.order_by = order_by
+    us.date_range = date_range
+    us.description = description
+    us.save()
+
+    print us.queryset_dict
+
+    return HttpResponse(content=json.dumps({'message': 'success'}), content_type="application/json")
 
 
 class CustomView(SearchView):
@@ -695,19 +731,19 @@ class CustomView(SearchView):
 
     def get_queryset(self, **kwargs):
         sv = UserSearch.objects.get(title=self.kwargs['title'])
-        qserialzer = QSerializer()
-        query_filter = qserialzer.loads(sv.queryset)
-        if self.request.GET.get('range'):
-            data_range_Q = filter_by_date(self.request)
+        query_filter = sv.queryset_q
+        print query_filter
+        if self.request.GET.get('range', None) or self.request.GET.get('range', None) != 'default':
+            date_range_q = filter_by_date(self.request)
         else:
-            data_range_Q = qserialzer.loads(sv.date_range)
+            date_range_q = sv.date_range_q
 
         if self.request.GET.get('order_by'):
             order_by = get_order_by(self.request)
         else:
             order_by = json.loads(sv.order_by)
 
-        return Facebook_Status.objects.filter(query_filter).filter(data_range_Q).order_by(*order_by)
+        return Facebook_Status.objects.filter(query_filter).filter(date_range_q).order_by(*order_by)
 
     def get_context_data(self, **kwargs):
         context = super(CustomView, self).get_context_data(**kwargs)

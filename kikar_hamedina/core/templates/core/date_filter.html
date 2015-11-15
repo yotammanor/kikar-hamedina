@@ -2,7 +2,13 @@
     <li class="heading"><b> סנן לפי זמן: </b></li>
 
     <li data-range="default" id="default-filter">
-        <a href="#">ללא סינון </a>
+        <a href="#">
+            {% if '/custom/' in request.path %}
+            סינון ברירת מחדל
+            {% else %}
+            ללא סינון
+            {% endif %}
+        </a>
 
     </li>
     <li data-range="day">

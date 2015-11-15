@@ -70,7 +70,7 @@ class MemberResource(ModelResource):
 
 
 class TagResource(ModelResource):
-    statuses = fields.ManyToManyField(Facebook_StatusResource, 'statuses')
+    statuses = fields.ManyToManyField(Facebook_StatusResource, 'statuses', null=True)
 
     class Meta:
         queryset = Tag.objects.all()
@@ -93,7 +93,8 @@ class Facebook_StatusResource(ModelResource):
 
     def dehydrate(self, bundle):
         bundle.data['facebook_link'] = bundle.obj.get_link
-
+        bundle.data['member'] = bundle.obj.feed.persona.owner.name
+        bundle.data['party'] = bundle.obj.feed.persona.owner.current_party.name
         if bundle.obj.has_attachment:
             bundle.data['attachment'] = "Attachment"
         return bundle
