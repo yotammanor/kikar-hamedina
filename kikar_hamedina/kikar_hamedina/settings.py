@@ -61,7 +61,7 @@ INSTALLED_APPS = (
     'links',
     'video',
     'polymorphic',
-    'autotag_app',
+    # 'autotag_app',
     #Ours
     'kikartags',
     'knesset',
