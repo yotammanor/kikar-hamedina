@@ -3,14 +3,15 @@ from urllib2 import unquote
 from django import template
 from django.template.defaultfilters import floatformat
 
-
 register = template.Library()
+
 
 @register.filter(name='normalize')
 def normalize(value):
     if value:
         return value
     return ''
+
 
 @register.filter(name='link')
 def link(status):
@@ -30,9 +31,15 @@ def percent(value):
 def unquote_new(value):
     return unquote(value).decode()
 
+
 @register.filter(name='render_icons')
 def render_icons(value):
     if '#like' in value:
         return value.replace('#like', '<i class="fa fa-thumbs-up"></i>')
     else:
         return value
+
+
+@register.filter(name='path_to_params')
+def path_to_params(path):
+    return u'?{}'.format(path.split('?')[-1])

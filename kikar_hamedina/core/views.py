@@ -3,177 +3,39 @@ import json
 import re
 from operator import or_, and_
 from unidecode import unidecode
-
+from random import random, choice
+import slugify
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils import timezone
-from django.shortcuts import render, render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, render_to_response, get_object_or_404, redirect, resolve_url
+from django.http import HttpResponseRedirect, HttpResponse, HttpRequest, QueryDict
+from django.core.urlresolvers import resolve
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from django.db.models import Count, Q
-
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.models import User
 import facebook
 from facebook import GraphAPIError
 from endless_pagination.views import AjaxListView
-
 from facebook_feeds.management.commands import updatestatus
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, TAG_NAME_REGEX
 from facebook_feeds.models import Tag as OldTag
 from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from core.insights import StatsEngine
 from core.billboards import Billboards
-from core.models import MEMBER_MODEL, PARTY_MODEL
-# current knesset number
-MAX_UNTAGGED_POSTS = 1000
-CURRENT_KNESSET_NUMBER = getattr(settings, 'CURRENT_KNESSET_NUMBER', 19)
-
-# Elections mode (use candidates instead of MKs)
-IS_ELECTIONS_MODE = getattr(settings, 'IS_ELECTIONS_MODE', False)
-
-# used for calculating top gainer of fan_count
-MIN_FAN_COUNT_FOR_REL_COMPARISON = getattr(settings, 'MIN_FAN_COUNT_FOR_REL_COMPARISON', 5000)
-DEFAULT_POPULARITY_DIF_COMPARISON_TYPE = getattr(settings, 'DEFAULT_POPULARITY_DIF_COMPARISON_TYPE', 'rel')
-POPULARITY_DIF_DAYS_BACK = getattr(settings, 'POPULARITY_DIF_DAYS_BACK', 30)
-
-# search logic default operator
-DEFAULT_OPERATOR = getattr(settings, 'DEFAULT_OPERATOR', 'or_operator')
-
-# order by default
-DEFAULT_STATUS_ORDER_BY = getattr(settings, 'DEFAULT_STATUS_ORDER_BY', '-published')
-allowed_fields_for_order_by = [field.name for field in Facebook_Status._meta.fields]
-ALLOWED_FIELDS_FOR_ORDER_BY = getattr(settings, 'ALLOWED_FIELDS_FOR_ORDER_BY', allowed_fields_for_order_by)
-
-# filter by date options
-FILTER_BY_DATE_DEFAULT_START_DATE = getattr(settings, 'FILTER_BY_DATE_DEFAULT_START_DATE',
-                                            timezone.datetime(2000, 1, 1, 0, 0, tzinfo=timezone.utc))
-
-# hot-topics page
-NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS = getattr(settings, 'NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS', 7)
-
-# needs_refresh - Constants for quick status refresh
-MAX_STATUS_AGE_FOR_REFRESH = getattr(settings, 'MAX_STATUS_AGE_FOR_REFRESH', 60 * 60 * 24 * 2)  # 2 days
-MIN_STATUS_REFRESH_INTERVAL = getattr(settings, 'MIN_STATUS_REFRESH_INTERVAL', 5)  # 5 seconds
-MAX_STATUS_REFRESH_INTERVAL = getattr(settings, 'MAX_STATUS_REFRESH_INTERVAL', 60 * 10)  # 10 minutes
-
-# Python regex for splitting words
-RE_SPLIT_WORD_UNICODE = re.compile('\W+', re.UNICODE)
-
-# Postgres regex for word boundaries. Unfortunately Hebrew support is not good, so can't use \W
-# (\W detects Hebrew characters as non-word chars). Including built-in punctuation and whitespace
-# plus a unicode range with some exotic spaces/dashes/quotes
-PG_RE_NON_WORD_CHARS = u'[[:punct:][:space:]\u2000-\u201f]+'
-# Start/end of phrase also allow beginning/end of statue
-PG_RE_PHRASE_START = u'(^|%s)' % (PG_RE_NON_WORD_CHARS,)
-PG_RE_PHRASE_END = u'(%s|$)' % (PG_RE_NON_WORD_CHARS,)
-
-
-def get_date_range_dict():
-    filter_by_date_default_end_date = timezone.now()
-
-    date_range_dict = {'default': {'start_date': FILTER_BY_DATE_DEFAULT_START_DATE,
-                                   'end_date': filter_by_date_default_end_date},
-
-                       'day': {'start_date': timezone.now() - timezone.timedelta(days=1),
-                               'end_date': filter_by_date_default_end_date},
-
-                       'current_day': {
-                           'start_date': timezone.datetime(timezone.now().year, timezone.now().month,
-                                                           timezone.now().day,
-                                                           tzinfo=timezone.utc),
-                           'end_date': filter_by_date_default_end_date},
-
-                       'week': {'start_date': timezone.now() - timezone.timedelta(days=7),
-                                'end_date': filter_by_date_default_end_date},
-
-                       'two_weeks': {'start_date': timezone.now() - timezone.timedelta(days=14),
-                                     'end_date': filter_by_date_default_end_date},
-
-                       'month': {'start_date': timezone.now() - timezone.timedelta(days=31),
-                                 'end_date': filter_by_date_default_end_date},
-
-                       'current_month': {
-                           'start_date': timezone.datetime(timezone.now().year, timezone.now().month, 1,
-                                                           tzinfo=timezone.utc),
-                           'end_date': filter_by_date_default_end_date
-                       },
-                       'current_year': {
-                           'start_date': timezone.datetime(timezone.now().year, 1, 1, tzinfo=timezone.utc),
-                           'end_date': filter_by_date_default_end_date
-                       },
-                       'elections_20': {
-                           # Dates are set based on information from Wikipedia:
-                           # he.wikipedia.org/wiki/%D7%94%D7%91%D7%97%D7%99%D7%A8%D7%95%D7%AA_%D7%9C%D7%9B%D7%A0%D7%A1%D7%AA_%D7%94%D7%A2%D7%A9%D7%A8%D7%99%D7%9D
-                           'start_date': timezone.datetime(2014, 12, 8, tzinfo=timezone.utc),
-                           'end_date': timezone.datetime(2015, 3, 17, tzinfo=timezone.utc)
-                       },
-                       'protective-edge': {
-                           # Dates are set based on information from Wikipedia:
-                           # he.wikipedia.org/wiki/%D7%9E%D7%91%D7%A6%D7%A2_%D7%A6%D7%95%D7%A7_%D7%90%D7%99%D7%AA%D7%9F
-                           'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
-                           'end_date': timezone.datetime(2014, 8, 26, tzinfo=timezone.utc)
-                       },
-    }
-    return date_range_dict
-
-
-# TODO: refactor the next constant to use the pattern above
-HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR = 3
-
-NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY = 3
-
-NUMBER_OF_TAGS_TO_PRESENT = 3
-
-NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR = 3
-
-
-def get_order_by(request):
-    """
-    This function receives a request, and parses order_by parameter, if exists into
-    an array of approved and validated order_by fields.
-    If fails, falls back to a default order-by (-published)
-    """
-    try:
-        order_by_str = request.GET['order_by']
-        order_by = [x for x in order_by_str.split(',') if
-                    x.replace("-", "").split("__")[0] in ALLOWED_FIELDS_FOR_ORDER_BY]  # tests for feed__*
-    except MultiValueDictKeyError:
-        order_by = [DEFAULT_STATUS_ORDER_BY]
-    if not order_by:
-        order_by = [DEFAULT_STATUS_ORDER_BY]
-    return order_by
-
-
-def filter_by_date(request, datetime_field='published'):
-    date_range_dict = get_date_range_dict()
-    try:
-        filter_range_arg = request.GET['range']
-    except MultiValueDictKeyError:
-        filter_range_arg = 'default'
-
-    try:
-        start_date = date_range_dict[filter_range_arg]['start_date']
-        end_date = date_range_dict[filter_range_arg]['end_date']
-    except KeyError:
-        start_date = date_range_dict['default']['start_date']
-        end_date = date_range_dict['default']['end_date']
-
-    date_time_field_range = datetime_field + '__range'
-    range_value = (start_date, end_date)
-    return Q(**{date_time_field_range: range_value})
+from core.models import MEMBER_MODEL, PARTY_MODEL, UserSearch
+from core.query_utils import join_queries, get_parsed_request, parse_to_q_object, apply_request_params, get_order_by, \
+    filter_by_date
+from core.params import *  # look at params.py for all constants used in Views.
+from core.qserializer import QSerializer
 
 
 class StatusListView(AjaxListView):
     page_template = "core/facebook_status_list.html"
-
-    def apply_request_params(self, query):
-        """Apply request params to DB query. This currently includes 'range'
-        and 'order_by' """
-        date_range_Q = filter_by_date(self.request)
-        order_by = get_order_by(self.request)
-        return query.filter(date_range_Q).order_by(*order_by)
 
 
 class AboutUsView(ListView):
@@ -193,7 +55,6 @@ class AboutUsView(ListView):
         context['number_of_mks'] = len(members_with_feed)
 
         party_ids = [x['id'] for x in PARTY_MODEL.objects.all().values('id')]
-        import random
 
         featured_party_id = random.choice(party_ids)
         context['featured_party'] = PARTY_MODEL.objects.get(id=featured_party_id)
@@ -272,16 +133,17 @@ class OnlyCommentsView(StatusListView):
     template_name = 'core/homepage_all_statuses.html'
 
     def get_queryset(self):
-        return self.apply_request_params(Facebook_Status.objects_no_filters.filter(is_comment=True))
+        return apply_request_params(Facebook_Status.objects_no_filters.filter(is_comment=True), self.request)
 
 
 class AllStatusesView(StatusListView):
     model = Facebook_Status
     template_name = 'core/homepage_all_statuses.html'
+
     # paginate_by = 100
 
     def get_queryset(self):
-        retset = self.apply_request_params(super(AllStatusesView, self).get_queryset())
+        retset = apply_request_params(super(AllStatusesView, self).get_queryset(), self.request)
         # untagged url is known to be super heavy on the DB.
         # That is why it is hard coded limited to MAX_UNTAGGED matches.
         # Agam Rafaeli - 2/1/2015
@@ -300,141 +162,49 @@ class AllStatusesView(StatusListView):
         return context
 
 
-def join_queries(q1, q2, operator):
-    """Join two queries with operator (e.g. or_, and_) while handling empty queries"""
-    return operator(q1, q2) if (q1 and q2) else (q1 or q2)
-
-
-#
 class SearchView(StatusListView):
     model = Facebook_Status
     # paginate_by = 10
     context_object_name = 'filtered_statuses'
     template_name = "core/search.html"
 
-    def get_parsed_request(self):
-        print 'request:', self.request.GET
-
-        # adds all member ids explicitly searched for.
-        members_ids = []
-        if 'members' in self.request.GET.keys():
-            members_ids = [int(member_id) for member_id in self.request.GET['members'].split(',')]
-
-        # adds to member_ids all members belonging to parties explicitly searched for.
-        parties_ids = []
-        if 'parties' in self.request.GET.keys():
-            parties_ids = [int(party_id) for party_id in self.request.GET['parties'].split(',')]
-            parties = PARTY_MODEL.objects.filter(id__in=parties_ids)
-            for party in parties:
-                for member in party.current_members():
-                    if member.id not in members_ids:
-                        members_ids.append(member.id)
-
-        # tags searched for.
-        tags_ids = []
-        if 'tags' in self.request.GET.keys():
-            tags_ids = [int(tag_id) for tag_id in self.request.GET['tags'].split(',')]
-
-        # keywords searched for, comma separated
-        phrases = []
-        if 'search_str' in self.request.GET.keys():
-            search_str_stripped = self.request.GET['search_str'].strip()[1:-1]  # removes quotes from beginning and end.
-            phrases = [phrase for phrase in search_str_stripped.split('","')]
-
-        print 'parsed request:', members_ids, parties_ids, tags_ids, phrases
-        return members_ids, parties_ids, tags_ids, phrases
-
-    def parse_q_object(self, members_ids, parties_ids, tags_ids, phrases):
-        member_query = MEMBER_MODEL.objects.filter(id__in=members_ids)
-        member_ids = [member.id for member in member_query]
-        if IS_ELECTIONS_MODE:
-            feeds = Facebook_Feed.objects.filter(persona__alt_object_id__in=member_ids)
-        else:
-            feeds = Facebook_Feed.objects.filter(persona__object_id__in=member_ids)
-
-        # all members asked for (through member search of party search), with OR between them.
-        members_OR_parties_Q = Q()
-        if feeds:
-            members_OR_parties_Q = Q(feed__in=feeds)
-
-        # tags - search for all tags specified by their id
-        tags_Q = Q()
-        if tags_ids:
-            # | Q(tags__synonyms__proper_form_of_tag__id=tag_id)
-            tag_bundle_ids = [tag.id for tag in Tag.objects.filter_bundle(id__in=tags_ids)]
-            tags_to_queries = [Q(tags__id=tag_id) for tag_id in tag_bundle_ids]
-            print 'tags_to_queries:', len(tags_to_queries)
-            for query_for_single_tag in tags_to_queries:
-                # tags_Q is empty for the first iteration
-                tags_Q = join_queries(query_for_single_tag, tags_Q, or_)
-
-        print 'tags_Q:', tags_Q
-
-        # keywords - searched both in content and in tags of posts.
-        search_str_Q = Q()
-        # If regexes cause security / performance problem - switch this flag
-        # to False to use a (not as good) text search instead
-        use_regex = True
-        for phrase in phrases:
-            if use_regex:
-                # Split into words (remove whitespace, punctuation etc.)
-                words = re.split(RE_SPLIT_WORD_UNICODE, phrase)
-                # If there are no words - ignore this phrase
-                if words:
-                    # Build regex - all words we've found separated by 'non-word' characters
-                    # and also allow VAV and/or HEI in front of each word.
-                    # NOTE: regex syntax is DB dependent - this works on postgres
-                    re_words = [u'\u05D5?\u05D4?' + word for word in words]
-                    regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(re_words) + PG_RE_PHRASE_END
-                    search_str_Q = join_queries(Q(content__iregex=regex), search_str_Q, or_)
-            else:
-                # Fallback code to use if we want to disable regex-based search
-                search_str_Q = join_queries(Q(content__icontains=phrase), search_str_Q, or_)
-            search_str_Q = Q(tags__name__contains=phrase) | search_str_Q
-
-        # tags query and keyword query concatenated. Logic is set according to request input
-        request_operator = self.request.GET.get('tags_and_search_str_operator', DEFAULT_OPERATOR)
-
-        print 'selected_operator:', request_operator
-        selected_operator = and_ if request_operator == 'and_operator' else or_
-
-        search_str_with_tags_Q = join_queries(tags_Q, search_str_Q, selected_operator)
-
-        print 'search_str_with_tags_Q:', search_str_with_tags_Q
-        print '\n'
-
-        query_Q = join_queries(members_OR_parties_Q, search_str_with_tags_Q, and_)
-
-        print 'query to be executed:', query_Q
-        return query_Q
-
     def get_queryset(self):
-        members_ids, parties_ids, tags_ids, phrases = self.get_parsed_request()
-        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, phrases)
+        params_dict = get_parsed_request(get_params=self.request.GET)
+        query_Q = parse_to_q_object(self.request.GET, params_dict)
         print 'get_queryset_executed:', query_Q
 
-        return self.apply_request_params(Facebook_Status.objects.filter(query_Q))
+        return apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
-        members_ids, parties_ids, tags_ids, phrases = self.get_parsed_request()
-        query_Q = self.parse_q_object(members_ids, parties_ids, tags_ids, phrases)
-        context['members'] = MEMBER_MODEL.objects.filter(id__in=members_ids)
+        params_dict = get_parsed_request(get_params=self.request.GET)
+        print params_dict
+        query_Q = parse_to_q_object(self.request.GET, params_dict)
+        context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
 
-        context['parties'] = PARTY_MODEL.objects.filter(id__in=parties_ids)
+        context['parties'] = PARTY_MODEL.objects.filter(id__in=params_dict['parties_ids'])
 
-        context['tags'] = Tag.objects.filter(id__in=tags_ids)
+        context['tags'] = Tag.objects.filter(id__in=params_dict['tags_ids'])
 
-        context['search_str'] = phrases
+        context['search_str'] = params_dict['phrases']
 
-        context['search_title'] = ", ".join([x for x in phrases]) or ", ".join(x.name for x in context['tags'])
+        context['excluded'] = Facebook_Status.objects.filter(status_id__in=params_dict['excluded'])
 
-        return_queryset = self.apply_request_params(Facebook_Status.objects.filter(query_Q))
+        context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
+            x.name for x in context['tags'])
+
+        return_queryset = apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
         return context
+
+
+class SearchPreviewView(SearchView):
+    model = Facebook_Status
+    context_object_name = 'filtered_statuses'
+    template_name = 'core/embedded_container.html'
 
 
 class SearchGuiView(StatusListView):
@@ -462,7 +232,7 @@ class StatusFilterUnifiedView(StatusListView):
         else:
             selected_filter = variable_column
 
-        return self.apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_string}))
+        return apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_string}), self.request)
 
     def get_context_data(self, **kwargs):
         context = super(StatusFilterUnifiedView, self).get_context_data(**kwargs)
@@ -488,7 +258,7 @@ class MemberView(StatusFilterUnifiedView):
         self.persona = get_object_or_404(MEMBER_MODEL, id=self.kwargs['id']).facebook_persona
         if self.persona is None:
             return []
-        return self.apply_request_params(self.persona.get_main_feed.facebook_status_set)
+        return apply_request_params(self.persona.get_main_feed.facebook_status_set, self.request)
 
     def get_context_data(self, **kwargs):
         context = super(MemberView, self).get_context_data(**kwargs)
@@ -515,8 +285,8 @@ class PartyView(StatusFilterUnifiedView):
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         date_range_Q = filter_by_date(request=self.request, datetime_field='published')
-        return self.apply_request_params(
-            Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]))
+        return apply_request_params(
+            Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
 
 
 class TagView(StatusFilterUnifiedView):
@@ -561,8 +331,7 @@ class TagView(StatusFilterUnifiedView):
             # return HttpResponseRedirect(url)
             raise HasSynonymError('has synonym, redirect', redirect_url=url)
 
-        return self.apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_value}))
-
+        return apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_value}), self.request)
 
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
@@ -892,3 +661,170 @@ def return_suggested_tags(request, status_id):
 
 class WidgetView(TemplateView):
     template_name = 'core/rss_widget_page.html'
+
+
+def title_exists(request):
+    if not request.GET.get('title', None):
+        res = {'approved': False, 'message': 'No title supplied!'}
+        return HttpResponse(content=json.dumps(res), content_type="application/json")
+    title = request.GET.get('title', None)
+    try:
+        user_search = UserSearch.objects.get(title=title)
+    except UserSearch.DoesNotExist:
+        res = {'approved': True, 'message': 'ok, no title saved with this name'}
+        return HttpResponse(content=json.dumps(res), content_type="application/json")
+    if user_search.user.id == request.user.id:
+        res = {'approved': True, 'message': 'ok, title belongs to user'}
+    else:
+        res = {'approved': False, 'message': 'This title belongs to another user, please select another one.'}
+    return HttpResponse(content=json.dumps(res), content_type="application/json")
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def save_queryset_for_user(request):
+    # print request.POST
+    user = request.user
+    qserializer = QSerializer(base64=True)
+    query_dict = QueryDict(request.POST.get('query').split('?')[-1])
+    print query_dict
+    fake_request = HttpRequest()
+    fake_request.GET = query_dict
+    # print query_dict
+
+    params_dict = get_parsed_request(query_dict)
+    q_object = parse_to_q_object(query_dict, params_dict)
+    print q_object
+    dumped_queryset = qserializer.dumps(q_object)
+    # print dumped_queryset
+
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    q_object_date = filter_by_date(fake_request)
+    # print q_object_date
+    date_range = qserializer.dumps(q_object_date)
+    order_by = json.dumps(get_order_by(fake_request))
+
+    # print title, description, date_range, order_by
+
+    us, created = UserSearch.objects.get_or_create(user=user, title=title)
+    if not created and us.user != request.user:
+        return HttpResponse(content=json.dumps({'message': 'failure'}), content_type="application/json")
+        raise Exception('User is not allowed to edit this query!')
+    # print us
+    us.queryset = dumped_queryset
+    us.path = request.POST.get('query')
+    us.order_by = order_by
+    us.date_range = date_range
+    us.description = description
+    us.save()
+
+    print us.queryset_dict
+
+    return HttpResponse(content=json.dumps({'message': 'success'}), content_type="application/json")
+
+
+class CustomView(SearchView):
+    model = Facebook_Status
+    # paginate_by = 10
+    context_object_name = 'filtered_statuses'
+    template_name = "core/custom.html"
+
+    def get_queryset(self, **kwargs):
+        sv = UserSearch.objects.get(title=self.kwargs['title'])
+        query_filter = sv.queryset_q
+        print query_filter
+        if self.request.GET.get('range', None) or self.request.GET.get('range', None) != 'default':
+            date_range_q = filter_by_date(self.request)
+        else:
+            date_range_q = sv.date_range_q
+
+        if self.request.GET.get('order_by'):
+            order_by = get_order_by(self.request)
+        else:
+            order_by = json.loads(sv.order_by)
+
+        return Facebook_Status.objects.filter(query_filter).filter(date_range_q).order_by(*order_by)
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomView, self).get_context_data(**kwargs)
+        sv = UserSearch.objects.get(title=self.kwargs['title'])
+        qserialzer = QSerializer()
+        query_filter = qserialzer.loads(sv.queryset)
+
+        params_dict = get_parsed_request(get_params=self.request.GET)
+
+        # context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
+        # context['parties'] = PARTY_MODEL.objects.filter(id__in=params_dict['parties_ids'])
+        # context['tags'] = Tag.objects.filter(id__in=params_dict['tags_ids'])
+        # context['search_str'] = params_dict['phrases']
+        # context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
+        #     x.name for x in context['tags'])
+
+        context['saved_query'] = sv
+        return_queryset = apply_request_params(Facebook_Status.objects.filter(query_filter), self.request)
+        context['number_of_results'] = return_queryset.count()
+        context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
+
+        return context
+
+
+class CustomViewByID(CustomView):
+    def get_queryset(self, **kwargs):
+        sv = UserSearch.objects.get(id=self.kwargs['id'])
+        qserialzer = QSerializer()
+        query_filter = qserialzer.loads(sv.queryset)
+        return apply_request_params(Facebook_Status.objects.filter(query_filter), self.request)
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomView, self).get_context_data(**kwargs)
+        sv = UserSearch.objects.get(id=self.kwargs['id'])
+        qserialzer = QSerializer()
+        query_filter = qserialzer.loads(sv.queryset)
+
+        params_dict = get_parsed_request(get_params=self.request.GET)
+
+        # context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
+        # context['parties'] = PARTY_MODEL.objects.filter(id__in=params_dict['parties_ids'])
+        # context['tags'] = Tag.objects.filter(id__in=params_dict['tags_ids'])
+        # context['search_str'] = params_dict['phrases']
+        # context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
+        #     x.name for x in context['tags'])
+
+        context['saved_query'] = sv
+        return_queryset = apply_request_params(Facebook_Status.objects.filter(query_filter), self.request)
+        context['number_of_results'] = return_queryset.count()
+        context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
+
+        return context
+
+
+class AllCustomsView(ListView):
+    template_name = 'core/customs_list.html'
+    model = UserSearch
+
+
+class CustomsByUserView(ListView):
+    template_name = 'core/customs_list.html'
+    model = UserSearch
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            user = User.objects.get(username=self.kwargs['username'])
+        except User.DoesNotExist:
+            return redirect(reverse('all-customs'))
+        return super(CustomsByUserView, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        try:
+            user = User.objects.get(username=self.kwargs['username'])
+            return UserSearch.objects.filter(user__username=user.username)
+        except User.DoesNotExist:
+            raise
+
+    def get_context_data(self, **kwargs):
+        try:
+            context = super(CustomsByUserView, self).get_context_data(**kwargs)
+            context['requested_user'] = User.objects.get(username=self.kwargs['username'])
+            return context
+        except User.DoesNotExist:
+            raise

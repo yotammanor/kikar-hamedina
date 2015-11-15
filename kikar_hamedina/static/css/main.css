@@ -90,15 +90,13 @@ body {
     color: white;
 }
 
-#list-of-member-title {
-    display: none;
+.inline-error-p {
+    color: red;
+    direction: ltr;
+    text-align: left;
 }
 
-#list-of-party-title {
-    display: none;
-}
-
-#list-of-tag-title {
+.list-of-elements-title {
     display: none;
 }
 

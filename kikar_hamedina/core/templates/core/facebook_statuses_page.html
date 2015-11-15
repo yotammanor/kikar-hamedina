@@ -58,18 +58,7 @@
     <div class="row">
         <div class="col-sm-9 panel-group">
             <!-- Order-by links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
-            <ul class="nav nav-pills" id="order-by-options">
-                <li data-order-by="-published"><a href="#"><i class="fa fa-caret-down" id="dec-asc-published"></i> לפי
-                    תאריך</a></li>
-                <li data-order-by="-like_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-likes"></i> לפי מספר
-                    לייקים</a>
-                </li>
-                <li data-order-by="-comment_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-comments"></i>
-                    לפי מספר
-                    תגובות</a></li>
-                <li data-order-by="custom" id="order-by-custom"><a href="#">אחר</a></li>
-                <!-- visible only when used -->
-            </ul>
+            {% include 'core/order_by_options.html' %}
             <br>
             <!-- List of statuses -->
             {% include "core/facebook_status_list.html" with object_list=object_list %}
@@ -78,41 +67,7 @@
             <!-- Filter-by-date links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
             <div><br><br></div>
             {% block date_filter %}
-                <ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
-                    <li class="heading"><b> סנן לפי זמן: </b></li>
-
-                    <li data-range="default" id="default-filter">
-                        <a href="#">ללא סינון </a>
-
-                    </li>
-                    <li data-range="day">
-                        <a href="#">ביממה האחרונה</a>
-                    </li>
-                    <li data-range="current_day">
-                        <a href="#">במהלך ה-{% now "j" %} ל{% now "F" %} (החל מחצות)</a>
-                    </li>
-                    <li data-range="week">
-                        <a href="#">בשבוע האחרון </a>
-                    </li>
-                    <li data-range="two_weeks">
-                        <a href="#">בשבועיים האחרונים</a>
-                    </li>
-                    <li data-range="month">
-                        <a href="#">בחודש האחרון</a>
-                    </li>
-                    <li data-range="current_month">
-                        <a href="#">במהלך {% now "F" %}</a>
-                    </li>
-                    <li data-range="current_year">
-                        <a href="#">במהלך {% now "Y" %}</a>
-                    </li>
-                    <li data-range="elections_20">
-                        <a href="#">במהלך מסע הבחירות לכנסת ה-20</a>
-                    </li>
-                    <li data-range="protective-edge">
-                        <a href="#">במהלך צוק איתן</a>
-                    </li>
-                </ul>
+                {% include 'core/date_filter.html' %}
             {% endblock date_filter %}
             <br>
             <br>
