@@ -1,6 +1,5 @@
 django==1.8.6
 django-contrib-comments==1.6.1
-South==1.0.2
 ipython
 django-extensions==1.5.9
 djangorestframework==2.3.10
@@ -30,7 +29,8 @@ jsonfield==1.0.0
 autotag
 django-autotag
 django-taggit
--e git+https://github.com/mozilla/unicode-slugify.git#egg=unicode-slugify
+#-e git+https://github.com/mozilla/unicode-slugify.git#egg=unicode-slugify
+unicode-slugify
 
 # -r oknesset.txt
 django-debug-toolbar>=1.0
