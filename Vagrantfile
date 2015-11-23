@@ -3,7 +3,7 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-$port = 8002
+$port = 8000
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "box-cutter/ubuntu1404"
