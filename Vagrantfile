@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.network "private_network", ip: "192.168.100.100"
   config.vm.network :forwarded_port, guest: $port, host: $port
   config.vm.provision :shell, :inline => "apt-get update"
-  config.vm.provision :shell, :inline => "apt-get install -y software-properties-common"
+  config.vm.provision :shell, :inline => "apt-get install -y software-properties-common python-software-properties"
   config.vm.provision :shell, :inline => "add-apt-repository ppa:fkrull/deadsnakes-python2.7"
   config.vm.provision :shell, :inline => "apt-get update"
   config.vm.provision :shell, :inline => "apt-get install -y curl"
