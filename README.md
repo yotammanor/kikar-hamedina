@@ -18,7 +18,10 @@ Install virtualbox: https://www.virtualbox.org/wiki/Downloads
 
 Install vagrant: https://www.vagrantup.com/downloads.html
 
+
 cd to kikar_hamedina root directory
+
+Run ``vagrant plugin install vagrant-vbguest``
 
 Run ``vagrant up`` - this can take about 25-30 minutes
 
