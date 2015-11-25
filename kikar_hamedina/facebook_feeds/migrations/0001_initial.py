@@ -5,11 +5,14 @@ from django.db import migrations, models
 import datetime
 import facebook_feeds.models
 import django.utils.timezone
+import taggit.managers
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('kikartags', '__first__'),
+        ('contenttypes', '0002_remove_content_type_name'),
     ]
 
     operations = [
@@ -43,6 +46,8 @@ class Migration(migrations.Migration):
                 ('object_id', models.PositiveIntegerField(null=True, blank=True)),
                 ('alt_object_id', models.PositiveIntegerField(null=True, blank=True)),
                 ('main_feed', models.SmallIntegerField(default=0, null=True, blank=True)),
+                ('alt_content_type', models.ForeignKey(related_name='alt', blank=True, to='contenttypes.ContentType', null=True)),
+                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -127,5 +132,15 @@ class Migration(migrations.Migration):
                 ('date_of_expiration', models.DateTimeField(default=facebook_feeds.models.later)),
                 ('feeds', models.ManyToManyField(related_name='tokens', to='facebook_feeds.Facebook_Feed')),
             ],
+        ),
+        migrations.AddField(
+            model_name='facebook_status',
+            name='tags',
+            field=taggit.managers.TaggableManager(to='kikartags.Tag', through='kikartags.TaggedItem', help_text='A comma-separated list of tags.', verbose_name='Tags'),
+        ),
+        migrations.AddField(
+            model_name='facebook_feed',
+            name='persona',
+            field=models.ForeignKey(related_name='feeds', to='facebook_feeds.Facebook_Persona'),
         ),
     ]

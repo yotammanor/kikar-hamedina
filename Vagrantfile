@@ -49,12 +49,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       set -e
       cd /vagrant/kikar_hamedina/
       [ ! -d logs ] && mkdir logs
-      python manage.py syncdb --noinput
+      python manage.py migrate --noinput
       [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
       python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
-      for m in django_extensions core mks links facebook_feeds persons polyorg video zinnia taggit updater reporting tastypie; do
-        python manage.py migrate $m
-      done
+      #for m in django_extensions core mks links facebook_feeds persons polyorg video zinnia taggit updater reporting tastypie; do
+      #  python manage.py migrate $m
+      #done
       for f in sites data_fixture_planet data_fixture_mks data_fixture_mks_altnames data_fixture_facebook_feeds data_fixture_feed_popularity_0001 data_fixture_feed_popularity_0002 data_fixture_persons data_fixture_polyorg data_fixture_status_comment_pattern ; do
         python manage.py loaddata $f
        done
@@ -64,7 +64,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      # for f in 1002_1007 1002_1008 1002_1009 1002_1010 1002_1011; do
      #  python manage.py loaddata -i $f
      # done
-      python manage.py migrate kikartags
+     # python manage.py migrate kikartags
      # python manage.py convert_tags_data_to_kikartags
       python manage.py loaddata data_fixture_kikartags_new
       python manage.py fetchfeedproperties || true

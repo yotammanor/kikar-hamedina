@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.db import migrations, models
 import django.core.files.storage
+from os import path
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
     ]
@@ -20,7 +20,9 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=200, verbose_name='title')),
                 ('object_pk', models.TextField(verbose_name='object ID')),
                 ('active', models.BooleanField(default=True)),
-                ('content_type', models.ForeignKey(related_name='content_type_set_for_link', verbose_name='content type', to='contenttypes.ContentType')),
+                ('content_type',
+                 models.ForeignKey(related_name='content_type_set_for_link', verbose_name='content type',
+                                   to='contenttypes.ContentType')),
             ],
             options={
                 'verbose_name': 'link',
@@ -33,7 +35,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('sha1', models.CharField(max_length=1000, null=True)),
                 ('last_updated', models.DateTimeField(auto_now=True, null=True)),
-                ('link_file', models.FileField(storage=django.core.files.storage.FileSystemStorage(b'/home/udi/projects/kikar-hamedina/kikar_hamedina/data/link_files_storage'), upload_to=b'link_files')),
+                ('link_file', models.FileField(storage=django.core.files.storage.FileSystemStorage(path.join(settings.PROJECT_ROOT, 'data/link_files_storage')),
+                                               upload_to=b'link_files')),
                 ('link', models.ForeignKey(default=None, blank=True, to='links.Link', null=True)),
             ],
         ),
