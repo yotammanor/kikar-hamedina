@@ -9,7 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "box-cutter/ubuntu1404"
 
   config.vm.network "private_network", ip: "192.168.100.100"
-  config.vm.network :forwarded_port, guest: $port, host: $port
+  config.vm.network :forwarded_port, guest: $port, host: $port, auto_correct: true
   config.vm.provision :shell, :inline => "apt-get update"
   config.vm.provision :shell, :inline => "apt-get install -y software-properties-common python-software-properties"
   config.vm.provision :shell, :inline => "add-apt-repository ppa:fkrull/deadsnakes-python2.7"
