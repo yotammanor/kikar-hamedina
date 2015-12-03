@@ -1,62 +1,58 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import migrations, models
+import django.utils.timezone
+from django.conf import settings
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Tag'
-        db.create_table(u'kikartags_tag', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=100)),
-            ('is_for_main_display', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal(u'kikartags', ['Tag'])
+    dependencies = [
+        ('contenttypes', '0002_remove_content_type_name'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Adding model 'TaggedItem'
-        db.create_table(u'kikartags_taggeditem', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('object_id', self.gf('django.db.models.fields.IntegerField')(db_index=True)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'kikartags_taggeditem_tagged_items', to=orm['contenttypes.ContentType'])),
-            ('tag', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'kikartags_taggeditem_items', to=orm['kikartags.Tag'])),
-        ))
-        db.send_create_signal(u'kikartags', ['TaggedItem'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Tag'
-        db.delete_table(u'kikartags_tag')
-
-        # Deleting model 'TaggedItem'
-        db.delete_table(u'kikartags_taggeditem')
-
-
-    models = {
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'kikartags.tag': {
-            'Meta': {'object_name': 'Tag'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_for_main_display': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'})
-        },
-        u'kikartags.taggeditem': {
-            'Meta': {'object_name': 'TaggedItem'},
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'kikartags_taggeditem_tagged_items'", 'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'object_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
-            'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'kikartags_taggeditem_items'", 'to': u"orm['kikartags.Tag']"})
-        }
-    }
-
-    complete_apps = ['kikartags']
+    operations = [
+        migrations.CreateModel(
+            name='Tag',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=100, verbose_name='Name')),
+                ('slug', models.SlugField(unique=True, max_length=100, verbose_name='Slug')),
+                ('is_for_main_display', models.BooleanField(default=True)),
+                ('logo', models.ImageField(null=True, upload_to=b'tags_logos', blank=True)),
+                ('is_suggestion', models.BooleanField(default=False)),
+            ],
+            options={
+                'verbose_name': 'Tag',
+                'verbose_name_plural': 'Tags',
+            },
+        ),
+        migrations.CreateModel(
+            name='TaggedItem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('object_id', models.IntegerField(verbose_name='Object id', db_index=True)),
+                ('date_of_tagging', models.DateTimeField(default=django.utils.timezone.now, null=True)),
+                ('content_type', models.ForeignKey(related_name='kikartags_taggeditem_tagged_items', verbose_name='Content type', to='contenttypes.ContentType')),
+                ('tag', models.ForeignKey(related_name='kikartags_taggeditem_items', to='kikartags.Tag')),
+                ('tagged_by', models.ForeignKey(related_name='tagged', default=None, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
+            name='TagSynonym',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('proper_form_of_tag', models.ForeignKey(related_name='synonyms', to='kikartags.Tag')),
+                ('tag', models.ForeignKey(related_name='proper_form_of_tag', to='kikartags.Tag', unique=True)),
+            ],
+        ),
+        migrations.AlterUniqueTogether(
+            name='tagsynonym',
+            unique_together=set([('tag', 'proper_form_of_tag')]),
+        ),
+    ]
