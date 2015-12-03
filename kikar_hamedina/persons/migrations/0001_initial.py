@@ -1,53 +1,82 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import migrations, models
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Party'
-        db.create_table(u'persons_party', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=128)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
-        ))
-        db.send_create_signal(u'persons', ['Party'])
+    dependencies = [
+        ('mks', '__first__'),
+    ]
 
-        # Adding model 'Person'
-        db.create_table(u'persons_person', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=128)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
-            ('party', self.gf('django.db.models.fields.related.ForeignKey')(related_name='persons', to=orm['persons.Party'])),
-        ))
-        db.send_create_signal(u'persons', ['Person'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Party'
-        db.delete_table(u'persons_party')
-
-        # Deleting model 'Person'
-        db.delete_table(u'persons_person')
-
-
-    models = {
-        u'persons.party': {
-            'Meta': {'object_name': 'Party'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
-        },
-        u'persons.person': {
-            'Meta': {'object_name': 'Person'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'}),
-            'party': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'persons'", 'to': u"orm['persons.Party']"}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
-        }
-    }
-
-    complete_apps = ['persons']
+    operations = [
+        migrations.CreateModel(
+            name='Person',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=64)),
+                ('img_url', models.URLField(null=True, blank=True)),
+                ('phone', models.CharField(max_length=20, null=True, blank=True)),
+                ('fax', models.CharField(max_length=20, null=True, blank=True)),
+                ('email', models.EmailField(max_length=254, null=True, blank=True)),
+                ('family_status', models.CharField(max_length=10, null=True, blank=True)),
+                ('number_of_children', models.IntegerField(null=True, blank=True)),
+                ('date_of_birth', models.DateField(null=True, blank=True)),
+                ('place_of_birth', models.CharField(max_length=100, null=True, blank=True)),
+                ('date_of_death', models.DateField(null=True, blank=True)),
+                ('year_of_aliyah', models.IntegerField(null=True, blank=True)),
+                ('place_of_residence', models.CharField(help_text='an accurate place of residence (for example, an address', max_length=100, null=True, blank=True)),
+                ('area_of_residence', models.CharField(help_text='a general area of residence (for example, "the negev"', max_length=100, null=True, blank=True)),
+                ('place_of_residence_lat', models.CharField(max_length=16, null=True, blank=True)),
+                ('place_of_residence_lon', models.CharField(max_length=16, null=True, blank=True)),
+                ('residence_centrality', models.IntegerField(null=True, blank=True)),
+                ('residence_economy', models.IntegerField(null=True, blank=True)),
+                ('gender', models.CharField(blank=True, max_length=1, null=True, choices=[('M', 'Male'), ('F', 'Female')])),
+                ('mk', models.ForeignKey(related_name='person', blank=True, to='mks.Member', null=True)),
+            ],
+            options={
+                'ordering': ('name',),
+                'verbose_name': 'Person',
+                'verbose_name_plural': 'Persons',
+            },
+        ),
+        migrations.CreateModel(
+            name='PersonAltname',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=64)),
+                ('person', models.ForeignKey(to='persons.Person')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ProcessedProtocolPart',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('protocol_part_id', models.IntegerField()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Role',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('start_date', models.DateField(null=True)),
+                ('end_date', models.DateField(null=True, blank=True)),
+                ('text', models.CharField(max_length=1024, null=True, blank=True)),
+                ('org', models.TextField(null=True, blank=True)),
+                ('person', models.ForeignKey(related_name='roles', to='persons.Person')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Title',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=64)),
+            ],
+        ),
+        migrations.AddField(
+            model_name='person',
+            name='titles',
+            field=models.ManyToManyField(related_name='persons', to='persons.Title', blank=True),
+        ),
+    ]

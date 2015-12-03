@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print 'updating facebook_personas data'
-        content_type = ContentType.objects.get(name='candidate')
+        content_type = ContentType.objects.get_for_model(Candidate)
         all_candidates = Candidate.objects.all()
         ids_of_persons_of_existing_candidates = [x.person_id for x in all_candidates]
         facebook_personas = Facebook_Persona.objects.all()

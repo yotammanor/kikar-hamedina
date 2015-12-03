@@ -1,97 +1,29 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import migrations, models
+from django.conf import settings
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Party'
-        db.create_table(u'core_party', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=128)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
-        ))
-        db.send_create_signal(u'core', ['Party'])
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Adding model 'Person'
-        db.create_table(u'core_person', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=128)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
-            ('party', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Party'])),
-        ))
-        db.send_create_signal(u'core', ['Person'])
-
-        # Adding model 'Facebook_Feed'
-        db.create_table(u'core_facebook_feed', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('person', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Person'])),
-            ('vendor_id', self.gf('django.db.models.fields.CharField')(unique=True, max_length=128)),
-        ))
-        db.send_create_signal(u'core', ['Facebook_Feed'])
-
-        # Adding model 'Facebook_Status'
-        db.create_table(u'core_facebook_status', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('feed', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Facebook_Feed'])),
-            ('status_id', self.gf('django.db.models.fields.CharField')(unique=True, max_length=128)),
-            ('content', self.gf('django.db.models.fields.TextField')()),
-            ('like_count', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
-            ('comment_count', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
-            ('share_count', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
-            ('published', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal(u'core', ['Facebook_Status'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Party'
-        db.delete_table(u'core_party')
-
-        # Deleting model 'Person'
-        db.delete_table(u'core_person')
-
-        # Deleting model 'Facebook_Feed'
-        db.delete_table(u'core_facebook_feed')
-
-        # Deleting model 'Facebook_Status'
-        db.delete_table(u'core_facebook_status')
-
-
-    models = {
-        u'core.facebook_feed': {
-            'Meta': {'object_name': 'Facebook_Feed'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Person']"}),
-            'vendor_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'})
-        },
-        u'core.facebook_status': {
-            'Meta': {'object_name': 'Facebook_Status'},
-            'comment_count': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
-            'content': ('django.db.models.fields.TextField', [], {}),
-            'feed': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Facebook_Feed']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'like_count': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
-            'published': ('django.db.models.fields.DateTimeField', [], {}),
-            'share_count': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
-            'status_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'})
-        },
-        u'core.party': {
-            'Meta': {'object_name': 'Party'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
-        },
-        u'core.person': {
-            'Meta': {'object_name': 'Person'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'}),
-            'party': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Party']"}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
-        }
-    }
-
-    complete_apps = ['core']
+    operations = [
+        migrations.CreateModel(
+            name='UserSearch',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now=True)),
+                ('queryset', models.TextField(default=b'eyJjb25uZWN0b3IiOiAiQU5EIiwgIm5lZ2F0ZWQiOiBmYWxzZSwgImNoaWxkcmVuIjogW119')),
+                ('path', models.TextField(default=b'')),
+                ('title', models.SlugField(unique=True, max_length=64)),
+                ('description', models.TextField(null=True)),
+                ('date_range', models.TextField(null=True)),
+                ('order_by', models.TextField(null=True)),
+                ('user', models.ForeignKey(related_name='queries', to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+    ]
