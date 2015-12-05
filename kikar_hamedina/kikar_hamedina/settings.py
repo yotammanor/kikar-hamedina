@@ -30,7 +30,7 @@ TEMPLATE_DIRS = (
     sub_path("templates"),
 )
 
-SECRET_KEY = 'yz2HiIDgrCDeHSfJSXIep3FeEQunsUhnC3P9ehGZ/KHVhLXNCZ'
+SECRET_KEY = 'yz2HiIDgrCDeHSfJSXIep3FeEQun!VhLXNCZ'  # This secret key SHOULD be over-run by a local_settings parameter.
 
 # Application definition
 
