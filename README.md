@@ -5,15 +5,17 @@ Welcome to Kikar Hamedina, An Open-Source Project by The Public Knowledge Worksh
  
 We monitor Israeli MKs' activity in the Social Media, and put it in context.
 
-You can see our live website at [kikar.org](www.kikar.org).
+You can see our live website at [kikar.org](http://www.kikar.org).
 
-#####Are a developer who's looking to get involved?#####
+
+####Are a developer who's looking to get involved?####
 Great! take a look at our [Trello Board](https://trello.com/b/gJFDhaJa/kikar-hamedina). In particular, 
 anything on the **MiniBites** list is up for grabs. We'd love your help!
 
 Please read below for project set-up instructions, and contribution guidelines.
 
-#####Are you interested in helping out, but not through coding?#####
+
+####Are you interested in helping out, but not through coding?####
 No worries, We might still have something for you. You are invited to 
 <a href="mailto:yotammanor@gmail.com?subject='I Want to Help with Kikar Hamedina'">contact us</a>, and we'll find you a place.
 
@@ -70,6 +72,14 @@ at `../../vagrant/kikar_hamedina`.
 
 ## Working On Our Code ##
 
+### Code Contribution Guidelines ###
+ 
+ * **Task management** is done at our [Trello Board](https://trello.com/b/gJFDhaJa/kikar-hamedina). Keep it tidy.
+ * Work is done on branch `dev`. Branch `master` is our production branch, and should always be downstream from `dev`.
+ * Code should be committed (with meaningful messages!) and pushed to your forked repository. From there, 
+ **pull request**. Please keep in mind that **Your Code will be reviewed. So write it well**.
+ * Unfortunately, we currently rely on manual testing only. Feel free to start solving this at this very moment.
+ 
 ### Using Vagrant <a name="vagrant-instructions"></a> ###
 
 Here's a handy list of vagrant commands maintenance:
@@ -109,16 +119,7 @@ These commands can be used to manage the django server (these are standard Upsta
 
 * `sudo status kikar`
 
-
-### Code Contribution Guidelines ###
- 
- * **Task management** is done at our [Trello Board](https://trello.com/b/gJFDhaJa/kikar-hamedina). Keep it tidy.
- * Work is done on branch `dev`. Branch `master` is our production branch, and should always be downstream from `dev`.
- * Code should be committed (with meaningful messages!) and pushed to your forked repository. From there, 
- **pull request**. Please keep in mind that **Your Code will be reviewed. So write it well**.
- * Unfortunately, we currently rely on manual testing only. Feel free to start solving this at this very moment.
-  
-
+# Other Stuff #
 ####Editing data_fixture####
 
 At the main directory there's a sub-directory called data. Within it there are four csv files, 
