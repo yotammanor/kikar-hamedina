@@ -78,7 +78,7 @@ at `../../vagrant/kikar_hamedina`.
  * Work is done on branch `dev`. Branch `master` is our production branch, and should always be downstream from `dev`.
  * Code should be committed (with meaningful messages!) and pushed to your forked repository. From there, 
  **pull request**. Please keep in mind that **Your Code will be reviewed. So write it well**.
- * Unfortunately, we currently rely on manual testing only. Feel free to start solving this at this very moment.
+ * Unfortunately, we currently rely on manual testing only. Feel free to start solving this at this very moment. Till then, make sure you didn't break anything.
  
 ### Using Vagrant <a name="vagrant-instructions"></a> ###
 
