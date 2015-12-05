@@ -1,4 +1,5 @@
 
+![](https://github.com/hasadna/kikar-hamedina/blob/dev/kikar_hamedina/static/media/kikar_hamedina_logo.png)
 #Welcome to Kikar Hamdina#
 
 Welcome to Kikar Hamedina, An Open-Source Project by The Public Knowledge Workshop.
