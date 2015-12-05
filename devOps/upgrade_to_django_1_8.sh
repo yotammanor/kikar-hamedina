@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 sudo pip install -r ../requirements/vps.txt
 python manage.py migrate contenttypes 0001 --fake
 python manage.py migrate contenttypes
