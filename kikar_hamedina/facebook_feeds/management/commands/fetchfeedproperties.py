@@ -16,7 +16,7 @@ from facebook_feeds.models import \
     Feed_Popularity
 from concurrent import futures
 
-FACEBOOK_API_VERSION = 'v2.1'
+FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.5')
 _LOGGER_SCRAPING = logging.getLogger('scraping')
 
 

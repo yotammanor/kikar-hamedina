@@ -22,7 +22,7 @@ from ...models import \
     User_Token as User_Token_Model, \
     Facebook_Status_Attachment as Facebook_Status_Attachment_Model
 
-FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.1')
+FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.5')
 
 SLEEP_TIME = 3
 
@@ -88,7 +88,11 @@ class Command(BaseCommand):
         """
         Receives a feed_id for a facebook
         Returns a facebook-sdk fql query, with all status objects published by the page itself.
-                        """
+
+        ?fields=from, message, id, created_time, updated_time, type, link, caption, picture, description, name,
+        status_type, story, story_tags ,object_id, properties, source, to, shares, likes.summary(true).limit(1),
+        comments.summary(true).limit(1)
+        """
         api_request_path = "{0}/posts".format(feed_id)
         args_for_request = {'limit': post_number_limit,
                             'version': FACEBOOK_API_VERSION,
@@ -400,6 +404,8 @@ class Command(BaseCommand):
         Receives either one feed ID and retrieves Statuses for that feed,
         or no feed ID and therefore retrieves all Statuses for all the feeds.
         """
+
+        print('Running Fetchfeedstatuses. API_VERSION: {}.'.format(FACEBOOK_API_VERSION))
         self.graph = facebook.GraphAPI(timeout=options['request-timeout'])
 
         feeds_statuses = []
