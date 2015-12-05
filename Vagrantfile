@@ -3,7 +3,11 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-$port = 8000
+if ENV['KIKAR_HAMEDINA_PORT']
+   $port = ENV['KIKAR_HAMEDINA_PORT']
+else
+   $port = 8000
+end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "box-cutter/ubuntu1404"
