@@ -12,7 +12,7 @@
         {% load core_extras %}
 
         <img src="{{ feed.picture_large }}" class="img-rounded pull-right" id="profile-photo">
-        
+
         <p>
             <i class="fa fa-group"></i>
             <a href="{% url 'party' object.current_party.id %}">{{ object.current_party.name }}</a>
@@ -163,11 +163,12 @@
             לא נמצא דף פייסבוק עבור {{ object.name }}.
             {% if object.email %}
                 אפשר <a href="mailto:{{ object.email }}" target="_blank"
-                    >לשלוח {% if object.is_female %}לה{% else %}לו{% endif %} דוא״ל</a>.
+            >לשלוח {% if object.is_female %}לה{% else %}לו{% endif %} דוא״ל</a>.
             {% endif %}
         </p>
         <p>
-            יש ל{{ object.name }} דף פייסבוק? <a href="mailto:suggestions@kikarhamedina.hasadna.org.il" target="_blank">ספרו
+            יש ל{{ object.name }} דף פייסבוק? <a
+                href="mailto:yotammanor@gmail.com?subject='כיכר המדינה - דף פייסבוק חסר לחבר/ת כנסת'" target="_blank">ספרו
             לנו</a>!
             {% else %}
         <p>לא נמצאו עדכונים</p>
@@ -175,12 +176,12 @@
 {% endblock %}
 
 {% block sidebar %}
-{#    <ul class="list-group">#}
-{#        {% for member in object.current_party.current_members.all %}#}
-{#            <li class="list-group-item"><i class="fa fa-user"></i> <a#}
-{#                    href="{% url 'member' member.id %}">{{ member.name }}</a></li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
+    {#    <ul class="list-group">#}
+    {#        {% for member in object.current_party.current_members.all %}#}
+    {#            <li class="list-group-item"><i class="fa fa-user"></i> <a#}
+    {#                    href="{% url 'member' member.id %}">{{ member.name }}</a></li>#}
+    {#        {% endfor %}#}
+    {#    </ul>#}
 {% endblock %}
 
 {% block scripts %}
