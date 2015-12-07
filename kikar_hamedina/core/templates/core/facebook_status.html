@@ -1,25 +1,5 @@
-{# This is the template for an added tag. #}
-{% verbatim %}
-<script id="add-tag-to-status-template" type="text/x-handlebars-template">
-    <a href="/tag/name/{{name}}">
-        <span class="label label-info">{{name}}</span>
-    </a>
-</script>
-{% endverbatim %}
 
-
-{# This is the template for status tag suggestions #}
-{% verbatim %}
-<script id="add-tag-result-tag-list-item-template" type="text/x-handlebars-template">
-    <div class="add-tag-result-container">
-        <button class="btn add-tag-from-list {{#if recommended}} recommended-tag {{else}} typed-tag {{/if}}" data-tag-name="{{name}}">
-            <span class="glyphicon glyphicon-tag"></span> {{name}} {{#if recommended}} {{ percent }}% {{/if}}
-        </button>
-    </div>
-</script>
-{% endverbatim %}
-
-
+{% include "core/facebook_status_verbatim_elements.html" %}
 {% load humanize %}
 {% load core_extras %}
 {% load kikartags_extras %}
@@ -42,16 +22,12 @@
                 <h6>
                     <a class="link-on-blue"
                        href="{% url 'party' status.feed.persona.owner.current_party.id %}">
-                        {#                            <h6>#}
                         {{ status.feed.persona.owner.current_party.name }}
-                        {#                            </h6>#}
                     </a>
                     |
                     <a class="link-on-blue" title="{{ status.published }}"
                        href="{% url 'status-detail' status.status_id %}">
-                        {#                            <h6>#}
                         {{ status.published | naturaltime }}
-                        {#                            </h6>#}
                     </a>
                     {% if request.path == '/preview/' %}
                         <button class="btn btn-sm exclude-status" style="display: none;" data-status-id="{{ status.status_id }}" data-status-name="סטאטוס מאת: {{ status.feed.persona.owner.name }} - {{ status.status_id }}" id="exclude-status-{{ status.status_id }}"> Exclude Me! </button>
@@ -61,19 +37,10 @@
                     {% endif %}
                 </h6>
             </div>
-            {#                <div class="row" id="date-row-container">#}
-            {#                    <a class="link-on-blue" href="{% url 'status-detail' status.status_id %}">#}
-            {#                        <h6>{{ status.published | naturaltime }}</h6>#}
-            {#                    </a>#}
-            {#                </div>#}
         </div>
     </div>
 </div>
 <div class="panel-body">
-    {#    {% if status.story %}#}
-    {#        <p style="color:gray" dir="ltr"> {{ status.story }}</p>#}
-    {#    {% endif %}#}
-
     <p>{{ status.content | urlize | linebreaks }}</p>
 
     {% if status.has_attachment %}
