@@ -51,7 +51,7 @@ class TaggedItem(GenericTaggedItemBase):
 
 ## Open-Knesset.auxilary.models
 class TagSynonym(models.Model):
-    tag = models.ForeignKey(Tag, related_name='proper_form_of_tag', unique=True)  # synonym_roper_tag
+    tag = models.OneToOneField(Tag, related_name='proper_form_of_tag')  # synonym_roper_tag
     proper_form_of_tag = models.ForeignKey(Tag, related_name='synonyms')  # synonym_synonym_tag
 
     class Meta:
