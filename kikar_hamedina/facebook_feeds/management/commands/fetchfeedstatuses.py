@@ -99,7 +99,7 @@ class Command(BaseCommand):
                             'fields': "from, message, id, created_time, \
                              updated_time, type, link, caption, picture, description, name,\
                              status_type, story, story_tags ,object_id, properties, source, to, shares, \
-                             likes.summary(true).limit(1), comments.summary(true).limit(1)"}
+                             likes.summary(true).limit(1), comments.summary(true).limit(1).filter(toplevel)"}
 
         use_paging = False
         if date_filters['from_date']:
