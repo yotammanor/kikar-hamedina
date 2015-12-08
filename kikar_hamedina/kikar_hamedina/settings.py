@@ -54,7 +54,6 @@ INSTALLED_APPS = (
     'pagination',
     'tagging',
     'dumpdata_chunks',
-    'django_pandas',
     'taggit',
     'tastypie',
     'mptt',

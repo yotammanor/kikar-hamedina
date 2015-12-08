@@ -18,8 +18,8 @@ class TagManager(models.Manager):
         Otherwise, the selected tag is returned unchanged.
         """
         selected_tag = self.get(*args, **kwargs)
-        if selected_tag.proper_form_of_tag.exists():
-            return selected_tag.proper_form_of_tag.first().proper_form_of_tag
+        if hasattr(selected_tag, 'proper_form_of_tag'):
+            return selected_tag.proper_form_of_tag.proper_form_of_tag  # This duplication is not a mistake
         else:
             return selected_tag
 
