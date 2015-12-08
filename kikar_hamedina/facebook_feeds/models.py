@@ -7,12 +7,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
-from django_pandas.managers import DataFrameManager
 from slugify import slugify
 from taggit.managers import TaggableManager
 from unidecode import unidecode
 from facebook_feeds.managers import Facebook_StatusManager, \
-    Facebook_FeedManager
+    Facebook_FeedManager, DataFrameManager
 from kikartags.managers import _KikarTaggableManager
 from kikartags.models import TaggedItem
 
@@ -148,7 +147,7 @@ class Facebook_Feed(models.Model):
         asked_for_date_of_value = timezone.now() - datetime.timedelta(
             days=days_back)
         try:
-            popularity_history_timeseries = self.feed_popularity_set.to_timeseries(
+            popularity_history_timeseries = self.feed_popularity_set.all().to_timeseries(
                 'fan_count',
                 index='date_of_creation')
             first_value = popularity_history_timeseries.iloc[
