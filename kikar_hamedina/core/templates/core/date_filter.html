@@ -1,41 +1,52 @@
+{# Dynamic styling done with "static/js/renderLinksForStatusListHandlers.js" #}
 <ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
-    <li class="heading"><b> סנן לפי זמן: </b></li>
+    <li class="heading"><b> סנן לפי זמן: </b>
 
-    <li data-range="default" id="default-filter">
+        <p>{% if 'from_date' in request.GET or 'to_date' in request.GET %}
+            <span class="label label-info">הסינון הפשוט אינו פעיל בעת שימוש בסינון מתקדם</span>
+        {% endif %}</p></li>
+    <li data-range="default" id="default-filter"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">
             {% if '/custom/' in request.path %}
-            סינון ברירת מחדל
+                סינון ברירת מחדל
             {% else %}
-            ללא סינון
+                ללא סינון
             {% endif %}
         </a>
 
     </li>
-    <li data-range="day">
+    <li data-range="day" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">ביממה האחרונה</a>
     </li>
-    <li data-range="current_day">
+    <li data-range="current_day"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">במהלך ה-{% now "j" %} ל{% now "F" %} (החל מחצות)</a>
     </li>
-    <li data-range="week">
+    <li data-range="week" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">בשבוע האחרון </a>
     </li>
-    <li data-range="two_weeks">
+    <li data-range="two_weeks"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">בשבועיים האחרונים</a>
     </li>
-    <li data-range="month">
+    <li data-range="month" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">בחודש האחרון</a>
     </li>
-    <li data-range="current_month">
+    <li data-range="current_month"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">במהלך {% now "F" %}</a>
     </li>
-    <li data-range="current_year">
+    <li data-range="current_year"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">במהלך {% now "Y" %}</a>
     </li>
-    <li data-range="elections_20">
+    <li data-range="elections_20"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">במהלך מסע הבחירות לכנסת ה-20</a>
     </li>
-    <li data-range="protective-edge">
+    <li data-range="protective-edge"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">במהלך צוק איתן</a>
     </li>
 </ul>

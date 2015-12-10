@@ -1,5 +1,6 @@
 from operator import or_, and_
 import re
+import dateutil
 from collections import defaultdict
 from django.db.models import Q
 from django.utils import timezone
@@ -80,9 +81,22 @@ def get_date_range_dict():
 
 def filter_by_date(request, datetime_field='published'):
     date_range_dict = get_date_range_dict()
-    try:
+    date_time_field_range = datetime_field + '__range'
+    if 'from_date' in request.GET or 'to_date' in request.GET:
+        if 'from_date' in request.GET:
+            start_date = dateutil.parser.parse(request.GET['from_date'])
+        else:
+            start_date = date_range_dict['default']['start_date']
+        if 'to_date' in request.GET:
+            end_date = dateutil.parser.parse(request.GET['to_date'])
+        else:
+            end_date = date_range_dict['default']['end_date']
+        range_value = (start_date, end_date)
+        return Q(**{date_time_field_range: range_value})
+
+    elif 'range' in request.GET:
         filter_range_arg = request.GET['range']
-    except MultiValueDictKeyError:
+    else:
         filter_range_arg = 'default'
 
     try:
@@ -92,7 +106,6 @@ def filter_by_date(request, datetime_field='published'):
         start_date = date_range_dict['default']['start_date']
         end_date = date_range_dict['default']['end_date']
 
-    date_time_field_range = datetime_field + '__range'
     range_value = (start_date, end_date)
     return Q(**{date_time_field_range: range_value})
 
