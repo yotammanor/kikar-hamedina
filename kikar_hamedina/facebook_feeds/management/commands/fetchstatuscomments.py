@@ -206,7 +206,16 @@ class Command(BaseCommand):
             '\tSaving comment attachment'
             # Define:
             attachment_defaultdict = defaultdict(lambda: None, comment_defaultdict['attachment'])
-            comment_attachment_src = attachment_defaultdict['media']['image']['src']
+            try:
+                comment_attachment_src = attachment_defaultdict['media']['image']['src']
+            except TypeError as e:
+                print u'in Current Data: comment_id: {}, parent_id: {}, ' \
+                      u'feed_id: {}\n text:{}'.format(comment_id,
+                                                      parent_status_object.status_id,
+                                                      parent_status_object.feed.id,
+                                                      content)
+                print '{}'.format(attachment_defaultdict)
+                raise e
             comment_attachment_width = attachment_defaultdict['media']['image']['width']
             comment_attachment_height = attachment_defaultdict['media']['image']['height']
             comment_attachment_type = attachment_defaultdict['type']
