@@ -112,24 +112,22 @@ $(document).ready(function () {
 //      Default order-by is -published, therefor - reverse
         orderByActiveElem.data('orderBy', orderByActiveElem.data('orderBy').replace('-', ''))
     }
-    rebuildOrderByHrefAttr(orderByActiveElem, "order-by", "order_by")
+    rebuildOrderByHrefAttr(orderByActiveElem, "order-by", "order_by");
 
     // Set active filter-by-date link style.
 
     var default_filter = true;
-    if (!vars['range']) {
-        range_param = false
+    if (typeof vars['range'] === 'string' && !vars['from_date'] && !vars['to_date']){
+        range_param =vars['range']
     } else {
-        range_param = vars['range']
+        range_param = false;
+        default_filter = false;
     }
 
     if (range_param != false) {
-
-
         $('#filter-by-date-range-options').children().not('.heading').each(function () {
             default_filter = setActiveElem($(this), 'range', range_param, default_filter)
         });
-
     }
 
     // set default filter-by-date if needed.

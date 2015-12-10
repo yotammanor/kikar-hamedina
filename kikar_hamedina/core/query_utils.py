@@ -1,5 +1,6 @@
 from operator import or_, and_
 import re
+import dateutil
 from collections import defaultdict
 from django.db.models import Q
 from django.utils import timezone
@@ -10,6 +11,23 @@ from kikartags.models import Tag
 from core.models import MEMBER_MODEL, PARTY_MODEL, IS_ELECTIONS_MODE
 from core.params import RE_SPLIT_WORD_UNICODE, PG_RE_PHRASE_START, PG_RE_PHRASE_END, PG_RE_NON_WORD_CHARS, \
     DEFAULT_OPERATOR, FILTER_BY_DATE_DEFAULT_START_DATE, ALLOWED_FIELDS_FOR_ORDER_BY, DEFAULT_STATUS_ORDER_BY
+
+
+def get_order_by(request):
+    """
+    This function receives a request, and parses order_by parameter, if exists into
+    an array of approved and validated order_by fields.
+    If fails, falls back to a default order-by (-published)
+    """
+    try:
+        order_by_str = request.GET['order_by']
+        order_by = [x for x in order_by_str.split(',') if
+                    x.replace("-", "").split("__")[0] in ALLOWED_FIELDS_FOR_ORDER_BY]  # tests for feed__*
+    except MultiValueDictKeyError:
+        order_by = [DEFAULT_STATUS_ORDER_BY]
+    if not order_by:
+        order_by = [DEFAULT_STATUS_ORDER_BY]
+    return order_by
 
 
 def get_date_range_dict():
@@ -61,28 +79,24 @@ def get_date_range_dict():
     return date_range_dict
 
 
-def get_order_by(request):
-    """
-    This function receives a request, and parses order_by parameter, if exists into
-    an array of approved and validated order_by fields.
-    If fails, falls back to a default order-by (-published)
-    """
-    try:
-        order_by_str = request.GET['order_by']
-        order_by = [x for x in order_by_str.split(',') if
-                    x.replace("-", "").split("__")[0] in ALLOWED_FIELDS_FOR_ORDER_BY]  # tests for feed__*
-    except MultiValueDictKeyError:
-        order_by = [DEFAULT_STATUS_ORDER_BY]
-    if not order_by:
-        order_by = [DEFAULT_STATUS_ORDER_BY]
-    return order_by
-
-
 def filter_by_date(request, datetime_field='published'):
     date_range_dict = get_date_range_dict()
-    try:
+    date_time_field_range = datetime_field + '__range'
+    if 'from_date' in request.GET or 'to_date' in request.GET:
+        if 'from_date' in request.GET:
+            start_date = dateutil.parser.parse(request.GET['from_date'])
+        else:
+            start_date = date_range_dict['default']['start_date']
+        if 'to_date' in request.GET:
+            end_date = dateutil.parser.parse(request.GET['to_date'])
+        else:
+            end_date = date_range_dict['default']['end_date']
+        range_value = (start_date, end_date)
+        return Q(**{date_time_field_range: range_value})
+
+    elif 'range' in request.GET:
         filter_range_arg = request.GET['range']
-    except MultiValueDictKeyError:
+    else:
         filter_range_arg = 'default'
 
     try:
@@ -92,7 +106,6 @@ def filter_by_date(request, datetime_field='published'):
         start_date = date_range_dict['default']['start_date']
         end_date = date_range_dict['default']['end_date']
 
-    date_time_field_range = datetime_field + '__range'
     range_value = (start_date, end_date)
     return Q(**{date_time_field_range: range_value})
 
