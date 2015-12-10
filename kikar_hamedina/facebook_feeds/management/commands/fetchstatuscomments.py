@@ -53,6 +53,12 @@ class Command(BaseCommand):
                     dest='to-date',
                     default=None,
                     help='Specify date until which to update the statuses (exclusive) e.g. 2014-03-31'),
+        make_option('--feed-ids',
+                    action='store',
+                    type='string',
+                    dest='feed-ids',
+                    default=None,
+                    help='Specify particular feed ids you want to update comments for with list of ids (e.g. 51, 54)'),
         make_option('--update-deleted',
                     action='store_true',
                     dest='update-deleted',
@@ -174,14 +180,18 @@ class Command(BaseCommand):
                                                                              parent=parent_status_object)
 
         except IntegrityError as e:
-            print 'in Current Data: comment_id: {}, parent_id: {}, feed_id: {}'.format(comment_id,
-                                                                                       parent_status_object.status_id,
-                                                                                       parent_status_object.feed.id)
+            print u'in Current Data: comment_id: {}, parent_id: {}, feed_id: {}\n text:{}'.format(comment_id,
+                                                                                                  parent_status_object.status_id,
+                                                                                                  parent_status_object.feed.id,
+                                                                                                  content)
             db_comment = Facebook_Status_Comment.objects.get(comment_id=comment_id)
-            print 'in DB: comment_id: {}, parent_id: {}, feed_id: {}'.format(db_comment.comment_id,
-                                                                             db_comment.parent.status_id,
-                                                                             db_comment.parent.feed.id)
-            raise e
+            print u'in DB: comment_id: {}, parent_id: {}, feed_id: {}\n text:{}'.format(db_comment.comment_id,
+                                                                                        db_comment.parent.status_id,
+                                                                                        db_comment.parent.feed.id,
+                                                                                        db_comment.content)
+            logger = logging.getLogger('django')
+            logger.warning('integrity error at {}'.format(comment_id))
+            return
         comment.parent = parent_status_object
         comment.comment_from = facebook_user
         comment.content = content
@@ -280,13 +290,15 @@ class Command(BaseCommand):
         print 'Variable post_number_limit set to: {0}.'.format(post_number_limit)
 
         list_of_statuses = list()
-        # Case no args - fetch all feeds
+        # Case no args - fetch all statuses or by options
         if len(args) == 0:
             criteria = {}
-            if options['from-date'] is not None:
+            if options['from-date']:
                 criteria['published__gte'] = dateutil.parser.parse(options['from-date'])
-            if options['to-date'] is not None:
+            if options['to-date']:
                 criteria['published__lt'] = dateutil.parser.parse(options['to-date'])
+            if options['feed-ids']:
+                criteria['feed__id__in'] = options['feed-ids'].split(',')
             db_statuses = Facebook_Status.objects_no_filters.filter(**criteria).order_by('-published')
             list_of_statuses = list(db_statuses)
 
