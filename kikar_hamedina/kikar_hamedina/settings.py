@@ -86,7 +86,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pagination.middleware.PaginationMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 )
+
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
