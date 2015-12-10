@@ -1,4 +1,5 @@
 import sys
+from django.db.utils import IntegrityError
 from time import sleep
 import datetime
 import dateutil
@@ -166,10 +167,21 @@ class Command(BaseCommand):
             facebook_user.save()
 
         print '\tCreate comment_object'
-        comment, created = Facebook_Status_Comment.objects.get_or_create(comment_id=comment_id,
-                                                                         published=published,
-                                                                         comment_from=facebook_user,
-                                                                         parent=parent_status_object)
+        try:
+            comment, created = Facebook_Status_Comment.objects.get_or_create(comment_id=comment_id,
+                                                                             published=published,
+                                                                             comment_from=facebook_user,
+                                                                             parent=parent_status_object)
+
+        except IntegrityError as e:
+            print 'in Current Data: comment_id: {}, parent_id: {}, feed_id: {}'.format(comment_id,
+                                                                                       parent_status_object.status_id,
+                                                                                       parent_status_object.feed.id)
+            db_comment = Facebook_Status_Comment.objects.get(comment_id=comment_id)
+            print 'in DB: comment_id: {}, parent_id: {}, feed_id: {}'.format(db_comment.comment_id,
+                                                                             db_comment.parent.status_id,
+                                                                             db_comment.parent.feed.id)
+            raise e
         comment.parent = parent_status_object
         comment.comment_from = facebook_user
         comment.content = content
