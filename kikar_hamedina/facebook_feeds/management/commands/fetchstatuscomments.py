@@ -335,7 +335,8 @@ class Command(BaseCommand):
                 self.stdout.write(
                     'Successfully written {} comments for status: {}.'.format(len(comments_data['data']),
                                                                               status.status_id))
-                info_msg = "Successfully updated comments for status: {0}.".format(status.status_id)
+                info_msg = "Successfully updated comments for status: {0}.\t {1}".format(status.status_id,
+                                                                                         status.published)
 
             elif comments_data is None:  # Status deleted
                 if options['update-deleted']:
