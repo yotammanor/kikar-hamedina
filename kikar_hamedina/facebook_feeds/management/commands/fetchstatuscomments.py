@@ -163,7 +163,16 @@ class Command(BaseCommand):
         message_tags = comment_defaultdict['message_tags']
         published = datetime.datetime.strptime(comment_defaultdict['created_time'],
                                                '%Y-%m-%dT%H:%M:%S+0000').replace(tzinfo=timezone.utc)
-        comment_from_id = comment_defaultdict['from']['id']
+        try:
+            comment_from_id = comment_defaultdict['from']['id']
+        except TypeError as e:
+            print u'in Current Data: comment_id: {}, parent_id: {}, ' \
+                  u'feed_id: {}\n text:{}'.format(comment_id,
+                                                  parent_status_object.status_id,
+                                                  parent_status_object.feed.id,
+                                                  content)
+            print '{}'.format(comment_defaultdict)
+            raise e
         comment_from_name = comment_defaultdict['from']['name']
 
         facebook_user, created = Facebook_User.objects.get_or_create(facebook_id=comment_from_id)
