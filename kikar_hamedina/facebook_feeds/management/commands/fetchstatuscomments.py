@@ -231,7 +231,8 @@ class Command(BaseCommand):
             comment_attachment_caption = attachment_defaultdict['caption']
             comment_attachment_description = attachment_defaultdict['description']
             comment_attachment_link = attachment_defaultdict['url']
-
+            if attachment_defaultdict['type'] == 'avatar':
+                comment_attachment_link = 'https://www.facebook.com/{}'.format(attachment_defaultdict['target']['id'])
             # Save:
             comment_attachment, created = Facebook_Status_Comment_Attachment.objects.get_or_create(comment=comment)
             comment_attachment.name = comment_attachment_name
