@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 
-from planet.models import Blog
 from facebook_feeds.models import Facebook_Persona
 
 from mks.managers import (
@@ -196,7 +195,7 @@ class Member(models.Model):
     date_of_death = models.DateField(blank=True, null=True)
     year_of_aliyah = models.IntegerField(blank=True, null=True)
     is_current = models.BooleanField(default=True, db_index=True)
-    blog = models.OneToOneField(Blog, blank=True, null=True)
+    # blog = models.OneToOneField(Blog, blank=True, null=True)
     place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
     area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('a general area of residence (for example, "the negev"'))
     place_of_residence_lat = models.CharField(
