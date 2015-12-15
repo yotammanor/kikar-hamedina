@@ -1,0 +1,167 @@
+body {
+    padding-top: 50px; /* size of the nav bar */
+    /*background-color: #DDF1FF;*/
+    font-family: "Alef", Arial, Sans-Serif;
+}
+
+.wide-input {
+    width: 300px;
+}
+
+/* navbar */
+.photo-container {
+    padding: 3px 15px 9px 10px;
+}
+
+.logo-photo {
+    height: 32px;
+}
+
+/*blue dropdowns*/
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+    color: white;
+    background-color: #428bca;
+    background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
+    background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+}
+
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+    color: white;
+    background-color: #428bca;
+    background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
+    background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+}
+
+.profile-photo {
+    align-items: right;
+}
+
+#profile-photo {
+    margin-left: 20px;
+}
+
+@media (min-width: 768px) {
+    #searchbar-searchform-container {
+        width: 50%;
+    }
+}
+
+/*
+.logo-photo:hover {
+	width: 79px;
+}
+*/
+/*.navbar-options {
+    margin-top: 9px;
+}*/
+
+/*
+.navbar-brand {
+    color: #fff !important;
+}
+*/
+
+#date-row-container {
+    height: 20px;
+}
+
+#name-row-container {
+    height: 20px;
+}
+
+#panel-expanded-footer {
+    background-color: #555555;
+}
+
+#profile-photo {
+    max-height: 300px;
+}
+
+/*#politicians-dropdown-menu {
+	min-width: 1000px;
+} */
+
+.link-on-blue {
+    color: white;
+}
+
+.link-on-blue:hover {
+    color: white;
+}
+
+.inline-error-p {
+    color: red;
+    direction: ltr;
+    text-align: left;
+}
+
+.list-of-elements-title {
+    display: none;
+}
+
+/*#list-of-search_str-title {*/
+/*display: none;*/
+/*}*/
+
+#searchgui-operator-input {
+    display: none;
+}
+
+.main-page-frame {
+    /*background-color: cadetblue;*/
+    /*border-style: solid;*/
+    /*border-color: #000000;*/
+    /*border-width: 1px;*/
+    /*align-content: center;*/
+    /*align-items: center;*/
+    text-align: center;
+    padding: 0;
+}
+
+.main-page-frame-links {
+    padding: 0;
+    text-align: right;
+}
+
+#difference-in-fan-count {
+    color: darkgrey;
+}
+
+#hasadna-logo-img {
+    height: 20px;
+}
+
+.hidden-object {
+    display: none;
+}
+
+#hompage-logo {
+    max-width: 100%;
+    height: auto;
+}
+
+.extra-billboard-info {
+    color: darkgrey;
+}
+
+/* Autosuggest tags */
+.typed-tag {
+    background-color: #428bca;
+}
+
+.recommended-tag {
+    background-color: #5BC0DE;
+}
+
+/* RSS Widget Styles*/
+
+. item-desctiption {
+    color: green;
+}
