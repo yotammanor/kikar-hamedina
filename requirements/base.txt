@@ -29,7 +29,7 @@ autotag
 django-autotag
 django-taggit
 unicode-slugify
-
+solid_i18n==1.8.7
 
 # -r oknesset.txt
 django-debug-toolbar>=1.0

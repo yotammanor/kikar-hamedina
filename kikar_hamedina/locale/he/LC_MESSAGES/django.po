@@ -1,0 +1,400 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-12-15 18:00+0200\n"
+"PO-Revision-Date: 2015-12-15 18:01+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.6\n"
+
+#: core/templates/core/homepage_all_statuses.html:5
+msgid "Home Page"
+msgstr "דף הבית"
+
+#: core/templates/core/homepage_all_statuses.html:14
+msgid "Israeli MKs on Social Media"
+msgstr "חברי הכנסת ברשתות החברתיות"
+
+#: kikartags/models.py:31
+msgid "Tag"
+msgstr "תג"
+
+#: kikartags/models.py:32
+msgid "Tags"
+msgstr "תגיות"
+
+#: knesset/utils.py:117
+msgid "Open Knesset requires attention"
+msgstr ""
+
+#: links/admin.py:21
+msgid "Content"
+msgstr ""
+
+#: links/models.py:16 links/models.py:36
+msgid "title"
+msgstr ""
+
+#: links/models.py:20
+msgid "link type"
+msgstr ""
+
+#: links/models.py:21
+msgid "link types"
+msgstr ""
+
+#: links/models.py:38
+msgid "content type"
+msgstr ""
+
+#: links/models.py:40
+msgid "object ID"
+msgstr ""
+
+#: links/models.py:47
+msgid "link"
+msgstr ""
+
+#: links/models.py:48
+msgid "links"
+msgstr ""
+
+#: mks/models.py:20 persons/models.py:28
+msgid "Male"
+msgstr "זכר"
+
+#: mks/models.py:21 persons/models.py:29
+msgid "Female"
+msgstr "נקבה"
+
+#: mks/models.py:53
+msgid "Knesset number"
+msgstr "מס' כנסת"
+
+#: mks/models.py:54 polyorg/models.py:21
+msgid "Start date"
+msgstr "תאריך התחלה"
+
+#: mks/models.py:55 polyorg/models.py:22
+msgid "End date"
+msgstr "תאריך הסיום"
+
+#: mks/models.py:60 polyorg/models.py:28
+#, python-format
+msgid "Knesset %(number)d"
+msgstr ""
+
+#: mks/models.py:87
+msgid "Party"
+msgstr "מפלגה"
+
+#: mks/models.py:88
+msgid "Parties"
+msgstr "מפלגות"
+
+#: mks/models.py:105
+#, python-format
+msgid "%(name)s in Knesset %(number)d"
+msgstr ""
+
+#: mks/models.py:155
+msgid "Coalition"
+msgstr "קואליציה"
+
+#: mks/models.py:155
+msgid "Opposition"
+msgstr "אופוזיציה"
+
+#: mks/models.py:200 persons/models.py:48
+msgid "an accurate place of residence (for example, an address"
+msgstr ""
+
+#: mks/models.py:201 persons/models.py:49
+msgid "a general area of residence (for example, \"the negev\""
+msgstr ""
+
+#: mks/models.py:240
+msgid "Member"
+msgstr "חבר/ת כנסת"
+
+#: mks/models.py:241
+msgid "Members"
+msgstr "חברי כנסת"
+
+#: mks/models.py:378
+msgid "Coalition Member (female)"
+msgstr ""
+
+#: mks/models.py:380
+msgid "Opposition Member (female)"
+msgstr ""
+
+#: mks/models.py:383
+msgid "Coalition Member (male)"
+msgstr ""
+
+#: mks/models.py:385
+msgid "Opposition Member (male)"
+msgstr ""
+
+#: mks/models.py:388
+msgid "Past Member (female)"
+msgstr ""
+
+#: mks/models.py:390
+msgid "Past Member (male)"
+msgstr ""
+
+#: mks/models.py:409
+msgid "Minister"
+msgstr "שר/ה"
+
+#: persons/models.py:63
+msgid "Person"
+msgstr ""
+
+#: persons/models.py:64
+msgid "Persons"
+msgstr ""
+
+#: persons/models.py:119
+#, python-brace-format
+msgid "{person} serverd as {text} in {org} from {start_date} to {end_date}"
+msgstr ""
+
+#: polyorg/models.py:20
+msgid "Elected Knesset number"
+msgstr ""
+
+#: polyorg/models.py:23
+msgid "Election date"
+msgstr "תאריך הבחירות"
+
+#: polyorg/models.py:38
+msgid "Name"
+msgstr "שם"
+
+#: polyorg/models.py:39
+msgid "Ballot"
+msgstr "אות קלפי"
+
+#: polyorg/models.py:42
+msgid "The list with which is the surplus votes partner"
+msgstr "הרשימה עמה נחתם הסכם עודפים"
+
+#: polyorg/models.py:43
+msgid "MPG report"
+msgstr ""
+
+#: polyorg/models.py:44
+msgid "The MPG report on the list, can use html"
+msgstr ""
+
+#: polyorg/models.py:46
+msgid "YouTube user"
+msgstr "משתמש YouTube"
+
+#: polyorg/models.py:47
+msgid "Wikipedia page"
+msgstr "ערך ויקיפדיה"
+
+#: polyorg/models.py:48
+msgid "Twitter account"
+msgstr "חשבון Twitter"
+
+#: polyorg/models.py:50
+msgid "Platform"
+msgstr ""
+
+#: polyorg/models.py:113
+msgid "Ordinal"
+msgstr ""
+
+#: polyorg/models.py:114
+msgid "Elected by #"
+msgstr ""
+
+#: polyorg/models.py:115
+msgid "How many people voted for this person"
+msgstr ""
+
+#: templates/layouts/generic-template.html:9
+msgid ""
+"Today, around a 100 of the Knesset Members are\n"
+"          using Facebook on a daily basis. We collect and organize what they "
+"write,\n"
+"           and help you join the conversation. A project by the Public "
+"Knowledge\n"
+"            Workshop."
+msgstr ""
+"כיום, כ-100 מבין חברי הכנסת ה-20 פעילים בפייסבוק באופן קבוע. אנו מרכזים את "
+"כל מה שחברי הכנסת כותבים, ועוזרים לך לקחת חלק בשיחה. פרויקט של הסדנא לידע "
+"ציבורי."
+
+#: templates/layouts/generic-template.html:17
+msgid "| Kikar Hamedina"
+msgstr "| כיכר המדינה"
+
+#: templates/layouts/generic-template.html:129
+msgid "Kikar Hamedina"
+msgstr "כיכר המדינה"
+
+#: templates/layouts/generic-template.html:139
+msgid "Knesset Member, Party, a Subject discussed, or any keyword..."
+msgstr "חבר/ת כנסת, מפלגה, נושא, או מילות מפתח"
+
+#: templates/layouts/generic-template.html:155
+#: templates/layouts/generic-template.html:193
+msgid "Billboards"
+msgstr "המצעד"
+
+#: templates/layouts/generic-template.html:160
+#: templates/layouts/generic-template.html:198
+msgid "About"
+msgstr "אודות"
+
+#: templates/layouts/generic-template.html:166
+#: templates/layouts/generic-template.html:204
+msgid "Donate"
+msgstr "תרומה"
+
+#: templates/layouts/generic-template.html:173
+#: templates/layouts/generic-template.html:210
+msgid "Tagging"
+msgstr "תיוג"
+
+#: templates/layouts/generic-template.html:178
+#: templates/layouts/generic-template.html:215
+msgid "Blog"
+msgstr "בלוג"
+
+#: templates/layouts/generic-template.html:187
+msgid "Options"
+msgstr "אפשרויות"
+
+#: templates/zinnia/_entry_detail_base.html:17
+msgid "Written by"
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:21
+#, python-format
+msgid "Show all %(author)s's entries"
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:23
+msgctxt "on date"
+msgid "on"
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:25
+msgid "Written on"
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:35
+msgid "in"
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:38
+#, python-format
+msgid "Show all entries in %(category)s"
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:46
+msgid "Last update on"
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:51
+msgid "Short url"
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:53
+#, python-format
+msgid "Short URL to %(object)s"
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:88
+#, python-format
+msgid "%(percent)s%% of %(object)s still remains to read."
+msgstr ""
+
+#: templates/zinnia/_entry_detail_base.html:90
+msgid "Continue reading"
+msgstr "המשך/המשיכי לקרוא"
+
+#: templates/zinnia/base.html:12 templates/zinnia/base.html.py:28
+msgid "RSS Feed of latest entries"
+msgstr ""
+
+#: templates/zinnia/base.html:29
+msgid "RSS Feed"
+msgstr ""
+
+#: templates/zinnia/base.html:33
+msgid "Calendar"
+msgstr "לוח שנה"
+
+#: templates/zinnia/base.html:37
+msgid "Recent entries"
+msgstr ""
+
+#: templates/zinnia/base.html:41
+msgid "Popular entries"
+msgstr ""
+
+#: templates/zinnia/base.html:45
+msgid "Archives"
+msgstr "ארכיון"
+
+#: templates/zinnia/base.html:50
+msgid "Tools"
+msgstr "כלים"
+
+#: templates/zinnia/base.html:54 templates/zinnia/base.html.py:55
+msgid "Dashboard"
+msgstr ""
+
+#: templates/zinnia/base.html:61 templates/zinnia/base.html.py:62
+msgid "Post an entry"
+msgstr "פרסם/י רשומה"
+
+#: templates/zinnia/base.html:69 templates/zinnia/base.html.py:70
+msgid "Log out"
+msgstr "התנתק/י"
+
+#: templates/zinnia/entry_detail_base.html:22
+msgid "RSS Feed of discussions on"
+msgstr ""
+
+#: templates/zinnia/entry_detail_base.html:24
+msgid "RSS Feed of comments on"
+msgstr ""
+
+#: templates/zinnia/entry_detail_base.html:26
+msgid "RSS Feed of pingbacks on"
+msgstr ""
+
+#: templates/zinnia/entry_detail_base.html:28
+msgid "RSS Feed of trackbacks on"
+msgstr ""
+
+#: templates/zinnia/entry_detail_base.html:46
+#: templates/zinnia/entry_detail_base.html:47
+msgid "Edit the entry"
+msgstr "ערוך/ערכי רשומה"
+
+#~ msgid "Meta Description"
+#~ msgstr ""
+#~ "כיום, כ-100 מבין חברי הכנסת ה-20 פעילים בפייסבוק באופן קבוע. אנו מרכזים "
+#~ "את כל מה שחברי הכנסת כותבים, ועוזרים לך לקחת חלק בשיחה. פרויקט של הסדנא "
+#~ "לידע ציבורי."

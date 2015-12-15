@@ -46,7 +46,6 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.humanize',
 
-
     # Third-Party
     'django_comments',
     'rest_framework',
@@ -78,6 +77,7 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'solid_i18n.middleware.SolidLocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -86,9 +86,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pagination.middleware.PaginationMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
 )
-
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
@@ -119,11 +117,27 @@ DATABASES = {
     }
 }
 
+# Default language, that will be used for requests without language prefix
 LANGUAGE_CODE = 'he'
 
-TIME_ZONE = 'Asia/Jerusalem'
+# supported languages
+LANGUAGES = (
+    ('he', 'Hebrew'),
+    ('en', 'English'),
+    ('ar', 'Arabic'),
+)
 
+# enable django translation
 USE_I18N = True
+
+# Optional. If you want to use redirects, set this to True
+SOLID_I18N_USE_REDIRECTS = False
+
+LOCALE_PATHS = (
+    sub_path("locale"),
+)
+
+TIME_ZONE = 'Asia/Jerusalem'
 
 USE_L10N = True
 
@@ -132,13 +146,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-#Django-planet settings
+# Django-planet settings
 PLANET = {
     "USER_AGENT": "Kikar-Hamedina Planet/1.0"
 }
 
 SITE_ID = 1
-
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -147,7 +160,6 @@ TEMPLATE_LOADERS = (
 
 LANGUAGE_COOKIE_NAME = "he"
 SESSION_COOKIE_NAME = "myplanetid"
-
 
 CURRENT_KNESSET_NUMBER = 20
 CURRENT_ELECTED_KNESSET_NUMBER = CURRENT_KNESSET_NUMBER + 1
