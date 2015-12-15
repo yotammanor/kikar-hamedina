@@ -1,6 +1,9 @@
 {% extends "core/facebook_statuses_page.html" %}
 
-{% block title %}דף הבית{% endblock title %}
+{% load i18n %}
+{% block title %}
+    {% blocktrans %}Home Page{% endblocktrans %}
+{% endblock title %}
 
 {% block h1 %}
     <div class="main-page-frame col-lg-12">
@@ -8,17 +11,17 @@
              style="max-width: 100%; height:auto">
     </div>
     <div class="main-page-frame col-lg-12">
-        <h1>חברי הכנסת ברשתות החברתיות</h1>
+        <h1>{% blocktrans %}Israeli MKs on Social Media{% endblocktrans %}</h1>
     </div>
 {% endblock %}
 
 {% block context-header %}
-    <div class="alert alert-warning alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
-                class="sr-only">Close</span></button>
-        <strong>האתר עדיין בגרסת בטא.</strong> אם מצאת טעויות או פערים במידע, נשמח <a
-            href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - דיווח על תקלה">לשמוע על כך!</a>
-    </div>
+{#    <div class="alert alert-warning alert-dismissible" role="alert">#}
+{#        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span#}
+{#                class="sr-only">Close</span></button>#}
+{#        <strong>האתר עדיין בגרסת בטא.</strong> אם מצאת טעויות או פערים במידע, נשמח <a#}
+{#            href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - דיווח על תקלה">לשמוע על כך!</a>#}
+{#    </div>#}
     <div class="container main-page-frame">
     </div>
 {% endblock %}
