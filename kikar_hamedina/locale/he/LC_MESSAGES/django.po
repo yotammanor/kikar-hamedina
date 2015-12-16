@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-15 18:00+0200\n"
-"PO-Revision-Date: 2015-12-15 18:01+0200\n"
+"POT-Creation-Date: 2015-12-15 18:57+0200\n"
+"PO-Revision-Date: 2015-12-15 19:51+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -18,6 +18,63 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.6\n"
 
+#: core/templates/core/date_filter.html:3
+msgid "Filter By Date:"
+msgstr "סינון לפי תאריך:"
+
+#: core/templates/core/date_filter.html:7
+#, fuzzy
+#| msgid ""
+#| "Simple Filtering is disabled when advanced filtering is\n"
+#| "                activated"
+msgid "Simple Filtering is disabled when advanced filtering is activated"
+msgstr "הסינון הפשוט אינו פעיל בעת שימוש בסינון מתקדם"
+
+#: core/templates/core/date_filter.html:14
+msgid "Default Filter"
+msgstr "סינון ברירת מחדל"
+
+#: core/templates/core/date_filter.html:16
+msgid "No Filter"
+msgstr "ללא סינון"
+
+#: core/templates/core/date_filter.html:23
+msgid "Last 24 Hours"
+msgstr "ביממה האחרונה"
+
+#: core/templates/core/date_filter.html:29
+msgid "During"
+msgstr "במהלך"
+
+#: core/templates/core/date_filter.html:33
+msgid "(Starting midnight)"
+msgstr "(החל מחצות)"
+
+#: core/templates/core/date_filter.html:38
+msgid "Last Week"
+msgstr "בשבוע האחרון"
+
+#: core/templates/core/date_filter.html:44
+msgid "Last Two Weeks"
+msgstr "בשבועיים האחרונים"
+
+#: core/templates/core/date_filter.html:49
+msgid "Last Month"
+msgstr "בחודש האחרון"
+
+#: core/templates/core/date_filter.html:55
+#: core/templates/core/date_filter.html:61
+msgid "During "
+msgstr "במהלך"
+
+#: core/templates/core/date_filter.html:68
+msgid "During 20th Knesset Election Campaign"
+msgstr "במהלך הבחירות לכנסת ה-20"
+
+#: core/templates/core/date_filter.html:74
+msgid "During \"Protective Edge\""
+msgstr "במהלך צוק איתן"
+
 #: core/templates/core/homepage_all_statuses.html:5
 msgid "Home Page"
 msgstr "דף הבית"
@@ -25,6 +82,22 @@ msgstr "דף הבית"
 #: core/templates/core/homepage_all_statuses.html:14
 msgid "Israeli MKs on Social Media"
 msgstr "חברי הכנסת ברשתות החברתיות"
+
+#: core/templates/core/order_by_options.html:3
+msgid "By Date"
+msgstr "לפי תאריך"
+
+#: core/templates/core/order_by_options.html:6
+msgid "By Number of Likes"
+msgstr "לפי מספר לייקים"
+
+#: core/templates/core/order_by_options.html:10
+msgid "By Number of Comments"
+msgstr "לפי מספר תגובות"
+
+#: core/templates/core/order_by_options.html:13
+msgid "Other"
+msgstr "אחר"
 
 #: kikartags/models.py:31
 msgid "Tag"
@@ -36,39 +109,39 @@ msgstr "תגיות"
 
 #: knesset/utils.py:117
 msgid "Open Knesset requires attention"
-msgstr ""
+msgstr "כנסת פתוחה דורשת את תשומת לבך"
 
 #: links/admin.py:21
 msgid "Content"
-msgstr ""
+msgstr "Content"
 
 #: links/models.py:16 links/models.py:36
 msgid "title"
-msgstr ""
+msgstr "כותרת"
 
 #: links/models.py:20
 msgid "link type"
-msgstr ""
+msgstr "סוג קישור"
 
 #: links/models.py:21
 msgid "link types"
-msgstr ""
+msgstr "סוגי קישור"
 
 #: links/models.py:38
 msgid "content type"
-msgstr ""
+msgstr "content type"
 
 #: links/models.py:40
 msgid "object ID"
-msgstr ""
+msgstr "object ID"
 
 #: links/models.py:47
 msgid "link"
-msgstr ""
+msgstr "קישור"
 
 #: links/models.py:48
 msgid "links"
-msgstr ""
+msgstr "קישורים"
 
 #: mks/models.py:20 persons/models.py:28
 msgid "Male"
@@ -93,7 +166,7 @@ msgstr "תאריך הסיום"
 #: mks/models.py:60 polyorg/models.py:28
 #, python-format
 msgid "Knesset %(number)d"
-msgstr ""
+msgstr "הכנסת ה-%(number)d"
 
 #: mks/models.py:87
 msgid "Party"
@@ -106,7 +179,7 @@ msgstr "מפלגות"
 #: mks/models.py:105
 #, python-format
 msgid "%(name)s in Knesset %(number)d"
-msgstr ""
+msgstr "%(name)s במהלך הכנסת ה-%(number)d"
 
 #: mks/models.py:155
 msgid "Coalition"
@@ -118,11 +191,11 @@ msgstr "אופוזיציה"
 
 #: mks/models.py:200 persons/models.py:48
 msgid "an accurate place of residence (for example, an address"
-msgstr ""
+msgstr "כתובת מגורים מדויקת (למשל, כתובת)"
 
 #: mks/models.py:201 persons/models.py:49
 msgid "a general area of residence (for example, \"the negev\""
-msgstr ""
+msgstr "כתובת מגורים כללית (למשל, \"הנגב\")"
 
 #: mks/models.py:240
 msgid "Member"
@@ -134,27 +207,27 @@ msgstr "חברי כנסת"
 
 #: mks/models.py:378
 msgid "Coalition Member (female)"
-msgstr ""
+msgstr "חברת קואליציה"
 
 #: mks/models.py:380
 msgid "Opposition Member (female)"
-msgstr ""
+msgstr "חברת אופוזיציה"
 
 #: mks/models.py:383
 msgid "Coalition Member (male)"
-msgstr ""
+msgstr "חבר קואליציה"
 
 #: mks/models.py:385
 msgid "Opposition Member (male)"
-msgstr ""
+msgstr "חבר אופוזיציה"
 
 #: mks/models.py:388
 msgid "Past Member (female)"
-msgstr ""
+msgstr "חברת כנסת לשעבר"
 
 #: mks/models.py:390
 msgid "Past Member (male)"
-msgstr ""
+msgstr "חבר כנסת לשעבר"
 
 #: mks/models.py:409
 msgid "Minister"
@@ -162,20 +235,21 @@ msgstr "שר/ה"
 
 #: persons/models.py:63
 msgid "Person"
-msgstr ""
+msgstr "אדם"
 
 #: persons/models.py:64
 msgid "Persons"
-msgstr ""
+msgstr "בני-אדם"
 
 #: persons/models.py:119
 #, python-brace-format
 msgid "{person} serverd as {text} in {org} from {start_date} to {end_date}"
 msgstr ""
+"{person} שירת בתור {text} בארגון {org} החל מ-{start_date} עד {end_date}"
 
 #: polyorg/models.py:20
 msgid "Elected Knesset number"
-msgstr ""
+msgstr "מספר כנסת המועמדת לבחירות"
 
 #: polyorg/models.py:23
 msgid "Election date"
@@ -195,11 +269,11 @@ msgstr "הרשימה עמה נחתם הסכם עודפים"
 
 #: polyorg/models.py:43
 msgid "MPG report"
-msgstr ""
+msgstr "MPG report"
 
 #: polyorg/models.py:44
 msgid "The MPG report on the list, can use html"
-msgstr ""
+msgstr "The MPG report on the list, can use html"
 
 #: polyorg/models.py:46
 msgid "YouTube user"
@@ -215,19 +289,19 @@ msgstr "חשבון Twitter"
 
 #: polyorg/models.py:50
 msgid "Platform"
-msgstr ""
+msgstr "פלטפורמה"
 
 #: polyorg/models.py:113
 msgid "Ordinal"
-msgstr ""
+msgstr "מיקום ברשימה"
 
 #: polyorg/models.py:114
 msgid "Elected by #"
-msgstr ""
+msgstr "מספר בוחרים"
 
 #: polyorg/models.py:115
 msgid "How many people voted for this person"
-msgstr ""
+msgstr "מספר האנשים שהצביעו בעד המועמד"
 
 #: templates/layouts/generic-template.html:9
 msgid ""
@@ -250,83 +324,83 @@ msgstr "| כיכר המדינה"
 msgid "Kikar Hamedina"
 msgstr "כיכר המדינה"
 
-#: templates/layouts/generic-template.html:139
+#: templates/layouts/generic-template.html:138
 msgid "Knesset Member, Party, a Subject discussed, or any keyword..."
 msgstr "חבר/ת כנסת, מפלגה, נושא, או מילות מפתח"
 
-#: templates/layouts/generic-template.html:155
-#: templates/layouts/generic-template.html:193
+#: templates/layouts/generic-template.html:154
+#: templates/layouts/generic-template.html:192
 msgid "Billboards"
 msgstr "המצעד"
 
-#: templates/layouts/generic-template.html:160
-#: templates/layouts/generic-template.html:198
+#: templates/layouts/generic-template.html:159
+#: templates/layouts/generic-template.html:197
 msgid "About"
 msgstr "אודות"
 
-#: templates/layouts/generic-template.html:166
-#: templates/layouts/generic-template.html:204
+#: templates/layouts/generic-template.html:165
+#: templates/layouts/generic-template.html:203
 msgid "Donate"
 msgstr "תרומה"
 
-#: templates/layouts/generic-template.html:173
-#: templates/layouts/generic-template.html:210
+#: templates/layouts/generic-template.html:172
+#: templates/layouts/generic-template.html:209
 msgid "Tagging"
 msgstr "תיוג"
 
-#: templates/layouts/generic-template.html:178
-#: templates/layouts/generic-template.html:215
+#: templates/layouts/generic-template.html:177
+#: templates/layouts/generic-template.html:214
 msgid "Blog"
 msgstr "בלוג"
 
-#: templates/layouts/generic-template.html:187
+#: templates/layouts/generic-template.html:186
 msgid "Options"
 msgstr "אפשרויות"
 
 #: templates/zinnia/_entry_detail_base.html:17
 msgid "Written by"
-msgstr ""
+msgstr "נכתב ע\"י"
 
 #: templates/zinnia/_entry_detail_base.html:21
 #, python-format
 msgid "Show all %(author)s's entries"
-msgstr ""
+msgstr "הצג את כל הרשומות מאת %(author)s"
 
 #: templates/zinnia/_entry_detail_base.html:23
 msgctxt "on date"
 msgid "on"
-msgstr ""
+msgstr "בתאריך [ on date ]"
 
 #: templates/zinnia/_entry_detail_base.html:25
 msgid "Written on"
-msgstr ""
+msgstr "נכתב אודות"
 
 #: templates/zinnia/_entry_detail_base.html:35
 msgid "in"
-msgstr ""
+msgstr "בתוך"
 
 #: templates/zinnia/_entry_detail_base.html:38
 #, python-format
 msgid "Show all entries in %(category)s"
-msgstr ""
+msgstr "כל הרשומות בקטגוריה %(category)s"
 
 #: templates/zinnia/_entry_detail_base.html:46
 msgid "Last update on"
-msgstr ""
+msgstr "עודכן לאחרונה ב-"
 
 #: templates/zinnia/_entry_detail_base.html:51
 msgid "Short url"
-msgstr ""
+msgstr "קישור מקוצר"
 
 #: templates/zinnia/_entry_detail_base.html:53
 #, python-format
 msgid "Short URL to %(object)s"
-msgstr ""
+msgstr "קישור מקוצר ל-%(object)s"
 
 #: templates/zinnia/_entry_detail_base.html:88
 #, python-format
 msgid "%(percent)s%% of %(object)s still remains to read."
-msgstr ""
+msgstr "%(percent)s%% שנותר לקרוא מתוך %(object)s"
 
 #: templates/zinnia/_entry_detail_base.html:90
 msgid "Continue reading"
@@ -334,11 +408,11 @@ msgstr "המשך/המשיכי לקרוא"
 
 #: templates/zinnia/base.html:12 templates/zinnia/base.html.py:28
 msgid "RSS Feed of latest entries"
-msgstr ""
+msgstr "עדכוני RSS לרשומות האחרונות"
 
 #: templates/zinnia/base.html:29
 msgid "RSS Feed"
-msgstr ""
+msgstr "עדכוני RSS"
 
 #: templates/zinnia/base.html:33
 msgid "Calendar"
@@ -346,11 +420,11 @@ msgstr "לוח שנה"
 
 #: templates/zinnia/base.html:37
 msgid "Recent entries"
-msgstr ""
+msgstr "רשומות אחרונות"
 
 #: templates/zinnia/base.html:41
 msgid "Popular entries"
-msgstr ""
+msgstr "רשומות פופולאריות"
 
 #: templates/zinnia/base.html:45
 msgid "Archives"
@@ -362,7 +436,7 @@ msgstr "כלים"
 
 #: templates/zinnia/base.html:54 templates/zinnia/base.html.py:55
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 #: templates/zinnia/base.html:61 templates/zinnia/base.html.py:62
 msgid "Post an entry"
@@ -374,24 +448,30 @@ msgstr "התנתק/י"
 
 #: templates/zinnia/entry_detail_base.html:22
 msgid "RSS Feed of discussions on"
-msgstr ""
+msgstr "עדכוני RSS לדיונים על"
 
 #: templates/zinnia/entry_detail_base.html:24
 msgid "RSS Feed of comments on"
-msgstr ""
+msgstr "עדכוני RSS לתגובות על"
 
 #: templates/zinnia/entry_detail_base.html:26
 msgid "RSS Feed of pingbacks on"
-msgstr ""
+msgstr "RSS Feed of pingbacks on"
 
 #: templates/zinnia/entry_detail_base.html:28
 msgid "RSS Feed of trackbacks on"
-msgstr ""
+msgstr "RSS Feed of trackbacks on"
 
 #: templates/zinnia/entry_detail_base.html:46
 #: templates/zinnia/entry_detail_base.html:47
 msgid "Edit the entry"
 msgstr "ערוך/ערכי רשומה"
+
+#~ msgid ""
+#~ "\n"
+#~ "            By Number of Likes\n"
+#~ "        "
+#~ msgstr "לפי מספר לייקים"
 
 #~ msgid "Meta Description"
 #~ msgstr ""

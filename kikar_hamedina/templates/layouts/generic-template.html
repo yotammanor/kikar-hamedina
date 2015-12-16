@@ -71,22 +71,23 @@
         <script id="result-member-list-item-template" type="text/x-handlebars-template">
 
             <li class="result-container">
-                <a href="/member/{{ id }}">
+                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/member/{{ id }}">
                     <div class="result-main-text"><span class="glyphicon glyphicon-user"></span> {{ name }}</div>
                     <div class="result-sub-text">{{ party }}</div>
+                    <div class="result-sub-text"></div>
                 </a>
             </li>
         </script>
         <script id="result-tag-list-item-template" type="text/x-handlebars-template">
             <li class="result-container">
-                <a href="/tag/name/{{ name }}">
+                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/tag/name/{{ name }}">
                     <div class="result-main-text"><span class="glyphicon glyphicon-tag"></span> {{ name }}</div>
                 </a>
             </li>
         </script>
         <script id="result-party-list-item-template" type="text/x-handlebars-template">
             <li class="result-container">
-                <a href="/party/{{ id }}">
+                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/party/{{ id }}">
                     <div class="result-main-text"><i class="fa fa-group"></i> {{ name }}</div>
                 </a>
             </li>
