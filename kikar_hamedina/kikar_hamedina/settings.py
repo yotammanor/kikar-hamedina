@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
 
     # Third-Party
+    'actstream',
     'django_comments',
     'rest_framework',
     'django_extensions',
@@ -74,6 +75,11 @@ INSTALLED_APPS = (
     'reporting',
     'polyorg',
 )
+
+MIGRATION_MODULES = {
+    # key: app name, value: a fully qualified package name, not the usual `app_label.something_else`
+    'actstream': 'kikar_hamedina.migrations.actstream',
+}
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -146,7 +152,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-#Django-planet settings
+# Django-planet settings
 # PLANET = {
 #     "USER_AGENT": "Kikar-Hamedina Planet/1.0"
 # }

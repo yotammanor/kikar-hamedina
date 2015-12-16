@@ -38,10 +38,13 @@ nose
 django-nose
 pillow
 feedparser
+django-mailer
+django-activity-stream==0.6.0
 django-pagination==1.0.7
 django-tagging==0.3.6
-django-planet==0.8.3
--e git://github.com/hasadna/django-activity-stream.git@c56a07921b8c796fce35bda6feab4610fdf64e5d#egg=django-activity-stream
--e git://github.com/pinax/django-mailer.git#egg=django-mailer
+
+#django-planet==0.8.3
+#-e git://github.com/hasadna/django-activity-stream.git@c56a07921b8c796fce35bda6feab4610fdf64e5d#egg=django-activity-stream
+#-e git://github.com/pinax/django-mailer.git#egg=django-mailer
 #-e git+https://github.com/mozilla/unicode-slugify.git#egg=unicode-slugify
 #-e git://github.com/hasadna/django-planet.git@7a66a954b231391f2ac76e97f2a469f69fd29037#egg=django-planet
