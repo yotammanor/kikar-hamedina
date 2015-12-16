@@ -9,7 +9,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('planet', '__first__'),
     ]
 
     operations = [
@@ -76,7 +75,6 @@ class Migration(migrations.Migration):
                 ('average_weekly_presence_hours', models.FloatField(null=True, blank=True)),
                 ('average_monthly_committee_presence', models.FloatField(null=True, blank=True)),
                 ('backlinks_enabled', models.BooleanField(default=True)),
-                ('blog', models.OneToOneField(null=True, blank=True, to='planet.Blog')),
             ],
             options={
                 'ordering': ['name'],

@@ -58,7 +58,7 @@ INSTALLED_APPS = (
     'mptt',
     'zinnia',
     'endless_pagination',
-    'planet',
+    # 'planet',
     'links',
     'video',
     'polymorphic',
@@ -98,7 +98,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
-    "planet.context_processors.context",
+    # "planet.context_processors.context",
     "core.context_processors.generic",
     "zinnia.context_processors.version",
 )
@@ -146,10 +146,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-# Django-planet settings
-PLANET = {
-    "USER_AGENT": "Kikar-Hamedina Planet/1.0"
-}
+#Django-planet settings
+# PLANET = {
+#     "USER_AGENT": "Kikar-Hamedina Planet/1.0"
+# }
 
 SITE_ID = 1
 
