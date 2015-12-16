@@ -23,7 +23,7 @@ class ExcludedStatusesAdminTabularInline(admin.TabularInline):
 
 
 class CustomUserAdmin(UserAdmin):
-    inlines = (WeeklyReportRecipientInline, KeywordAdminTabularInline, ExcludedStatusesAdminTabularInline)
+    inlines = UserAdmin.inlines + [WeeklyReportRecipientInline]
 
 
 admin.site.unregister(User)
