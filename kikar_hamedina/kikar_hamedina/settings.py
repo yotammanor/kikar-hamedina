@@ -25,10 +25,32 @@ STATICFILES_DIRS = (
     sub_path('static'),
 )
 
-# Configuring TEMPLATE_DIRS
-TEMPLATE_DIRS = (
-    sub_path("templates"),
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # Configuring TEMPLATE_DIRS
+        'DIRS': [
+            sub_path("templates"),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                "django.contrib.auth.context_processors.auth",
+                "django.core.context_processors.debug",
+                "django.core.context_processors.i18n",
+                "django.core.context_processors.media",
+                "django.core.context_processors.request",
+                "django.core.context_processors.static",
+                "django.core.context_processors.tz",
+                "django.core.context_processors.request",
+                "django.contrib.messages.context_processors.messages",
+                # "planet.context_processors.context",
+                "core.context_processors.generic",
+                "zinnia.context_processors.version",
+            ],
+        },
+    },
+]
 
 SECRET_KEY = 'yz2HiIDgrCDeHSfJSXIep3FeEQun!VhLXNCZ'  # This secret key SHOULD be over-run by a local_settings parameter.
 
@@ -94,21 +116,6 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.request",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.core.context_processors.request",
-    "django.contrib.messages.context_processors.messages",
-    # "planet.context_processors.context",
-    "core.context_processors.generic",
-    "zinnia.context_processors.version",
-)
-
 ROOT_URLCONF = 'kikar_hamedina.urls'
 
 WSGI_APPLICATION = 'kikar_hamedina.wsgi.application'
@@ -159,10 +166,6 @@ MEDIA_URL = '/media/'
 
 SITE_ID = 1
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
 
 LANGUAGE_COOKIE_NAME = "he"
 SESSION_COOKIE_NAME = "myplanetid"
