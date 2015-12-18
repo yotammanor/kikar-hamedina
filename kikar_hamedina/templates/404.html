@@ -1,18 +1,26 @@
-<!DOCTYPE html>
+{% extends "layouts/generic-template.html" %}
 {% load i18n %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>ERROR 404</title>
-</head>
-<body>
-<div>
-    <img src="{{ STATIC_URL }}media/kikar_hamedina_logo.png" class="logo-photo"
-         alt="{% trans 'Kikar Hamedina' %}">
-    <p>Sorry, The page your requested was not found.<br>
-        If you think this page should exist, please contact <a
-                href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - עמוד לא נמצא">The system Administrator</a>
-    </p>
-</div>
-</body>
-</html>
+{% block title %}
+    עמוד לא נמצא
+{% endblock title %}
+
+
+
+{% block h1 %}
+    עמוד לא נמצא
+{% endblock h1 %}
+
+{% block context-header %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <strong>העמוד שחיפשת לא נמצא.</strong>
+        אם נדמה לך שהעמוד שחיפשת צריך להיות קיים, נשמח
+        <a
+                href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - עמוד חסר">לשמוע על כך!</a>
+    </div>
+{% endblock context-header %}
+
+{% block main_content %}
+{% endblock main_content %}
+
