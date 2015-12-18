@@ -347,9 +347,11 @@ class FacebookStatusDetailView(DetailView):
     model = Facebook_Status
     slug_field = 'status_id'
 
-    def get_queryset(self, **kwargs):
+    def get_object(self, queryset=None):
         return get_object_or_404(Facebook_Status, status_id=self.kwargs['slug'])
-        # return Facebook_Status.objects_no_filters.filter()
+
+    def get_queryset(self, **kwargs):
+        return Facebook_Status.objects_no_filters.all()
 
     def get_context_data(self, **kwargs):
         context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
