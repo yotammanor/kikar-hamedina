@@ -1,14 +1,20 @@
 # This file defines parameters for the specific server deployment
 # It must define (directly or via import):
 # SECRET_KEY, FACEBOOK_SECRET_KEY and FACEBOOK_APP_ID
-DEBUG = True
 
-TEMPLATE_DEBUG = True
+import os
 
-TEMPLATE_STRING_IF_INVALID = "INVALID EXPRESSION: %s"
+DEBUG = False
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+sub_path = lambda *x: os.path.join(PROJECT_ROOT, *x)
 
-FACEBOOK_SECRET_KEY = 'YOUR_FACEBOOK_SECRET_KEY'
+
+SECRET_KEY = 'ReplaceThisTextWithARandomStringOfCharactersOfAllKinds&Shap3s!'
+
+
 FACEBOOK_APP_ID = 'YOUR_FACEBOOK_APP_ID'
+FACEBOOK_SECRET_KEY = 'YOUR_FACEBOOK_SECRET_KEY'
+FACEBOOK_API_VERSION = 'v2.5'
 
 
 EMAIL_PORT = 587
@@ -16,3 +22,34 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'your@gmail.com'
 EMAIL_HOST_PASSWORD = 'YourPassword'
 EMAIL_USE_TLS = True
+
+
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # Configuring TEMPLATE_DIRS
+        'DIRS': [
+            sub_path("templates"),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'debug': DEBUG,  # This can be set as a different True/False value of choice
+            'context_processors': [
+                "django.contrib.auth.context_processors.auth",
+                "django.core.context_processors.debug",
+                "django.core.context_processors.i18n",
+                "django.core.context_processors.media",
+                "django.core.context_processors.request",
+                "django.core.context_processors.static",
+                "django.core.context_processors.tz",
+                "django.core.context_processors.request",
+                "django.contrib.messages.context_processors.messages",
+                # "planet.context_processors.context",
+                "core.context_processors.generic",
+                "zinnia.context_processors.version",
+            ],
+            'string_if_invalid': "INVALID EXPRESSION: %s",
+        },
+    },
+]
