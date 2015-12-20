@@ -1,6 +1,9 @@
 {% extends "core/facebook_statuses_page.html" %}
 
 {% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+
 {% block title %}
     {% blocktrans %}Home Page{% endblocktrans %}
 {% endblock title %}
