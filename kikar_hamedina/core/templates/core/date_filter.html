@@ -30,9 +30,9 @@
         <a href="#">
             {% blocktrans %}During{% endblocktrans %}
             {% now "j" %}
-            ל
-        {% now "F" %}
-        {% blocktrans %}(Starting midnight){% endblocktrans %}
+            {% trans 'Of' %}
+            {% now "F" %}
+            {% blocktrans %}(Starting midnight){% endblocktrans %}
         </a>
     </li>
     <li data-range="week" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
