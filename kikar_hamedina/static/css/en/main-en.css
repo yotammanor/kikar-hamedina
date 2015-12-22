@@ -162,6 +162,10 @@ body {
 
 /* RSS Widget Styles*/
 
-. item-desctiption {
+.item-desctiption {
     color: green;
+}
+
+.attachment-container-en {
+    width: 100%;
 }
