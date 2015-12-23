@@ -151,7 +151,7 @@
             {% endfor %}
 			</span>
 
-                <div class="pull-left">
+                <div class="pull-{% if LANGUAGE_BIDI %}left{% else %}right{% endif %}">
 
                     <!-- Button trigger modal -->
                     <button class="btn btn-link btn-sm" data-toggle="modal"
