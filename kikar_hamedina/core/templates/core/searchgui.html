@@ -15,25 +15,26 @@
 {% block handlebar_templates %}
     {% verbatim %}
         <script id="search-gui-result-list-item-template" type="text/x-handlebars-template">
-            <a href="#" class="list-group-item" id="{{ type }}{{ id }}" data-name="{{ name }}" data-type="{{ type }}"
-               data-id="{{ id }}" data-icon="{{ icon }}">
-                <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
-                <span class="badge hidden-badge"><i
-                        class="fa fa-arrow-{% endverbatim %}{% if LANGUAGE_BIDI %}left{% else %}right{% endif %}{% verbatim %}"></i></span>
-                {{ name }}
-            </a>
-        </script>
+        <a href="#" class="list-group-item" id="{{ type }}{{ id }}" data-name="{{ name }}" data-type="{{ type }}"
+           data-id="{{ id }}" data-icon="{{ icon }}">
+        <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
+        <span class="badge hidden-badge"><i
+        class="fa fa-arrow-{% endverbatim %}{% if LANGUAGE_BIDI %}left{% else %}right{% endif %}{% verbatim %}"></i>
+    </span>
+    {{ name }}
+    </a>
+    </script>
 
-        <script id="search-gui-added-list-item-template" type="text/x-handlebars-template">
-            <a href="#" class="list-group-item" id="{{ type }}{{ id }}">
-                <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
+    <script id="search-gui-added-list-item-template" type="text/x-handlebars-template">
+        <a href="#" class="list-group-item" id="{{ type }}{{ id }}">
+            <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
             <span class="badge hidden-badge result-info" data-id="{{ id }}" data-type="{{ type }}"
                   data-name="{{ name }}"><i class="fa fa-times"></i></span>
-                {{ name }}
-            </a>
-        </script>
+            {{ name }}
+        </a>
+    </script>
 
-    {% endverbatim %}
+{% endverbatim %}
 {% endblock %}
 
 {% block main_content %}
@@ -68,7 +69,8 @@
                                 {% include 'core/save_query_modal.html' %}
                             {% endif %}
                         </div>
-                        <div class="container" id="modifiers-container">
+                        <div class="container {% if not LANGUAGE_BIDI %}attachment-container-en{% endif %}"
+                             id="modifiers-container">
                             <div class="col-md-12 input-group" id="searchgui-order-by-input">
                                 <div class="col-md-1"><span><b>{% trans 'Order' %}:</b></span></div>
                                 <div class="col-md-7">
