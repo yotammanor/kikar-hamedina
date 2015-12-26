@@ -10,7 +10,7 @@ body {
 
 /* navbar */
 .photo-container {
-    padding: 3px 15px 9px 10px;
+    padding: 3px 10px 9px 15px;
 }
 
 .logo-photo {
@@ -40,11 +40,11 @@ body {
 }
 
 .profile-photo {
-    align-items: right;
+    align-items: left;
 }
 
 #profile-photo {
-    margin-left: 20px;
+    margin-right: 20px;
 }
 
 @media (min-width: 768px) {
@@ -52,21 +52,6 @@ body {
         width: 50%;
     }
 }
-
-/*
-.logo-photo:hover {
-	width: 79px;
-}
-*/
-/*.navbar-options {
-    margin-top: 9px;
-}*/
-
-/*
-.navbar-brand {
-    color: #fff !important;
-}
-*/
 
 #date-row-container {
     height: 20px;
@@ -83,10 +68,6 @@ body {
 #profile-photo {
     max-height: 300px;
 }
-
-/*#politicians-dropdown-menu {
-	min-width: 1000px;
-} */
 
 .link-on-blue {
     color: white;
@@ -115,12 +96,7 @@ body {
 }
 
 .main-page-frame {
-    /*background-color: cadetblue;*/
-    /*border-style: solid;*/
-    /*border-color: #000000;*/
-    /*border-width: 1px;*/
-    /*align-content: center;*/
-    /*align-items: center;*/
+
     text-align: center;
     padding: 0;
 }
@@ -162,7 +138,7 @@ body {
 
 /* RSS Widget Styles*/
 
-.item-desctiption {
+.item-description {
     color: green;
 }
 

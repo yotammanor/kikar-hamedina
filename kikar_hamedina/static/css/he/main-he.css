@@ -47,21 +47,6 @@ body {
     margin-left: 20px;
 }
 
-/*
-.logo-photo:hover {
-	width: 79px;
-}
-*/
-/*.navbar-options {
-    margin-top: 9px;
-}*/
-
-/*
-.navbar-brand {
-    color: #fff !important;
-}
-*/
-
 #date-row-container {
     height: 20px;
 }
@@ -109,12 +94,6 @@ body {
 }
 
 .main-page-frame {
-    /*background-color: cadetblue;*/
-    /*border-style: solid;*/
-    /*border-color: #000000;*/
-    /*border-width: 1px;*/
-    /*align-content: center;*/
-    /*align-items: center;*/
     text-align: center;
     padding: 0;
 }
@@ -158,6 +137,6 @@ body {
 
 /* RSS Widget Styles*/
 
-. item-desctiption {
+.item-description {
     color: green;
 }
