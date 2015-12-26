@@ -1,6 +1,6 @@
 {% extends "core/facebook_statuses_page.html" %}
-
-{% block title %}{{ search_title }}{% blocktrans %}Search Results{% endblocktrans %} |  {% endblock title %}
+{% load i18n %}
+{% block title %}{{ search_title }} | {% blocktrans %}Search Results{% endblocktrans %}{% endblock title %}
 
 {% block h1 %}
     <i class="fa fa-search"></i></br>

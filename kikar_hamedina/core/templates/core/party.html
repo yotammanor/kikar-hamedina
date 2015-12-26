@@ -1,7 +1,7 @@
 {% extends "core/facebook_statuses_page.html" %}
 
 {% load i18n %}
-{% block title %}{{ object.name }} {% trans 'Party' %} | {% endblock title %}
+{% block title %}{{ object.name }} | {% trans 'Party' %}{% endblock title %}
 
 {% block h1 %}
     <i class="fa fa-group"></i> {{ object.name }}
