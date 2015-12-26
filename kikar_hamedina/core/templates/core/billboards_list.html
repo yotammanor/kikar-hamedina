@@ -1,9 +1,9 @@
 {% extends "layouts/generic-template.html" %}
-
-{% block title %}המצעד{% endblock title %}
+{% load i18n %}
+{% block title %}{% trans 'Billboards' %}{% endblock title %}
 
 {% block h1 %}
-    המצעד
+    {% trans 'Billboards' %}
 {% endblock %}
 
 {% block context-header %}
@@ -13,18 +13,10 @@
 
     {% load humanize %}
     {% load core_extras %}
-    {#{% load endless %}#}
-    {#{% paginate object_list %}#}
-
-
-
 
     {% for billboard in list_of_billboards %}
         <span class="col-lg-4">
             {% include "core/billboard.html" %}
         </span>
     {% endfor %}
-    {#{% show_more "טען עדכונים נוספים" "<span><i class='fa fa-spinner fa-spin'></i> טוען</span>"|escape %}#}
-
-
 {% endblock %}

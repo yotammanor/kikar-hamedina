@@ -1,4 +1,5 @@
 import sys
+from django.db.utils import IntegrityError
 from time import sleep
 import datetime
 import dateutil
@@ -52,6 +53,12 @@ class Command(BaseCommand):
                     dest='to-date',
                     default=None,
                     help='Specify date until which to update the statuses (exclusive) e.g. 2014-03-31'),
+        make_option('--feed-ids',
+                    action='store',
+                    type='string',
+                    dest='feed-ids',
+                    default=None,
+                    help='Specify particular feed ids you want to update comments for with list of ids (e.g. 51, 54)'),
         make_option('--update-deleted',
                     action='store_true',
                     dest='update-deleted',
@@ -156,9 +163,12 @@ class Command(BaseCommand):
         message_tags = comment_defaultdict['message_tags']
         published = datetime.datetime.strptime(comment_defaultdict['created_time'],
                                                '%Y-%m-%dT%H:%M:%S+0000').replace(tzinfo=timezone.utc)
-        comment_from_id = comment_defaultdict['from']['id']
-        comment_from_name = comment_defaultdict['from']['name']
-
+        try:
+            comment_from_id = comment_defaultdict['from']['id']
+            comment_from_name = comment_defaultdict['from']['name']
+        except TypeError as e:
+            comment_from_id = 1
+            comment_from_name = 'Anonymous Facebook User'
         facebook_user, created = Facebook_User.objects.get_or_create(facebook_id=comment_from_id)
         if created:
             print '\tCreate Commentator'
@@ -166,10 +176,25 @@ class Command(BaseCommand):
             facebook_user.save()
 
         print '\tCreate comment_object'
-        comment, created = Facebook_Status_Comment.objects.get_or_create(comment_id=comment_id,
-                                                                         published=published,
-                                                                         comment_from=facebook_user,
-                                                                         parent=parent_status_object)
+        try:
+            comment, created = Facebook_Status_Comment.objects.get_or_create(comment_id=comment_id,
+                                                                             published=published,
+                                                                             comment_from=facebook_user,
+                                                                             parent=parent_status_object)
+
+        except IntegrityError as e:
+            print u'in Current Data: comment_id: {}, parent_id: {}, feed_id: {}\n text:{}'.format(comment_id,
+                                                                                                  parent_status_object.status_id,
+                                                                                                  parent_status_object.feed.id,
+                                                                                                  content)
+            db_comment = Facebook_Status_Comment.objects.get(comment_id=comment_id)
+            print u'in DB: comment_id: {}, parent_id: {}, feed_id: {}\n text:{}'.format(db_comment.comment_id,
+                                                                                        db_comment.parent.status_id,
+                                                                                        db_comment.parent.feed.id,
+                                                                                        db_comment.content)
+            logger = logging.getLogger('django')
+            logger.warning('integrity error at {}'.format(comment_id))
+            return
         comment.parent = parent_status_object
         comment.comment_from = facebook_user
         comment.content = content
@@ -184,15 +209,30 @@ class Command(BaseCommand):
             '\tSaving comment attachment'
             # Define:
             attachment_defaultdict = defaultdict(lambda: None, comment_defaultdict['attachment'])
-            comment_attachment_src = attachment_defaultdict['media']['image']['src']
-            comment_attachment_width = attachment_defaultdict['media']['image']['width']
-            comment_attachment_height = attachment_defaultdict['media']['image']['height']
+            if attachment_defaultdict['media']:
+                try:
+                    comment_attachment_src = attachment_defaultdict['media']['image']['src']
+                except TypeError as e:
+                    print u'in Current Data: comment_id: {}, parent_id: {}, ' \
+                          u'feed_id: {}\n text:{}'.format(comment_id,
+                                                          parent_status_object.status_id,
+                                                          parent_status_object.feed.id,
+                                                          content)
+                    print '{}'.format(attachment_defaultdict)
+                    raise e
+                comment_attachment_width = attachment_defaultdict['media']['image']['width']
+                comment_attachment_height = attachment_defaultdict['media']['image']['height']
+            else:
+                comment_attachment_height = None
+                comment_attachment_width = None
+                comment_attachment_src = None
             comment_attachment_type = attachment_defaultdict['type']
             comment_attachment_name = attachment_defaultdict['title']
             comment_attachment_caption = attachment_defaultdict['caption']
             comment_attachment_description = attachment_defaultdict['description']
             comment_attachment_link = attachment_defaultdict['url']
-
+            if attachment_defaultdict['type'] == 'avatar':
+                comment_attachment_link = 'https://www.facebook.com/{}'.format(attachment_defaultdict['target']['id'])
             # Save:
             comment_attachment, created = Facebook_Status_Comment_Attachment.objects.get_or_create(comment=comment)
             comment_attachment.name = comment_attachment_name
@@ -268,13 +308,15 @@ class Command(BaseCommand):
         print 'Variable post_number_limit set to: {0}.'.format(post_number_limit)
 
         list_of_statuses = list()
-        # Case no args - fetch all feeds
+        # Case no args - fetch all statuses or by options
         if len(args) == 0:
             criteria = {}
-            if options['from-date'] is not None:
+            if options['from-date']:
                 criteria['published__gte'] = dateutil.parser.parse(options['from-date'])
-            if options['to-date'] is not None:
+            if options['to-date']:
                 criteria['published__lt'] = dateutil.parser.parse(options['to-date'])
+            if options['feed-ids']:
+                criteria['feed__id__in'] = options['feed-ids'].split(',')
             db_statuses = Facebook_Status.objects_no_filters.filter(**criteria).order_by('-published')
             list_of_statuses = list(db_statuses)
 
@@ -311,7 +353,8 @@ class Command(BaseCommand):
                 self.stdout.write(
                     'Successfully written {} comments for status: {}.'.format(len(comments_data['data']),
                                                                               status.status_id))
-                info_msg = "Successfully updated comments for status: {0}.".format(status.status_id)
+                info_msg = "Successfully updated comments for status: {0}.\t {1}".format(status.status_id,
+                                                                                         status.published)
 
             elif comments_data is None:  # Status deleted
                 if options['update-deleted']:

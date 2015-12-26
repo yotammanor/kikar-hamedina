@@ -54,7 +54,7 @@ class AboutUsView(ListView):
                              member.facebook_persona.feeds.filter(feed_type='PP')]
         context['number_of_mks'] = len(members_with_feed)
 
-        party_ids = [x['id'] for x in PARTY_MODEL.objects.all().values('id')]
+        party_ids = [x['id'] for x in PARTY_MODEL.current_knesset.all().values('id')]
 
         featured_party_id = choice(party_ids)
         context['featured_party'] = PARTY_MODEL.objects.get(id=featured_party_id)
@@ -79,8 +79,8 @@ class HotTopicsView(ListView):
         queryset = Tag.objects.filter(is_for_main_display=True,
                                       kikartags_taggeditem_items__object_id__in=[status.id for status in
                                                                                  relevant_statuses]).annotate(
-            number_of_posts=Count('kikartags_taggeditem_items')).order_by(
-            '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
+                number_of_posts=Count('kikartags_taggeditem_items')).order_by(
+                '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -154,10 +154,10 @@ class AllStatusesView(StatusListView):
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
         feeds = Facebook_Feed.objects.filter(
-            facebook_status__published__gte=(
-                datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
+                facebook_status__published__gte=(
+                    datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
         context['side_bar_list'] = MEMBER_MODEL.objects.filter(
-            id__in=[feed.persona.owner_id for feed in feeds]).distinct().order_by('name')
+                id__in=[feed.persona.owner_id for feed in feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
 
@@ -192,7 +192,7 @@ class SearchView(StatusListView):
         context['excluded'] = Facebook_Status.objects.filter(status_id__in=params_dict['excluded'])
 
         context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
-            x.name for x in context['tags'])
+                x.name for x in context['tags'])
 
         return_queryset = apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
         context['number_of_results'] = return_queryset.count()
@@ -252,7 +252,7 @@ class MemberView(StatusFilterUnifiedView):
             'entries': MemberView.objects.all(),
         }
         return render_to_response(
-            template, context, context_instance=RequestContext(request))
+                template, context, context_instance=RequestContext(request))
 
     def get_queryset(self, **kwargs):
         self.persona = get_object_or_404(MEMBER_MODEL, id=self.kwargs['id']).facebook_persona
@@ -280,13 +280,11 @@ class PartyView(StatusFilterUnifiedView):
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
-        order_by = get_order_by(self.request)
-        all_members_for_party = PARTY_MODEL.objects.get(id=search_string).current_members()
+        all_members_for_party = get_object_or_404(PARTY_MODEL, id=search_string).current_members()
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
-        date_range_Q = filter_by_date(request=self.request, datetime_field='published')
         return apply_request_params(
-            Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
+                Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
 
 
 class TagView(StatusFilterUnifiedView):
@@ -314,16 +312,17 @@ class TagView(StatusFilterUnifiedView):
             # TODO: Replace with redirect to actual url with 'name' in path, and HttpResponseRedirect()
         selected_filter = variable_column + '__' + search_field
 
-        selected_tag = Tag.objects.get(**{search_field: search_value})
+        selected_tag = get_object_or_404(Tag, **{search_field: search_value})
+        # selected_tag = Tag.objects.get(**{search_field: search_value})
         if selected_tag.synonyms.exists():
             # if has synonyms, add to queryset
             selected_filter = 'tags__in'
             search_value = [synonym.tag for synonym in selected_tag.synonyms.all()]
             search_value.append(selected_tag)  # don't forget the to add the original proper tag!
 
-        if selected_tag.proper_form_of_tag.exists():
+        if hasattr(selected_tag, 'proper_form_of_tag'):
             # if is a synonym of another tag, redirect
-            proper_tag = selected_tag.proper_form_of_tag.first().proper_form_of_tag
+            proper_tag = selected_tag.proper_form_of_tag.proper_form_of_tag
             url = reverse('tag', kwargs={'variable_column': 'tags',
                                          # 'context_object': 'tag',
                                          'search_field': 'id',
@@ -336,9 +335,9 @@ class TagView(StatusFilterUnifiedView):
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
         all_feeds_for_tag = Facebook_Feed.objects.filter(
-            facebook_status__id__in=[status.id for status in context['object_list']]).distinct()
+                facebook_status__id__in=[status.id for status in context['object_list']]).distinct()
         context['side_bar_list'] = MEMBER_MODEL.objects.filter(
-            id__in=[feed.persona.owner_id for feed in all_feeds_for_tag]).distinct().order_by('name')
+                id__in=[feed.persona.owner_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
 
 
@@ -348,8 +347,11 @@ class FacebookStatusDetailView(DetailView):
     model = Facebook_Status
     slug_field = 'status_id'
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Facebook_Status, status_id=self.kwargs['slug'])
+
     def get_queryset(self, **kwargs):
-        return Facebook_Status.objects_no_filters.filter(status_id=self.kwargs['slug'])
+        return Facebook_Status.objects_no_filters.all()
 
     def get_context_data(self, **kwargs):
         context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
@@ -571,15 +573,15 @@ def search_bar(request):
         try:
             for party in search_bar_parties(search_text):
                 response_data['results'].append(
-                    result_factory(party.id, party.name, "party"))
+                        result_factory(party.id, party.name, "party"))
 
             for member in search_bar_members(search_text):
                 response_data['results'].append(
-                    result_factory(member.id, member.name, "member", party=member.current_party.name))
+                        result_factory(member.id, member.name, "member", party=member.current_party.name))
 
             for tag in search_bar_tags(search_text):
                 response_data['results'].append(
-                    result_factory(tag.id, tag.name, "tag"))
+                        result_factory(tag.id, tag.name, "tag"))
 
         except Exception as e:
             print "search bar exception:", e
@@ -604,7 +606,7 @@ def search_bar_parties(search_text):
         party_query = combined_party_name_query & Q(knesset__number=CURRENT_KNESSET_NUMBER)
 
     return PARTY_MODEL.objects.filter(party_query).distinct().order_by(
-        'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+            'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
 
 
 def search_bar_members(search_text):
@@ -654,7 +656,7 @@ def return_suggested_tags(request, status_id):
 
     for tag in Facebook_Status.objects.get(status_id=status_id).suggested_tags(n=3):
         response_data['results'].append(
-            result_factory(tag.id, tag.name, "tag", tag.percent))
+                result_factory(tag.id, tag.name, "tag", tag.percent))
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
@@ -668,15 +670,18 @@ class WidgetView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WidgetView, self).get_context_data(**kwargs)
-        context['object'] = {'title': 'latest', 'path': '/latest/feed/', 'latest':'true'}
+        context['object'] = {'title': 'latest', 'path': '/latest/feed/', 'latest': 'true'}
         return context
+
 
 class CustomWidgetView(DetailView):
     template_name = 'core/rss_widget_page.html'
     model = UserSearch
 
     def get_object(self, queryset=None):
-        return UserSearch.objects.get(title=self.kwargs['title'])
+        return get_object_or_404(UserSearch, title=self.kwargs['title'])
+        # return UserSearch.objects.get(title=self.kwargs['title'])
+
 
 def title_exists(request):
     if not request.GET.get('title', None):
@@ -716,15 +721,14 @@ def save_queryset_for_user(request):
     # print request.POST
     user = request.user
     qserializer = QSerializer(base64=True)
-    query_dict = QueryDict(request.POST.get('query').split('?')[-1])
-    print query_dict
+    query_params = unicode(request.POST.get('query').split('?')[-1])
+    query_dict = QueryDict(query_params.encode('utf8'), encoding='utf8')
     fake_request = HttpRequest()
     fake_request.GET = query_dict
     # print query_dict
 
     params_dict = get_parsed_request(query_dict)
     q_object = parse_to_q_object(query_dict, params_dict)
-    print q_object
     dumped_queryset = qserializer.dumps(q_object)
     # print dumped_queryset
 
@@ -761,7 +765,7 @@ class CustomView(SearchView):
     template_name = "core/custom.html"
 
     def get_queryset(self, **kwargs):
-        sv = UserSearch.objects.get(title=self.kwargs['title'])
+        sv = get_object_or_404(UserSearch, title=self.kwargs['title'])
         query_filter = sv.queryset_q
         print query_filter
         if self.request.GET.get('range', None) or self.request.GET.get('range', None) != 'default':
@@ -801,7 +805,8 @@ class CustomView(SearchView):
 
 class CustomViewByID(CustomView):
     def get_queryset(self, **kwargs):
-        sv = UserSearch.objects.get(id=self.kwargs['id'])
+        sv = get_object_or_404(UserSearch, id=self.kwargs['id'])
+        # sv = UserSearch.objects.get(id=self.kwargs['id'])
         qserialzer = QSerializer()
         query_filter = qserialzer.loads(sv.queryset)
         return apply_request_params(Facebook_Status.objects.filter(query_filter), self.request)

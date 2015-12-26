@@ -1,41 +1,79 @@
-<ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
-    <li class="heading"><b> סנן לפי זמן: </b></li>
+{# Dynamic styling done with "static/js/renderLinksForStatusListHandlers.js" #}
 
-    <li data-range="default" id="default-filter">
+{% load i18n %}
+<ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
+    <li class="heading"><b>{% blocktrans %}Filter By Date:{% endblocktrans %}</b>
+
+        <p>{% if 'from_date' in request.GET or 'to_date' in request.GET %}
+            <span class="label label-info">
+                {% blocktrans %}Simple Filtering is disabled when advanced filtering is activated{% endblocktrans %}
+            </span>
+        {% endif %}</p></li>
+    <li data-range="default" id="default-filter"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
         <a href="#">
             {% if '/custom/' in request.path %}
-            סינון ברירת מחדל
+                {% blocktrans %}Default Filter{% endblocktrans %}
             {% else %}
-            ללא סינון
+                {% blocktrans %}No Filter{% endblocktrans %}
             {% endif %}
         </a>
 
     </li>
-    <li data-range="day">
-        <a href="#">ביממה האחרונה</a>
+    <li data-range="day" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
+        <a href="#">
+            {% blocktrans %}Last 24 Hours{% endblocktrans %}
+        </a>
     </li>
-    <li data-range="current_day">
-        <a href="#">במהלך ה-{% now "j" %} ל{% now "F" %} (החל מחצות)</a>
+    <li data-range="current_day"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
+        <a href="#">
+            {% blocktrans %}During{% endblocktrans %}
+            {% now "j" %}
+            {% trans 'Of' %}
+            {% now "F" %}
+            {% blocktrans %}(Starting midnight){% endblocktrans %}
+        </a>
     </li>
-    <li data-range="week">
-        <a href="#">בשבוע האחרון </a>
+    <li data-range="week" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
+        <a href="#">
+            {% blocktrans %}Last Week{% endblocktrans %}
+        </a>
     </li>
-    <li data-range="two_weeks">
-        <a href="#">בשבועיים האחרונים</a>
+    <li data-range="two_weeks"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
+        <a href="#">
+            {% blocktrans %}Last Two Weeks{% endblocktrans %}
+        </a>
     </li>
-    <li data-range="month">
-        <a href="#">בחודש האחרון</a>
+    <li data-range="month" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
+        <a href="#">
+            {% blocktrans %}Last Month{% endblocktrans %}
+        </a>
     </li>
-    <li data-range="current_month">
-        <a href="#">במהלך {% now "F" %}</a>
+    <li data-range="current_month"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
+        <a href="#">
+            {% blocktrans %}During {% endblocktrans %}
+            {% now "F" %}</a>
     </li>
-    <li data-range="current_year">
-        <a href="#">במהלך {% now "Y" %}</a>
+    <li data-range="current_year"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
+        <a href="#">
+            {% blocktrans %}During {% endblocktrans %}
+            {% now "Y" %}
+        </a>
     </li>
-    <li data-range="elections_20">
-        <a href="#">במהלך מסע הבחירות לכנסת ה-20</a>
+    <li data-range="elections_20"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
+        <a href="#">
+            {% blocktrans %}During 20th Knesset Election Campaign{% endblocktrans %}
+        </a>
     </li>
-    <li data-range="protective-edge">
-        <a href="#">במהלך צוק איתן</a>
+    <li data-range="protective-edge"
+        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
+        <a href="#">
+            {% blocktrans %}During "Protective Edge"{% endblocktrans %}
+        </a>
     </li>
 </ul>

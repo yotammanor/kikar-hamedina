@@ -1,11 +1,12 @@
 {% extends "layouts/generic-template.html" %}
 {% load humanize %}
 {% load kikartags_extras %}
+{% load i18n %}
 
-{% block title %}תיוגים שבוצעו לאחרונה{% endblock title %}
+{% block title %}{% trans 'Tagged Recently' %}{% endblock title %}
 
 {% block h1 %}
-    תויג לאחרונה
+{% trans 'Tagged Recently' %}
 {% endblock %}
 
 {% load endless %}

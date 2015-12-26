@@ -1,4 +1,5 @@
-from django.conf.urls import patterns, include, url
+from solid_i18n.urls import solid_i18n_patterns as patterns
+from django.conf.urls import include, url
 from django.contrib import admin
 # from core.views import index
 # from core.views import person

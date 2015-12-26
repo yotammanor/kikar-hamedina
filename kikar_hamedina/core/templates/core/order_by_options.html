@@ -1,12 +1,17 @@
+{% load i18n %}
 <ul class="nav nav-pills" id="order-by-options">
-    <li data-order-by="-published"><a href="#"><i class="fa fa-caret-down" id="dec-asc-published"></i> לפי
-        תאריך</a></li>
-    <li data-order-by="-like_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-likes"></i> לפי מספר
-        לייקים</a>
+    <li data-order-by="-published"><a href="#"><i class="fa fa-caret-down" id="dec-asc-published"></i>
+    {% blocktrans %}By Date{% endblocktrans %}
+    </a></li>
+    <li data-order-by="-like_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-likes"></i>
+        {% blocktrans %}By Number of Likes{% endblocktrans %}
+    </a>
     </li>
     <li data-order-by="-comment_count"><a href="#"><i class="fa fa-caret-down" id="dec-asc-comments"></i>
-        לפי מספר
-        תגובות</a></li>
-    <li data-order-by="custom" id="order-by-custom"><a href="#">אחר</a></li>
+    {% blocktrans %}By Number of Comments{% endblocktrans %}
+    </a></li>
+    <li data-order-by="custom" id="order-by-custom"><a href="#">
+        {% blocktrans %}Other{% endblocktrans %}
+    </a></li>
     <!-- visible only when used -->
 </ul>

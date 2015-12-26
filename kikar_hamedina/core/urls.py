@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url, include
 from django.conf.urls.static import static
 from rest_framework.urlpatterns import format_suffix_patterns
+from solid_i18n.urls import solid_i18n_patterns as patterns
 from . import views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, TAG_NAME_CHARSET
 from kikartags.models import Tag as Tag

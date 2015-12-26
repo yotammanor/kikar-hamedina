@@ -25,10 +25,32 @@ STATICFILES_DIRS = (
     sub_path('static'),
 )
 
-# Configuring TEMPLATE_DIRS
-TEMPLATE_DIRS = (
-    sub_path("templates"),
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # Configuring TEMPLATE_DIRS
+        'DIRS': [
+            sub_path("templates"),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                "django.contrib.auth.context_processors.auth",
+                "django.core.context_processors.debug",
+                "django.core.context_processors.i18n",
+                "django.core.context_processors.media",
+                "django.core.context_processors.request",
+                "django.core.context_processors.static",
+                "django.core.context_processors.tz",
+                "django.core.context_processors.request",
+                "django.contrib.messages.context_processors.messages",
+                # "planet.context_processors.context",
+                "core.context_processors.generic",
+                "zinnia.context_processors.version",
+            ],
+        },
+    },
+]
 
 SECRET_KEY = 'yz2HiIDgrCDeHSfJSXIep3FeEQun!VhLXNCZ'  # This secret key SHOULD be over-run by a local_settings parameter.
 
@@ -46,8 +68,8 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.humanize',
 
-
     # Third-Party
+    'actstream',
     'django_comments',
     'rest_framework',
     'django_extensions',
@@ -59,7 +81,7 @@ INSTALLED_APPS = (
     'mptt',
     'zinnia',
     'endless_pagination',
-    'planet',
+    # 'planet',
     'links',
     'video',
     'polymorphic',
@@ -76,8 +98,14 @@ INSTALLED_APPS = (
     'polyorg',
 )
 
+MIGRATION_MODULES = {
+    # key: app name, value: a fully qualified package name, not the usual `app_label.something_else`
+    'actstream': 'kikar_hamedina.migrations.actstream',
+}
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'solid_i18n.middleware.SolidLocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -86,21 +114,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pagination.middleware.PaginationMiddleware',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.request",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.core.context_processors.request",
-    "django.contrib.messages.context_processors.messages",
-    "planet.context_processors.context",
-    "core.context_processors.generic",
-    "zinnia.context_processors.version",
 )
 
 ROOT_URLCONF = 'kikar_hamedina.urls'
@@ -117,11 +130,27 @@ DATABASES = {
     }
 }
 
+# Default language, that will be used for requests without language prefix
 LANGUAGE_CODE = 'he'
 
-TIME_ZONE = 'Asia/Jerusalem'
+# supported languages
+LANGUAGES = (
+    ('he', 'Hebrew'),
+    ('en', 'English'),
+    ('ar', 'Arabic'),
+)
 
+# enable django translation
 USE_I18N = True
+
+# Optional. If you want to use redirects, set this to True
+SOLID_I18N_USE_REDIRECTS = False
+
+LOCALE_PATHS = (
+    sub_path("locale"),
+)
+
+TIME_ZONE = 'Asia/Jerusalem'
 
 USE_L10N = True
 
@@ -130,22 +159,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-#Django-planet settings
-PLANET = {
-    "USER_AGENT": "Kikar-Hamedina Planet/1.0"
-}
+# Django-planet settings
+# PLANET = {
+#     "USER_AGENT": "Kikar-Hamedina Planet/1.0"
+# }
 
 SITE_ID = 1
 
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
 LANGUAGE_COOKIE_NAME = "he"
 SESSION_COOKIE_NAME = "myplanetid"
-
 
 CURRENT_KNESSET_NUMBER = 20
 CURRENT_ELECTED_KNESSET_NUMBER = CURRENT_KNESSET_NUMBER + 1

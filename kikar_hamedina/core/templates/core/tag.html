@@ -1,9 +1,10 @@
 {% extends "core/facebook_statuses_page.html" %}
 
-{% block title %}{{ object.name }} | נושא{% endblock title %}
+{% load i18n %}
+{% block title %} {{ object.name }} | {% trans 'Tag' %}{% endblock title %}
 
 {% block h1 %}
-    נושא:
+    {% trans 'Tag' %}:
     {% if object.logo %}
         <img src="{{ object.logo.url }}" alt="missing file" width="100" height="100"/>
     {% endif %}
@@ -12,19 +13,9 @@
 {% endblock %}
 
 {% block details %}
-    <div class="h4">
-        סך הכל:
-        {{ object_list.count }}
-    </div>
+    <h4>{% trans 'Total' %}: {{ object_list.count }}</h4>
 {% endblock %}
 
 {% block sidebar %}
-{#    <ul class="list-group">#}
-{#        <li class="list-group-item list-group-item-heading"><b> כתבו בנושא: </b></li>#}
-{#        {% for content_object in side_bar_list.all %}#}
-{#            <li class="list-group-item">#}
-{#                <a href="{% url 'member' content_object.id %}">{{ content_object.name }}</a>#}
-{#            </li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
+
 {% endblock %}
