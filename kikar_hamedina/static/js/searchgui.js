@@ -183,16 +183,16 @@ function addWordElementToFilter(name) {
     $('#searchgui-search-words').append(html);
 
     var addedElement = $('#searchgui-search-words').find("#" + context['type'] + context['id']);
-    addedElement.find(".glyphicon-remove").parent().click(function () {
+    addedElement.find(".fa-times").parent().click(function () {
         $('#searchgui-search-words').find("#" + context['type'] + context['id']).remove();
         updateSearchGUIObjectsVisibility()
     });
-    addedElement.find(".glyphicon-remove").parent().hover(function () {
+    addedElement.find(".fa-times").parent().hover(function () {
         $(this).toggleClass("alert-danger")
     });
     addedElement.hover(function () {
-        $(this).find(".glyphicon-" + context['icon']).parent().toggleClass("alert-success");
-        $(this).find(".glyphicon-remove").parent().toggleClass("hidden-badge")
+        $(this).find(".fa-" + context['icon']).parent().toggleClass("alert-success");
+        $(this).find(".fa-times").parent().toggleClass("hidden-badge")
     });
 
 
@@ -210,17 +210,17 @@ function addAutoSuggestElementToFilter(id, name, type, icon) {
     var html = template(context);
     $('#search-gui-' + type + '-added-list').append(html);
     var addedElement = $('#search-gui-' + type + '-added-list').find("#" + type + id);
-    addedElement.find(".glyphicon-remove").parent().click(function () {
+    addedElement.find(".fa-times").parent().click(function () {
         id = $(this).data('id');
         type = $(this).data('type');
         removeSelectedFilterElement(id, type)
     });
-    addedElement.find(".glyphicon-remove").parent().hover(function () {
+    addedElement.find(".fa-times").parent().hover(function () {
         $(this).toggleClass("alert-danger")
     });
     addedElement.hover(function () {
-        $(this).find(".glyphicon-" + icon).parent().toggleClass("alert-success");
-        $(this).find(".glyphicon-remove").parent().toggleClass("hidden-badge");
+        $(this).find(".fa-" + icon).parent().toggleClass("alert-success");
+        $(this).find(".fa-times").parent().toggleClass("hidden-badge");
     });
 
     // clean-ups after adding.
@@ -275,7 +275,7 @@ function updateSearchGUIObjectsVisibility() {
 
 $(document).ready(function () {
 //  cleans results list at loading.
-    $(".glyphicon-trash").parent().click(function () {
+    $(".fa-trash").parent().click(function () {
         $('#searchgui-text-input').val('');
         $('#search-gui-result-list').html('');
         $('#search-gui-member-added-list').html('');
@@ -389,18 +389,18 @@ $(document).ready(function () {
 
 
             var addedElement = $('#search-gui-excluded-added-list').find("#" + context['type'] + context['id']);
-            addedElement.find(".glyphicon-remove").parent().click(function () {
+            addedElement.find(".fa-times").parent().click(function () {
                 $('#search-gui-excluded-added-list').find("#" + context['type'] + context['id']).remove();
                 var excludeButton = iframe.contents().find('#exclude-status-' + context['id']);
                 excludeButton.removeClass('disabled').text('Exclude Me Again!');
                 updateSearchGUIObjectsVisibility()
             });
-            addedElement.find(".glyphicon-remove").parent().hover(function () {
+            addedElement.find(".fa-times").parent().hover(function () {
                 $(this).toggleClass("alert-danger")
             });
             addedElement.hover(function () {
-                $(this).find(".glyphicon-" + context['icon']).parent().toggleClass("alert-success");
-                $(this).find(".glyphicon-remove").parent().toggleClass("hidden-badge")
+                $(this).find(".fa-" + context['icon']).parent().toggleClass("alert-success");
+                $(this).find(".fa-times").parent().toggleClass("hidden-badge")
             });
 
             updateSearchGUIObjectsVisibility();
@@ -464,9 +464,11 @@ $(document).ready(function () {
 
 
                             addedElement.hover(function () {
-                                $(this).find(".glyphicon-" + $(this).data('icon')).parent().toggleClass("alert-success");
-                                $(this).find(".glyphicon-arrow-left").parent().toggleClass("hidden-badge");
-                                $(this).find(".glyphicon-arrow-left").parent().toggleClass("alert-info")
+                                $(this).find(".fa-" + $(this).data('icon')).parent().toggleClass("alert-success");
+                                $(this).find(".fa-arrow-left").parent().toggleClass("hidden-badge");
+                                $(this).find(".fa-arrow-right").parent().toggleClass("hidden-badge");
+                                $(this).find(".fa-arrow-left").parent().toggleClass("alert-info");
+                                $(this).find(".fa-arrow-right").parent().toggleClass("alert-info")
                             })
                         }
                     }

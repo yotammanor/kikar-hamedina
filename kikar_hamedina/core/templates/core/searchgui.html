@@ -1,5 +1,7 @@
 {% extends "core/facebook_statuses_page.html" %}
 {% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
 {% block scripts %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/searchgui.js" xmlns="http://www.w3.org/1999/html"
             xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"></script>
@@ -16,7 +18,8 @@
             <a href="#" class="list-group-item" id="{{ type }}{{ id }}" data-name="{{ name }}" data-type="{{ type }}"
                data-id="{{ id }}" data-icon="{{ icon }}">
                 <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
-                <span class="badge hidden-badge"><span class="glyphicon glyphicon-arrow-left"></span></span>
+                <span class="badge hidden-badge"><i
+                        class="fa fa-arrow-{% endverbatim %}{% if LANGUAGE_BIDI %}left{% else %}right{% endif %}{% verbatim %}"></i></span>
                 {{ name }}
             </a>
         </script>
@@ -25,7 +28,7 @@
             <a href="#" class="list-group-item" id="{{ type }}{{ id }}">
                 <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
             <span class="badge hidden-badge result-info" data-id="{{ id }}" data-type="{{ type }}"
-                  data-name="{{ name }}"><span class="glyphicon glyphicon-remove"></span></span>
+                  data-name="{{ name }}"><i class="fa fa-times"></i></span>
                 {{ name }}
             </a>
         </script>

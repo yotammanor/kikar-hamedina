@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,12 +11,12 @@
     <link href='http://fonts.googleapis.com/css?family=Alef:400,700&subset=all' rel='stylesheet' type='text/css'>
 
     <!-- CSS -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- CSS NVD3 -->
-    <link href="{{ STATIC_URL }}css/nv.d3.css" rel="stylesheet">
-    <!-- Bootstrap RTL Theme -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-rtl.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-theme.css"/>
+    {% if LANGUAGE_BIDI %}
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    {% endif %}    <!-- CSS NVD3 -->
+    <!-- Bootstrap Localed Theme -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/{{ LANGUAGE_CODE }}/bootstrap.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/{{ LANGUAGE_CODE }}/bootstrap-theme.css"/>
 
     <!-- JS -->
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -34,8 +37,9 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/addTagToStatus.js"></script>
 
     <!-- Our CSS -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/{{ LANGUAGE_CODE }}/main-{{ LANGUAGE_CODE }}.css"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/>
+
 
 </head>
 <body>
