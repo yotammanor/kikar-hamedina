@@ -1,7 +1,7 @@
 {% extends "layouts/generic-template.html" %}
-
+{% load i18n %}
 {% block h1 %}
-    עמוד ראשי
+    {% trans 'Home Page' %}
 {% endblock %}
 
 {% block main_content %}
@@ -60,6 +60,9 @@
             <!-- Order-by links. Actual href is rendered using js/renderLinksForStatusListHandlers.js -->
             {% include 'core/order_by_options.html' %}
             <br>
+            <!-- If data is missing -->
+            {% block noposts %}
+            {% endblock noposts %}
             <!-- List of statuses -->
             {% include "core/facebook_status_list.html" with object_list=object_list %}
         </div>
@@ -75,15 +78,6 @@
             <br>
             <br>
             {% block sidebar %}
-                {#                <ul class="list-group">#}
-                {#                    <li class="list-group-item list-group-item-heading"><b> כתבו ב-{{ side_bar_parameter }} השעות#}
-                {#                        האחרונות: </b></li>#}
-                {#                    {% for member in side_bar_list.all %}#}
-                {#                        <li class="list-group-item">#}
-                {#                            <a href="{% url 'member' member.id %}">{{ member.name }}</a>#}
-                {#                        </li>#}
-                {#                    {% endfor %}#}
-                {#                </ul>#}
             {% endblock sidebar %}
         </div>
     </div>

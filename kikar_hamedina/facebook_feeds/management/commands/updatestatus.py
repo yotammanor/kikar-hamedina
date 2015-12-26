@@ -55,7 +55,7 @@ class Command(BaseCommand):
                     action='store_true',
                     dest='update-deleted',
                     default=False,
-                    help='Update is_deleted flag: set to True/False for deleted/existing statuses'),
+                    help="Update is_deleted flag: set to True/False for deleted/existing statuses"),
     )
 
     graph = facebook.GraphAPI()

@@ -1,6 +1,5 @@
 import datetime
 import os
-
 from autotag import autotag
 from django.conf import settings
 from django.contrib.contenttypes import generic
@@ -11,7 +10,6 @@ from django.utils import timezone
 from slugify import slugify
 from taggit.managers import TaggableManager
 from unidecode import unidecode
-
 from facebook_feeds.managers import Facebook_StatusManager, \
     Facebook_FeedManager, DataFrameManager
 from kikartags.managers import _KikarTaggableManager
@@ -67,8 +65,8 @@ class Facebook_Persona(models.Model):
     def __unicode__(self):
         if IS_ELECTIONS_MODE:
             return "Facebook_Persona: %s %s %s %s" % (
-            self.content_type, self.object_id,
-            self.alt_content_type, self.alt_object_id)
+                self.content_type, self.object_id,
+                self.alt_content_type, self.alt_object_id)
         return "Facebook_Persona: %s %s" % (self.content_type, self.object_id)
 
 
@@ -148,7 +146,6 @@ class Facebook_Feed(models.Model):
         feed_current_count = self.current_fan_count
         asked_for_date_of_value = timezone.now() - datetime.timedelta(
             days=days_back)
-
         try:
             popularity_history_timeseries = self.feed_popularity_set.all().to_timeseries(
                 'fan_count',
@@ -173,8 +170,8 @@ class Facebook_Feed(models.Model):
                     is_interpolated = True
                     resampled_history_interpolated = resampled_history_raw.interpolate()
                     fan_count_at_requested_date = \
-                    resampled_history_interpolated.loc[
-                        asked_for_date_of_value.date()].fan_count
+                        resampled_history_interpolated.loc[
+                            asked_for_date_of_value.date()].fan_count
                 else:
                     fan_count_at_requested_date = resampled_history_raw.loc[
                         asked_for_date_of_value.date()].fan_count
@@ -297,7 +294,7 @@ class Facebook_Status(models.Model):
         """
         split_status_id = self.status_id.split('_')
         return 'https://www.facebook.com/%s/posts/%s' % (
-        split_status_id[0], split_status_id[1])
+            split_status_id[0], split_status_id[1])
 
     @property
     def has_attachment(self):
@@ -344,7 +341,7 @@ class Facebook_Status(models.Model):
         normalized_age = age_secs / MAX_STATUS_AGE_FOR_REFRESH
         refresh_range = MAX_STATUS_REFRESH_INTERVAL - MIN_STATUS_REFRESH_INTERVAL
         refresh_interval = (
-                           normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
+                               normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
         need_refresh = self.locally_updated + timezone.timedelta(
             seconds=refresh_interval) < now
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
@@ -399,6 +396,13 @@ ATTACHMENT_MEDIA_TYPES = (
 # 308 - Post in Group
 # """
 
+# An object to save patterns that identify Facebook_Status Object as a comment
+class Status_Comment_Pattern(models.Model):
+    pattern = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return self.pattern
+
 
 class Facebook_Status_Attachment(models.Model):
     status = models.OneToOneField(Facebook_Status, related_name='attachment')
@@ -425,6 +429,101 @@ def later():
     return timezone.now() + timezone.timedelta(days=60)
 
 
+class Facebook_User(models.Model):
+    facebook_id = models.CharField(max_length=32, primary_key=True)
+    name = models.CharField(max_length=254, null=True, blank=True)
+    type = models.CharField(max_length=32, null=True, blank=True)
+
+    def __unicode__(self):
+        return 'Facebook User:{} ({})'.format(self.name, self.facebook_id)
+
+
+class Facebook_Status_Comment(models.Model):
+    comment_id = models.CharField(unique=True, max_length=128, primary_key=True)
+    parent = models.ForeignKey('Facebook_Status')
+    comment_from = models.ForeignKey('Facebook_User')
+    content = models.TextField()
+    like_count = models.PositiveIntegerField(default=0, blank=True)
+    comment_count = models.PositiveIntegerField(default=0, blank=True)
+    published = models.DateTimeField()
+    message_tags = models.TextField(null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, null=False)
+    locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1))
+
+    objects = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
+
+    tags = TaggableManager(through=TaggedItem, manager=_KikarTaggableManager)
+
+    def __unicode__(self):
+        return 'Comment on {}, id: {}'.format(self.parent.status_id, self.comment_id)
+
+    def save(self, *args, **kwargs):
+        '''On save, update locally_updated fields'''
+        self.locally_updated = timezone.now()
+        return super(Facebook_Status_Comment, self).save(*args, **kwargs)
+
+    @property
+    def get_link(self):
+        """
+        Returns a link to this post.
+        """
+        return 'https://www.facebook.com/{}/posts/{}'.format(self.parent.feed.vendor_id, self.parent.status_id)
+
+    @property
+    def has_attachment(self):
+        try:
+            if self.attachment:
+                return True
+            else:
+                return False
+        except Exception:
+            return False
+
+    @property
+    def needs_refresh(self):
+        """Returns whether the status needs a refresh from FB based on its age.
+        A status that was just created is updated every 5 seconds, a 2 days old
+        status is updated every 10 minutes. Older status don't get updated here
+        and they rely on a background process that runs every 10 minutes."""
+        now = timezone.now()
+        age_secs = max((now - self.published).total_seconds(), 0)
+        if age_secs > MAX_STATUS_AGE_FOR_REFRESH:
+            return False  # Old status - don't refresh here
+        normalized_age = age_secs / MAX_STATUS_AGE_FOR_REFRESH
+        refresh_range = MAX_STATUS_REFRESH_INTERVAL - MIN_STATUS_REFRESH_INTERVAL
+        refresh_interval = (
+                               normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
+        need_refresh = self.locally_updated + timezone.timedelta(
+            seconds=refresh_interval) < now
+        # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
+        # need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
+        return need_refresh
+
+    class Meta:
+        verbose_name_plural = 'Facebook_Status_Comments'
+
+
+class Facebook_Status_Comment_Attachment(models.Model):
+    comment = models.OneToOneField('Facebook_Status_Comment', related_name='attachment', null=True, blank=True)
+    name = models.TextField(null=True, blank=True)  # title
+    caption = models.TextField(null=True, blank=True)  # caption
+    description = models.TextField(null=True, blank=True)  # description
+    link = models.TextField(null=False)  # url
+    facebook_object_id = models.CharField(unique=False, null=True, blank=True,
+                                          max_length=128)  # object_id (exists only for internal links)
+    type = models.CharField(null=True, blank=True, max_length=128)  # type
+    source = models.TextField(null=True, blank=True)  # full_size picture   media.image.src
+    source_width = models.PositiveSmallIntegerField(null=True, blank=True)  # media.image.height
+    source_height = models.PositiveSmallIntegerField(null=True, blank=True)  # media.image.width
+
+    def __unicode__(self):
+        return 'Attachment for Status: {} ({})'.format(self.status, self.id)
+
+    @property
+    def is_internal_link(self):
+        return 'https://www.facebook.com/' in self.link
+
+
 class User_Token(models.Model):
     token = models.CharField(max_length=256, unique=True)
     user_id = models.TextField(unique=True)
@@ -441,13 +540,6 @@ class User_Token(models.Model):
 
     def __unicode__(self):
         return 'token_' + self.user_id
-
-
-class Status_Comment_Pattern(models.Model):
-    pattern = models.CharField(max_length=128)
-
-    def __unicode__(self):
-        return self.pattern
 
 
 # Deprecated Tags

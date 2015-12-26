@@ -1,20 +1,20 @@
 {% extends "core/facebook_statuses_page.html" %}
-
-{% block title %}{{ search_title }} | תוצאות חיפוש{% endblock title %}
+{% load i18n %}
+{% block title %}{{ search_title }} | {% blocktrans %}Search Results{% endblocktrans %}{% endblock title %}
 
 {% block h1 %}
     <i class="fa fa-search"></i></br>
     {% if members|length > 0 %}
-        חברי כנסת:{{ members|length }}
+        {% blocktrans %}MKs{% endblocktrans %}:{{ members|length }}
     {% endif %}
     {% if parties|length > 0 %}
-        מפלגות:{{ parties|length }}
+        {% blocktrans %}Parties{% endblocktrans %}:{{ parties|length }}
     {% endif %}
     {% if tags|length > 0 %}
-        תגיות: {{ tags|length }}
+        {% blocktrans %}Tags{% endblocktrans %}: {{ tags|length }}
     {% endif %}
     {% if search_str %}
-        מילות חיפוש:
+        {% blocktrans %}Search Terms{% endblocktrans %}:
         {% for search_str_split in search_str %}
             {{ search_str_split }}{% if not forloop.last %}, {% endif %}
         {% endfor %}
@@ -24,15 +24,16 @@
 
 {% block details %}
     <div class="h4">
-        מספר תוצאות: {{ number_of_results }}
+        {% blocktrans %}Number of Results{% endblocktrans %} : {{ number_of_results }}
     </div>
     <h4>
         {% if excluded %}<p>
-            סטאטוסים שסוננו
+            {% blocktrans %}Excluded Statuses{% endblocktrans %}:
             {% for status in excluded %}
-                <a href="{% url 'status-detail' status.status_id %}"> {{ status.feed.persona.owner.name }} ({{ status.published|date:"d-m-Y" }})</a>{% if not forloop.last %}, {% endif %}
+                <a href="{% url 'status-detail' status.status_id %}"> {{ status.feed.persona.owner.name }}
+                    ({{ status.published|date:"d-m-Y" }})</a>{% if not forloop.last %}, {% endif %}
             {% endfor %}
-            </p>
+        </p>
         {% endif %}
     </h4>
 {% endblock %}

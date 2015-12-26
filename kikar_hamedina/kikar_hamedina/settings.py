@@ -52,7 +52,7 @@ TEMPLATES = [
     },
 ]
 
-SECRET_KEY = 'yz2HiIDgrCDeHSfJSXIep3FeEQunsUhnC3P9ehGZ/KHVhLXNCZ'
+SECRET_KEY = 'yz2HiIDgrCDeHSfJSXIep3FeEQun!VhLXNCZ'  # This secret key SHOULD be over-run by a local_settings parameter.
 
 # Application definition
 
@@ -67,7 +67,6 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
     'django.contrib.humanize',
-
 
     # Third-Party
     'actstream',
@@ -106,6 +105,7 @@ MIGRATION_MODULES = {
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'solid_i18n.middleware.SolidLocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -130,11 +130,27 @@ DATABASES = {
     }
 }
 
+# Default language, that will be used for requests without language prefix
 LANGUAGE_CODE = 'he'
 
-TIME_ZONE = 'Asia/Jerusalem'
+# supported languages
+LANGUAGES = (
+    ('he', 'Hebrew'),
+    ('en', 'English'),
+    ('ar', 'Arabic'),
+)
 
+# enable django translation
 USE_I18N = True
+
+# Optional. If you want to use redirects, set this to True
+SOLID_I18N_USE_REDIRECTS = False
+
+LOCALE_PATHS = (
+    sub_path("locale"),
+)
+
+TIME_ZONE = 'Asia/Jerusalem'
 
 USE_L10N = True
 
@@ -153,7 +169,6 @@ SITE_ID = 1
 
 LANGUAGE_COOKIE_NAME = "he"
 SESSION_COOKIE_NAME = "myplanetid"
-
 
 CURRENT_KNESSET_NUMBER = 20
 CURRENT_ELECTED_KNESSET_NUMBER = CURRENT_KNESSET_NUMBER + 1

@@ -1,3 +1,5 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
 <html lang="he">
@@ -20,7 +22,7 @@
     <!-- <link href="../css/bootstrap-theme.css" rel="stylesheet"> -->
 
     <!-- Custom styles for this template -->
-    <!-- <link href="../css/main.css" rel="stylesheet"> -->
+    <!-- <link href="../css/main-{{ LANGUAGE_CODE }}.css" rel="stylesheet"> -->
     <link href="../css/newest.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->

@@ -320,9 +320,9 @@ class TagView(StatusFilterUnifiedView):
             search_value = [synonym.tag for synonym in selected_tag.synonyms.all()]
             search_value.append(selected_tag)  # don't forget the to add the original proper tag!
 
-        if selected_tag.proper_form_of_tag.exists():
+        if hasattr(selected_tag, 'proper_form_of_tag'):
             # if is a synonym of another tag, redirect
-            proper_tag = selected_tag.proper_form_of_tag.first().proper_form_of_tag
+            proper_tag = selected_tag.proper_form_of_tag.proper_form_of_tag
             url = reverse('tag', kwargs={'variable_column': 'tags',
                                          # 'context_object': 'tag',
                                          'search_field': 'id',
@@ -721,15 +721,14 @@ def save_queryset_for_user(request):
     # print request.POST
     user = request.user
     qserializer = QSerializer(base64=True)
-    query_dict = QueryDict(request.POST.get('query').split('?')[-1])
-    print query_dict
+    query_params = unicode(request.POST.get('query').split('?')[-1])
+    query_dict = QueryDict(query_params.encode('utf8'), encoding='utf8')
     fake_request = HttpRequest()
     fake_request.GET = query_dict
     # print query_dict
 
     params_dict = get_parsed_request(query_dict)
     q_object = parse_to_q_object(query_dict, params_dict)
-    print q_object
     dumped_queryset = qserializer.dumps(q_object)
     # print dumped_queryset
 
@@ -767,7 +766,6 @@ class CustomView(SearchView):
 
     def get_queryset(self, **kwargs):
         sv = get_object_or_404(UserSearch, title=self.kwargs['title'])
-        sv = UserSearch.objects.get(title=self.kwargs['title'])
         query_filter = sv.queryset_q
         print query_filter
         if self.request.GET.get('range', None) or self.request.GET.get('range', None) != 'default':

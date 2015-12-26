@@ -1,25 +1,35 @@
 <!DOCTYPE html>
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="description"
-          content="כיום, 106 מבין המועמדים לכנסת ה-20 פעילים בפייסבוק באופן קבוע. אנו מרכזים את כל מה שהמועמדים כותבים, ועוזרים לך לקחת חלק בשיחה. פרויקט של הסדנא לידע ציבורי.">
+          content="{% blocktrans %}Today, around a 100 of the Knesset Members are
+          using Facebook on a daily basis. We collect and organize what they write,
+           and help you join the conversation. A project by the Public Knowledge
+            Workshop.{% endblocktrans %}">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     {% load staticfiles %}
     {% load kikartags_extras %}
-    <title>{% block title %}{% endblock title %} | כיכר המדינה</title>
+    <title>{% block title %}{% endblock title %}
+        {% blocktrans %}| Kikar Hamedina{% endblocktrans %}
+    </title>
 
     <!-- Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Alef:400,700&subset=all' rel='stylesheet' type='text/css'>
 
     <!-- CSS -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- CSS NVD3 -->
-    <link href="{{ STATIC_URL }}css/nv.d3.css" rel="stylesheet">
-    <!-- Bootstrap RTL Theme -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-rtl.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-theme.css"/>
+    {% if LANGUAGE_BIDI %}
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    {% endif %}
+{#    <!-- CSS NVD3 -->#}
+{#    <link href="{{ STATIC_URL }}css/nv.d3.css" rel="stylesheet">#}
+    <!-- Bootstrap Localed Theme -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/{{ LANGUAGE_CODE }}/bootstrap.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/{{ LANGUAGE_CODE }}/bootstrap-theme.css"/>
 
     <!-- JS -->
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -40,7 +50,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/addTagToStatus.js"></script>
 
     <!-- Our CSS -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/{{ LANGUAGE_CODE }}/main-{{ LANGUAGE_CODE }}.css"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/>
 
     {% block link %}
@@ -57,30 +67,31 @@
 
     {% verbatim %}
 
-    <!-- Templates for the search bar autocomplete -->
-    <script id="result-member-list-item-template" type="text/x-handlebars-template">
+        <!-- Templates for the search bar autocomplete -->
+        <script id="result-member-list-item-template" type="text/x-handlebars-template">
 
-        <li class="result-container">
-            <a href="/member/{{id}}">
-                <div class="result-main-text"><span class="glyphicon glyphicon-user"></span> {{name}}</div>
-                <div class="result-sub-text">{{party}}</div>
-            </a>
-        </li>
-    </script>
-    <script id="result-tag-list-item-template" type="text/x-handlebars-template">
-        <li class="result-container">
-            <a href="/tag/name/{{name}}">
-                <div class="result-main-text"><span class="glyphicon glyphicon-tag"></span> {{name}}</div>
-            </a>
-        </li>
-    </script>
-    <script id="result-party-list-item-template" type="text/x-handlebars-template">
-        <li class="result-container">
-            <a href="/party/{{id}}">
-                <div class="result-main-text"><i class="fa fa-group"></i> {{name}}</div>
-            </a>
-        </li>
-    </script>
+            <li class="result-container">
+                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/member/{{ id }}">
+                    <div class="result-main-text"><i class="fa fa-user"></i> {{ name }}</div>
+                    <div class="result-sub-text">{{ party }}</div>
+                    <div class="result-sub-text"></div>
+                </a>
+            </li>
+        </script>
+        <script id="result-tag-list-item-template" type="text/x-handlebars-template">
+            <li class="result-container">
+                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/tag/name/{{ name }}">
+                    <div class="result-main-text"><i class="fa fa-tag"></i> {{ name }}</div>
+                </a>
+            </li>
+        </script>
+        <script id="result-party-list-item-template" type="text/x-handlebars-template">
+            <li class="result-container">
+                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/party/{{ id }}">
+                    <div class="result-main-text"><i class="fa fa-group"></i> {{ name }}</div>
+                </a>
+            </li>
+        </script>
     {% endverbatim %}
 
     <!-- Google Analytics -->
@@ -89,8 +100,8 @@
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
             i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date();
             a = s.createElement(o),
                     m = s.getElementsByTagName(o)[0];
             a.async = 1;
@@ -104,7 +115,6 @@
     </script>
 </head>
 <body>
-
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
 
@@ -117,16 +127,16 @@
             </button>
             <a class="navbar-brand photo-container" href="{% url 'index' %}">
                 <img src="{{ STATIC_URL }}media/kikar_hamedina_logo.png" class="logo-photo"
-                     alt="כיכר המדינה">
+                     alt="{% trans 'Kikar Hamedina' %}">
             </a>
         </div>
 
-        <div class="collapse navbar-collapse col-sm-8">
-            {#        <div class="col-sm-3  pull-left">#}
-            <div class="navbar-form navbar-left dropdown" id="search-bar-form" role="search">
+        <div class="col-sm-6 collapse navbar-collapse" id="searchbar-searchform-container">
+            <div class="navbar-form navbar-{% if LANGUAGE_BIDI %}left{% else %}right{% endif %} dropdown" id="search-bar-form" role="search">
                 <div class="input-group" id="search-results-dropdown">
                     <input id="navbar-search-box" type="text" name="search_str" class="form-control"
-                           autocomplete="off" placeholder="הכנס שם של מועמדת, רשימה, נושא, או פשוט מילים שהוזכרו..."
+                           autocomplete="off"
+                           placeholder="{% blocktrans %}Knesset Member, Party, a Subject discussed, or any keyword...{% endblocktrans %}"
                            data-toggle="dropdown">
                     <ul id="search-results-list" class="dropdown-menu">
                     </ul>
@@ -140,61 +150,70 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
 
-                <li class="navbar-nav navbar-right hidden-md hidden-sm">
+                <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-md hidden-sm">
                     <a href="{% url 'billboards' %}" class="navbar-options">
-                        המצעד
+                        {% blocktrans %}Billboards{% endblocktrans %}
                     </a>
                 </li>
-                <li class="navbar-nav navbar-right  hidden-md hidden-sm">
+                <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}  hidden-md hidden-sm">
                     <a href="{% url 'about' %}" class="navbar-options">
-                        אודות
+                        {% blocktrans %}About{% endblocktrans %}
                     </a>
                 </li>
-                <li class="navbar-nav navbar-right  hidden-md hidden-sm">
+                <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}  hidden-md hidden-sm">
                     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ8ZHE9EVN59Y"
                        class="navbar-options">
-                        לתרומה
+                        {% blocktrans %}Donate{% endblocktrans %}
                     </a>
                 </li>
 
                 {% if user.is_authenticated %}
-                    <li class="navbar-nav navbar-right hidden-md hidden-sm">
-                        <a href="{% url 'untagged' %}" class="navbar-options">תיוג</a>
+                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-md hidden-sm">
+                        <a href="{% url 'untagged' %}" class="navbar-options">
+                            {% blocktrans %}Tagging{% endblocktrans %}
+                        </a>
                     </li>
-                    <li class="navbar-nav navbar-right hidden-md hidden-sm">
-                        <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">בלוג</a>
+                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-md hidden-sm">
+                        <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">
+                            {% blocktrans %}Blog{% endblocktrans %}
+                        </a>
                     </li>
                 {% endif %}
                 <!-- <li class="active"><a href="#">פוליטיקאים</a></li> -->
                 <!-- <li><a href="#about">מפלגות</a></li> -->
                 <!-- <li><a href="#contact">נושאים</a></li> -->
                 <li class="dropdown hidden-lg hidden-xs">
-                    <a href="" class="dropdown-toggle navbar-options" data-toggle="dropdown">אפשרויות
+                    <a href="" class="dropdown-toggle navbar-options" data-toggle="dropdown">
+                        {% blocktrans %}Options{% endblocktrans %}
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="{% url 'billboards' %}" class="navbar-options">
-                                המצעד
+                                {% blocktrans %}Billboards{% endblocktrans %}
                             </a>
                         </li>
                         <li>
                             <a href="{% url 'about' %}" class="navbar-options">
-                                אודות
+                                {% blocktrans %}About{% endblocktrans %}
                             </a>
                         </li>
                         <li>
                             <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ8ZHE9EVN59Y"
                                class="navbar-options">
-                                לתרומה
+                                {% blocktrans %}Donate{% endblocktrans %}
                             </a>
                         </li>
                         {% if user.is_authenticated %}
                             <li>
-                                <a href="{% url 'untagged' %}" class="navbar-options">תיוג</a>
+                                <a href="{% url 'untagged' %}" class="navbar-options">
+                                    {% blocktrans %}Tagging{% endblocktrans %}
+                                </a>
                             </li>
                             <li>
-                                <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">בלוג</a>
+                                <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">
+                                    {% blocktrans %}Blog{% endblocktrans %}
+                                </a>
                             </li>
                         {% endif %}
                     </ul>
@@ -217,7 +236,6 @@
                 </h1>
             </div>
         </div>
-
         {% block context-header %}
             <div class="container well" id="details-container">
                 {% block details %}

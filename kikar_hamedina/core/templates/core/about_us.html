@@ -1,41 +1,32 @@
-{#<script type="text/javascript">#}
-{#$(document).ready(function () {#}
-{#    alert('here');#}
-{#    $("#details-container").hide();#}
-{#});#}
-{#</script>#}
-
-
 {% extends "layouts/generic-template.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
 
-{% block title %}מי אנחנו{% endblock title %}
+{% block title %}
+    {% blocktrans %}About Us{% endblocktrans %}
+{% endblock title %}
 
 {% block context-header %}
     <div class="alert alert-warning alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
-                class="sr-only">Close</span></button>
-        <strong>האתר עדיין בגרסת בטא.</strong> אם מצאת טעויות או פערים במידע, נשמח <a
-            href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - דיווח על תקלה">לשמוע על כך!</a>
+                class="sr-only">{% blocktrans %}Close{% endblocktrans %}</span></button>
+        <strong>{% blocktrans %}This project is still in beta.{% endblocktrans %}</strong>
+        {% blocktrans %}If you found anything wrong here, we'd love to{% endblocktrans %}
+        <a href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - דיווח על תקלה">{% blocktrans %}hear about
+            it!{% endblocktrans %}</a>
     </div>
 {% endblock %}
 
 {% load core_extras %}
 
-{#{% block h1 %}#}
-{#    העמוד הראשי החדש#}
-{#{% endblock %}#}
-{#{% block details %}#}
-{#    <div class="h4">#}
-{#        הנושאים החמים#}
-{#    </div>#}
-{#{% endblock %}#}
 {% block main_content %}
     <div class="container main-page-frame">
         <div class="main-page-frame col-lg-12">
             <img src="{{ STATIC_URL }}media/kikar_hamedina_logo.png" style="max-width: 100%; height: auto">
         </div>
         <div class="main-page-frame col-lg-12">
-            <h1>חברי הכנסת ברשתות החברתיות</h1>
+            <h1>{% blocktrans %}Israeli MKs on Social Media{% endblocktrans %}</h1>
         </div>
         <div class="main-page-frame col-lg-12">
             <br>
@@ -45,9 +36,10 @@
                 <br>
             </div>
             <div class="col-lg-10 main-page-frame">
-                <h3>כיום, {{ number_of_mks }} מבין חברי הכנסת ה-20 פעילים בפייסבוק באופן קבוע.</h3>
-
-                <h3>אנחנו מרכזים את כל מה שחברי הכנסת כותבים - ועוזרים לך לקחת חלק בשיחה.</h3>
+                <h3>{% blocktrans %}Today, {{ number_of_mks }} of the Israeli MKs are active on
+                    Facebook.{% endblocktrans %}</h3>
+                <h3>{% blocktrans %}We collect and organize what they write - and help you join the
+                    conversation.{% endblocktrans %}</h3>
             </div>
             <div class="main-page-frame col-lg-1">
                 <br>
@@ -62,31 +54,34 @@
             </div>
             <div class="col-lg-10">
                 <div class="main-page-frame main-page-frame-links">
-                    <h4><b>תוהה מה אפשר למצוא אצלנו? אפשר לדעת, למשל: </b></h4>
+                    <h4><b>{% trans 'Wonder what you can find here? Here, you can learn:' %}</b></h4>
                 </div>
                 <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> מה נכתב בסטאטוסים הפופולריים ביותר <a
-                            href="{% url 'all-statuses' %}?range=week&order_by=-like_count">בשבוע האחרון</a>?
+                    <h4><i class="fa fa-thumbs-o-up"></i> {% trans 'Which statuses where most liked ' %}<a
+                            href="{% url 'all-statuses' %}?range=week&order_by=-like_count">{% trans 'this week' %}</a>?
                     </h4>
                 </div>
                 <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> על מה מדברים בסיעת <a
-                            href="{% url 'party' featured_party.id %}?range=week">{{ featured_party.name }}</a>
-                        בימים אלו?</h4>
+                    <h4><i class="fa fa-thumbs-o-up"></i> {% trans 'What is being discussed at ' %}<a
+                            href="{% url 'party' featured_party.id %}?range=week">{{ featured_party.name }}</a> {% trans 'Party these days' %}?
+                    </h4>
                 </div>
                 <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> אילו חברי כנסת השתמשו לאחרונה במילה <a
+                    <h4><i class="fa fa-thumbs-o-up"></i> {% trans 'Which MKs used the word ' %}<a
                             href='{% url 'search' %}?{{ featured_search.search_value }}'>{{ featured_search.search_name }}</a>?
                     </h4>
                 </div>
                 <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> מה גרם ל<a
-                            href='{% url "member" top_growth.member.id %}'>{{ top_growth.member.name }}</a> לזכות בעלייה
-                        של {{ top_growth.dif | percent }} במספר התומכים בחודש האחרון?
+                    <h4><i class="fa fa-thumbs-o-up"></i> {% trans 'What brought MK ' %}<a
+                            href='{% url "member" top_growth.member.id %}'>{{ top_growth.member.name }}</a>
+                        {% blocktrans with top_growth_dif_percent=top_growth.dif|percent %}
+                            To gain {{ top_growth_dif_percent }} in the number of his/her followers?
+                        {% endblocktrans %}
                     </h4>
                 </div>
                 <div class="main-page-frame main-page-frame-links">
-                    <h4><i class="fa fa-thumbs-o-up"></i> ועוד הרבה, רק צריך <a href="{% url 'search-gui' %}">לחפש</a>!
+                    <h4><i class="fa fa-thumbs-o-up"></i> {% trans 'And much more, all you need to do is' %} <a
+                            href="{% url 'search-gui' %}">{% trans 'Search' %}</a>!
                     </h4>
                 </div>
             </div>
@@ -98,19 +93,21 @@
             <br>
         </div>
         <div class="main-page-frame col-lg-12">
-            <br>
-            חיפשת משהו ולא מצאת? נתקלת בתקלה? יש לך רעיון מדליק לאיך לשפר את האתר? <a
-                href="mailto:yotammanor@gmail.com">נשמח לשמוע</a>!
+            <br>{% trans "Are you looking for something you can't find? Have a cool idea on how to improve this website?" %} <a
+                href="mailto:yotammanor@gmail.com">{% trans "We'd love to hear about it!" %}</a>
         </div>
         <div class="main-page-frame col-lg-12">
             <br>
             <br>
             <br>
-            אתר זה הוא פרויקט חממה של
-            <div id="hasadna-logo"><a href="http://www.hasadna.org.il" rel="nofollow"><img
+            {% blocktrans %}This site is a project by{% endblocktrans %}
+            <div id="hasadna-logo"><a href="http://www.hasadna.org.il{% if LANGUAGE_CODE != 'he' %}/en/{% endif %}"
+                                      rel="nofollow"><img
                     src="http://www.hasadna.org.il/wp-content/themes/sadna2012/images/sadna-logo.png"
-                    id="hasadna-logo-img" alt=""><span>הסדנא לידע ציבורי <span
-                    class="small">(ע"ר)</span></span></a></div>
+                    id="hasadna-logo-img" alt=""><span>
+                {% blocktrans %}The Public Knowledge Workshop{% endblocktrans %}</span>
+                <span
+                        class="small"> ({% trans 'registered' %})</span></a></div>
         </div>
         <br>
 

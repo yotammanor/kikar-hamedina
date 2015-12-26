@@ -29,6 +29,7 @@ autotag
 django-autotag
 django-taggit
 unicode-slugify
+solid_i18n==1.1.1
 
 
 # -r oknesset.txt

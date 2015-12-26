@@ -3,7 +3,11 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-$port = 8000
+if ENV['KIKAR_HAMEDINA_PORT']
+   $port = ENV['KIKAR_HAMEDINA_PORT']
+else
+   $port = 8000
+end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "box-cutter/ubuntu1404"
@@ -17,7 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :inline => "apt-get install -y curl"
   config.vm.provision :shell, :inline => "curl -sL https://deb.nodesource.com/setup | bash"
 
-  config.vm.provision :shell, :inline => "apt-get install -y postgresql postgresql-contrib python-dev python-pip python-numpy python-pandas python-pillow ipython libpq-dev git-core build-essential nodejs"
+  config.vm.provision :shell, :inline => "apt-get install -y postgresql postgresql-contrib python-dev python-pip python-numpy python-pandas python-pillow ipython libpq-dev git-core build-essential nodejs gettext"
   config.vm.provision :shell, :inline => "npm install ngrok -g"
 
   #Generate config files and initialize DB

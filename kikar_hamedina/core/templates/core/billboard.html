@@ -4,13 +4,7 @@
     <h6>{{ billboard.second_title }} &nbsp;</h6>
 </div>
 <table class="table table-stripped">
-
     <thead>
-    {#    <tr>#}
-    {#        <th>#</th>#}
-    {#        <th>{{ billboard.headers.name }}</th>#}
-    {#        <th>{{ billboard.headers.value_formatted }}</th>#}
-    {#    </tr>#}
     </thead>
     <tbody>
     {% for object in billboard.data %}
@@ -18,11 +12,7 @@
             <td>{{ forloop.counter }}</td>
             <td><a href={% url billboard.link_uri_name object.value_reference_link %}>{{ object.name }}</a></td>
             <td>{{ object.value_formatted }}</td>
-
         </tr>
     {% endfor %}
     </tbody>
 </table>
-
-
-{# <span class="extra-billboard-info">(מספר נוסף)</span>#}
