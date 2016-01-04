@@ -173,11 +173,11 @@
                             {% blocktrans %}Tagging{% endblocktrans %}
                         </a>
                     </li>
-                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-md hidden-sm">
-                        <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">
-                            {% blocktrans %}Blog{% endblocktrans %}
-                        </a>
-                    </li>
+{#                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-md hidden-sm">#}
+{#                        <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">#}
+{#                            {% blocktrans %}Blog{% endblocktrans %}#}
+{#                        </a>#}
+{#                    </li>#}
                 {% endif %}
                 <!-- <li class="active"><a href="#">פוליטיקאים</a></li> -->
                 <!-- <li><a href="#about">מפלגות</a></li> -->
@@ -210,11 +210,11 @@
                                     {% blocktrans %}Tagging{% endblocktrans %}
                                 </a>
                             </li>
-                            <li>
-                                <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">
-                                    {% blocktrans %}Blog{% endblocktrans %}
-                                </a>
-                            </li>
+{#                            <li>#}
+{#                                <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">#}
+{#                                    {% blocktrans %}Blog{% endblocktrans %}#}
+{#                                </a>#}
+{#                            </li>#}
                         {% endif %}
                     </ul>
                 </li>
