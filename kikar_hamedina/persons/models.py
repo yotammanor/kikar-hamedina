@@ -19,10 +19,10 @@ class Title(models.Model):
         return self.name
 
 
-
 class PersonAltname(models.Model):
     person = models.ForeignKey('Person')
     name = models.CharField(max_length=64)
+
 
 GENDER_CHOICES = (
     (u'M', _('Male')),
@@ -39,14 +39,16 @@ class Person(models.Model):
     phone = models.CharField(blank=True, null=True, max_length=20)
     fax = models.CharField(blank=True, null=True, max_length=20)
     email = models.EmailField(blank=True, null=True)
-    family_status = models.CharField(blank=True, null=True,max_length=10)
+    family_status = models.CharField(blank=True, null=True, max_length=10)
     number_of_children = models.IntegerField(blank=True, null=True)
-    date_of_birth  = models.DateField(blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
     place_of_birth = models.CharField(blank=True, null=True, max_length=100)
-    date_of_death  = models.DateField(blank=True, null=True)
+    date_of_death = models.DateField(blank=True, null=True)
     year_of_aliyah = models.IntegerField(blank=True, null=True)
-    place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
-    area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text = _('a general area of residence (for example, "the negev"'))
+    place_of_residence = models.CharField(blank=True, null=True, max_length=100,
+                                          help_text=_('an accurate place of residence (for example, an address'))
+    area_of_residence = models.CharField(blank=True, null=True, max_length=100,
+                                         help_text=_('a general area of residence (for example, "the negev"'))
     place_of_residence_lat = models.CharField(blank=True, null=True, max_length=16)
     place_of_residence_lon = models.CharField(blank=True, null=True, max_length=16)
     residence_centrality = models.IntegerField(blank=True, null=True)
@@ -87,7 +89,7 @@ class Person(models.Model):
         for role in other.roles.all():
             role.person = self
             role.save()
-        (pa,created) = PersonAlias.objects.get_or_create(name=other.name,person=self)
+        (pa, created) = PersonAlias.objects.get_or_create(name=other.name, person=self)
         if created:
             pa.save()
         for part in other.protocol_parts.all():
@@ -109,8 +111,8 @@ def member_post_save(sender, **kwargs):
 
 
 class Role(models.Model):
-    start_date  = models.DateField(null=True)
-    end_date  = models.DateField(blank=True, null=True)
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(blank=True, null=True)
     text = models.CharField(blank=True, null=True, max_length=1024)
     org = models.TextField(blank=True, null=True)
     person = models.ForeignKey(Person, related_name='roles')
@@ -119,6 +121,7 @@ class Role(models.Model):
         return _('{person} serverd as {text} in {org} from {start_date} to {end_date}').format(
                 person=self.person, text=self.text, org=self.org,
                 start_date=self.start_date, end_date=self.end_date)
+
 
 class ProcessedProtocolPart(models.Model):
     """This model is used to keep track of protocol parts already searched for creating persons.

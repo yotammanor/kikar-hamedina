@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 from urllib2 import unquote
 from django import template
 from django.template.defaultfilters import floatformat
@@ -38,6 +39,14 @@ def render_icons(value):
         return value.replace('#like', '<i class="fa fa-thumbs-up"></i>')
     else:
         return value
+
+
+@register.filter(name='append_separators')
+def append_separators(value):
+    def add_newline(matchobj):
+        return '\n' + matchobj.group(0) + '\n'
+
+    return re.sub('\n[*=]+\n', add_newline, value)
 
 
 @register.filter(name='path_to_params')

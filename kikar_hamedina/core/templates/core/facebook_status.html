@@ -54,8 +54,11 @@
         </div>
     </div>
     <div class="panel-body">
-        <p>{{ status.content | urlize | linebreaks }}</p>
-
+        <div class="status-content">
+            {% autoescape off %}
+            {{ status.content | urlize | append_separators  | linebreaks  }}
+            {% endautoescape %}
+        </div>
         {% if status.has_attachment %}
 
             <div class="container{% if not LANGUAGE_BIDI %} attachment-container-en{% endif %}">

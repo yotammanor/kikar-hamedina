@@ -64,10 +64,10 @@ class Facebook_Persona(models.Model):
 
     def __unicode__(self):
         if IS_ELECTIONS_MODE:
-            return "Facebook_Persona: %s %s %s %s" % (
+            return u"Facebook_Persona: %s %s %s %s" % (
                 self.content_type, self.object_id,
                 self.alt_content_type, self.alt_object_id)
-        return "Facebook_Persona: %s %s" % (self.content_type, self.object_id)
+        return u"Facebook_Persona: %s %s" % (self.content_type, self.object_id)
 
 
 class Facebook_Feed(models.Model):

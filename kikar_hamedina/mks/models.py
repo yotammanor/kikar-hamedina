@@ -9,6 +9,8 @@ from django.contrib.contenttypes import generic
 
 from facebook_feeds.models import Facebook_Persona
 
+from django.conf import settings
+
 from mks.managers import (
     BetterManager, KnessetManager, CurrentKnessetMembersManager,
     CurrentKnessetPartyManager)
@@ -99,10 +101,10 @@ class Party(models.Model):
 
     def __unicode__(self):
         if self.is_current:
-            return self.name
+            return self.name.translate(settings.MODELTRANSLATION_DEFAULT_LANGUAGE)
 
         return _(u'%(name)s in Knesset %(number)d') % {
-            'name': self.name,
+            'name': self.name.translate(settings.MODELTRANSLATION_DEFAULT_LANGUAGE),
             'number': self.knesset.number if self.knesset else 0
         }
 
@@ -240,7 +242,7 @@ class Member(models.Model):
         verbose_name_plural = _('Members')
 
     def __unicode__(self):
-        return self.name
+        return self.name.translate(settings.MODELTRANSLATION_DEFAULT_LANGUAGE)
 
     def save(self, **kwargs):
         # self.recalc_average_monthly_committee_presence()  //oknesset dependency not implemented
