@@ -61,6 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       for f in 1001_1001 1001_1002 1001_1003 1001_1004 1001_1005 1001_1006; do
         python manage.py loaddata $f
       done
+      python manage.py update_translation_fields
       python manage.py loaddata data_fixture_kikartags_new
       python manage.py fetchfeedproperties || true
       python manage.py update_facebook_personas
