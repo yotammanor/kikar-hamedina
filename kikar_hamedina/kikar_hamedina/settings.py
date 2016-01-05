@@ -57,6 +57,7 @@ SECRET_KEY = 'yz2HiIDgrCDeHSfJSXIep3FeEQun!VhLXNCZ'  # This secret key SHOULD be
 # Application definition
 
 INSTALLED_APPS = (
+    'modeltranslation',  # needs to be before admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,7 +86,6 @@ INSTALLED_APPS = (
     'links',
     'video',
     'polymorphic',
-
     # Ours
     'kikartags',
     'knesset',
@@ -149,6 +149,8 @@ SOLID_I18N_USE_REDIRECTS = False
 LOCALE_PATHS = (
     sub_path("locale"),
 )
+MODELTRANSLATION_DEBUG = False
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'he'
 
 TIME_ZONE = 'Asia/Jerusalem'
 
@@ -165,7 +167,6 @@ MEDIA_URL = '/media/'
 # }
 
 SITE_ID = 1
-
 
 LANGUAGE_COOKIE_NAME = "he"
 SESSION_COOKIE_NAME = "myplanetid"
