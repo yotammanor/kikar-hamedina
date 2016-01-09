@@ -34,7 +34,8 @@ No worries, We might still have something for you. You are invited to
 ### Installation ###
 
 * Fork this project to your GitHub account.
-* Clone your version of the project into your local repository.
+* Clone your fork of the project into your local repository.
+* Add the original repository, so you can pull changes in: `git remote add hasadna https://github.com/hasadna/kikar-hamedina/`
 * Using your favorite command-line, go to the project's directory (defaults to kikar-hamedina)
 * Run `cp kikar_hamedina/kikar_hamedina/local_settings.py.template kikar_hamedina/kikar_hamedina/local_settings.py`
 * Open **local_settings.py**, and edit the following parameters:
