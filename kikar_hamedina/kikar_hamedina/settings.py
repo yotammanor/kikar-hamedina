@@ -70,7 +70,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
 
     # Third-Party
-    'actstream',
     'django_comments',
     'rest_framework',
     'django_extensions',
@@ -96,12 +95,13 @@ INSTALLED_APPS = (
     'persons',
     'reporting',
     'polyorg',
+    'actstream', # Needs to be last
 )
 
-MIGRATION_MODULES = {
-    # key: app name, value: a fully qualified package name, not the usual `app_label.something_else`
-    'actstream': 'kikar_hamedina.migrations.actstream',
-}
+# MIGRATION_MODULES = {
+#    # key: app name, value: a fully qualified package name, not the usual `app_label.something_else`
+    # 'actstream': 'kikar_hamedina.migrations.actstream',
+# }
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
