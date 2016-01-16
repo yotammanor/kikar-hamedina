@@ -83,7 +83,7 @@ $(document).ready(function () {
     });
 
 
-    var key, currentIndex, previousElm, nextElm;
+    var key, thisIndex, thisElm, nextElm, prevElm;
     function focusController(e) {
     // Resets the tabindex for the current focused element and sets
     // the tabindex for the next/previous element + focuses it
@@ -91,14 +91,14 @@ $(document).ready(function () {
         // finds current focused element
         resultList.each(function(i, elm) {
           if ( elm.getAttribute('tabindex') == 0 ) {
-            currentIndex = i;
+            thisIndex = i;
             return false;
           }
         });
 
-        thisElm = resultList[currentIndex];
-        nextElm = resultList[currentIndex + 1];
-        prevElm = resultList[currentIndex - 1];
+        thisElm = resultList[thisIndex];
+        nextElm = resultList[thisIndex + 1];
+        prevElm = resultList[thisIndex - 1];
 
         key = e.which;
 
