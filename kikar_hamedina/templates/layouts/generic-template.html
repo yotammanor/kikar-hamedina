@@ -176,12 +176,12 @@
                 </li>
 
                 {% with current_clean_path=request.get_full_path|language_clean_uri %}
-                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}  hidden-md hidden-sm language-navbar">
+                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-xs language-navbar">
                         <a href="{{ current_clean_path }}" class="navbar-options"
                            id="language-navbar-he"><span
                                 class="badge">ע</span></a>
                     </li>
-                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}  hidden-md hidden-sm language-navbar">
+                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}  hidden-xs language-navbar">
                         <a href="/en{{ current_clean_path }}" class="navbar-options"
                            id="language-navbar-en"><span
                                 class="badge">En</span></a>
