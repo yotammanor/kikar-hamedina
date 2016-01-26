@@ -193,7 +193,7 @@ LOGGING = {
         'scrapeFile': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+            'filename': '%s/debug.log' % os.path.join(REPOSITORY_ROOT, 'log'),
             'formatter': 'simple'
         },
         'scraping': {
