@@ -97,10 +97,11 @@ class Facebook_StatusResource(ModelResource):
     tags = fields.ManyToManyField(TagResource, 'tags')
 
     class Meta:
-        queryset = Facebook_Status.objects.all()
+        queryset = Facebook_Status.objects.all().order_by('-published')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
         resource_name = 'facebook_status'
+        ordering = ['published', 'status_id', 'feed', 'like_count', 'share_count', 'comment_count']
         filtering = {
             "status_id": ["exact"],
             "feed": ["exact"],
@@ -113,5 +114,14 @@ class Facebook_StatusResource(ModelResource):
         bundle.data['member'] = bundle.obj.feed.persona.owner.name
         bundle.data['party'] = bundle.obj.feed.persona.owner.current_party.name
         if bundle.obj.has_attachment:
-            bundle.data['attachment'] = "Attachment"
+            bundle.data['has_attachment'] = True
+            bundle.data['attachment'] = {
+                'type':  bundle.obj.attachment.type,
+                'link': bundle.obj.attachment.link,
+                'picture': bundle.obj.attachment.picture,
+                'name': bundle.obj.attachment.name,
+                'caption': bundle.obj.attachment.caption,
+                'description':  bundle.obj.attachment.description,
+                'source': bundle.obj.attachment.source
+            }
         return bundle
