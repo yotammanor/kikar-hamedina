@@ -54,3 +54,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
+DEFAULT_WEEKLY_RECIPIENTS = [
+    '',
+]
