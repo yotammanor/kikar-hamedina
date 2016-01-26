@@ -4,7 +4,7 @@
 
 import os
 
-DEBUG = False
+DEBUG = True
 MODELTRANSLATION_DEBUG = True
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 sub_path = lambda *x: os.path.join(PROJECT_ROOT, *x)

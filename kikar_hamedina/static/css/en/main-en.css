@@ -145,3 +145,9 @@ body {
 .attachment-container-en {
     width: 100%;
 }
+
+
+#language-navbar-he, #language-navbar-en, #language-navbar-ar {
+    padding-left: 2px;
+    padding-right: 2px;
+}
