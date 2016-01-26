@@ -2,6 +2,7 @@ import os
 from os.path import dirname, abspath, join
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+REPOSITORY_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir))
 
 sub_path = lambda *x: os.path.join(PROJECT_ROOT, *x)
 
@@ -198,7 +199,7 @@ LOGGING = {
         'scraping': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '%s/scarping.log' % LOGS_ROOT,
+            'filename': '%s/scarping.log' % os.path.join(REPOSITORY_ROOT, 'log'),
             'maxBytes': 1024 * 1024 * 10,  # 10MB each log file
             'backupCount': 10,
             'formatter': 'simple'
