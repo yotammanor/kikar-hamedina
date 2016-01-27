@@ -6,6 +6,12 @@ from kikartags.models import Tag as Tag
 from core.models import MEMBER_MODEL, PARTY_MODEL
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 
+from django.template.defaultfilters import urlize, truncatewords_html, linebreaks
+from django.contrib.humanize.templatetags import humanize
+from core.templatetags.core_extras import append_separators
+
+MAX_LENGTH_FOR_STATUS_CONTENT = 80
+
 
 class MemberResource(ModelResource):
     pass
@@ -113,6 +119,9 @@ class Facebook_StatusResource(ModelResource):
         bundle.data['facebook_link'] = bundle.obj.get_link
         bundle.data['member'] = bundle.obj.feed.persona.owner.name
         bundle.data['party'] = bundle.obj.feed.persona.owner.current_party.name
+        bundle.data['published_str'] = humanize.naturaltime(bundle.obj.published)
+        bundle.data['content_snippet'] = truncatewords_html(linebreaks(append_separators(urlize(bundle.obj.content))),
+                                                            MAX_LENGTH_FOR_STATUS_CONTENT)
         if bundle.obj.has_attachment:
             bundle.data['has_attachment'] = True
             bundle.data['attachment'] = {
