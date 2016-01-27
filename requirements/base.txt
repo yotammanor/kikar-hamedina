@@ -43,6 +43,7 @@ django-activity-stream==0.6.0
 django-pagination==1.0.7
 django-tagging==0.3.6
 django-modeltranslation==0.10.2
+django-cors-headers==1.1.0
 
 #django-planet==0.8.3
 #-e git://github.com/hasadna/django-activity-stream.git@c56a07921b8c796fce35bda6feab4610fdf64e5d#egg=django-activity-stream
