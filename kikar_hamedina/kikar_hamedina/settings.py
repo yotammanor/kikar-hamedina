@@ -2,6 +2,7 @@ import os
 from os.path import dirname, abspath, join
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+REPOSITORY_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir))
 
 sub_path = lambda *x: os.path.join(PROJECT_ROOT, *x)
 
@@ -85,6 +86,7 @@ INSTALLED_APPS = (
     'links',
     'video',
     'polymorphic',
+    'corsheaders',
     # Ours
     'kikartags',
     'knesset',
@@ -95,17 +97,18 @@ INSTALLED_APPS = (
     'persons',
     'reporting',
     'polyorg',
-    'actstream', # Needs to be last
+    'actstream',  # Needs to be last
 )
 
 # MIGRATION_MODULES = {
 #    # key: app name, value: a fully qualified package name, not the usual `app_label.something_else`
-    # 'actstream': 'kikar_hamedina.migrations.actstream',
+# 'actstream': 'kikar_hamedina.migrations.actstream',
 # }
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'solid_i18n.middleware.SolidLocaleMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -166,6 +169,21 @@ MEDIA_URL = '/media/'
 #     "USER_AGENT": "Kikar-Hamedina Planet/1.0"
 # }
 
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8001',
+    'oknesset.org'
+)
+
+CORS_ALLOW_METHODS = (
+    'GET',
+    # 'POST',
+    # 'PUT',
+    # 'PATCH',
+    # 'DELETE',
+    # 'OPTIONS'
+)
+CORS_URLS_REGEX = r'^(/en/api.*)|(/ar/api.*)|/api.*$'
+
 SITE_ID = 1
 
 LANGUAGE_COOKIE_NAME = "he"
@@ -198,7 +216,7 @@ LOGGING = {
         'scraping': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '%s/scarping.log' % LOGS_ROOT,
+            'filename': '%s/scarping.log' % os.path.join(REPOSITORY_ROOT, 'log'),
             'maxBytes': 1024 * 1024 * 10,  # 10MB each log file
             'backupCount': 10,
             'formatter': 'simple'

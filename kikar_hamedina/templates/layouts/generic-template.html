@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% load i18n %}
+{% load core_extras %}
+
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
 <html>
@@ -25,8 +27,8 @@
     {% if LANGUAGE_BIDI %}
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
     {% endif %}
-{#    <!-- CSS NVD3 -->#}
-{#    <link href="{{ STATIC_URL }}css/nv.d3.css" rel="stylesheet">#}
+    {#    <!-- CSS NVD3 -->#}
+    {#    <link href="{{ STATIC_URL }}css/nv.d3.css" rel="stylesheet">#}
     <!-- Bootstrap Localed Theme -->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/{{ LANGUAGE_CODE }}/bootstrap.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/{{ LANGUAGE_CODE }}/bootstrap-theme.css"/>
@@ -69,30 +71,35 @@
 
         <!-- Templates for the search bar autocomplete -->
         <script id="result-member-list-item-template" type="text/x-handlebars-template">
-
-            <li class="result-container">
-                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/member/{{ id }}">
-                    <div class="result-main-text"><i class="fa fa-user"></i> {{ name }}</div>
-                    <div class="result-sub-text">{{ party }}</div>
-                    <div class="result-sub-text"></div>
-                </a>
-            </li>
-        </script>
-        <script id="result-tag-list-item-template" type="text/x-handlebars-template">
-            <li class="result-container">
-                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/tag/name/{{ name }}">
-                    <div class="result-main-text"><i class="fa fa-tag"></i> {{ name }}</div>
-                </a>
-            </li>
-        </script>
-        <script id="result-party-list-item-template" type="text/x-handlebars-template">
-            <li class="result-container">
-                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/party/{{ id }}">
-                    <div class="result-main-text"><i class="fa fa-group"></i> {{ name }}</div>
-                </a>
-            </li>
-        </script>
-    {% endverbatim %}
+        <li class="result-container">
+        <
+        a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/member/{{ id }}"
+    >
+        <div class="result-main-text"><i class="fa fa-user"></i> {{ name }}</div>
+        <div class="result-sub-text">{{ party }}</div>
+        <div class="result-sub-text"></div>
+    </a>
+    </li>
+    </script>
+    <script id="result-tag-list-item-template" type="text/x-handlebars-template">
+    <li class="result-container">
+    <
+    a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/tag/name/{{ name }}"
+    >
+        <div class="result-main-text"><i class="fa fa-tag"></i> {{ name }}</div>
+    </a>
+    </li>
+    </script>
+    <script id="result-party-list-item-template" type="text/x-handlebars-template">
+    <li class="result-container">
+    <
+    a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/party/{{ id }}"
+    >
+        <div class="result-main-text"><i class="fa fa-group"></i> {{ name }}</div>
+    </a>
+    </li>
+    </script>
+{% endverbatim %}
 
     <!-- Google Analytics -->
 
@@ -132,7 +139,8 @@
         </div>
 
         <div class="col-sm-6 collapse navbar-collapse" id="searchbar-searchform-container">
-            <div class="navbar-form navbar-{% if LANGUAGE_BIDI %}left{% else %}right{% endif %} dropdown" id="search-bar-form" role="search">
+            <div class="navbar-form navbar-{% if LANGUAGE_BIDI %}left{% else %}right{% endif %} dropdown"
+                 id="search-bar-form" role="search">
                 <div class="input-group" id="search-results-dropdown">
                     <input id="navbar-search-box" type="text" name="search_str" class="form-control"
                            autocomplete="off"
@@ -167,17 +175,34 @@
                     </a>
                 </li>
 
+                {% with current_clean_path=request.get_full_path|language_clean_uri %}
+                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-xs language-navbar">
+                        <a href="{{ current_clean_path }}" class="navbar-options"
+                           id="language-navbar-he"><span
+                                class="badge">ע</span></a>
+                    </li>
+                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}  hidden-xs language-navbar">
+                        <a href="/en{{ current_clean_path }}" class="navbar-options"
+                           id="language-navbar-en"><span
+                                class="badge">En</span></a>
+
+                    </li>
+{#                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}  hidden-md hidden-sm language-navbar">#}
+{#                        <a href="/ar{{ current_clean_path }}" class="navbar-options" id="language-navbar-ar"><span#}
+{#                                class="badge">ع</span></a>#}
+{#                    </li>#}
+                {% endwith %}
                 {% if user.is_authenticated %}
                     <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-md hidden-sm">
                         <a href="{% url 'untagged' %}" class="navbar-options">
                             {% blocktrans %}Tagging{% endblocktrans %}
                         </a>
                     </li>
-{#                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-md hidden-sm">#}
-{#                        <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">#}
-{#                            {% blocktrans %}Blog{% endblocktrans %}#}
-{#                        </a>#}
-{#                    </li>#}
+                    {#                    <li class="navbar-nav navbar-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %} hidden-md hidden-sm">#}
+                    {#                        <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">#}
+                    {#                            {% blocktrans %}Blog{% endblocktrans %}#}
+                    {#                        </a>#}
+                    {#                    </li>#}
                 {% endif %}
                 <!-- <li class="active"><a href="#">פוליטיקאים</a></li> -->
                 <!-- <li><a href="#about">מפלגות</a></li> -->
@@ -210,11 +235,11 @@
                                     {% blocktrans %}Tagging{% endblocktrans %}
                                 </a>
                             </li>
-{#                            <li>#}
-{#                                <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">#}
-{#                                    {% blocktrans %}Blog{% endblocktrans %}#}
-{#                                </a>#}
-{#                            </li>#}
+                            {#                            <li>#}
+                            {#                                <a href="{% url 'zinnia:entry_archive_index' %}" class="navbar-options">#}
+                            {#                                    {% blocktrans %}Blog{% endblocktrans %}#}
+                            {#                                </a>#}
+                            {#                            </li>#}
                         {% endif %}
                     </ul>
                 </li>

@@ -20,23 +20,23 @@ body {
 /*blue dropdowns*/
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
-  color: white;
-  background-color: #428bca;
-  background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
-  background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+    color: white;
+    background-color: #428bca;
+    background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
+    background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
 }
 
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
 .dropdown-menu > .active > a:focus {
-  color: white;
-  background-color: #428bca;
-  background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
-  background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+    color: white;
+    background-color: #428bca;
+    background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
+    background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
 }
 
 .profile-photo {
@@ -124,7 +124,6 @@ body {
     color: darkgrey;
 }
 
-
 /* Autosuggest tags */
 .typed-tag {
     background-color: #428bca;
@@ -134,9 +133,13 @@ body {
     background-color: #5BC0DE;
 }
 
-
 /* RSS Widget Styles*/
 
 .item-description {
     color: green;
+}
+
+#language-navbar-he, #language-navbar-en, #language-navbar-ar {
+    padding-left: 2px;
+    padding-right: 2px;
 }
