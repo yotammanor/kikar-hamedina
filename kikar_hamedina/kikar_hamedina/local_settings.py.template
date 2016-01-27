@@ -55,6 +55,11 @@ TEMPLATES = [
     },
 ]
 
+CORS_ORIGIN_WHITELIST = (
+    'oknesset.org'
+    'localhost:8000',
+    'localhost:8001',
+)
 
 DEFAULT_WEEKLY_RECIPIENTS = [
     '',

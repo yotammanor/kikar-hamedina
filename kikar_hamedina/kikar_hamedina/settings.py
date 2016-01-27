@@ -170,7 +170,6 @@ MEDIA_URL = '/media/'
 # }
 
 CORS_ORIGIN_WHITELIST = (
-    'localhost:8001',
     'oknesset.org'
 )
 
