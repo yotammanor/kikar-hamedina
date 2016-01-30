@@ -22,7 +22,8 @@ $(document).ready(function () {
     $("#navbar-search-box").bind({
         // event: When a letter is typed in, the auto-suggest updates
         input: function (event) {
-            $('#search-results-dropdown').removeClass("open")
+            $('#search-results-dropdown').removeClass("open");
+            this.removeAttribute('activedescendant');
             inputText = $("#navbar-search-box").val()
             url = "/search_bar/?text=" + inputText
             if (inputText.length > 1) {
@@ -43,12 +44,13 @@ $(document).ready(function () {
                                 var source = $("#result-tag-list-item-template").html()
                             }
 
+                            result.count = i; // For Handlebars - id value on result output
                             var template = Handlebars.compile(source);
                             var html = template(result);
                             $('#search-results-list').append(html)
                         }
                         if (data['number_of_results'] > 0) {
-                            $('#search-results-dropdown').addClass("open")
+                            $('#search-results-dropdown').addClass("open");
                             resultList = $('.result-container a');
                             selectedIndex = -1;
                         }
@@ -114,6 +116,7 @@ $(document).ready(function () {
       }
 
       resultList[i].className = 'active-result';
+      $("#navbar-search-box").attr('activedescendant', 'option-' + i);
       selectedIndex = i;
     }
 });
