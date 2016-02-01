@@ -141,3 +141,10 @@ body {
 .navbar-collapse.in {
     overflow-y: visible;
 }
+
+/* Fix navigation items margin on low resolution */
+@media (max-width: 768px) {
+  .navbar-nav {
+    margin: 7.5px -6px;
+  }
+}
