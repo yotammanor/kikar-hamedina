@@ -3,10 +3,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 
-# from core.views import index
-# from core.views import person
-# from core.views import party
-# from core.views import status
 
 admin.autodiscover()
 
