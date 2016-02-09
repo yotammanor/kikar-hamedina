@@ -148,3 +148,34 @@ body {
     margin: 7.5px -6px;
   }
 }
+
+/* All-Parties Page */
+
+.parties {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.parties__party-container {
+  display: flex;
+  padding: 10px;
+  margin: 15px 30px;
+  border: 1px solid grey;
+  justify-content: space-around;
+
+  flex: 1 1 320px;
+  justify-content: space-around;
+}
+
+.parties__party-stats {
+  display: none; /* Stats are hidden until AJAX call is finishe, then becomes flex. */
+  margin-right: 10px;
+  flex-direction: column;
+  justify-content: center;
+  flex-basis: 150px;
+}
+
+.parties__party-img {
+  flex-basis: 150px;
+}
