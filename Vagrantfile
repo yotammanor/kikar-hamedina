@@ -50,7 +50,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell do |shell|
     shell.inline = <<-EOS
       set -e
-      cd /vagrant/kikar_hamedina/
+      cd /vagrant/
+      [ ! -d log ] && mkdir log
+      cd /kikar_hamedina/
       [ ! -d logs ] && mkdir logs
       python manage.py migrate --noinput
       [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json

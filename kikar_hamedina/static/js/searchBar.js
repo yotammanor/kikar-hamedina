@@ -17,12 +17,13 @@
 $(document).ready(function () {
 
     var resultList, // search results jQuery object
-        tabindex;
+        selectedIndex = -1; // selected search result: -1 means nothing is selected.
 
     $("#navbar-search-box").bind({
         // event: When a letter is typed in, the auto-suggest updates
         input: function (event) {
-            $('#search-results-dropdown').removeClass("open")
+            $('#search-results-dropdown').removeClass("open");
+            this.removeAttribute('activedescendant');
             inputText = $("#navbar-search-box").val()
             url = "/search_bar/?text=" + inputText
             if (inputText.length > 1) {
@@ -30,7 +31,6 @@ $(document).ready(function () {
                     url: url,
                     contentType: "application/json",
                     success: function (data) {
-                        tabindex = 0; // only first result is focusable
                         $('#search-results-list').html('')
                         for (var i = 0; i < data['number_of_results']; i++) {
                             var result = data['results'][i]
@@ -44,18 +44,15 @@ $(document).ready(function () {
                                 var source = $("#result-tag-list-item-template").html()
                             }
 
-                            if ( i > 0 && tabindex == 0 ) {
-                              tabindex = -1;
-                            }
-                            result['tabindex'] = tabindex;
-
+                            result.count = i; // For Handlebars - id value on result output
                             var template = Handlebars.compile(source);
                             var html = template(result);
                             $('#search-results-list').append(html)
                         }
                         if (data['number_of_results'] > 0) {
-                            $('#search-results-dropdown').addClass("open")
+                            $('#search-results-dropdown').addClass("open");
                             resultList = $('.result-container a');
+                            selectedIndex = -1;
                         }
                     }
                 });
@@ -63,18 +60,36 @@ $(document).ready(function () {
 
         },
 
-        // event: Enter-key is pressed while typing - equivalent to submit-search
+        // event: Enter-key pressed while typing - equivalent to submit-search.
+        //        Enter-key pressed while selecting search result - go to search result
+        //        Up / Down keys - navigation between search results
+
         keydown: function (event) {
-            if (event.which == 13) {
-                var uri = buildURIWithQuotes($("#search-bar-submit").data('target'));
-                var full_url = window.location.origin + encodeURI(uri);
+          var uri, full_url;
+          switch ( event.which ) {
+            case 13:
+                if ( selectedIndex > -1 ) {
+                  full_url = $('.active-result').attr('href');
+                }
+                else {
+                  uri = buildURIWithQuotes($("#search-bar-submit").data('target'));
+                  full_url = window.location.origin + encodeURI(uri);
+                }
                 window.location.assign(full_url)
-            }
+                break;
+
+            case 40:
+                setSelectedIndex(selectedIndex + 1);
+                break;
+
+            case 38:
+                setSelectedIndex(selectedIndex - 1);
+                break;
+          }
         }
+
     });
 
-    // event: Up / Down keys navigation in search results
-    $("#search-results-list").bind('keydown', focusController);
 
     // event: Click on submit search button
     $("#search-bar-submit").click(function () {
@@ -82,44 +97,26 @@ $(document).ready(function () {
         window.location.assign(window.location.origin + encodeURI(uri))
     });
 
+    // sets the focus on the next/previous search result
+    function setSelectedIndex(i) {
 
-    var key, thisIndex, thisElm, nextElm, prevElm;
-    function focusController(e) {
-    // Resets the tabindex for the current focused element and sets
-    // the tabindex for the next/previous element + focuses it
+      // if a result has been already selected
+      if ( selectedIndex > -1 ) {
+        resultList[selectedIndex].className = '';
+      }
 
-        // finds current focused element
-        resultList.each(function(i, elm) {
-          if ( elm.getAttribute('tabindex') == 0 ) {
-            thisIndex = i;
-            return false;
-          }
-        });
+      // end of result list - set to first result
+      if ( i == resultList.length) {
+        i = 0;
+      }
 
-        thisElm = resultList[thisIndex];
-        nextElm = resultList[thisIndex + 1];
-        prevElm = resultList[thisIndex - 1];
+      // first result - set to last result
+      if ( i < 0 ) {
+        i = resultList.length - 1;
+      }
 
-        key = e.which;
-
-        switch ( key ) {
-          case 40:
-            e.preventDefault();
-            if ( nextElm ) {
-              thisElm.setAttribute('tabindex', -1);
-              nextElm.setAttribute('tabindex', 0);
-              nextElm.focus();
-            }
-            break;
-
-          case 38:
-            e.preventDefault();
-            if ( prevElm ) {
-              thisElm.setAttribute('tabindex', -1);
-              prevElm.setAttribute('tabindex', 0);
-              prevElm.focus();
-            }
-            break;
-        }
+      resultList[i].className = 'active-result';
+      $("#navbar-search-box").attr('activedescendant', 'option-' + i);
+      selectedIndex = i;
     }
 });
