@@ -1,21 +1,54 @@
 {% extends "layouts/generic-template.html" %}
 
+{% load i18n %}
+
 {% block title %}כל הפוליטיקאים{% endblock title %}
 
 {% block h1 %}
     כל הפוליטיקאים
 {% endblock %}
 
-{% block details %}
-    <div class="h4">
-       מספר דפים: {{ object_list.count }}
-    </div>
-{% endblock %}
-
 {% block main_content %}
-    <ul>
-        {% for member in object_list %}
-            <li><a href="{% url 'member' member.id %}">{{ member.name }}</a></li>
-        {% endfor %}
-    </ul>
+
+  {% for party in object_list %}
+    <h3 class="page-header">{{ party.name }}</h3>
+    <div class="party__info">
+      <div>
+        <span class="fa fa-group"></span>  {% trans 'Number of Facebook Pages for Party' %}: {{ party.current_members.count }}
+      </div>
+      <span class="fa fa-bar-chart"></span>
+      {% trans 'Last Month' %}:
+      <span id="ins_n_month">...</span> {% trans 'Statuses' %} {% trans 'and' %}
+      <span id="ins_mean_likes_month">...</span> {% trans 'Likes on average' %}
+    </div>
+
+    <div class="party__members">
+      {% for member in party.current_members %}
+          <div class="member__container">
+
+            {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
+                <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img">
+            {% else %}
+                <img src="{{ member.highres_img_url }}" class="member__img">
+            {% endif %}
+
+            <h3 class="member__name">{{ member.name }}</h3>
+
+            <div class="member__stats">
+              <div>
+                <span class="fa fa-comment"></span>  {% trans 'Statuses' %}: 20
+              </div>
+              <div>
+                <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: 10
+              </div>
+            </div>
+
+            <a class="member__more-info"href="/member/{{ member.id }}">{% trans 'More Info' %}</a>
+
+          </div>
+      {% endfor %}
+    </div>
+
+  {% endfor %}
+
 {% endblock %}
