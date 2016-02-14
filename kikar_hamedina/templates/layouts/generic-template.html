@@ -137,7 +137,7 @@
             <div class="navbar-form navbar-{% if LANGUAGE_BIDI %}left{% else %}right{% endif %} dropdown"
                  id="search-bar-form" role="search">
                 <div class="input-group" id="search-results-dropdown">
-                    <input id="navbar-search-box" type="search"  title="חיפוש" name="search_str" class="form-control"
+                    <input id="navbar-search-box" type="search"  title={% trans 'search' %} name="search_str" class="form-control"
                            autocomplete="off"
                            placeholder="{% blocktrans %}Knesset Member, Party, a Subject discussed, or any keyword...{% endblocktrans %}"
                            data-toggle="dropdown" role="combobox" aria-autocomplete="list" aria-owns="search-results-list">
