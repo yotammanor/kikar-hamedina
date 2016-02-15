@@ -5,7 +5,12 @@
 {% block title %}כל הפוליטיקאים{% endblock title %}
 
 {% block h1 %}
-    כל הפוליטיקאים
+    {% trans 'All MKs' %}
+{% endblock %}
+
+{% block details %}
+<p>{% trans 'All the numbers in the page are referencing the monthly average.' %}</p>
+<p>{% trans "Grayscaled MK's don't have a public Facebook page." %}</p>
 {% endblock %}
 
 {% block main_content %}
@@ -56,59 +61,50 @@
 {% block scripts %}
     <script type="text/javascript">
 
-        // extracts the last segment from the given path
-        function lastSegmentFrom(path) {
-          path = path.split('/');
-          return path[ path.length - 2 ];
-        }
+      // extracts the last segment from the given path
+      function lastSegmentFrom(path) {
+        path = path.split('/');
+        return path[ path.length - 2 ];
+      }
 
-        // Inserts Party Insights
-        $.getJSON('//kikar.org/api/v1/insights/party/', function (data) {
-            var partiesJSON = data.objects;
-            var parties = {}, partyID;
+      /**
+       * url - the URL for the AJAX request
+       * container - the class name which contains the insights
+       * type = party / member
+       */
+      function insertInsights(url, container, type) {
 
-            // create the parties object, which contains each party stats.
-            $.each(partiesJSON, function(i, party) {
-              partyID = lastSegmentFrom(party.party);
-              parties[partyID] = {
-                AvgLikes: Math.round(party.mean_status_likes_last_week),
-                AvgStatuses: party.n_statuses_last_week,
-              };
-            });
+        var objects, // objects from JSON
+            items = {}, // represents each item in objects
+            itemID;
 
-            $('.party__info').each(function(i, elm) {
-              partyID = elm.getAttribute('data-party-id');
-              $(elm).find('.avg_likes').text(parties[partyID].AvgLikes);
-              $(elm).find('.avg_statuses').text(parties[partyID].AvgStatuses);
-            });
-        });
+        $.getJSON(url, function(data) {
 
-        // Insert Members Insights
-        $.getJSON('//kikar.org/api/v1/insights/member/?limit=300', function (data) {
-          var membersJSON = data.objects;
-          var members = {}, memberID;
+          var objects = data.objects;
 
-          $.each(membersJSON, function(i, member) {
-            memberID = lastSegmentFrom(member.member);
-            members[memberID] = {
-              AvgLikes: Math.round(member.mean_status_likes_last_week),
-              AvgStatuses: member.n_statuses_last_week,
+          // creating the items object, which holds the item insights
+          $.each(objects, function(i, item) {
+            itemID = lastSegmentFrom(item[type]);
+            items[itemID] = {
+              AvgLikes: Math.round(item.mean_status_likes_last_month),
+              AvgStatuses: item.n_statuses_last_month,
             };
           });
-          window.members = members;
 
-          var avgStatuses;
-          $('.member__container').each(function(i, elm) {
-            memberID = elm.getAttribute('data-member-id');
-
-            // TOFIX (BACKEND): avgStatuses is null instead of 0 if there's no facebook page
-            avgStatuses = members[memberID].AvgStatuses || 0;
-            $(elm).find('.avg_likes').text(members[memberID].AvgLikes);
-            $(elm).find('.avg_statuses').text(avgStatuses);
-
-          });
+          // manipulates the DOM
+          $(container).each(function( i, elm ) {
+            itemID = elm.getAttribute('data-' + type + '-id');
+            $(elm).find('.avg_likes').text(items[itemID].AvgLikes);
+            // TOFIX (BACKEND): AvgStatuses is null instead of 0 if there's no facebook page
+            $(elm).find('.avg_statuses').text(items[itemID].AvgStatuses || 0);
+          })
 
         });
+
+      }
+
+      insertInsights('/api/v1/insights/party/', '.party__info', 'party');
+      insertInsights('/api/v1/insights/member/?limit=300', '.member__container', 'member');
 
     </script>
 {% endblock %}
