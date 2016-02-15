@@ -34,7 +34,7 @@
             {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
                 <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img">
             {% else %}
-                <img src="{{ member.highres_img_url }}" class="member__img">
+                <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled">
             {% endif %}
 
             <h3 class="member__name">{{ member.name }}</h3>

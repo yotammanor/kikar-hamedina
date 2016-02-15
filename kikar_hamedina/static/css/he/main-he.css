@@ -211,6 +211,10 @@ body {
   height: 150px
 }
 
+.member__img--grayscaled {
+  -webkit-filter: grayscale(100%);
+}
+
 @media (min-width: 768px) {
   .member__img {
     height: 180px;
