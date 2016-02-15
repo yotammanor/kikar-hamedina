@@ -12,19 +12,19 @@
 
   {% for party in object_list %}
     <h3 class="page-header">{{ party.name }}</h3>
-    <div class="party__info">
+    <div class="party__info" data-party-id="{{ party.id }}">
       <div>
         <span class="fa fa-group"></span>  {% trans 'Number of Facebook Pages for Party' %}: {{ party.current_members.count }}
       </div>
       <span class="fa fa-bar-chart"></span>
       {% trans 'Last Month' %}:
-      <span id="ins_n_month">...</span> {% trans 'Statuses' %} {% trans 'and' %}
-      <span id="ins_mean_likes_month">...</span> {% trans 'Likes on average' %}
+      <span class="avg_statuses">...</span> {% trans 'Statuses' %} {% trans 'and' %}
+      <span class="avg_likes">...</span> {% trans 'Likes on average' %}
     </div>
 
     <div class="party__members">
       {% for member in party.current_members %}
-          <div class="member__container">
+          <div class="member__container" data-member-id={{ member.id }}>
 
             {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
                 <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img">
@@ -36,10 +36,10 @@
 
             <div class="member__stats">
               <div>
-                <span class="fa fa-comment"></span>  {% trans 'Statuses' %}: 20
+                <span class="fa fa-comment"></span>  {% trans 'Statuses' %}: <span class="avg_statuses">...</span>
               </div>
               <div>
-                <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: 10
+                <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="avg_likes">...</span>
               </div>
             </div>
 
@@ -51,4 +51,64 @@
 
   {% endfor %}
 
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+
+        // extracts the last segment from the given path
+        function lastSegmentFrom(path) {
+          path = path.split('/');
+          return path[ path.length - 2 ];
+        }
+
+        // Inserts Party Insights
+        $.getJSON('//kikar.org/api/v1/insights/party/', function (data) {
+            var partiesJSON = data.objects;
+            var parties = {}, partyID;
+
+            // create the parties object, which contains each party stats.
+            $.each(partiesJSON, function(i, party) {
+              partyID = lastSegmentFrom(party.party);
+              parties[partyID] = {
+                AvgLikes: Math.round(party.mean_status_likes_last_week),
+                AvgStatuses: party.n_statuses_last_week,
+              };
+            });
+
+            $('.party__info').each(function(i, elm) {
+              partyID = elm.getAttribute('data-party-id');
+              $(elm).find('.avg_likes').text(parties[partyID].AvgLikes);
+              $(elm).find('.avg_statuses').text(parties[partyID].AvgStatuses);
+            });
+        });
+
+        // Insert Members Insights
+        $.getJSON('//kikar.org/api/v1/insights/member/?limit=300', function (data) {
+          var membersJSON = data.objects;
+          var members = {}, memberID;
+
+          $.each(membersJSON, function(i, member) {
+            memberID = lastSegmentFrom(member.member);
+            members[memberID] = {
+              AvgLikes: Math.round(member.mean_status_likes_last_week),
+              AvgStatuses: member.n_statuses_last_week,
+            };
+          });
+          window.members = members;
+
+          var avgStatuses;
+          $('.member__container').each(function(i, elm) {
+            memberID = elm.getAttribute('data-member-id');
+
+            // TOFIX (BACKEND): avgStatuses is null instead of 0 if there's no facebook page
+            avgStatuses = members[memberID].AvgStatuses || 0;
+            $(elm).find('.avg_likes').text(members[memberID].AvgLikes);
+            $(elm).find('.avg_statuses').text(avgStatuses);
+
+          });
+
+        });
+
+    </script>
 {% endblock %}
