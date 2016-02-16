@@ -69,8 +69,8 @@ urlpatterns = patterns('',
                        url(r'^custom/(?P<title>[\w\d\.\s-]+)/$', views.CustomView.as_view(), name='custom'),
                        url(r'^title_exists/', views.title_exists, name='title-exists'),
                        # Views for all objects of type
-                       url(r'^members/$',
-                           views.AllMembers.as_view(queryset=Member.objects.filter(is_current=True)),
+                       url(r'^members/$', views.AllMembers.as_view(
+                           queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-members'),
                        url(r'^parties/$', views.AllParties.as_view(
                                queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),

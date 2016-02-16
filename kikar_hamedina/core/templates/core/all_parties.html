@@ -1,15 +1,78 @@
 {% extends "layouts/generic-template.html" %}
 
-{% block title %}כל הסיעות{% endblock title %}
+{% load i18n %}
+
+{% block title %}{% trans 'All Parties' %}{% endblock title %}
 
 {% block h1 %}
-    כל המפלגות
+{% trans 'All Parties' %}
 {% endblock %}
 
 {% block main_content %}
     <ul>
-        {% for party in object_list %}
-            <li><a href="{% url 'party' party.id %}">{{ party.name }}</a></li>
-        {% endfor %}
+
     </ul>
+
+    <div class="parties">
+
+      {% for party in object_list %}
+
+        <div class="parties__party-container" data-party-id="{{ party.id}}">
+          <img class="parties__party-img" src="/static/media/parties/{{ party.name_en }}.svg" alt="{{ party.name }}" />
+{#             onError="this.onerror=null;this.src='/static/media/parties/{{ party.name_en }}.png';" #}
+          <div class="parties__party-stats">
+            <span class="parties__party-stats__stat">
+              <span class="fa fa-users"></span>
+                {% trans 'Number of Facebook Pages for Party' %}: {{ party.current_members.count }}
+            </span>
+            <span class="parties__party-stats__stat">
+              <span class="fa fa-comment"></span>
+                {% trans 'Statuses' %}: <span class="avg_statuses"></span>
+            </span>
+            <span class="parties__party-stats__stat">
+              <span class="fa fa-thumbs-up"></span>
+                {% trans 'Likes on average' %}: <span class="avg_likes"></span>
+            </span>
+          </div>
+        </div>
+
+      {% endfor %}
+
+
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+
+        // extracts the last segment from the given path
+        function lastSegmentFrom(path) {
+          path = path.split('/');
+          return path[ path.length - 2 ];
+        }
+
+        $.getJSON('/api/v1/insights/party/', function (data) {
+            var partiesJSON = data.objects;
+            var parties = {}, partyID;
+
+            // create the parties object, which contains each party stats.
+            $.each(partiesJSON, function(i, party) {
+              partyID = lastSegmentFrom(party.party);
+              parties[partyID] = {
+                AvgLikes: Math.round(party.mean_status_likes_last_week),
+                AvgStatuses: party.n_statuses_last_week
+              };
+            });
+
+            $('.parties__party-container').each(function(i, elm) {
+              partyID = elm.getAttribute('data-party-id');
+              $(elm).find('.avg_likes').text(parties[partyID].AvgLikes);
+              $(elm).find('.avg_statuses').text(parties[partyID].AvgStatuses);
+            });
+
+            $('.parties__party-stats').css('display', 'flex');
+        });
+    </script>
 {% endblock %}
