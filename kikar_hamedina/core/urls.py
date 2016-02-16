@@ -8,7 +8,8 @@ from kikartags.models import Tag as Tag
 from mks.models import Party, Member
 from django.conf import settings
 from tastypie.api import Api
-from api import *
+from api import MemberResource, PartyResource, KnessetResource, Facebook_StatusResource, \
+    Facebook_Status_CommentResource, Facebook_FeedResource, TagResource, CommentTagResource
 from insights import StatsMemberResource, StatsPartyResource
 from core.models import MEMBER_MODEL, PARTY_MODEL
 from core.rss_feeds import LatestStatusesRSSFeed, PartyRSSFeed, KeywordsByUserRSSFeed, CustomQueryRSSFeed
@@ -18,8 +19,10 @@ v1_api.register(MemberResource())
 v1_api.register(PartyResource())
 v1_api.register(KnessetResource())
 v1_api.register(Facebook_StatusResource())
+v1_api.register(Facebook_Status_CommentResource())
 v1_api.register(Facebook_FeedResource())
 v1_api.register(TagResource())
+v1_api.register(CommentTagResource())
 v1_api.register(StatsMemberResource())
 v1_api.register(StatsPartyResource())
 
@@ -66,11 +69,11 @@ urlpatterns = patterns('',
                        url(r'^custom/(?P<title>[\w\d\.\s-]+)/$', views.CustomView.as_view(), name='custom'),
                        url(r'^title_exists/', views.title_exists, name='title-exists'),
                        # Views for all objects of type
-                       url(r'^members/$',
-                           views.AllMembers.as_view(queryset=Member.objects.filter(is_current=True)),
+                       url(r'^members/$', views.AllMembers.as_view(
+                           queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-members'),
                        url(r'^parties/$', views.AllParties.as_view(
-                           queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
+                               queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-parties'),
                        url(r'^tags/$', views.AllTags.as_view(queryset=Tag.objects.all()),
                            name='all-tags'),
@@ -84,9 +87,9 @@ urlpatterns = patterns('',
                        # unused Views for statuses
                        url(r'^status-comments/$', views.OnlyCommentsView.as_view(), name='status-comments'),
                        url(r'^untagged/$', views.AllStatusesView.as_view(
-                           queryset=Facebook_Status.objects.filter(tags=None,
-                                                                   feed__persona__object_id__isnull=False).order_by(
-                               '-published')),
+                               queryset=Facebook_Status.objects.filter(tags=None,
+                                                                       feed__persona__object_id__isnull=False).order_by(
+                                       '-published')),
                            kwargs={'context_object': 'untagged'},
                            name='untagged'),
                        url(r'^review-tags/$', views.ReviewTagsView.as_view(), name='review-tags'),
