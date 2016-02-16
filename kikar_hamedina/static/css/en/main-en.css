@@ -156,3 +156,48 @@ body {
     margin: 7.5px -6px;
   }
 }
+
+/* Party's Members Page */
+
+.party__info {
+  margin: 20px 0;
+  font-size: 1.25em;
+}
+
+.party__members {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.member__container {
+  display: flex;
+  padding: 10px;
+  margin-bottom: 30px;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column wrap;
+  flex-basis: 200px;
+  text-align: center;
+  background: #F7F7F7;
+  border: 1px solid #D9D9D9;
+}
+
+.member__img {
+  border-radius: 20px;
+  height: 150px
+}
+
+.member__img--grayscaled {
+  -webkit-filter: grayscale(100%);
+}
+
+@media (min-width: 768px) {
+  .member__img {
+    height: 180px;
+  }
+}
+
+.member__more-info {
+  margin-top: 5px;
+}

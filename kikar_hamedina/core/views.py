@@ -286,6 +286,20 @@ class PartyView(StatusFilterUnifiedView):
         return apply_request_params(
                 Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
 
+# TOFIx..
+class PartyMembersView(StatusFilterUnifiedView):
+    template_name = "core/party_members.html"
+    parent_model = PARTY_MODEL
+
+    def get_queryset(self, **kwargs):
+        search_string = self.kwargs['id']
+        all_members_for_party = get_object_or_404(PARTY_MODEL, id=search_string).current_members()
+        all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
+                               all_members_for_party if member.facebook_persona]
+        return apply_request_params(
+                Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
+
+
 
 class TagView(StatusFilterUnifiedView):
     template_name = "core/tag.html"
@@ -362,7 +376,7 @@ class FacebookStatusDetailView(DetailView):
 
 class AllMembers(ListView):
     template_name = 'core/all_members.html'
-    model = MEMBER_MODEL
+    model = PARTY_MODEL
 
 
 class AllParties(ListView):
