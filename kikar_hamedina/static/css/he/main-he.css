@@ -163,9 +163,7 @@ body {
   margin: 15px 30px;
   border: 1px solid grey;
   justify-content: space-around;
-
   flex: 1 1 320px;
-  justify-content: space-around;
 }
 
 .parties__party-stats {

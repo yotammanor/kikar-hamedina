@@ -2,10 +2,10 @@
 
 {% load i18n %}
 
-{% block title %}כל הסיעות{% endblock title %}
+{% block title %}{% trans 'All Parties' %}{% endblock title %}
 
 {% block h1 %}
-    כל המפלגות
+{% trans 'All Parties' %}
 {% endblock %}
 
 {% block main_content %}
@@ -18,7 +18,8 @@
       {% for party in object_list %}
 
         <div class="parties__party-container" data-party-id="{{ party.id}}">
-          <img class="parties__party-img" src="/static/media/parties/Likud.svg" alt="{% trans 'Likud' %}" />
+          <img class="parties__party-img" src="/static/media/parties/{{ party.name_en }}.svg" alt="{{ party.name }}" />
+{#             onError="this.onerror=null;this.src='/static/media/parties/{{ party.name_en }}.png';" #}
           <div class="parties__party-stats">
             <span class="parties__party-stats__stat">
               <span class="fa fa-users"></span>
@@ -61,7 +62,7 @@
               partyID = lastSegmentFrom(party.party);
               parties[partyID] = {
                 AvgLikes: Math.round(party.mean_status_likes_last_week),
-                AvgStatuses: party.n_statuses_last_week,
+                AvgStatuses: party.n_statuses_last_week
               };
             });
 
