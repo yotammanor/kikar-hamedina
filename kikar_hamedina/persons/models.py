@@ -102,7 +102,17 @@ class Person(models.Model):
 @receiver(post_save, sender=Member)
 def member_post_save(sender, **kwargs):
     instance = kwargs['instance']
-    person = Person.objects.get_or_create(mk=instance)[0]
+    persons = Person.objects.filter(mk=instance).order_by('id')
+    if not persons:
+        person = Person.objects.create(mk=instance)
+    else:
+        person = persons[0]
+    if persons.count() > 1:
+        for p in persons[1:]:
+            print 'deleting redundant person: ', p.id
+            p.delete()
+
+
     for field in instance._meta.fields:
         if field.name != 'id' and hasattr(person, field.name):
             setattr(person, field.name, getattr(instance, field.name))

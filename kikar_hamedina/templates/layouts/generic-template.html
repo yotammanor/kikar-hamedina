@@ -55,6 +55,24 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/{{ LANGUAGE_CODE }}/main-{{ LANGUAGE_CODE }}.css"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/searchBar.css"/>
 
+    <!-- Favicon links -->
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ STATIC_URL }}media/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{ STATIC_URL }}media/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ STATIC_URL }}media/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ STATIC_URL }}media/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ STATIC_URL }}media/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ STATIC_URL }}media/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ STATIC_URL }}media/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ STATIC_URL }}media/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ STATIC_URL }}media/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ STATIC_URL }}media/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ STATIC_URL }}media/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ STATIC_URL }}media/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ STATIC_URL }}media/favicons/favicon-16x16.png">
+    <link rel="manifest" href="{{ STATIC_URL }}media/favicons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
     {% block link %}
     {% endblock %}
 
@@ -73,7 +91,7 @@
         <script id="result-member-list-item-template" type="text/x-handlebars-template">
 
             <li class="result-container">
-                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/member/{{ id }}" tabindex="{{ tabindex }}">
+                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/member/{{ id }}" tabindex="-1" id="option-{{count}}" role="option">
                     <div class="result-main-text"><i class="fa fa-user"></i> {{ name }}</div>
                     <div class="result-sub-text">{{ party }}</div>
                     <div class="result-sub-text"></div>
@@ -82,14 +100,14 @@
         </script>
         <script id="result-tag-list-item-template" type="text/x-handlebars-template">
             <li class="result-container">
-                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/tag/name/{{ name }}" tabindex="{{ tabindex }}">
+                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/tag/name/{{ name }}" tabindex="-1" id="option-{{count}}" role="option">
                     <div class="result-main-text"><i class="fa fa-tag"></i> {{ name }}</div>
                 </a>
             </li>
         </script>
         <script id="result-party-list-item-template" type="text/x-handlebars-template">
             <li class="result-container">
-                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/party/{{ id }}" tabindex="{{ tabindex }}">
+                <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/party/{{ id }}" tabindex="-1" id="option-{{count}}" role="option">
                     <div class="result-main-text"><i class="fa fa-group"></i> {{ name }}</div>
                 </a>
             </li>
@@ -127,11 +145,11 @@
             <div class="navbar-form navbar-{% if LANGUAGE_BIDI %}left{% else %}right{% endif %} dropdown"
                  id="search-bar-form" role="search">
                 <div class="input-group" id="search-results-dropdown">
-                    <input id="navbar-search-box" type="text" name="search_str" class="form-control"
+                    <input id="navbar-search-box" type="search"  title={% trans 'search' %} name="search_str" class="form-control"
                            autocomplete="off"
                            placeholder="{% blocktrans %}Knesset Member, Party, a Subject discussed, or any keyword...{% endblocktrans %}"
-                           data-toggle="dropdown">
-                    <ul id="search-results-list" class="dropdown-menu">
+                           data-toggle="dropdown" role="combobox" aria-autocomplete="list" aria-owns="search-results-list">
+                    <ul id="search-results-list" class="dropdown-menu" role="listbox" aria-expanded="false">
                     </ul>
                     <div class="input-group-btn">
                         <button class="btn btn-success" id="search-bar-submit" data-target="{% url 'search' %}"

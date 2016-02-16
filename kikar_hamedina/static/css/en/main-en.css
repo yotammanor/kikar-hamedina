@@ -19,15 +19,7 @@ body {
 
 /*blue dropdowns*/
 .dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus {
-    color: white;
-    background-color: #428bca;
-    background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
-    background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
-    background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
-}
-
+.dropdown-menu > li > a:focus,
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
 .dropdown-menu > .active > a:focus {
@@ -150,4 +142,62 @@ body {
 #language-navbar-he, #language-navbar-en, #language-navbar-ar {
     padding-left: 2px;
     padding-right: 2px;
+}
+
+
+/* Fix search results overflowing on small resolutions */
+.navbar-collapse.in {
+    overflow-y: visible;
+}
+
+/* Fix navigation items margin on low resolution */
+@media (max-width: 768px) {
+  .navbar-nav {
+    margin: 7.5px -6px;
+  }
+}
+
+/* Party's Members Page */
+
+.party__info {
+  margin: 20px 0;
+  font-size: 1.25em;
+}
+
+.party__members {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.member__container {
+  display: flex;
+  padding: 10px;
+  margin-bottom: 30px;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column wrap;
+  flex-basis: 200px;
+  text-align: center;
+  background: #F7F7F7;
+  border: 1px solid #D9D9D9;
+}
+
+.member__img {
+  border-radius: 20px;
+  height: 150px
+}
+
+.member__img--grayscaled {
+  -webkit-filter: grayscale(100%);
+}
+
+@media (min-width: 768px) {
+  .member__img {
+    height: 180px;
+  }
+}
+
+.member__more-info {
+  margin-top: 5px;
 }

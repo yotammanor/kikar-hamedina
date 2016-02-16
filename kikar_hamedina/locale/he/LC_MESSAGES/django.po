@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-26 18:18+0200\n"
-"PO-Revision-Date: 2015-12-26 17:26+0200\n"
+"POT-Creation-Date: 2016-02-16 20:51+0200\n"
+"PO-Revision-Date: 2016-02-16 21:01+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.6\n"
 
 #: core/billboards.py:10 core/templates/core/date_filter.html:46
-#: core/templates/core/searchgui.html:118
+#: core/templates/core/searchgui.html:120
 msgid "Last Two Weeks"
 msgstr "בשבועיים האחרונים"
 
@@ -143,8 +143,7 @@ msgstr "לחפש"
 msgid ""
 "Are you looking for something you can't find? Have a cool idea on how to "
 "improve this website?"
-msgstr ""
-" חיפשת משהו ולא מצאת? נתקלת בתקלה? יש לך רעיון מדליק לאיך לשפר את האתר? "
+msgstr "חיפשת משהו ולא מצאת? נתקלת בתקלה? יש לך רעיון מדליק לאיך לשפר את האתר?"
 
 #: core/templates/core/about_us.html:97
 msgid "We'd love to hear about it!"
@@ -162,10 +161,73 @@ msgstr "הסדנא לידע ציבורי"
 msgid "registered"
 msgstr "ע\"ר"
 
+#: core/templates/core/all_members.html:5
+msgid "All MKs"
+msgstr "כל חברי הכנסת"
+
+#: core/templates/core/all_members.html:8
+msgid "All Members of Knesset"
+msgstr "כל חברות וחברי הכנסת"
+
+#: core/templates/core/all_members.html:12
+msgid "All the numbers in the page are referencing the monthly average."
+msgstr "כל המספרים בעמוד זה מתייחסים לממוצע החודשי."
+
+#: core/templates/core/all_members.html:13
+msgid "Grayscaled MK's don't have a public Facebook page."
+msgstr "חברות וחברי הכנסת אשר תמונתם מואפרת, לא קיים עמוד פייסבוק פומבי."
+
+#: core/templates/core/all_members.html:22
+#: core/templates/core/all_parties.html:25 core/templates/core/party.html:11
+msgid "Number of Facebook Pages for Party"
+msgstr "ח\"כים במפלגה"
+
+#: core/templates/core/all_members.html:25
+#: core/templates/core/date_filter.html:51 core/templates/core/member.html:37
+#: core/templates/core/party.html:15 core/templates/core/searchgui.html:122
+msgid "Last Month"
+msgstr "בחודש האחרון"
+
+#: core/templates/core/all_members.html:26
+#: core/templates/core/all_members.html:44
+#: core/templates/core/all_parties.html:29 core/templates/core/member.html:38
+#: core/templates/core/member.html.py:41 core/templates/core/party.html:16
+#: core/templates/core/party.html.py:19
+msgid "Statuses"
+msgstr "סטאטוסים"
+
+#: core/templates/core/all_members.html:26
+msgid "and"
+msgstr "וגם"
+
+#: core/templates/core/all_members.html:27
+#: core/templates/core/all_parties.html:33 core/templates/core/member.html:39
+#: core/templates/core/member.html.py:42 core/templates/core/party.html:17
+#: core/templates/core/party.html.py:20
+msgid "Likes on average"
+msgstr "לייקים, בממוצע"
+
+#: core/templates/core/all_members.html:47
+msgid "Likes"
+msgstr "לייקים"
+
+#: core/templates/core/all_members.html:51
+msgid "More Info"
+msgstr "מידע נוסף"
+
+#: core/templates/core/all_parties.html:5
+#: core/templates/core/all_parties.html:8
+msgid "All Parties"
+msgstr "כל מפלגות"
+
+#: core/templates/core/all_parties.html:21
+msgid "Likud"
+msgstr "הליכוד"
+
 #: core/templates/core/billboards_list.html:3
 #: core/templates/core/billboards_list.html:6
-#: templates/layouts/generic-template.html:155
-#: templates/layouts/generic-template.html:193
+#: templates/layouts/generic-template.html:166
+#: templates/layouts/generic-template.html:221
 msgid "Billboards"
 msgstr "המצעד"
 
@@ -194,12 +256,12 @@ msgid "During"
 msgstr "במהלך"
 
 #: core/templates/core/date_filter.html:33
-#: core/templates/core/searchgui.html:112
+#: core/templates/core/searchgui.html:114
 msgid "Of"
 msgstr "ל"
 
 #: core/templates/core/date_filter.html:35
-#: core/templates/core/searchgui.html:114
+#: core/templates/core/searchgui.html:116
 msgid "(Starting midnight)"
 msgstr "(החל מחצות)"
 
@@ -207,15 +269,10 @@ msgstr "(החל מחצות)"
 msgid "Last Week"
 msgstr "בשבוע האחרון"
 
-#: core/templates/core/date_filter.html:51 core/templates/core/member.html:37
-#: core/templates/core/party.html:15 core/templates/core/searchgui.html:120
-msgid "Last Month"
-msgstr "בחודש האחרון"
-
 #: core/templates/core/date_filter.html:57
 #: core/templates/core/date_filter.html:63
-#: core/templates/core/searchgui.html:122
-#: core/templates/core/searchgui.html:125
+#: core/templates/core/searchgui.html:124
+#: core/templates/core/searchgui.html:127
 msgid "During "
 msgstr "במהלך"
 
@@ -231,7 +288,7 @@ msgstr "במהלך צוק איתן"
 msgid "(This status was deleted)"
 msgstr "(הסטאטוס נמחק)"
 
-#: core/templates/core/facebook_status.html:68
+#: core/templates/core/facebook_status.html:71
 msgid ""
 "Error loading photo. Click the small Facebook-Logo to the right, to see "
 "original status."
@@ -239,33 +296,33 @@ msgstr ""
 "תקלה בטעינת התמונה. אפשר ללחוץ על כפתור הפייסבוק הקטן מצד שמאל כדי לראות את "
 "הסטאטוס המקורי"
 
-#: core/templates/core/facebook_status.html:86
+#: core/templates/core/facebook_status.html:89
 msgid "Apologies, your broswer does not support displaying videos."
 msgstr " מתנצלים, הדפדפן שלך אינו תומך בהצגת סרטונים."
 
-#: core/templates/core/facebook_status.html:123
+#: core/templates/core/facebook_status.html:126
 msgid "likes"
 msgstr "אהבו"
 
-#: core/templates/core/facebook_status.html:127
+#: core/templates/core/facebook_status.html:130
 msgid "comments"
 msgstr "הגיבו"
 
-#: core/templates/core/facebook_status.html:131
+#: core/templates/core/facebook_status.html:134
 msgid "shares"
 msgstr "שיתפו"
 
-#: core/templates/core/facebook_status.html:143
-#: core/templates/core/search.html:14 core/templates/core/searchgui.html:178
+#: core/templates/core/facebook_status.html:146
+#: core/templates/core/search.html:14 core/templates/core/searchgui.html:180
 #: kikartags/models.py:32
 msgid "Tags"
 msgstr "תגיות"
 
-#: core/templates/core/facebook_status.html:201
+#: core/templates/core/facebook_status.html:204
 msgid "Insert Tag (Comma separated)"
 msgstr "הכנס תג (comma separated)"
 
-#: core/templates/core/facebook_status.html:210
+#: core/templates/core/facebook_status.html:213
 msgid "Add Tags"
 msgstr "הוספת תגיות"
 
@@ -285,16 +342,6 @@ msgstr "בקירוב"
 #: core/templates/core/member.html:33
 msgid "Loading additional data..."
 msgstr "טוען נתונים נוספים..."
-
-#: core/templates/core/member.html:38 core/templates/core/member.html.py:41
-#: core/templates/core/party.html:16 core/templates/core/party.html.py:19
-msgid "Statuses"
-msgstr "סטאטוסים"
-
-#: core/templates/core/member.html:39 core/templates/core/member.html.py:42
-#: core/templates/core/party.html:17 core/templates/core/party.html.py:20
-msgid "Likes on average"
-msgstr "לייקים, בממוצע"
 
 #: core/templates/core/member.html:40
 msgid "Last week"
@@ -341,7 +388,7 @@ msgid "Tell us"
 msgstr "ספרו לנו"
 
 #: core/templates/core/order_by_options.html:4
-#: core/templates/core/searchgui.html:78
+#: core/templates/core/searchgui.html:80
 msgid "By Date"
 msgstr "לפי תאריך"
 
@@ -357,13 +404,9 @@ msgstr "לפי מספר תגובות"
 msgid "Other"
 msgstr "אחר"
 
-#: core/templates/core/party.html:4 mks/models.py:86
+#: core/templates/core/party.html:4 mks/models.py:88
 msgid "Party"
 msgstr "מפלגה"
-
-#: core/templates/core/party.html:11
-msgid "Number of Facebook Pages for Party"
-msgstr "מספר דפים למפלגה"
 
 #: core/templates/core/review_tags.html:6
 #: core/templates/core/review_tags.html:9
@@ -375,9 +418,13 @@ msgstr "תויגו לאחרונה"
 msgid "RSS Updates"
 msgstr "עדכוני RSS"
 
+#: core/templates/core/rss_widget_page.html:26 links/models.py:47
+msgid "link"
+msgstr "קישור"
+
 #: core/templates/core/save_query_modal.html:9
 #: core/templates/core/save_query_modal.html:40
-#: core/templates/core/searchgui.html:65
+#: core/templates/core/searchgui.html:66
 msgid "Save Query"
 msgstr "שמירת שליפה"
 
@@ -415,12 +462,12 @@ msgstr "ביטול"
 msgid "Search Results"
 msgstr "תוצאות חיפוש"
 
-#: core/templates/core/search.html:8 core/templates/core/searchgui.html:162
+#: core/templates/core/search.html:8 core/templates/core/searchgui.html:164
 msgid "MKs"
 msgstr "חברי כנסת"
 
-#: core/templates/core/search.html:11 core/templates/core/searchgui.html:170
-#: mks/models.py:87
+#: core/templates/core/search.html:11 core/templates/core/searchgui.html:172
+#: mks/models.py:89
 msgid "Parties"
 msgstr "מפלגות"
 
@@ -432,7 +479,7 @@ msgstr "מילות חיפוש"
 msgid "Number of Results"
 msgstr "מספר תוצאות"
 
-#: core/templates/core/search.html:31 core/templates/core/searchgui.html:186
+#: core/templates/core/search.html:31 core/templates/core/searchgui.html:188
 msgid "Excluded Statuses"
 msgstr "סטאטוסים שסוננו"
 
@@ -440,56 +487,56 @@ msgstr "סטאטוסים שסוננו"
 msgid "Advanced Search"
 msgstr "חיפוש מתקדם"
 
-#: core/templates/core/searchgui.html:50
-#: templates/layouts/generic-template.html:139
+#: core/templates/core/searchgui.html:51
+#: templates/layouts/generic-template.html:150
 msgid "Knesset Member, Party, a Subject discussed, or any keyword..."
 msgstr "חבר/ת כנסת, מפלגה, נושא, או מילות מפתח"
 
-#: core/templates/core/searchgui.html:53
+#: core/templates/core/searchgui.html:54
 msgid "Add Word"
 msgstr "הוספת מילה"
 
-#: core/templates/core/searchgui.html:59
+#: core/templates/core/searchgui.html:60
 msgid "Preview"
 msgstr "תצוגה מקדימה"
 
-#: core/templates/core/searchgui.html:73
+#: core/templates/core/searchgui.html:75
 msgid "Order"
 msgstr "סידור"
 
-#: core/templates/core/searchgui.html:81
+#: core/templates/core/searchgui.html:83
 msgid "By Like Count"
 msgstr "לפי מספר לייקים"
 
-#: core/templates/core/searchgui.html:84
+#: core/templates/core/searchgui.html:86
 msgid "By Comment Count"
 msgstr "לפי מספר תגובות"
 
-#: core/templates/core/searchgui.html:89
+#: core/templates/core/searchgui.html:91
 msgid "descending"
 msgstr "יורד"
 
-#: core/templates/core/searchgui.html:91
+#: core/templates/core/searchgui.html:93
 msgid "ascending"
 msgstr "עולה"
 
-#: core/templates/core/searchgui.html:100
+#: core/templates/core/searchgui.html:102
 msgid "Date"
 msgstr "תאריך"
 
-#: core/templates/core/searchgui.html:105
+#: core/templates/core/searchgui.html:107
 msgid ""
 "No\n"
 "                                                Filter"
 msgstr "ללא פילטר"
 
-#: core/templates/core/searchgui.html:107
+#: core/templates/core/searchgui.html:109
 msgid ""
 "Last 24\n"
 "                                                Hours"
 msgstr "יממה אחרונה"
 
-#: core/templates/core/searchgui.html:109
+#: core/templates/core/searchgui.html:111
 msgid ""
 "\n"
 "                                                During"
@@ -497,33 +544,33 @@ msgstr ""
 "\n"
 "במהלך"
 
-#: core/templates/core/searchgui.html:115
+#: core/templates/core/searchgui.html:117
 msgid ""
 "Last\n"
 "                                                Week"
 msgstr "השבוע האחרון"
 
-#: core/templates/core/searchgui.html:128
+#: core/templates/core/searchgui.html:130
 msgid ""
 "During 20th Knesset\n"
 "                                                Election Campaign"
 msgstr "במהלך הבחירות לכנסת ה-20"
 
-#: core/templates/core/searchgui.html:131
+#: core/templates/core/searchgui.html:133
 msgid ""
 "During\n"
 "                                                \"Protective Edge\""
 msgstr "במהלך צוק איתן"
 
-#: core/templates/core/searchgui.html:143
+#: core/templates/core/searchgui.html:145
 msgid "Or"
 msgstr "או"
 
-#: core/templates/core/searchgui.html:145
+#: core/templates/core/searchgui.html:147
 msgid "And"
 msgstr "וגם"
 
-#: core/templates/core/searchgui.html:147
+#: core/templates/core/searchgui.html:149
 msgid "(Free text And/Or Tags must appear)"
 msgstr "(מילים וגם/או תגיות חייבות להופיע)"
 
@@ -531,6 +578,10 @@ msgstr "(מילים וגם/או תגיות חייבות להופיע)"
 #: kikartags/models.py:31
 msgid "Tag"
 msgstr "תג"
+
+#: core/translation.py:10 core/translation.py:16
+msgid "-- sorry, no translation provided --"
+msgstr "-- מתנצלים, חסר תרגום --"
 
 #: knesset/utils.py:117
 msgid "Open Knesset requires attention"
@@ -560,105 +611,101 @@ msgstr "content type"
 msgid "object ID"
 msgstr "object ID"
 
-#: links/models.py:47
-msgid "link"
-msgstr "קישור"
-
 #: links/models.py:48
 msgid "links"
 msgstr "קישורים"
 
-#: mks/models.py:19 persons/models.py:28
+#: mks/models.py:21 persons/models.py:28
 msgid "Male"
 msgstr "זכר"
 
-#: mks/models.py:20 persons/models.py:29
+#: mks/models.py:22 persons/models.py:29
 msgid "Female"
 msgstr "נקבה"
 
-#: mks/models.py:52
+#: mks/models.py:54
 msgid "Knesset number"
 msgstr "מס' כנסת"
 
-#: mks/models.py:53 polyorg/models.py:21
+#: mks/models.py:55 polyorg/models.py:21
 msgid "Start date"
 msgstr "תאריך התחלה"
 
-#: mks/models.py:54 polyorg/models.py:22
+#: mks/models.py:56 polyorg/models.py:22
 msgid "End date"
 msgstr "תאריך הסיום"
 
-#: mks/models.py:59 polyorg/models.py:28
+#: mks/models.py:61 polyorg/models.py:28
 #, python-format
 msgid "Knesset %(number)d"
 msgstr "הכנסת ה-%(number)d"
 
-#: mks/models.py:104
+#: mks/models.py:106
 #, python-format
 msgid "%(name)s in Knesset %(number)d"
 msgstr "%(name)s במהלך הכנסת ה-%(number)d"
 
-#: mks/models.py:154
+#: mks/models.py:156
 msgid "Coalition"
 msgstr "קואליציה"
 
-#: mks/models.py:154
+#: mks/models.py:156
 msgid "Opposition"
 msgstr "אופוזיציה"
 
-#: mks/models.py:199 persons/models.py:48
+#: mks/models.py:201 persons/models.py:49
 msgid "an accurate place of residence (for example, an address"
 msgstr "כתובת מגורים מדויקת (למשל, כתובת)"
 
-#: mks/models.py:200 persons/models.py:49
+#: mks/models.py:202 persons/models.py:51
 msgid "a general area of residence (for example, \"the negev\""
 msgstr "כתובת מגורים כללית (למשל, \"הנגב\")"
 
-#: mks/models.py:239
+#: mks/models.py:241
 msgid "Member"
 msgstr "חבר/ת כנסת"
 
-#: mks/models.py:240
+#: mks/models.py:242
 msgid "Members"
 msgstr "חברי כנסת"
 
-#: mks/models.py:377
+#: mks/models.py:379
 msgid "Coalition Member (female)"
 msgstr "חברת קואליציה"
 
-#: mks/models.py:379
+#: mks/models.py:381
 msgid "Opposition Member (female)"
 msgstr "חברת אופוזיציה"
 
-#: mks/models.py:382
+#: mks/models.py:384
 msgid "Coalition Member (male)"
 msgstr "חבר קואליציה"
 
-#: mks/models.py:384
+#: mks/models.py:386
 msgid "Opposition Member (male)"
 msgstr "חבר אופוזיציה"
 
-#: mks/models.py:387
+#: mks/models.py:389
 msgid "Past Member (female)"
 msgstr "חברת כנסת לשעבר"
 
-#: mks/models.py:389
+#: mks/models.py:391
 msgid "Past Member (male)"
 msgstr "חבר כנסת לשעבר"
 
-#: mks/models.py:408
+#: mks/models.py:410
 msgid "Minister"
 msgstr "שר/ה"
 
-#: persons/models.py:63
+#: persons/models.py:65
 msgid "Person"
 msgstr "אדם"
 
-#: persons/models.py:64
+#: persons/models.py:66
 msgid "Persons"
 msgstr "בני-אדם"
 
-#: persons/models.py:119
+#: persons/models.py:131
 #, python-brace-format
 msgid "{person} serverd as {text} in {org} from {start_date} to {end_date}"
 msgstr ""
@@ -720,7 +767,7 @@ msgstr "מספר בוחרים"
 msgid "How many people voted for this person"
 msgstr "מספר האנשים שהצביעו בעד המועמד"
 
-#: templates/layouts/generic-template.html:9
+#: templates/layouts/generic-template.html:11
 msgid ""
 "Today, around a 100 of the Knesset Members are\n"
 "          using Facebook on a daily basis. We collect and organize what they "
@@ -733,35 +780,36 @@ msgstr ""
 "כל מה שחברי הכנסת כותבים, ועוזרים לך לקחת חלק בשיחה. פרויקט של הסדנא לידע "
 "ציבורי."
 
-#: templates/layouts/generic-template.html:17
+#: templates/layouts/generic-template.html:19
 msgid "| Kikar Hamedina"
 msgstr "| כיכר המדינה"
 
-#: templates/layouts/generic-template.html:130
+#: templates/layouts/generic-template.html:140
 msgid "Kikar Hamedina"
 msgstr "כיכר המדינה"
 
-#: templates/layouts/generic-template.html:160
-#: templates/layouts/generic-template.html:198
+#: templates/layouts/generic-template.html:148
+#, fuzzy
+#| msgid "Search"
+msgid "search"
+msgstr "לחפש"
+
+#: templates/layouts/generic-template.html:171
+#: templates/layouts/generic-template.html:226
 msgid "About"
 msgstr "אודות"
 
-#: templates/layouts/generic-template.html:166
-#: templates/layouts/generic-template.html:204
+#: templates/layouts/generic-template.html:177
+#: templates/layouts/generic-template.html:232
 msgid "Donate"
 msgstr "תרומה"
 
-#: templates/layouts/generic-template.html:173
-#: templates/layouts/generic-template.html:210
+#: templates/layouts/generic-template.html:201
+#: templates/layouts/generic-template.html:238
 msgid "Tagging"
 msgstr "תיוג"
 
-#: templates/layouts/generic-template.html:178
 #: templates/layouts/generic-template.html:215
-msgid "Blog"
-msgstr "בלוג"
-
-#: templates/layouts/generic-template.html:187
 msgid "Options"
 msgstr "אפשרויות"
 
@@ -874,6 +922,9 @@ msgstr "RSS Feed of trackbacks on"
 #: templates/zinnia/entry_detail_base.html:47
 msgid "Edit the entry"
 msgstr "ערוך/ערכי רשומה"
+
+#~ msgid "Blog"
+#~ msgstr "בלוג"
 
 #~ msgid "No updates found"
 #~ msgstr "לא נמצאו עדכונים"

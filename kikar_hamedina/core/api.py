@@ -1,7 +1,12 @@
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from tastypie import fields
+from tastypie.http import HttpGone, HttpMultipleChoices
+
 from tastypie.resources import ModelResource, Bundle
-from mks.models import Knesset
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag as OldTag, User_Token, Feed_Popularity
+from tastypie.utils.urls import trailing_slash
+from django.conf.urls import url
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag as OldTag, User_Token, Feed_Popularity, \
+    Facebook_Status_Comment
 from kikartags.models import Tag as Tag
 from core.models import MEMBER_MODEL, PARTY_MODEL
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
@@ -9,6 +14,7 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from django.template.defaultfilters import urlize, truncatewords_html, linebreaks
 from django.contrib.humanize.templatetags import humanize
 from core.templatetags.core_extras import append_separators
+from mks.models import Knesset
 
 MAX_LENGTH_FOR_STATUS_CONTENT = 80
 
@@ -98,9 +104,55 @@ class TagResource(ModelResource):
         detail_allowed_methods = ['get']
 
 
+class Facebook_Status_CommentResource(ModelResource):
+    # status = fields.ForeignKey(Facebook_StatusResource, 'parent')
+
+    # tags = fields.ManyToManyField('CommentTagResource', 'tags')
+
+    class Meta:
+        queryset = Facebook_Status_Comment.objects.all().order_by('published')
+
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
+        resource_name = 'facebook_status_comment'
+        ordering = ['published', 'parent', 'like_count', 'comment_count']
+        filtering = {
+            "comment_id": ["exact"],
+            "parent": ALL_WITH_RELATIONS,
+            "comment_from": ["exact"],
+            "content": ["exact", "startswith", "contains"],
+            "published": ['exact', 'gt', 'gte', 'lt', 'lte', 'range']
+        }
+
+    def dehydrate(self, bundle):
+        bundle.data['parent_status_id'] = bundle.obj.parent.status_id
+        bundle.data['facebook_parent_link'] = bundle.obj.get_link
+        return bundle
+
+
 class Facebook_StatusResource(ModelResource):
     feed = fields.ForeignKey(Facebook_FeedResource, 'feed')
     tags = fields.ManyToManyField(TagResource, 'tags')
+    comments = fields.ToManyField(to=Facebook_Status_CommentResource, attribute='facebook_status_comment_set',
+                                  null=True, related_name='parent_id')
+
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/children%s$" % (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('get_children'), name="api_get_children"),
+        ]
+
+    def get_children(self, request, **kwargs):
+        try:
+            bundle = self.build_bundle(data={'pk': kwargs['pk']}, request=request)
+            obj = self.cached_obj_get(bundle=bundle, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI")
+
+        child_resource = Facebook_Status_CommentResource()
+        return child_resource.get_list(request, parent_id=obj.pk)
 
     class Meta:
         queryset = Facebook_Status.objects.all().order_by('-published')
@@ -125,12 +177,22 @@ class Facebook_StatusResource(ModelResource):
         if bundle.obj.has_attachment:
             bundle.data['has_attachment'] = True
             bundle.data['attachment'] = {
-                'type':  bundle.obj.attachment.type,
+                'type': bundle.obj.attachment.type,
                 'link': bundle.obj.attachment.link,
                 'picture': bundle.obj.attachment.picture,
                 'name': bundle.obj.attachment.name,
                 'caption': bundle.obj.attachment.caption,
-                'description':  bundle.obj.attachment.description,
+                'description': bundle.obj.attachment.description,
                 'source': bundle.obj.attachment.source
             }
         return bundle
+
+
+class CommentTagResource(ModelResource):
+    statuses = fields.ManyToManyField(Facebook_Status_CommentResource, 'statuses', null=True)
+
+    class Meta:
+        queryset = Tag.objects.all()
+        resource_name = 'comment_tag'
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
