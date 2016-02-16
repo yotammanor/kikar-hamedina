@@ -54,6 +54,12 @@ class Command(BaseCommand):
                     dest='party-mode',
                     default=False,
                     help='Update party data.'),
+        make_option('-m',
+                    '--new-mks-only',
+                    action='store_true',
+                    dest="new_mks_only",
+                    default=False,
+                    help="update only missing mks, without updating data")
 
     )
 
@@ -109,6 +115,8 @@ class Command(BaseCommand):
 
         print 'exist in both:', set_of_local_objects & set_of_source_objects
 
+        if options['new_mks_only']:
+            return list(missing_objects)
         return list((set_of_local_objects - redundant_objects) | missing_objects)
         # return list(missing_objects)
 
@@ -137,7 +145,7 @@ class Command(BaseCommand):
         if created:
             print 'Yay, new mk was added!'
         # pprint.pprint(dir(local_member))
-        local_member.name = member_from_source['name']
+        local_member.name_he = member_from_source['name']
         local_member.current_position = member_from_source['current_position']
         local_member.start_date = self.format_date(member_from_source['start_date'])
         local_member.end_date = self.format_date(member_from_source['end_date'])
