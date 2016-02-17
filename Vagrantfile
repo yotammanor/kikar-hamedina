@@ -56,7 +56,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       [ ! -d log ] && mkdir log
       cd kikar_hamedina/
       [ ! -d logs ] && mkdir logs
-      python manage.py migrate --noinput
       if [ ! -f ../devOps/kikar_setup.db.gz ];
       then
         wget https://dl.dropboxusercontent.com/u/47989767/kikar_setup.db.gz -P ../devOps/ -q
