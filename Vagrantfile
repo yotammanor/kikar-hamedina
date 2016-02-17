@@ -30,6 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       set -e
       sudo -u postgres psql -c "DROP DATABASE IF EXISTS kikar"
       sudo -u postgres psql -c "DROP ROLE IF EXISTS kikar"
+      sudo -u postgres psql -c "DROP ROLE IF EXISTS kikar_readonly"
       sudo -u postgres psql -c "CREATE USER kikar WITH PASSWORD 'kikar'"
       sudo -u postgres psql -c "CREATE USER kikar_readonly WITH PASSWORD 'kikar_readonly'"
       sudo -u postgres psql -c "ALTER USER kikar WITH SUPERUSER"
@@ -53,17 +54,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       set -e
       cd /vagrant/
       [ ! -d log ] && mkdir log
-      cd /kikar_hamedina/
+      cd kikar_hamedina/
       [ ! -d logs ] && mkdir logs
       python manage.py migrate --noinput
       if [ ! -f ../devOps/kikar_setup.db.gz ];
       then
-        wget https://dl.dropboxusercontent.com/u/47989767/kikar_setup.gz -P ../devOps/
+        wget https://dl.dropboxusercontent.com/u/47989767/kikar_setup.db.gz -P ../devOps/ -q
       fi
       gunzip -c ../devOps/kikar_setup.db.gz | sudo -u postgres psql kikar
-      [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
-      python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
-      sudo -u postgres pg_dump kikar | gzip > ../devOps/kikar_setup.db.gz
+      # [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
+      # python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
+      # sudo -u postgres pg_dump kikar | gzip > ../devOps/kikar_setup.db.gz
       python manage.py fetchfeedproperties || true
       # python manage.py classify_and_test_autotag 1
     EOS
