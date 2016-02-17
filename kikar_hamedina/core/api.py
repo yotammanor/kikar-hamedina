@@ -6,7 +6,7 @@ from tastypie.resources import ModelResource, Bundle
 from tastypie.utils.urls import trailing_slash
 from django.conf.urls import url
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag as OldTag, User_Token, Feed_Popularity, \
-    Facebook_Status_Comment
+    Facebook_Status_Comment, Facebook_Persona
 from kikartags.models import Tag as Tag
 from core.models import MEMBER_MODEL, PARTY_MODEL
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
@@ -59,14 +59,32 @@ class PartyResource(ModelResource):
         resource_name = 'party'
 
 
+class PersonaResource(ModelResource):
+    class Meta:
+        queryset = Facebook_Persona.objects.all()
+        resource_name = 'facebook_persona'
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
+        filtering = {
+            'object_id': ALL,
+            'alt_object_id': ALL,
+        }
+
 class Facebook_FeedResource(ModelResource):
     owner = fields.ToOneField(MemberResource, attribute='owner', null=True)
+    persona = fields.ForeignKey(PersonaResource, attribute='persona', null=True)
 
     class Meta:
         queryset = Facebook_Feed.objects.all()
         resource_name = 'facebook_feed'
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
+        filtering = {
+            'persona': ALL_WITH_RELATIONS,
+            'owner': ALL_WITH_RELATIONS,
+            'feed_type': ALL,
+            'is_current': ['exact'],
+        }
 
     def dehydrate_owner(self, bundle):
         persona = bundle.obj.persona
@@ -162,7 +180,7 @@ class Facebook_StatusResource(ModelResource):
         ordering = ['published', 'status_id', 'feed', 'like_count', 'share_count', 'comment_count']
         filtering = {
             "status_id": ["exact"],
-            "feed": ["exact"],
+            "feed": ALL_WITH_RELATIONS,
             "content": ["exact", "startswith", "contains"],
             "published": ['exact', 'gt', 'gte', 'lt', 'lte', 'range']
         }

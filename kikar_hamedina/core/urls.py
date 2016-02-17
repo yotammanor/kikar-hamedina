@@ -2,6 +2,8 @@ from django.conf.urls import patterns, url, include
 from django.conf.urls.static import static
 from rest_framework.urlpatterns import format_suffix_patterns
 from solid_i18n.urls import solid_i18n_patterns as patterns
+
+from core.api import PersonaResource
 from . import views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, TAG_NAME_CHARSET
 from kikartags.models import Tag as Tag
@@ -21,6 +23,7 @@ v1_api.register(KnessetResource())
 v1_api.register(Facebook_StatusResource())
 v1_api.register(Facebook_Status_CommentResource())
 v1_api.register(Facebook_FeedResource())
+v1_api.register(PersonaResource())
 v1_api.register(TagResource())
 v1_api.register(CommentTagResource())
 v1_api.register(StatsMemberResource())
@@ -69,8 +72,8 @@ urlpatterns = patterns('',
                        url(r'^custom/(?P<title>[\w\d\.\s-]+)/$', views.CustomView.as_view(), name='custom'),
                        url(r'^title_exists/', views.title_exists, name='title-exists'),
                        # Views for all objects of type
-                       url(r'^members/$',
-                           views.AllMembers.as_view(queryset=Member.objects.filter(is_current=True)),
+                       url(r'^members/$', views.AllMembers.as_view(
+                           queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-members'),
                        url(r'^parties/$', views.AllParties.as_view(
                                queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),

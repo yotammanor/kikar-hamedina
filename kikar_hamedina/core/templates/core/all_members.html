@@ -1,21 +1,110 @@
 {% extends "layouts/generic-template.html" %}
 
-{% block title %}כל הפוליטיקאים{% endblock title %}
+{% load i18n %}
+
+{% block title %}{% trans 'All MKs' %}{% endblock title %}
 
 {% block h1 %}
-    כל הפוליטיקאים
+    {% trans 'All Members of Knesset' %}
 {% endblock %}
 
 {% block details %}
-    <div class="h4">
-       מספר דפים: {{ object_list.count }}
-    </div>
+<p>{% trans 'All the numbers in the page are referencing the monthly average.' %}</p>
+<p>{% trans "Grayscaled MK's don't have a public Facebook page." %}</p>
 {% endblock %}
 
 {% block main_content %}
-    <ul>
-        {% for member in object_list %}
-            <li><a href="{% url 'member' member.id %}">{{ member.name }}</a></li>
-        {% endfor %}
-    </ul>
+
+  {% for party in object_list %}
+    <h3 class="page-header">{{ party.name }}</h3>
+    <div class="party__info" data-party-id="{{ party.id }}">
+      <div>
+        <span class="fa fa-group"></span>  {% trans 'Number of Facebook Pages for Party' %}: {{ party.current_members.count }}
+      </div>
+      <span class="fa fa-bar-chart"></span>
+      {% trans 'Last Month' %}:
+      <span class="avg_statuses">...</span> {% trans 'Statuses' %} {% trans 'and' %}
+      <span class="avg_likes">...</span> {% trans 'Likes on average' %}
+    </div>
+
+    <div class="party__members">
+      {% for member in party.current_members %}
+          <div class="member__container" data-member-id={{ member.id }}>
+
+            {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
+                <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img">
+            {% else %}
+                <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled">
+            {% endif %}
+
+            <h3 class="member__name">{{ member.name }}</h3>
+
+            <div class="member__stats">
+              <div>
+                <span class="fa fa-comment"></span>  {% trans 'Statuses' %}: <span class="avg_statuses">...</span>
+              </div>
+              <div>
+                <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="avg_likes">...</span>
+              </div>
+            </div>
+
+            <a class="member__more-info"href="/member/{{ member.id }}">{% trans 'More Info' %}</a>
+
+          </div>
+      {% endfor %}
+    </div>
+
+  {% endfor %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+
+      // extracts the last segment from the given path
+      function lastSegmentFrom(path) {
+        path = path.split('/');
+        return path[ path.length - 2 ];
+      }
+
+      /**
+       * url - the URL for the AJAX request
+       * container - the class name which contains the insights
+       * type = party / member
+       */
+      function insertInsights(url, container, type) {
+
+        var objects, // objects from JSON
+            items = {}, // represents each item in objects
+            itemID;
+
+        $.getJSON(url, function(data) {
+
+          var objects = data.objects;
+
+          // creating the items object, which holds the item insights
+          $.each(objects, function(i, item) {
+            itemID = lastSegmentFrom(item[type]);
+            items[itemID] = {
+              AvgLikes: Math.round(item.mean_status_likes_last_month),
+              AvgStatuses: item.n_statuses_last_month,
+            };
+          });
+
+          // manipulates the DOM
+          $(container).each(function( i, elm ) {
+            itemID = elm.getAttribute('data-' + type + '-id');
+            $(elm).find('.avg_likes').text(items[itemID].AvgLikes);
+            // TOFIX (BACKEND): AvgStatuses is null instead of 0 if there's no facebook page
+            $(elm).find('.avg_statuses').text(items[itemID].AvgStatuses || 0);
+          })
+
+        });
+
+      }
+
+      insertInsights('/api/v1/insights/party/', '.party__info', 'party');
+      insertInsights('/api/v1/insights/member/?limit=300', '.member__container', 'member');
+
+    </script>
 {% endblock %}

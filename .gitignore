@@ -1,5 +1,6 @@
 /kikar_hamedina/django_autotag-0.1.4.dist-info
 /kikar_hamedina/collected_static
+*Thumbs.db
 bak/
 *-db-backup
 *backup.json
