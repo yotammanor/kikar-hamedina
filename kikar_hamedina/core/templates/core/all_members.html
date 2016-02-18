@@ -31,13 +31,17 @@
       {% for member in party.current_members %}
           <div class="member__container" data-member-id={{ member.id }}>
 
-            {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
-                <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img">
-            {% else %}
-                <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled">
-            {% endif %}
+            <a href="/member/{{ member.id }}/">
+              {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
+                  <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img" alt="">
+              {% else %}
+                  <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled" alt="">
+              {% endif %}
 
-            <h3 class="member__name">{{ member.name }}</h3>
+              <h3 class="member__name">{{ member.name }}</h3>
+            </a>
+
+
 
             <div class="member__stats">
               <div>
@@ -47,9 +51,7 @@
                 <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="avg_likes">...</span>
               </div>
             </div>
-
-            <a class="member__more-info"href="/member/{{ member.id }}">{% trans 'More Info' %}</a>
-
+            
           </div>
       {% endfor %}
     </div>
