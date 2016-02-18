@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-16 20:51+0200\n"
+"POT-Creation-Date: 2016-02-18 18:27+0200\n"
 "PO-Revision-Date: 2016-02-16 21:01+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -169,60 +169,52 @@ msgstr "כל חברי הכנסת"
 msgid "All Members of Knesset"
 msgstr "כל חברות וחברי הכנסת"
 
-#: core/templates/core/all_members.html:12
-msgid "All the numbers in the page are referencing the monthly average."
-msgstr "כל המספרים בעמוד זה מתייחסים לממוצע החודשי."
-
-#: core/templates/core/all_members.html:13
-msgid "Grayscaled MK's don't have a public Facebook page."
-msgstr "חברות וחברי הכנסת אשר תמונתם מואפרת, לא קיים עמוד פייסבוק פומבי."
-
-#: core/templates/core/all_members.html:22
-#: core/templates/core/all_parties.html:25 core/templates/core/party.html:11
+#: core/templates/core/all_members.html:19
+#: core/templates/core/all_parties.html:26 core/templates/core/party.html:11
 msgid "Number of Facebook Pages for Party"
 msgstr "ח\"כים במפלגה"
 
-#: core/templates/core/all_members.html:25
+#: core/templates/core/all_members.html:22
 #: core/templates/core/date_filter.html:51 core/templates/core/member.html:37
 #: core/templates/core/party.html:15 core/templates/core/searchgui.html:122
 msgid "Last Month"
 msgstr "בחודש האחרון"
 
-#: core/templates/core/all_members.html:26
-#: core/templates/core/all_members.html:44
-#: core/templates/core/all_parties.html:29 core/templates/core/member.html:38
+#: core/templates/core/all_members.html:23
+#: core/templates/core/all_members.html:47
+#: core/templates/core/all_parties.html:30 core/templates/core/member.html:38
 #: core/templates/core/member.html.py:41 core/templates/core/party.html:16
 #: core/templates/core/party.html.py:19
 msgid "Statuses"
 msgstr "סטאטוסים"
 
-#: core/templates/core/all_members.html:26
+#: core/templates/core/all_members.html:23
 msgid "and"
 msgstr "וגם"
 
-#: core/templates/core/all_members.html:27
-#: core/templates/core/all_parties.html:33 core/templates/core/member.html:39
+#: core/templates/core/all_members.html:24
+#: core/templates/core/all_parties.html:34 core/templates/core/member.html:39
 #: core/templates/core/member.html.py:42 core/templates/core/party.html:17
 #: core/templates/core/party.html.py:20
 msgid "Likes on average"
 msgstr "לייקים, בממוצע"
 
-#: core/templates/core/all_members.html:47
+#: core/templates/core/all_members.html:36
+msgid "This MK doesn't have a public Facebook Page"
+msgstr "לחכ זה אין פרופיל פייסבוק פומבי"
+
+#: core/templates/core/all_members.html:47 core/templates/core/member.html:28
+msgid "last month"
+msgstr "בחודש האחרון"
+
+#: core/templates/core/all_members.html:50
 msgid "Likes"
 msgstr "לייקים"
-
-#: core/templates/core/all_members.html:51
-msgid "More Info"
-msgstr "מידע נוסף"
 
 #: core/templates/core/all_parties.html:5
 #: core/templates/core/all_parties.html:8
 msgid "All Parties"
 msgstr "כל מפלגות"
-
-#: core/templates/core/all_parties.html:21
-msgid "Likud"
-msgstr "הליכוד"
 
 #: core/templates/core/billboards_list.html:3
 #: core/templates/core/billboards_list.html:6
@@ -330,10 +322,6 @@ msgstr "הוספת תגיות"
 #: core/templates/core/homepage_all_statuses.html:8
 msgid "Home Page"
 msgstr "דף הבית"
-
-#: core/templates/core/member.html:28
-msgid "last month"
-msgstr "בחודש האחרון"
 
 #: core/templates/core/member.html:29
 msgid "approximately"
@@ -922,6 +910,15 @@ msgstr "RSS Feed of trackbacks on"
 #: templates/zinnia/entry_detail_base.html:47
 msgid "Edit the entry"
 msgstr "ערוך/ערכי רשומה"
+
+#~ msgid "All the numbers in the page are referencing the monthly average."
+#~ msgstr "כל המספרים בעמוד זה מתייחסים לממוצע החודשי."
+
+#~ msgid "More Info"
+#~ msgstr "מידע נוסף"
+
+#~ msgid "Likud"
+#~ msgstr "הליכוד"
 
 #~ msgid "Blog"
 #~ msgstr "בלוג"

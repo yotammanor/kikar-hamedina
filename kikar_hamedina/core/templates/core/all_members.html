@@ -8,10 +8,7 @@
     {% trans 'All Members of Knesset' %}
 {% endblock %}
 
-{% block details %}
-<p>{% trans 'All the numbers in the page are referencing the monthly average.' %}</p>
-<p>{% trans "Grayscaled MK's don't have a public Facebook page." %}</p>
-{% endblock %}
+
 
 {% block main_content %}
 
@@ -35,17 +32,19 @@
               {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
                   <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img" alt="">
               {% else %}
-                  <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled" alt="">
+
+              {% trans "This MK doesn't have a public Facebook Page" as title %}
+              <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled"
+                    data-toggle="tooltip" data-placement="top"
+                    title="{{ title }}" alt="">
               {% endif %}
 
               <h3 class="member__name">{{ member.name }}</h3>
             </a>
 
-
-
             <div class="member__stats">
               <div>
-                <span class="fa fa-comment"></span>  {% trans 'Statuses' %}: <span class="avg_statuses">...</span>
+                <span class="fa fa-comment"></span>   {% trans 'Statuses' %} {% trans 'last month' %}: <span class="avg_statuses">...</span>
               </div>
               <div>
                 <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="likes">...</span>
@@ -114,6 +113,10 @@
 
       insertInsights('/api/v1/insights/party/', '.party__info', 'party');
       insertInsights('/api/v1/insights/member/?limit=300', '.member__container', 'member');
+
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      })
 
     </script>
 {% endblock %}
