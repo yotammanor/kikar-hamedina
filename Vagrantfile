@@ -30,7 +30,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       set -e
       sudo -u postgres psql -c "DROP DATABASE IF EXISTS kikar"
       sudo -u postgres psql -c "DROP ROLE IF EXISTS kikar"
+      sudo -u postgres psql -c "DROP ROLE IF EXISTS kikar_readonly"
       sudo -u postgres psql -c "CREATE USER kikar WITH PASSWORD 'kikar'"
+      sudo -u postgres psql -c "CREATE USER kikar_readonly WITH PASSWORD 'kikar_readonly'"
       sudo -u postgres psql -c "ALTER USER kikar WITH SUPERUSER"
       sudo -u postgres psql -c "CREATE DATABASE kikar TEMPLATE=template0 ENCODING='UTF8' LC_CTYPE='en_US.utf8' LC_COLLATE='en_US.UTF-8'"
     EOS
@@ -52,22 +54,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       set -e
       cd /vagrant/
       [ ! -d log ] && mkdir log
-      cd /kikar_hamedina/
+      cd kikar_hamedina/
       [ ! -d logs ] && mkdir logs
-      python manage.py migrate --noinput
-      [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
-      python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
-      for f in sites data_fixture_mks data_fixture_mks_altnames data_fixture_facebook_feeds data_fixture_feed_popularity_0001 data_fixture_feed_popularity_0002 data_fixture_persons data_fixture_polyorg data_fixture_status_comment_pattern ; do
-        python manage.py loaddata $f
-       done
-      for f in 1001_1001 1001_1002 1001_1003 1001_1004 1001_1005 1001_1006; do
-        python manage.py loaddata $f
-      done
-      python manage.py update_translation_fields
-      python manage.py loaddata data_fixture_kikartags_new
+      if [ ! -f ../devOps/kikar_setup.db.gz ];
+      then
+        wget https://dl.dropboxusercontent.com/u/47989767/kikar_setup.db.gz -P ../devOps/ -q
+      fi
+      gunzip -c ../devOps/kikar_setup.db.gz | sudo -u postgres psql kikar
+      # [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
+      # python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
+      # sudo -u postgres pg_dump kikar | gzip > ../devOps/kikar_setup.db.gz
       python manage.py fetchfeedproperties || true
-      python manage.py update_facebook_personas
-      python manage.py update_is_current_feed
       # python manage.py classify_and_test_autotag 1
     EOS
   end
