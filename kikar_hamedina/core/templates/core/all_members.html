@@ -16,7 +16,7 @@
 {% block main_content %}
 
   {% for party in object_list %}
-    <h3 class="page-header">{{ party.name }}</h3>
+    <a href="/party/{{ party.id }}/"><h2 class="page-header">{{ party.name }}</h2></a>
     <div class="party__info" data-party-id="{{ party.id }}">
       <div>
         <span class="fa fa-group"></span>  {% trans 'Number of Facebook Pages for Party' %}: {{ party.current_members.count }}
@@ -51,7 +51,7 @@
                 <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="avg_likes">...</span>
               </div>
             </div>
-            
+
           </div>
       {% endfor %}
     </div>
