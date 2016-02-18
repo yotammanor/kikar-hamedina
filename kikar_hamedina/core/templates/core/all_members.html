@@ -48,7 +48,7 @@
                 <span class="fa fa-comment"></span>  {% trans 'Statuses' %}: <span class="avg_statuses">...</span>
               </div>
               <div>
-                <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="avg_likes">...</span>
+                <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="likes">...</span>
               </div>
             </div>
 
@@ -88,6 +88,7 @@
           $.each(objects, function(i, item) {
             itemID = lastSegmentFrom(item[type]);
             items[itemID] = {
+              Likes: item.like_count,
               AvgLikes: Math.round(item.mean_status_likes_last_month),
               AvgStatuses: item.n_statuses_last_month,
             };
@@ -96,9 +97,15 @@
           // manipulates the DOM
           $(container).each(function( i, elm ) {
             itemID = elm.getAttribute('data-' + type + '-id');
-            $(elm).find('.avg_likes').text(items[itemID].AvgLikes);
-            // TOFIX (BACKEND): AvgStatuses is null instead of 0 if there's no facebook page
-            $(elm).find('.avg_statuses').text(items[itemID].AvgStatuses || 0);
+
+            // check if the member doesn't have a facebook page
+            if ( type == 'member' && !items[itemID].Likes ) {
+              $(elm).find('.member__stats').hide()
+            } else {
+              type == 'party' ? $(elm).find('.avg_likes').text(items[itemID].AvgLikes) :
+                                $(elm).find('.likes').text(items[itemID].Likes.toLocaleString());
+              $(elm).find('.avg_statuses').text(items[itemID].AvgStatuses);
+            }
           })
 
         });
