@@ -206,11 +206,12 @@ body {
 
 .member__img {
   border-radius: 20px;
-  height: 150px
+  height: 150px;
 }
 
 .member__img--grayscaled {
-  -webkit-filter: grayscale(100%);
+  -webkit-filter: grayscale(100%) opacity(50%);
+  filter: grayscale(100%) opacity(50%);
 }
 
 @media (min-width: 768px) {
