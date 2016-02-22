@@ -218,7 +218,7 @@ msgstr "מידע נוסף"
 #: core/templates/core/all_parties.html:5
 #: core/templates/core/all_parties.html:8
 msgid "All Parties"
-msgstr "כל מפלגות"
+msgstr "כל המפלגות"
 
 #: core/templates/core/all_parties.html:21
 msgid "Likud"
