@@ -157,6 +157,27 @@ body {
   }
 }
 
+.parties__party-img {
+  -webkit-align-self: center;
+      -ms-flex-item-align: center;
+          align-self: center;
+  -webkit-flex-basis: 150px;
+      -ms-flex-preferred-size: 150px;
+          flex-basis: 150px;
+}
+
+/* Shame */
+/* Fixes Shas SVG */
+.parties__party-container a[href="/party/36"] {
+  display: flex;
+  justify-content: center;
+}
+
+.parties__party-container a[href="/party/36"] img {
+  height: 50px;
+}
+/* End Shame */
+
 /* Party's Members Page */
 
 .party__info {
