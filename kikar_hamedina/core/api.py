@@ -70,6 +70,7 @@ class PersonaResource(ModelResource):
             'alt_object_id': ALL,
         }
 
+
 class Facebook_FeedResource(ModelResource):
     owner = fields.ToOneField(MemberResource, attribute='owner', null=True)
     persona = fields.ForeignKey(PersonaResource, attribute='persona', null=True)
@@ -196,6 +197,14 @@ class Facebook_StatusResource(ModelResource):
             bundle.data['has_attachment'] = True
             bundle.data['attachment'] = {
                 'type': bundle.obj.attachment.type,
+                'is_photo': bundle.obj.attachment.type == 'photo',
+                'is_video': bundle.obj.attachment.type == 'video',
+                'is_link': bundle.obj.attachment.type == 'link',
+                'is_event': bundle.obj.attachment.type == 'event',
+                'is_music': bundle.obj.attachment.type == 'music',
+                'is_note': bundle.obj.attachment.type == 'note',
+                'is_nonetype': not bundle.obj.attachment.type,
+
                 'link': bundle.obj.attachment.link,
                 'picture': bundle.obj.attachment.picture,
                 'name': bundle.obj.attachment.name,
