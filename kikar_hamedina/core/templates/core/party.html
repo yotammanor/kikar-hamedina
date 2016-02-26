@@ -7,7 +7,8 @@
     <i class="fa fa-group"></i> {{ object.name }}
 {% endblock %}
 
-{% block details %}
+{% block context-header %}
+<div class="container well" id="details-container">
     <h4>{% trans 'Number of Facebook Pages for Party' %}: {{ object.current_members.count }}
     </h4>
     <p id="insights" style="display: none">
@@ -19,6 +20,7 @@
         <span id="ins_n_week">-</span> {% trans 'Statuses' %},
         <span id="ins_mean_likes_week">-</span> {% trans 'Likes on average' %}
     </p>
+</div>    
 {% endblock %}
 
 {% block sidebar %}
