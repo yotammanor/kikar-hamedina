@@ -433,10 +433,14 @@ class Facebook_Status_Attachment(models.Model):
 
     @property
     def source_clean(self):
+        if not self.source:
+            return self.source
         split_source = self.source.split('?')
-        params = split_source[1]
+        if len(split_source) <= 1:
+            return split_source[0]
+        params = split_source[-1]
         params_dict = {x.split('=')[0]: x.split('=')[1] for x in params.split('&')}
-        params_dict.pop('autoplay')
+        params_dict.pop('autoplay', None)
         return split_source[0] + '?' + '&'.join(['{}={}'.format(key, value) for key, value in params_dict.items()])
 
 
