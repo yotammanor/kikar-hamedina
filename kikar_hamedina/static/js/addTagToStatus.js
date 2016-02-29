@@ -37,7 +37,7 @@ function addTag(status_id, tag_name, csrf_token) {
             }
         },
         error: function (data) {
-            console.log("BADDDDD ERROR!!")
+            console.log("BADDDDD ERROR!!");
             showAddTagError(status_id, "internal error");
         }
     });
@@ -49,16 +49,16 @@ function addAutosuggestAjaxTags(data, status_id_on_page, recommended) {
         @param status_id_on_page - has the id of the status to add the suggested tags to the autocomplete section
                                     of its tag input field
      */
-    $('#add-tag-dropdown-' + status_id_on_page).removeClass('open')
-    addTagListElem = $('#add-tag-list-' + status_id_on_page)
-    addTagListElem.html('')
+    $('#add-tag-dropdown-' + status_id_on_page).removeClass('open');
+    addTagListElem = $('#add-tag-list-' + status_id_on_page);
+    addTagListElem.html('');
     for (var i = 0; i < data['number_of_results']; i++) {
         if (data['results'][i]['type'] != 'tag') {
             continue;
         }
-        var result = data['results'][i]
-        result['recommended'] = recommended
-        var source = $("#add-tag-result-tag-list-item-template").html()
+        var result = data['results'][i];
+        result['recommended'] = recommended;
+        var source = $("#add-tag-result-tag-list-item-template").html();
         var template = Handlebars.compile(source);
         var html = template(result);
         addTagListElem.append(html)
@@ -75,7 +75,7 @@ function addAutosuggestAjaxTags(data, status_id_on_page, recommended) {
             var tag_name = tag_to_add.data('tag-name');
             console.log(status_id_on_page + ' ' + tag_name);
             addTag(status_id_on_page, tag_name, csrf_token);
-            $('#add-tag-list-' + status_id_on_page).html('')
+            $('#add-tag-list-' + status_id_on_page).html('');
             obj.val("")
         }
     });
@@ -127,7 +127,7 @@ function tagAddingHandler(obj) {
 
 function removeAutocompleteTags(obj) {
     var id = obj.parent().parent().data("statusid");
-    $('#add-tag-list-' + id).html('')
+    $('#add-tag-list-' + id).html('');
     obj.data("empty","True")
 }
 
@@ -143,7 +143,7 @@ $(document).ready(function () {
         console.log(tag.val());
         console.log(tags);
 
-        for (t in tags) {
+        for (var t in tags) {
             addTag(id, tags[t], csrf_token)
         }
     }).on("input", ".add-tag-input", function (event) {
