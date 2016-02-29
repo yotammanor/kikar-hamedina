@@ -58,7 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       [ ! -d logs ] && mkdir logs
       if [ ! -f ../devOps/kikar_setup.db.gz ];
       then
-        wget https://dl.dropboxusercontent.com/u/47989767/kikar_setup.db.gz -P ../devOps/ -q
+        wget https://s3-eu-west-1.amazonaws.com/kikar-dev/kikar_setup.db.gz -P ../devOps/ -q
       fi
       gunzip -c ../devOps/kikar_setup.db.gz | sudo -u postgres psql kikar
       # [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json

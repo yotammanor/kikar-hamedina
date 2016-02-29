@@ -126,7 +126,7 @@ class Facebook_Feed(models.Model):
         if self.feed_type == 'PP':
             try:
                 popularity = Feed_Popularity.objects.filter(feed=self).latest(
-                        'date_of_creation').fan_count
+                    'date_of_creation').fan_count
             except Feed_Popularity.DoesNotExist:
                 pass
         return popularity
@@ -145,11 +145,11 @@ class Facebook_Feed(models.Model):
 
         feed_current_count = self.current_fan_count
         asked_for_date_of_value = timezone.now() - datetime.timedelta(
-                days=days_back)
+            days=days_back)
         try:
             popularity_history_timeseries = self.feed_popularity_set.all().to_timeseries(
-                    'fan_count',
-                    index='date_of_creation')
+                'fan_count',
+                index='date_of_creation')
             first_value = popularity_history_timeseries.iloc[
                 -1].name.to_pydatetime()
             last_value = popularity_history_timeseries.iloc[
@@ -163,7 +163,7 @@ class Facebook_Feed(models.Model):
 
             else:
                 resampled_history_raw = popularity_history_timeseries.resample(
-                        'D')
+                    'D')
                 if resampled_history_raw.loc[
                     asked_for_date_of_value.date()].isnull().fan_count:
                     # if requested date's data is missing - interpolate from existing data
@@ -177,10 +177,10 @@ class Facebook_Feed(models.Model):
                         asked_for_date_of_value.date()].fan_count
 
             fan_count_dif_nominal = int(
-                    feed_current_count) - fan_count_at_requested_date
+                feed_current_count) - fan_count_at_requested_date
             if fan_count_at_requested_date != 0:
                 fan_count_dif_growth_rate = float(
-                        fan_count_dif_nominal) / fan_count_at_requested_date
+                    fan_count_dif_nominal) / fan_count_at_requested_date
             else:
                 fan_count_dif_growth_rate = 0.0
 
@@ -231,7 +231,7 @@ class Feed_Popularity(models.Model):
 
     def __unicode__(self):
         return slugify(self.feed.name) + " " + str(
-                self.date_of_creation.date())
+            self.date_of_creation.date())
         # strftime("%Y_%M_%D_%H:%m:%s", self.date_of_creation)
 
 
@@ -343,7 +343,7 @@ class Facebook_Status(models.Model):
         refresh_interval = (
                                normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
         need_refresh = self.locally_updated + timezone.timedelta(
-                seconds=refresh_interval) < now
+            seconds=refresh_interval) < now
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
         # need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
@@ -424,6 +424,25 @@ class Facebook_Status_Attachment(models.Model):
     def is_internal_link(self):
         return 'https://www.facebook.com/' in self.link
 
+    @property
+    def is_youtube_video(self):
+        if self.type == 'video':
+            if 'youtube.com' in self.source:
+                return True
+        return False
+
+    @property
+    def source_clean(self):
+        if not self.source:
+            return self.source
+        split_source = self.source.split('?')
+        if len(split_source) <= 1:
+            return split_source[0]
+        params = split_source[-1]
+        params_dict = {x.split('=')[0]: x.split('=')[1] for x in params.split('&')}
+        params_dict.pop('autoplay', None)
+        return split_source[0] + '?' + '&'.join(['{}={}'.format(key, value) for key, value in params_dict.items()])
+
 
 def later():
     return timezone.now() + timezone.timedelta(days=60)
@@ -495,7 +514,7 @@ class Facebook_Status_Comment(models.Model):
         refresh_interval = (
                                normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
         need_refresh = self.locally_updated + timezone.timedelta(
-                seconds=refresh_interval) < now
+            seconds=refresh_interval) < now
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
         # need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
