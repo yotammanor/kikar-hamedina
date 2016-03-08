@@ -12,8 +12,10 @@
 
 {% endblock %}
 
-{% block details %}
+{% block context-header %}
+<div class="container well" id="details-container">
     <h4>{% trans 'Total' %}: {{ object_list.count }}</h4>
+</div>
 {% endblock %}
 
 {% block sidebar %}

@@ -22,7 +22,8 @@
 
 {% endblock %}
 
-{% block details %}
+{% block context-header %}
+<div class="container well" id="details-container">
     <div class="h4">
         {% blocktrans %}Number of Results{% endblocktrans %} : {{ number_of_results }}
     </div>
@@ -36,4 +37,5 @@
         </p>
         {% endif %}
     </h4>
+</div>
 {% endblock %}
