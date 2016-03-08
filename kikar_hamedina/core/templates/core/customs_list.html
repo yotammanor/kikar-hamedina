@@ -8,8 +8,8 @@
     שליפות מוגדרות מראש
 {% endblock %}
 
-{% block details %}
-
+{% block context-header %}
+<div class="container well" id="details-container">
     {% if requested_user %}
         <h4>
             משתמש:
@@ -19,7 +19,7 @@
     <h4>
         מס' שאילתות: {{ object_list.count }}
     </h4>
-
+</div>
 {% endblock %}
 
 {% block main_content %}
