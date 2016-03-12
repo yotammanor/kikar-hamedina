@@ -1,4 +1,3 @@
-
 class NoDefaultProvided(object):
     pass
 
@@ -16,3 +15,6 @@ def getattrd(obj, name, default=NoDefaultProvided):
             return default
         raise
 
+
+def add_html_tag(matchobj, tag_name='b'):
+    return '<{0}>{1}</{2}>'.format(tag_name, matchobj.group(0), tag_name)
