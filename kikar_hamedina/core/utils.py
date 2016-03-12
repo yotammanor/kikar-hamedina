@@ -17,4 +17,4 @@ def getattrd(obj, name, default=NoDefaultProvided):
 
 
 def add_html_tag(matchobj, tag_name='b'):
-    return '<{0}>{1}</{2}>'.format(tag_name, matchobj.group(0), tag_name)
+    return '<{}>'.format(tag_name) + matchobj.group(0) + '</{}>'.format(tag_name)
