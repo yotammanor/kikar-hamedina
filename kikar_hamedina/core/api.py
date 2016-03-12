@@ -112,7 +112,18 @@ class MemberResource(ModelResource):
         persona = bundle.obj.facebook_persona
         if persona is not None:
             return get_resource_uri(persona.get_main_feed, self.main_feed)
+
         return None
+
+    def dehydrate(self, bundle):
+        bundle.data['kikar_link'] = 'http://www.kikar.org/member/' + str(bundle.obj.id)
+        persona = bundle.obj.facebook_persona
+
+        if persona is not None:
+            bundle.data['facebook_link'] = persona.get_main_feed.link
+        else:
+            bundle.data['feed_url'] = None
+        return bundle
 
 
 class TagResource(ModelResource):
