@@ -8,15 +8,12 @@
     {% trans 'All Members of Knesset' %}
 {% endblock %}
 
-{% block details %}
-<p>{% trans 'All the numbers in the page are referencing the monthly average.' %}</p>
-<p>{% trans "Grayscaled MK's don't have a public Facebook page." %}</p>
-{% endblock %}
+
 
 {% block main_content %}
 
   {% for party in object_list %}
-    <h3 class="page-header">{{ party.name }}</h3>
+    <a href="/party/{{ party.id }}/"><h2 class="page-header">{{ party.name }}</h2></a>
     <div class="party__info" data-party-id="{{ party.id }}">
       <div>
         <span class="fa fa-group"></span>  {% trans 'Number of Facebook Pages for Party' %}: {{ party.current_members.count }}
@@ -31,24 +28,28 @@
       {% for member in party.current_members %}
           <div class="member__container" data-member-id={{ member.id }}>
 
-            {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
-                <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img">
-            {% else %}
-                <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled">
-            {% endif %}
+            <a href="/member/{{ member.id }}/">
+              {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
+                  <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img" alt="">
+              {% else %}
 
-            <h3 class="member__name">{{ member.name }}</h3>
+              {% trans "This MK doesn't have a public Facebook Page" as title %}
+              <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled"
+                    data-toggle="tooltip" data-placement="top"
+                    title="{{ title }}" alt="">
+              {% endif %}
+
+              <h3 class="member__name">{{ member.name }}</h3>
+            </a>
 
             <div class="member__stats">
               <div>
-                <span class="fa fa-comment"></span>  {% trans 'Statuses' %}: <span class="avg_statuses">...</span>
+                <span class="fa fa-comment"></span>   {% trans 'Statuses' %} {% trans 'last month' %}: <span class="avg_statuses">...</span>
               </div>
               <div>
-                <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="avg_likes">...</span>
+                <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="likes">...</span>
               </div>
             </div>
-
-            <a class="member__more-info" href="/member/{{ member.id }}">{% trans 'More Info' %}</a>
 
           </div>
       {% endfor %}
@@ -86,6 +87,7 @@
           $.each(objects, function(i, item) {
             itemID = lastSegmentFrom(item[type]);
             items[itemID] = {
+              Likes: item.like_count,
               AvgLikes: Math.round(item.mean_status_likes_last_month),
               AvgStatuses: item.n_statuses_last_month,
             };
@@ -94,9 +96,15 @@
           // manipulates the DOM
           $(container).each(function( i, elm ) {
             itemID = elm.getAttribute('data-' + type + '-id');
-            $(elm).find('.avg_likes').text(items[itemID].AvgLikes);
-            // TOFIX (BACKEND): AvgStatuses is null instead of 0 if there's no facebook page
-            $(elm).find('.avg_statuses').text(items[itemID].AvgStatuses || 0);
+
+            // check if the member doesn't have a facebook page
+            if ( type == 'member' && !items[itemID].Likes ) {
+              $(elm).find('.member__stats').hide()
+            } else {
+              type == 'party' ? $(elm).find('.avg_likes').text(items[itemID].AvgLikes) :
+                                $(elm).find('.likes').text(items[itemID].Likes.toLocaleString());
+              $(elm).find('.avg_statuses').text(items[itemID].AvgStatuses);
+            }
           })
 
         });
@@ -105,6 +113,10 @@
 
       insertInsights('/api/v1/insights/party/', '.party__info', 'party');
       insertInsights('/api/v1/insights/member/?limit=300', '.member__container', 'member');
+
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      })
 
     </script>
 {% endblock %}
