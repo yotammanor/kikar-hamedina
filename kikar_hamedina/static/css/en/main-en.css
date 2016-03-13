@@ -188,7 +188,7 @@ body {
 
 .parties__party-stats {
   display: none; /* Stats are hidden until AJAX call is finishe, then becomes flex. */
-  margin-right: 10px;
+  margin-left: 10px;
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
