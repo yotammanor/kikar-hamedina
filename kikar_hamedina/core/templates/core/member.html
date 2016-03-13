@@ -8,7 +8,8 @@
     <i class="fa fa-user"></i> {{ object.name }}
 {% endblock %}
 
-{% block details %}
+{% block context-header %}
+<div class="container well" id="details-container">
     {% with object.facebook_persona.get_main_feed as feed %}
         {% load humanize %}
         {% load core_extras %}
@@ -56,6 +57,7 @@
         {% endif %}
 
     {% endwith %}
+</div>
 {% endblock %}
 
 {% block noposts %}
@@ -81,4 +83,3 @@
 {% block scripts %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/updateInsightsForMember.js"></script>
 {% endblock %}
-
