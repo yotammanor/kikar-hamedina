@@ -319,7 +319,7 @@ class Command(BaseCommand):
                 status_object.updated = current_time_of_update
                 status_object.story = story
                 status_object.story_tags = story_tags
-                status_object.is_comment = status_object.set_is_comment
+                status_object.is_comment = status_object.resolve_is_comment
 
                 status_object.save()
 
@@ -347,7 +347,7 @@ class Command(BaseCommand):
                                                   story=story,
                                                   story_tags=story_tags)
 
-            status_object.is_comment = status_object.set_is_comment
+            status_object.is_comment = status_object.resolve_is_comment
 
             if status_object_defaultdict['link']:
                 # There's an attachment
