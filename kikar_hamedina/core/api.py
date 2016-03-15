@@ -60,6 +60,9 @@ class PartyResource(ModelResource):
         queryset = PARTY_MODEL.objects.all()
         resource_name = 'party'
 
+    def dehydrate(self, bundle):
+        bundle.data['kikar_link'] = 'http://www.kikar.org/party/' + str(bundle.obj.id)
+        return bundle
 
 class PersonaResource(ModelResource):
     class Meta:
