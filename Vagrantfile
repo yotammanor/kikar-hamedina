@@ -86,6 +86,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     EOS
   end
   
+  
+    # Display the VirtualBox GUI when booting the machine
+	# very usfual for debuging!
+    #vb.gui = true
+  
+    # # Customize the amount of memory on the VM:
+    # vb.memory = "1024"
+   #end
+   
   # Download statuses
   config.vm.provision :shell do |shell|
     shell.inline = <<-EOS
