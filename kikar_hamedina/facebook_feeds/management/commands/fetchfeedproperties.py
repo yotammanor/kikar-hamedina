@@ -167,7 +167,7 @@ class Command(BaseCommand):
         elif feed.feed_type == 'PP':  # 'PP - Public Page'
             try:
                 # Set facebook graph access token to most up-to-date user token in db
-                token = User_Token.objects.first()
+                token = feed.tokens.order_by('-date_of_creation').first()
                 self.graph.access_token = token.token
             except Exception as e:
                 if feed.requires_user_token:
