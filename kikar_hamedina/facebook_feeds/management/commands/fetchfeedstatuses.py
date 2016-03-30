@@ -58,8 +58,7 @@ class Command(BaseCommand):
                     dest='force-attachment-update',
                     default=False,
                     help='Use this flag to force updating of status attachment'),
-        make_option('-t',
-                    '--request-timeout',
+        make_option('--request-timeout',
                     dest='request-timeout',
                     type='int',
                     default=20,
@@ -82,6 +81,13 @@ class Command(BaseCommand):
                     dest='to-date',
                     default=None,
                     help='Specify date until which to update the statuses (exclusive) e.g. 2014-03-31'),
+        make_option('-t',
+                    '--use-app-token',
+                    action='store_true',
+                    dest='use_app_token',
+                    default=False,
+                    help='Use app access token for all types and cases of requests'
+                    )
     )
 
     def fetch_status_objects_from_feed(self, feed_id, post_number_limit, date_filters):
@@ -183,7 +189,6 @@ class Command(BaseCommand):
         logger.warning(error_msg)
         return {}
 
-
     @staticmethod
     def insert_status_attachment(status, status_object_defaultdict):
         # print 'insert attachment'
@@ -275,7 +280,7 @@ class Command(BaseCommand):
             message = ''
         if status_object_defaultdict['likes']:
 
-            like_count = status_object_defaultdict['likes']['summary'].get('total_count',  0)
+            like_count = status_object_defaultdict['likes']['summary'].get('total_count', 0)
         else:
             like_count = 0
         # print 'like_count:', like_count
@@ -358,9 +363,10 @@ class Command(BaseCommand):
             print 'saving status'
             status_object.save()
 
-    def get_feed_statuses(self, feed, post_number_limit, date_filters):
+    def get_feed_statuses(self, feed, post_number_limit, date_filters, use_app_token):
         """
         Returns a Dict object of feed ID. and retrieved status objects.
+        :param use_app_token:
                 """
         if feed.feed_type == 'PP':
             try:
@@ -379,6 +385,9 @@ class Command(BaseCommand):
                     return data_dict
 
                     # Get the data using the pre-set token
+            if use_app_token:
+                self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                        settings.FACEBOOK_SECRET_KEY)
             return {'feed_id': feed.id,
                     'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit, date_filters)}
 
@@ -415,6 +424,8 @@ class Command(BaseCommand):
             post_number_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN
         print 'Variable post_number_limit set to: {0}.'.format(post_number_limit)
 
+        use_app_token = options['use_app_token']
+
         list_of_feeds = list()
         # Case no args - fetch all feeds
         if len(args) == 0:
@@ -441,7 +452,7 @@ class Command(BaseCommand):
         # Iterate over list_of_feeds
         for feed in list_of_feeds:
             self.stdout.write('Working on feed: {0}, {1}.'.format(feed.pk, feed.vendor_id))
-            feed_statuses = self.get_feed_statuses(feed, post_number_limit, date_filters)
+            feed_statuses = self.get_feed_statuses(feed, post_number_limit, date_filters, use_app_token)
             self.stdout.write('Successfully fetched feed: {0}.'.format(feed.pk))
             if feed_statuses['statuses']:
                 for status in feed_statuses['statuses']['data']:

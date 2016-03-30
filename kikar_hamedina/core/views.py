@@ -270,6 +270,8 @@ class MemberView(StatusFilterUnifiedView):
 
         dif_dict = feed.popularity_dif(POPULARITY_DIF_DAYS_BACK)
         context['change_in_popularity'] = dif_dict
+        time_since_updated = timezone.now() - feed.locally_updated
+        context['time_since_updated'] = time_since_updated.days
 
         return context
 

@@ -170,7 +170,6 @@ MEDIA_URL = '/media/'
 # }
 
 CORS_ORIGIN_WHITELIST = (
-    'localhost:8001',
     'oknesset.org'
 )
 
@@ -210,7 +209,7 @@ LOGGING = {
         'scrapeFile': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+            'filename': '%s/debug.log' % os.path.join(REPOSITORY_ROOT, 'log'),
             'formatter': 'simple'
         },
         'scraping': {

@@ -33,12 +33,21 @@ class Command(BaseCommand):
                                 dest='is_insist',
                                 default=False,
                                 help='Exception from GraphAPI will result in skipping instead of crashing.'
-    )
+                                )
+
+    option_app_token = make_option('-t',
+                                   '--use-app-token',
+                                   action='store_true',
+                                   dest='use_app_token',
+                                   default=False,
+                                   help='Use app access token for all types and cases of requests'
+                                   )
 
     option_list_helper = list()
     for x in BaseCommand.option_list:
         option_list_helper.append(x)
     option_list_helper.append(option_insist)
+    option_list_helper.append(option_app_token)
     option_list = tuple(option_list_helper)
 
     graph = facebook.GraphAPI()
@@ -64,7 +73,7 @@ class Command(BaseCommand):
             user_profile_properties = self.graph.request(path=api_request, args=args_for_request)
             large_pic_response = self.graph.request(path=api_request, args=args_for_large_pic_request)
         except facebook.GraphAPIError as e:
-            self.errors_count =+ 1
+            self.errors_count = + 1
             _LOGGER_SCRAPING.warning('Fetch Feed Properties: GraphAPI error, feed #%s. %s: %s',
                                      feed_id,
                                      'processing anyway...' if is_insist else 'process aborted.',
@@ -78,7 +87,7 @@ class Command(BaseCommand):
         try:
             user_profile_properties['picture_large'] = large_pic_response['picture']['data']['url']
         except (LookupError, TypeError):
-            self.warning_count =+ 1
+            self.warning_count = + 1
             # Fallback: assign null value to picture_large
             user_profile_properties['picture_large'] = None
             _LOGGER_SCRAPING.warning('Fetch Feed Properties: feed #{0} has no large pic'
@@ -105,7 +114,7 @@ class Command(BaseCommand):
                 feed.picture_large = feed_dict['picture_large']
                 feed.username = feed_dict['username']
                 feed.website = feed_dict['website']
-                feed.current_fan_count=feed_dict['likes']
+                feed.current_fan_count = feed_dict['likes']
                 # save feed object.
                 feed.save()
                 # feed_popularity data
@@ -114,21 +123,22 @@ class Command(BaseCommand):
                     date_of_creation=timezone.now(),
                     fan_count=feed_dict['likes'],
                     talking_about_count=feed_dict['talking_about_count'],
-                    )
+                )
                 feed_popularity.save()
             else:
                 self.warning_count += 1
                 _LOGGER_SCRAPING.warning('Fetch Feed Properties: Feed pk #{0} no data retrieved for feed'
-                                       .format(feed_pk_id))
+                                         .format(feed_pk_id))
         except Facebook_Feed.DoesNotExist:
             self.errors_count += 1
             _LOGGER_SCRAPING.error('Fetch Feed Properties: Feed pk #{0} is missing from db'
                                    .format(feed_pk_id))
             raise
 
-    def get_feed_data(self, feed, is_insist):
+    def get_feed_data(self, feed, is_insist, use_app_token):
         """
         Returns a Dict object of feed ID. and retrieved feed data.
+        :param use_app_token:
         """
         empty_data_dict = {'feed_id': feed.id, 'data': {}}
 
@@ -148,9 +158,8 @@ class Command(BaseCommand):
             else:
                 self.warning_count += 1
                 _LOGGER_SCRAPING.warning('Fetch Feed Properties: UP Feed pk #{0} requires user token but not found one'
-                                       .format(feed.id))
+                                         .format(feed.id))
                 return empty_data_dict
-
 
             data_dict = {'feed_id': feed.id, 'data':
                 self.fetch_data_by_feed_id(feed.vendor_id,
@@ -167,29 +176,33 @@ class Command(BaseCommand):
         elif feed.feed_type == 'PP':  # 'PP - Public Page'
             try:
                 # Set facebook graph access token to most up-to-date user token in db
-                token = User_Token.objects.first()
+                token = feed.tokens.order_by('-date_of_creation').first()
                 self.graph.access_token = token.token
             except Exception as e:
                 if feed.requires_user_token:
                     self.warning_count += 1
                     # If the Feed is set to require a user-token, and none exist in our db, the feed is skipped.
-                    _LOGGER_SCRAPING.warning('Fetch Feed Properties: PP Feed pk #{0} requires user token but not found one'
-                                           .format(feed.id))
+                    _LOGGER_SCRAPING.warning(
+                        'Fetch Feed Properties: PP Feed pk #{0} requires user token but not found one'
+                        .format(feed.id))
                     return empty_data_dict
 
                 # Fallback: Set facebook graph access token to app access token
                 self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                         settings.FACEBOOK_SECRET_KEY)
+        if use_app_token:
+            self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                    settings.FACEBOOK_SECRET_KEY)
 
             # Get the data using the pre-set token
             data_dict = {'feed_id': feed.id, 'data':
                 self.fetch_data_by_feed_id(feed.vendor_id,
-                   "id,name,username,picture.type(square).fields(url),about,birthday,website,link,likes,talking_about_count",
-                   is_insist)}
+                                           "id,name,username,picture.type(square).fields(url),about,birthday,website,link,likes,talking_about_count",
+                                           is_insist)}
 
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
             _LOGGER_SCRAPING.info('Fetch Feed Properties: Feed pk {0} is of type {1}, skipping.'
-                                   .format(feed.id, feed.feed_type))
+                                  .format(feed.id, feed.feed_type))
             return empty_data_dict
 
         return data_dict
@@ -201,6 +214,7 @@ class Command(BaseCommand):
         or no feed ID and therefore retrieves data for all the feeds.
         """
         is_insist = options['is_insist']
+        use_app_token = options['use_app_token']
         list_of_feeds = list()
 
         # Case no args - fetch all feeds
@@ -223,7 +237,7 @@ class Command(BaseCommand):
         def worker(feed):
             self.stdout.write('Working on feed: {0}.'.format(feed.pk))
             # get feed properties from facebook
-            feed_data = self.get_feed_data(feed, is_insist)
+            feed_data = self.get_feed_data(feed, is_insist, use_app_token)
             # update fetched data to feed in database
             if feed_data['data']:
                 self.update_feed_data_to_db(feed_data['data'], feed_data['feed_id'])
