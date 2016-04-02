@@ -56,5 +56,4 @@ def path_to_params(path):
 
 @register.filter(name='language_clean_uri')
 def language_clean_uri(uri):
-    print uri
     return uri.split('/en')[-1].split('/ar')[-1].split('/he')[-1]
