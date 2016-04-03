@@ -85,7 +85,7 @@ class Billboards(object):
         self.top_likes_board = {
             'order_of_board': 5,
             'title': _('Top Statuses by Number of  #like '),
-            'second_title': DEFAULT_SECOND_TITLE,
+            'second_title': _('Last Week'),
             'headers': {
                 'name': 'Name',
                 'value_formatted': 'likes for most popular status'

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 18:27+0200\n"
-"PO-Revision-Date: 2016-02-29 13:30+0200\n"
+"POT-Creation-Date: 2016-03-19 15:28+0200\n"
+"PO-Revision-Date: 2016-03-26 17:49+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -27,7 +27,7 @@ msgstr "בשבועיים האחרונים"
 msgid "Number of Followers"
 msgstr "מספר עוקבים"
 
-#: core/billboards.py:17 core/templates/core/tag.html:16
+#: core/billboards.py:17 core/templates/core/tag.html:17
 msgid "Total"
 msgstr "סך הכל"
 
@@ -170,21 +170,21 @@ msgid "All Members of Knesset"
 msgstr "כל חברות וחברי הכנסת"
 
 #: core/templates/core/all_members.html:19
-#: core/templates/core/all_parties.html:26 core/templates/core/party.html:11
+#: core/templates/core/all_parties.html:27 core/templates/core/party.html:12
 msgid "Number of Facebook Pages for Party"
 msgstr "מס' עמודי פייסבוק פעילים למפלגה"
 
 #: core/templates/core/all_members.html:22
-#: core/templates/core/date_filter.html:51 core/templates/core/member.html:37
-#: core/templates/core/party.html:15 core/templates/core/searchgui.html:122
+#: core/templates/core/date_filter.html:51 core/templates/core/member.html:39
+#: core/templates/core/party.html:16 core/templates/core/searchgui.html:122
 msgid "Last Month"
 msgstr "בחודש האחרון"
 
 #: core/templates/core/all_members.html:23
 #: core/templates/core/all_members.html:47
-#: core/templates/core/all_parties.html:30 core/templates/core/member.html:38
-#: core/templates/core/member.html.py:41 core/templates/core/party.html:16
-#: core/templates/core/party.html.py:19
+#: core/templates/core/all_parties.html:31 core/templates/core/member.html:40
+#: core/templates/core/member.html.py:43 core/templates/core/party.html:17
+#: core/templates/core/party.html.py:20
 msgid "Statuses"
 msgstr "סטאטוסים"
 
@@ -193,9 +193,9 @@ msgid "and"
 msgstr "וגם"
 
 #: core/templates/core/all_members.html:24
-#: core/templates/core/all_parties.html:34 core/templates/core/member.html:39
-#: core/templates/core/member.html.py:42 core/templates/core/party.html:17
-#: core/templates/core/party.html.py:20
+#: core/templates/core/all_parties.html:35 core/templates/core/member.html:41
+#: core/templates/core/member.html.py:44 core/templates/core/party.html:18
+#: core/templates/core/party.html.py:21
 msgid "Likes on average"
 msgstr "לייקים, בממוצע"
 
@@ -203,13 +203,18 @@ msgstr "לייקים, בממוצע"
 msgid "This MK doesn't have a public Facebook Page"
 msgstr "לח\"כ זה אין פרופיל פייסבוק פומבי"
 
-#: core/templates/core/all_members.html:47 core/templates/core/member.html:28
+#: core/templates/core/all_members.html:47 core/templates/core/member.html:30
 msgid "last month"
 msgstr "בחודש האחרון"
 
 #: core/templates/core/all_members.html:50
 msgid "Likes"
 msgstr "לייקים"
+
+#: core/templates/core/all_members.html:54 core/templates/core/member.html:62
+#: core/templates/core/member.html.py:68
+msgid "Last update at"
+msgstr "עדכון אחרון בתאריך"
 
 #: core/templates/core/all_parties.html:5
 #: core/templates/core/all_parties.html:8
@@ -257,7 +262,7 @@ msgstr "ל"
 msgid "(Starting midnight)"
 msgstr "(החל מחצות)"
 
-#: core/templates/core/date_filter.html:40 core/templates/core/party.html:18
+#: core/templates/core/date_filter.html:40 core/templates/core/party.html:19
 msgid "Last Week"
 msgstr "בשבוע האחרון"
 
@@ -323,55 +328,63 @@ msgstr "הוספת תגיות"
 msgid "Home Page"
 msgstr "דף הבית"
 
-#: core/templates/core/member.html:29
+#: core/templates/core/member.html:31
 msgid "approximately"
 msgstr "בקירוב"
 
-#: core/templates/core/member.html:33
+#: core/templates/core/member.html:35
 msgid "Loading additional data..."
 msgstr "טוען נתונים נוספים..."
 
-#: core/templates/core/member.html:40
+#: core/templates/core/member.html:42
 msgid "Last week"
 msgstr "בשבוע האחרון"
 
-#: core/templates/core/member.html:54
+#: core/templates/core/member.html:56
 msgid "At Open Knesset"
 msgstr "באתר כנסת פתוחה"
 
-#: core/templates/core/member.html:63
+#: core/templates/core/member.html:64
+msgid " This is probably a problem, and we'd love to"
+msgstr "זוהי כנראה תקלה, ונשמח מאוד"
+
+#: core/templates/core/member.html:65
+msgid "hear about it!"
+msgstr "לשמוע על כך!"
+
+#: core/templates/core/member.html:76
 msgid "Facebook Page not found for MK"
 msgstr "לא נמצא עמוד פייסבוק עבור"
 
-#: core/templates/core/member.html:65
+#: core/templates/core/member.html:78
 msgid "You can"
 msgstr "אפשר"
 
-#: core/templates/core/member.html:66
+#: core/templates/core/member.html:79
 msgid "send"
 msgstr "לשלוח"
 
-#: core/templates/core/member.html:66
+#: core/templates/core/member.html:79
 msgid "her"
 msgstr "לה"
 
-#: core/templates/core/member.html:67
+#: core/templates/core/member.html:80
 msgid "him"
 msgstr "לו"
 
-#: core/templates/core/member.html:67
+#: core/templates/core/member.html:80
 msgid "an email"
 msgstr "דוא\"ל"
 
-#: core/templates/core/member.html:72
+#: core/templates/core/member.html:85
 msgid "Does MK "
 msgstr "יש ל-"
 
-#: core/templates/core/member.html:72
+#: core/templates/core/member.html:85
 msgid "has a Facebook Page"
 msgstr "דף פייסבוק"
 
-#: core/templates/core/member.html:74
+#: core/templates/core/member.html:87
 msgid "Tell us"
 msgstr "ספרו לנו"
 
@@ -406,7 +419,7 @@ msgstr "תויגו לאחרונה"
 msgid "RSS Updates"
 msgstr "עדכוני RSS"
 
-#: core/templates/core/rss_widget_page.html:26 links/models.py:47
+#: core/templates/core/rss_widget_page.html:18 links/models.py:47
 msgid "link"
 msgstr "קישור"
 
@@ -463,11 +476,11 @@ msgstr "מפלגות"
 msgid "Search Terms"
 msgstr "מילות חיפוש"
 
-#: core/templates/core/search.html:27
+#: core/templates/core/search.html:28
 msgid "Number of Results"
 msgstr "מספר תוצאות"
 
-#: core/templates/core/search.html:31 core/templates/core/searchgui.html:188
+#: core/templates/core/search.html:32 core/templates/core/searchgui.html:188
 msgid "Excluded Statuses"
 msgstr "סטאטוסים שסוננו"
 
@@ -830,7 +843,7 @@ msgstr "כל הרשומות בקטגוריה %(category)s"
 
 #: templates/zinnia/_entry_detail_base.html:46
 msgid "Last update on"
-msgstr "עודכן לאחרונה ב-"
+msgstr "עדכון אחרון ב-"
 
 #: templates/zinnia/_entry_detail_base.html:51
 msgid "Short url"
@@ -910,6 +923,15 @@ msgstr "RSS Feed of trackbacks on"
 #: templates/zinnia/entry_detail_base.html:47
 msgid "Edit the entry"
 msgstr "ערוך/ערכי רשומה"
+
+#, fuzzy
+#~| msgid ""
+#~| "hear about\n"
+#~| "            it!"
+#~ msgid ""
+#~ "hear about\n"
+#~ "                        it!"
+#~ msgstr "לשמוע על כך!"
 
 #~ msgid "All the numbers in the page are referencing the monthly average."
 #~ msgstr "כל המספרים בעמוד זה מתייחסים לממוצע החודשי."
