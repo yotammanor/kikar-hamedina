@@ -173,9 +173,17 @@ body {
   -webkit-justify-content: space-around;
       -ms-flex-pack: distribute;
           justify-content: space-around;
-  -webkit-flex: 1 1 320px;
-      -ms-flex: 1 1 320px;
-          flex: 1 1 320px;
+  -webkit-flex: 1 1 300px;
+      -ms-flex: 1 1 300px;
+          flex: 1 1 300px;
+}
+
+@media (min-width: 1200px) {
+  .parties__party-container {
+    -webkit-flex: 1 1 330px;
+        -ms-flex: 1 1 330px;
+            flex: 1 1 330px;
+  }
 }
 
 .parties__party-stats {
