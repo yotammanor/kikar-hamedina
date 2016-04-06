@@ -116,7 +116,8 @@ def join_queries(q1, q2, operator):
 
 
 def get_parsed_request(get_params):
-    print 'request:', get_params
+    if settings.DEBUG:
+        print 'request:', get_params
 
     # adds all member ids explicitly searched for.
     members_ids = []
@@ -148,7 +149,8 @@ def get_parsed_request(get_params):
     if 'excluded' in get_params.keys():
         excluded = [id for id in get_params['excluded'].split(',')]
 
-    print 'parsed request:', members_ids, parties_ids, tags_ids, phrases
+    if settings.DEBUG:
+        print 'parsed request:', members_ids, parties_ids, tags_ids, phrases
     return {'members_ids': members_ids,
             'parties_ids': parties_ids,
             'tags_ids': tags_ids,

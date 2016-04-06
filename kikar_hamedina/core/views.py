@@ -171,7 +171,7 @@ class SearchView(StatusListView):
     def get_queryset(self):
         params_dict = get_parsed_request(get_params=self.request.GET)
         query_Q = parse_to_q_object(self.request.GET, params_dict)
-        print 'get_queryset_executed:', query_Q
+        # print 'get_queryset_executed:', query_Q
 
         return apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
 
