@@ -4,6 +4,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from solid_i18n.urls import solid_i18n_patterns as patterns
 
 from core.api import PersonaResource
+from core.sitemap import MkSitemap, PartySitemap, StaticViewSitemap
 from . import views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, TAG_NAME_CHARSET
 from kikartags.models import Tag as Tag
@@ -15,6 +16,7 @@ from api import MemberResource, PartyResource, KnessetResource, Facebook_StatusR
 from insights import StatsMemberResource, StatsPartyResource
 from core.models import MEMBER_MODEL, PARTY_MODEL
 from core.rss_feeds import LatestStatusesRSSFeed, PartyRSSFeed, KeywordsByUserRSSFeed, CustomQueryRSSFeed
+from django.contrib.sitemaps.views import sitemap
 
 v1_api = Api(api_name='v1')
 v1_api.register(MemberResource())
@@ -28,6 +30,12 @@ v1_api.register(TagResource())
 v1_api.register(CommentTagResource())
 v1_api.register(StatsMemberResource())
 v1_api.register(StatsPartyResource())
+
+sitemaps = {
+    'mk':MkSitemap,
+    'party': PartySitemap,
+    'static': StaticViewSitemap
+}
 
 urlpatterns = patterns('',
                        # homepage
@@ -105,6 +113,8 @@ urlpatterns = patterns('',
                            name='custom-query-rss-widget'),
                        url(r'^latest/widget/$', views.WidgetView.as_view(), name='rss-widget-latest'),
                        url(r'^suggested_tags/(?P<status_id>[-_\w]+)/$', views.return_suggested_tags),
+                       url(r'^sitemap\.xml/$', sitemap, {'sitemaps': sitemaps},
+                           name='django.contrib.sitemaps.views.sitemap'),
                        ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = format_suffix_patterns(urlpatterns)
