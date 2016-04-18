@@ -18,6 +18,7 @@ body {
 }
 
 /*blue dropdowns*/
+.dropdown-menu > li > .active-result,
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus,
 .dropdown-menu > .active > a,
