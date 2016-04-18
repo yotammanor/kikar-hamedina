@@ -55,10 +55,18 @@
                             </div>
                         </div>
 
-                        <div>
-
-                            {% trans 'Last update at' %}: {{ member.facebook_persona.get_main_feed.locally_updated }}
-                        </div>
+                        {% if request.GET.debug == 'true' %}
+                            <div>
+                                {% trans 'Last Page info update at' %}:
+                                {{ member.facebook_persona.get_main_feed.locally_updated }}
+                            </div>
+                            <div>
+                                {% trans 'Date of Last Status at' %}:
+                                {% with status=member.facebook_persona.get_main_feed.facebook_status_set.first %}
+                                    {{ status.published }}
+                                {% endwith %}
+                            </div>
+                        {% endif %}
                     {% endif %}
                 </div>
             {% endfor %}

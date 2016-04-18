@@ -176,7 +176,7 @@ class Command(BaseCommand):
         elif feed.feed_type == 'PP':  # 'PP - Public Page'
             try:
                 # Set facebook graph access token to most up-to-date user token in db
-                token = feed.tokens.order_by('-date_of_creation').first()
+                token = User_Token.objects.order_by('-date_of_creation').first()
                 self.graph.access_token = token.token
             except Exception as e:
                 if feed.requires_user_token:
@@ -184,26 +184,25 @@ class Command(BaseCommand):
                     # If the Feed is set to require a user-token, and none exist in our db, the feed is skipped.
                     _LOGGER_SCRAPING.warning(
                         'Fetch Feed Properties: PP Feed pk #{0} requires user token but not found one'
-                        .format(feed.id))
+                            .format(feed.id))
                     return empty_data_dict
 
                 # Fallback: Set facebook graph access token to app access token
                 self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                         settings.FACEBOOK_SECRET_KEY)
-        if use_app_token:
-            self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
-                                                                    settings.FACEBOOK_SECRET_KEY)
-
-            # Get the data using the pre-set token
-            data_dict = {'feed_id': feed.id, 'data':
-                self.fetch_data_by_feed_id(feed.vendor_id,
-                                           "id,name,username,picture.type(square).fields(url),about,birthday,website,link,likes,talking_about_count",
-                                           is_insist)}
-
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
             _LOGGER_SCRAPING.info('Fetch Feed Properties: Feed pk {0} is of type {1}, skipping.'
                                   .format(feed.id, feed.feed_type))
             return empty_data_dict
+
+        if use_app_token and not feed.requires_user_token:
+            self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                    settings.FACEBOOK_SECRET_KEY)
+        # Get the data using the pre-set token
+        data_dict = {'feed_id': feed.id, 'data':
+            self.fetch_data_by_feed_id(feed.vendor_id,
+                                       "id,name,username,picture.type(square).fields(url),about,birthday,website,link,likes,talking_about_count",
+                                       is_insist)}
 
         return data_dict
 

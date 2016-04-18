@@ -159,7 +159,7 @@ class Facebook_Feed(models.Model):
                     (asked_for_date_of_value > last_value) or \
                     (popularity_history_timeseries.count().fan_count <= 1):
                 # if history starts after date of request, or there isn't enough data, don't extrapolate.
-                fan_count_at_requested_date = 0
+                fan_count_at_requested_date = feed_current_count
 
             else:
                 resampled_history_raw = popularity_history_timeseries.resample(
