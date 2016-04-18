@@ -39,7 +39,7 @@ $(document).ready(function () {
             $('#search-results-dropdown').removeClass("open");
             this.removeAttribute('activedescendant');
             var inputText = $("#navbar-search-box").val();
-            var url = "/search_bar/?text=" + inputText;
+            var url = $('body').data('lang') + "/search_bar/?text=" + inputText;
             if (inputText.length > 1) {
                 $.ajax({
                     url: url,

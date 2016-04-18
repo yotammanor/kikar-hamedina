@@ -131,7 +131,7 @@
           ga('send', 'pageview');
     </script>
 </head>
-<body>
+<body data-lang="{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}" data-lang-dir="{{ LANGUAGE_BIDI }}">
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
 
