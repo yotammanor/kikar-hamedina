@@ -1,4 +1,4 @@
-#encoding: utf-8
+# encoding: utf-8
 from django.db import models
 from django.contrib.contenttypes import generic
 from django.core.urlresolvers import reverse
@@ -8,12 +8,13 @@ from facebook_feeds.models import Facebook_Persona
 
 from polyorg.managers import BetterManager, CurrentKnessetCandidateListManager, CurrentKnessetCandidatesManager, \
     KnessetManager
+
+
 # Added by kikar
 
 class CandidateListAltname(models.Model):
     member = models.ForeignKey('CandidateList')
     name = models.CharField(max_length=64)
-
 
 
 class ElectedKnesset(models.Model):
@@ -29,6 +30,7 @@ class ElectedKnesset(models.Model):
 
     def get_absolute_url(self):
         return reverse('parties-members-list', kwargs={'pk': self.number})
+
 
 # end kikar
 
@@ -50,7 +52,6 @@ class CandidateList(models.Model):
     platform = models.TextField(_('Platform'), blank=True, null=True)
     party = models.ForeignKey('Party', blank=True, null=True)
 
-
     # added by kikar-hamedina
     # party = models.ForeignKey('mks.Party', null=True, blank=True)  # Knesset party associated with list
     knesset = models.ForeignKey(ElectedKnesset, related_name='candidate_lists', db_index=True,
@@ -62,7 +63,7 @@ class CandidateList(models.Model):
     @property
     def ok_url(self):
         """Open Knesset URL (if exists)"""
-        return  None
+        return None
 
     # end kikar hamedina
 
@@ -83,6 +84,10 @@ class CandidateList(models.Model):
     def current_members(self):
         ''' return a list of all candidates '''
         return Candidate.objects.filter(candidates_list=self)
+
+    @property
+    def current_members_with_active_public_facebook_persona(self):
+        return self.current_members().filter(persona__isnull=False, persona__feeds__feed_type='PP')
 
     @property
     def number_of_members(self):
@@ -133,6 +138,9 @@ class Candidate(models.Model):
     def facebook_persona(self):
         return self.persona.select_related().first()
 
+    @property
+    def has_facebook_persona(self):
+        return self.persona.exists()
 
     @property
     def name(self):
