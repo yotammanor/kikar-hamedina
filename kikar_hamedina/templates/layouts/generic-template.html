@@ -112,6 +112,13 @@
                 </a>
             </li>
         </script>
+        <script id="result-default-link-all-mks-template" type="text/x-handlebars-template">
+            <li class="result-container" style="background-color: beige">
+                <a href="{% endverbatim %}{% url 'all-members' %}{% verbatim %}" tabindex="-1" id="option-{{count}}" role="option">
+                   <div class="result-main-text"><i class="fa fa-bookmark"></i>{% endverbatim %} {% trans 'All MKs' %}{% verbatim %}</div>
+                </a>
+            </li>
+        </script>
     {% endverbatim %}
 
     <!-- Google Analytics -->
@@ -124,7 +131,7 @@
           ga('send', 'pageview');
     </script>
 </head>
-<body>
+<body data-lang="{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}" data-lang-dir="{{ LANGUAGE_BIDI }}">
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
 
