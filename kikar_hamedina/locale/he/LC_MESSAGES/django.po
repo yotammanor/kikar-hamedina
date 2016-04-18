@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-18 19:15+0300\n"
+"POT-Creation-Date: 2016-04-18 21:54+0300\n"
 "PO-Revision-Date: 2016-04-18 20:12+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -167,6 +167,7 @@ msgid "registered"
 msgstr "ע\"ר"
 
 #: core/templates/core/all_members.html:5
+#: templates/layouts/generic-template.html:118
 msgid "All MKs"
 msgstr "כל חברות וחברי הכנסת"
 
@@ -265,8 +266,8 @@ msgstr "לייקים, בממוצע"
 
 #: core/templates/core/billboards_list.html:3
 #: core/templates/core/billboards_list.html:6
-#: templates/layouts/generic-template.html:166
-#: templates/layouts/generic-template.html:221
+#: templates/layouts/generic-template.html:173
+#: templates/layouts/generic-template.html:228
 msgid "Billboards"
 msgstr "המצעד"
 
@@ -408,6 +409,10 @@ msgstr "יש ל"
 msgid "has a Public Facebook Page"
 msgstr "יש דף פייסבוק פומבי"
 
+#: core/templates/core/member.html:85 core/templates/core/member.html.py:98
+msgid "please"
+msgstr "בבקשה"
+
 #: core/templates/core/member.html:88
 msgid "Facebook Page not found for MK"
 msgstr "לא נמצא עמוד פייסבוק עבור"
@@ -435,10 +440,6 @@ msgstr "דוא\"ל"
 #: core/templates/core/member.html:96
 msgid "has a Facebook Page"
 msgstr "דף פייסבוק"
-
-#: core/templates/core/member.html:98
-msgid "please"
-msgstr "בבקשה"
 
 #: core/templates/core/order_by_options.html:4
 #: core/templates/core/searchgui.html:80
@@ -541,7 +542,7 @@ msgid "Advanced Search"
 msgstr "חיפוש מתקדם"
 
 #: core/templates/core/searchgui.html:51
-#: templates/layouts/generic-template.html:150
+#: templates/layouts/generic-template.html:157
 msgid "Knesset Member, Party, a Subject discussed, or any keyword..."
 msgstr "חבר/ת כנסת, מפלגה, נושא, או מילות מפתח"
 
@@ -837,30 +838,30 @@ msgstr ""
 msgid "| Kikar Hamedina"
 msgstr "| כיכר המדינה"
 
-#: templates/layouts/generic-template.html:140
+#: templates/layouts/generic-template.html:147
 msgid "Kikar Hamedina"
 msgstr "כיכר המדינה"
 
-#: templates/layouts/generic-template.html:148
+#: templates/layouts/generic-template.html:155
 msgid "search"
 msgstr "חיפוש"
 
-#: templates/layouts/generic-template.html:171
-#: templates/layouts/generic-template.html:226
+#: templates/layouts/generic-template.html:178
+#: templates/layouts/generic-template.html:233
 msgid "About"
 msgstr "אודות"
 
-#: templates/layouts/generic-template.html:177
-#: templates/layouts/generic-template.html:232
+#: templates/layouts/generic-template.html:184
+#: templates/layouts/generic-template.html:239
 msgid "Donate"
 msgstr "תרומה"
 
-#: templates/layouts/generic-template.html:201
-#: templates/layouts/generic-template.html:238
+#: templates/layouts/generic-template.html:208
+#: templates/layouts/generic-template.html:245
 msgid "Tagging"
 msgstr "תיוג"
 
-#: templates/layouts/generic-template.html:215
+#: templates/layouts/generic-template.html:222
 msgid "Options"
 msgstr "אפשרויות"
 
