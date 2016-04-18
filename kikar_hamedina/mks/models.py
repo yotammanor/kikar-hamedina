@@ -362,8 +362,7 @@ class Member(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('member-detail-with-slug',
-                [str(self.id), self.name_with_dashes()])
+        return ('member', [self.id]);
 
     def NameWithLink(self):
         return '<a href="%s">%s</a>' % (self.get_absolute_url(), self.name)

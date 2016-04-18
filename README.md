@@ -122,6 +122,13 @@ These commands can be used to manage the django server (these are standard Upsta
 
 * `sudo status kikar`
 
+
+### Troubleshooting ###
+1. Windows only - Make sure you have ssh installed, and can run ssh through CMD, a good way to do that is using git	testing: https://help.github.com/articles/testing-your-ssh-connection/
+	If not, OpenSSH :)
+2. Make sure CPU supports virtualization - google "Enable Virtualization Technology"
+3. Vagrant GUI is pretty helpful with troubleshooting, todo so uncomment the gui proerty from the VagrantFile
+
 # Other Stuff #
 ####Editing data_fixture####
 
