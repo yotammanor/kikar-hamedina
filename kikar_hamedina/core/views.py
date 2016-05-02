@@ -171,7 +171,7 @@ class SearchView(StatusListView):
     def get_queryset(self):
         params_dict = get_parsed_request(get_params=self.request.GET)
         query_Q = parse_to_q_object(self.request.GET, params_dict)
-        print 'get_queryset_executed:', query_Q
+        # print 'get_queryset_executed:', query_Q
 
         return apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
 
@@ -607,12 +607,12 @@ def search_bar(request):
 
 
 def search_bar_parties(search_text):
-    query_direct_name = Q(name__contains=search_text)
+    query_direct_name = Q(name__icontains=search_text)
 
     if IS_ELECTIONS_MODE:
-        query_alternative_names = Q(candidatelistaltname__name__contains=search_text)
+        query_alternative_names = Q(candidatelistaltname__name__icontains=search_text)
     else:
-        query_alternative_names = Q(partyaltname__name__contains=search_text)
+        query_alternative_names = Q(partyaltname__name__icontains=search_text)
 
     combined_party_name_query = query_direct_name | query_alternative_names
 
@@ -627,15 +627,15 @@ def search_bar_parties(search_text):
 
 def search_bar_members(search_text):
     # Members
-    query_direct_name = Q(name__contains=search_text)
+    query_direct_name = Q(name__icontains=search_text)
 
     if IS_ELECTIONS_MODE:
-        query_alternative_names = Q(person__personaltname__name__contains=search_text)
-        combined_member_name_query = Q(person__name__contains=search_text) | query_alternative_names
+        query_alternative_names = Q(person__personaltname__name__icontains=search_text)
+        combined_member_name_query = Q(person__name__icontains=search_text) | query_alternative_names
         member_query = combined_member_name_query
         member_order_by = 'person__name'
     else:
-        query_alternative_names = Q(memberaltname__name__contains=search_text)
+        query_alternative_names = Q(memberaltname__name__icontains=search_text)
         combined_member_name_query = query_direct_name | query_alternative_names
         member_query = combined_member_name_query & Q(is_current=True)
         member_order_by = 'name'
@@ -645,7 +645,7 @@ def search_bar_members(search_text):
 
 
 def search_bar_tags(search_text):
-    query_direct_name = Q(name__contains=search_text)
+    query_direct_name = Q(name__icontains=search_text)
     query_tag_synonyms = Q(synonyms__tag__name=search_text)
     combined_tag_name_query = query_direct_name | query_tag_synonyms
 

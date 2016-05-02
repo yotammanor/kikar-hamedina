@@ -1,4 +1,4 @@
-#encoding: utf-8
+# encoding: utf-8
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.db import models
@@ -50,7 +50,6 @@ class CoalitionMembership(models.Model):
 
 
 class Knesset(models.Model):
-
     number = models.IntegerField(_('Knesset number'), primary_key=True)
     start_date = models.DateField(_('Start date'), blank=True, null=True)
     end_date = models.DateField(_('End date'), blank=True, null=True)
@@ -117,6 +116,10 @@ class Party(models.Model):
         else:
             return self.all_members.order_by('current_position')
 
+    @property
+    def current_members_with_active_public_facebook_persona(self):
+        return self.current_members().filter(persona__isnull=False, persona__feeds__feed_type='PP')
+
     def past_members(self):
         return self.members.filter(is_current=False)
 
@@ -128,10 +131,12 @@ class Party(models.Model):
 
     def NameWithLink(self):
         return '<a href="%s">%s</a>' % (self.get_absolute_url(), self.name)
+
     NameWithLink.allow_tags = True
 
     def MembersString(self):
         return ", ".join([m.NameWithLink() for m in self.members.all().order_by('name')])
+
     MembersString.allow_tags = True
 
     def member_list(self):
@@ -142,8 +147,8 @@ class Party(models.Model):
         date"""
         memberships = CoalitionMembership.objects.filter(party=self)
         for membership in memberships:
-            if (not membership.start_date or membership.start_date <= date) and\
-               (not membership.end_date or membership.end_date >= date):
+            if (not membership.start_date or membership.start_date <= date) and \
+                    (not membership.end_date or membership.end_date >= date):
                 return True
         return False
 
@@ -198,8 +203,10 @@ class Member(models.Model):
     year_of_aliyah = models.IntegerField(blank=True, null=True)
     is_current = models.BooleanField(default=True, db_index=True)
     # blog = models.OneToOneField(Blog, blank=True, null=True)
-    place_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('an accurate place of residence (for example, an address'))
-    area_of_residence = models.CharField(blank=True, null=True, max_length=100, help_text=_('a general area of residence (for example, "the negev"'))
+    place_of_residence = models.CharField(blank=True, null=True, max_length=100,
+                                          help_text=_('an accurate place of residence (for example, an address'))
+    area_of_residence = models.CharField(blank=True, null=True, max_length=100,
+                                         help_text=_('a general area of residence (for example, "the negev"'))
     place_of_residence_lat = models.CharField(
         blank=True, null=True, max_length=16)
     place_of_residence_lon = models.CharField(
@@ -229,12 +236,16 @@ class Member(models.Model):
     objects = BetterManager()
     current_knesset = CurrentKnessetMembersManager()
 
-    #added by kikar-hamedina
+    # added by kikar-hamedina
     persona = generic.GenericRelation(Facebook_Persona)
 
     @property
     def facebook_persona(self):
         return self.persona.select_related().first()
+
+    @property
+    def has_facebook_persona(self):
+        return self.persona.exists()
 
     class Meta:
         ordering = ['name']
@@ -258,13 +269,16 @@ class Member(models.Model):
         return self.name
 
     def name_with_dashes(self):
-        return self.name.replace(' - ', ' ').replace("'", "").replace(u"”", '').replace("`", "").replace("(", "").replace(")", "").replace(u'\xa0', ' ').replace(' ', '-')
+        return self.name.replace(' - ', ' ').replace("'", "").replace(u"”", '').replace("`", "").replace("(",
+                                                                                                         "").replace(
+            ")", "").replace(u'\xa0', ' ').replace(' ', '-')
 
     def Party(self):
         return self.parties.all().order_by('-membership__start_date')[0]
 
     def PartiesString(self):
         return ", ".join([p.NameWithLink() for p in self.parties.all().order_by('membership__start_date')])
+
     PartiesString.allow_tags = True
 
     def party_at(self, date):
@@ -272,8 +286,8 @@ class Member(models.Model):
         """
         memberships = Membership.objects.filter(member=self)
         for membership in memberships:
-            if (not membership.start_date or membership.start_date <= date) and\
-               (not membership.end_date or membership.end_date >= date):
+            if (not membership.start_date or membership.start_date <= date) and \
+                    (not membership.end_date or membership.end_date >= date):
                 return membership.party
         return None
 
@@ -362,11 +376,11 @@ class Member(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('member-detail-with-slug',
-                [str(self.id), self.name_with_dashes()])
+        return ('member', [self.id]);
 
     def NameWithLink(self):
         return '<a href="%s">%s</a>' % (self.get_absolute_url(), self.name)
+
     NameWithLink.allow_tags = True
 
     @property
@@ -484,7 +498,8 @@ class Member(models.Model):
 
 class WeeklyPresence(models.Model):
     member = models.ForeignKey('Member')
-    date = models.DateField(blank=True, null=True)  # contains the date of the begining of the relevant week (actually monday)
+    date = models.DateField(blank=True,
+                            null=True)  # contains the date of the begining of the relevant week (actually monday)
     hours = models.FloatField(
         blank=True)  # number of hours this member was present during this week
 
@@ -494,6 +509,7 @@ class WeeklyPresence(models.Model):
     def save(self, **kwargs):
         super(WeeklyPresence, self).save(**kwargs)
         self.member.recalc_average_weekly_presence_hours()
+
 
 # force signal connections
 from listeners import *

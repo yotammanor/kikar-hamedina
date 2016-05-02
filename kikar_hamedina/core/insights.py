@@ -18,6 +18,7 @@ from facebook_feeds.models import Facebook_Status
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
 from django.utils import timezone
+from django.conf import settings
 
 from api import MemberResource, PartyResource, Facebook_StatusResource
 
@@ -223,15 +224,17 @@ class Stats(object):
     (for ordered accesses).
     """
     def __init__(self):
-        print timezone.now(), "Reading stats data..."
+        if settings.DEBUG:
+            print timezone.now(), "Reading stats data..."
         self.engine = StatsEngine()
-
-        print timezone.now(), "Calculating stats..."
+        if settings.DEBUG:
+            print timezone.now(), "Calculating stats..."
         self.member_list = [MemberStats(member, self.engine) for member in MEMBER_MODEL.objects.all()]
         self.member_dict = dict((m.member.id, m) for m in self.member_list)
         self.party_list = [PartyStats(member, self.engine) for member in PARTY_MODEL.current_knesset.all()]
         self.party_dict = dict((p.party.id, p) for p in self.party_list)
-        print timezone.now(), "Done loading stats"
+        if settings.DEBUG:
+            print timezone.now(), "Done loading stats"
 
     def get_member_stats(self, member_id):
         return self.member_dict.get(member_id)

@@ -60,9 +60,10 @@
             {% if time_since_updated >= 3 %}
                 <div class="alert alert-danger" role="alert">
                     <strong>{% blocktrans %}Last update at{% endblocktrans %}
-                        {{ feed.locally_updated  }}.</strong>
+                        {{ feed.locally_updated }}.</strong>
                     {% blocktrans %} This is probably a problem, and we'd love to{% endblocktrans %}
-                    <a href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - דיווח על תקלה">{% blocktrans %}hear about it!{% endblocktrans %}</a>
+                    <a href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - דיווח על תקלה">{% blocktrans %}hear about
+                        it!{% endblocktrans %}</a>
                 </div>
             {% else %}
                 <p>{% blocktrans %}Last update at{% endblocktrans %}: {{ feed.locally_updated }}</p>
@@ -72,19 +73,30 @@
 {% endblock %}
 
 {% block noposts %}
-    {% if not object.facebook_persona %}
+    {% if object.facebook_persona and object.facebook_persona.get_main_feed.feed_type == 'UP' %}
+        <p>{% trans "Due to technical limitations, we can't collect data on private Facebook Users." %}</p>
+        <p>{% trans "You can check it out on " %}<a
+                href="http://wwww.facebook.com/{{ object.facebook_persona.get_main_feed.vendor_id }}"
+                target="_blank">{% trans 'Facebook' %}</a>.
+        </p>
+        <p>
+            {% trans 'Does MK ' %}{{ object.name }} {% trans 'has a Public Facebook Page' %}? <a
+                href="mailto:yotammanor@gmail.com?subject='כיכר המדינה - דף פייסבוק חסר לחבר/ת כנסת'"
+                target="_blank">{% trans 'Tell us' %}</a> {% trans 'please' %}!
+        </p>
+        {% elif not object.facebook_persona %}
         <p>{% trans 'Facebook Page not found for MK' %} {{ object.name }}.
             {% if object.email %}
                 {% trans 'You can' %}<a href="mailto:{{ object.email }}" target="_blank">
                 {% trans 'send' %}{% if object.is_female %}{% trans 'her' %}{% else %}
-                    {% trans 'him' %}{% endif %}{% trans 'an email' %}
-            </a>.
+                    {% trans 'him' %}{% endif %} {% trans 'an email' %}</a>.
             {% endif %}
         </p>
         <p>
-        {% trans 'Does MK ' %}{{ object.name }}{% trans 'has a Facebook Page' %}? <a
-            href="mailto:yotammanor@gmail.com?subject='כיכר המדינה - דף פייסבוק חסר לחבר/ת כנסת'"
-            target="_blank">{% trans 'Tell us' %}!</a>!
+            {% trans 'Does MK ' %}{{ object.name }} {% trans 'has a Facebook Page' %}? <a
+                href="mailto:yotammanor@gmail.com?subject='כיכר המדינה - דף פייסבוק חסר לחבר/ת כנסת'"
+                target="_blank">{% trans 'Tell us' %}</a> {% trans 'please' %}!
+        </p>
     {% endif %}
 {% endblock %}
 
