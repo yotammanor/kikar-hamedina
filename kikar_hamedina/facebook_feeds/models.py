@@ -307,7 +307,7 @@ class Facebook_Status(models.Model):
             return False
 
     @property
-    def set_is_comment(self):
+    def resolve_is_comment(self):
         """
         A Method for deciding whether a status is a comment or not, according to the method's logic.
         Returns True or False.
