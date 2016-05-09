@@ -17,7 +17,7 @@ class Command(BaseCommand):
 
     def update_single_status(self, status):
 
-        value_of_is_comment = status.set_is_comment
+        value_of_is_comment = status.resolve_is_comment
         print 'setting value to', value_of_is_comment
         status.is_comment = value_of_is_comment
         status.save(update_fields=['is_comment'])
