@@ -8,6 +8,7 @@
     <div style="display: inline-block">
         <div class="status-content-rss">
             <img src="{{ obj.feed.picture_square }}" style="float: right; width: 50px; padding-left: 5px">
+            <p>{{ obj.feed.persona.content_object.current_party.name }}</p>
             {% autoescape off %}
             {{ obj.content | urlize | append_separators  | linebreaks |truncatewords_html:80}}
             {% endautoescape %}

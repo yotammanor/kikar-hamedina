@@ -54,7 +54,8 @@ class LatestStatusesRSSFeed(Feed):
             '-published')
 
     def item_title(self, item):
-        return u'סטאטוס מאת ח"כ %s, %s' % (item.feed.persona.owner.name, item.feed.persona.owner.current_party.name)
+        return u'סטאטוס פייסבוק מאת ח"כ %s, %s' % (
+            item.feed.persona.owner.name, item.feed.persona.owner.current_party.name)
 
     def item_extra_kwargs(self, item):
         return {'content_encoded': self.item_content_encoded(item)}
@@ -76,27 +77,56 @@ class LatestStatusesRSSFeed(Feed):
         return "<b> here" + content + "</b>"
 
 
+class MemberRSSFeed(Feed):
+    description_template = 'rss/default_status_description.html'
+
+    def get_object(self, request, member_id):
+        return get_object_or_404(MEMBER_MODEL, pk=member_id)
+
+    def title(self, obj):
+        return u'כיכר המדינה - עדכוני ח"כ - %s' % obj.name
+
+    def link(self, obj):
+        return reverse('member', args=[obj.id])
+
+    def description(self, obj):
+        return u"עדכוני פייסבוק של חבר/ת הכנסת: %s" % obj.name
+
+    def item_link(self, item):
+        return reverse('status-detail', args=[item.status_id])
+
+    def item_title(self, item):
+        return u'סטאטוס מתאריך: %s' % item.published.strftime('%Y-%m-%d')
+
+    def items(self, obj):
+        return Facebook_Status.objects.filter(
+            feed__persona__object_id=obj.id).order_by(
+            '-published')[:MAX_STATUSES_IN_RSS_FEED]
+
 class PartyRSSFeed(Feed):
-    description_template = 'rss/party_description.html'
+    description_template = 'rss/default_status_description.html'
 
     def get_object(self, request, party_id):
         return get_object_or_404(PARTY_MODEL, pk=party_id)
 
     def title(self, obj):
-        return u"כיכר המדינה - עדכוני רשימה - %s" % obj.name
+        return u"כיכר המדינה - עדכוני מפלגה - %s" % obj.name
 
     def link(self, obj):
         return reverse('party', args=[obj.id])
 
     def description(self, obj):
-        return u"עדכוני פייסבוק של כל המועמדים ברשימה: %s" % obj.name
+        return u"עדכוני פייסבוק של כל חברות וחברי הכנסת במפלגה: %s" % obj.name
 
     def item_link(self, item):
         return reverse('status-detail', args=[item.status_id])
 
+    def item_title(self, item):
+        return u'סטאטוס מאת הח"כ %s' % item.feed.persona.owner.name
+
     def items(self, obj):
         return Facebook_Status.objects.filter(
-            feed__persona__alt_object_id__in=[x.id for x in MEMBER_MODEL.objects.filter(current_party=obj)]).order_by(
+            feed__persona__object_id__in=[x.id for x in MEMBER_MODEL.objects.filter(current_party=obj)]).order_by(
             '-published')[:MAX_STATUSES_IN_RSS_FEED]
 
 
@@ -156,7 +186,8 @@ class CustomQueryRSSFeed(Feed):
         return u"{}".format(obj.description)
 
     def item_title(self, item):
-        return u"סטאטוס מאת %s" % item.feed.persona.owner.name
+        return u'סטאטוס מאת ח"כ %s, %s' % (
+            item.feed.persona.owner.name, item.feed.persona.owner.current_party.name)
 
     #
     # def item_link(self, item):
