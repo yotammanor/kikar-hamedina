@@ -15,7 +15,7 @@ from api import MemberResource, PartyResource, KnessetResource, Facebook_StatusR
     Facebook_Status_CommentResource, Facebook_FeedResource, TagResource, CommentTagResource
 from insights import StatsMemberResource, StatsPartyResource
 from core.models import MEMBER_MODEL, PARTY_MODEL
-from core.rss_feeds import LatestStatusesRSSFeed, PartyRSSFeed, KeywordsByUserRSSFeed, CustomQueryRSSFeed
+from core.rss_feeds import LatestStatusesRSSFeed, PartyRSSFeed, MemberRSSFeed, KeywordsByUserRSSFeed, CustomQueryRSSFeed
 from django.contrib.sitemaps.views import sitemap
 
 v1_api = Api(api_name='v1')
@@ -32,7 +32,7 @@ v1_api.register(StatsMemberResource())
 v1_api.register(StatsPartyResource())
 
 sitemaps = {
-    'mk':MkSitemap,
+    'mk': MkSitemap,
     'party': PartySitemap,
     'static': StaticViewSitemap
 }
@@ -84,7 +84,7 @@ urlpatterns = patterns('',
                            queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-members'),
                        url(r'^parties/$', views.AllParties.as_view(
-                               queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
+                           queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-parties'),
                        url(r'^tags/$', views.AllTags.as_view(queryset=Tag.objects.all()),
                            name='all-tags'),
@@ -98,15 +98,16 @@ urlpatterns = patterns('',
                        # unused Views for statuses
                        url(r'^status-comments/$', views.OnlyCommentsView.as_view(), name='status-comments'),
                        url(r'^untagged/$', views.AllStatusesView.as_view(
-                               queryset=Facebook_Status.objects.filter(tags=None,
-                                                                       feed__persona__object_id__isnull=False).order_by(
-                                       '-published')),
+                           queryset=Facebook_Status.objects.filter(tags=None,
+                                                                   feed__persona__object_id__isnull=False).order_by(
+                               '-published')),
                            kwargs={'context_object': 'untagged'},
                            name='untagged'),
                        url(r'^review-tags/$', views.ReviewTagsView.as_view(), name='review-tags'),
                        # rss feeds
                        url(r'^latest/feed/$', LatestStatusesRSSFeed(), name='rss-feed-latest'),
                        url(r'^party/(?P<party_id>\d+)/rss/$', PartyRSSFeed()),
+                       url(r'^member/(?P<member_id>\d+)/rss/$', MemberRSSFeed()),
                        url(r'^user/(?P<user_id>\d+)/rss/$', KeywordsByUserRSSFeed()),
                        url(r'^custom/(?P<title>[\w\d\.\s-]+)/rss/$', CustomQueryRSSFeed(), name='custom-query-rss'),
                        url(r'^custom/(?P<title>[\w\d\.\s-]+)/rss/widget/$', views.CustomWidgetView.as_view(),
