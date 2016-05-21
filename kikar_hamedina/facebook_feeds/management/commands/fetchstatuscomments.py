@@ -27,7 +27,7 @@ DELETED_STATUS_ERROR_CODE = 100
 
 class Command(BaseCommand):
     args = '<status_id>'
-    help = 'Updates a single status'
+    help = 'Gets all comments for a given status'
     option_list = BaseCommand.option_list + (
         make_option('-f',
                     '--force-update',
