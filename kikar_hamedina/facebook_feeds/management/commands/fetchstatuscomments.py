@@ -16,7 +16,7 @@ from facebook_feeds.models import Facebook_Status, User_Token, Facebook_Status_A
     Facebook_User, Facebook_Status_Comment_Attachment
 
 FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.5')
-NUMBER_OF_TRIES_FOR_REQUEST = 3
+NUMBER_OF_TRIES_FOR_REQUEST = getattr(settings, 'NUMBER_OF_TRIES_FOR_REQUEST', 2)
 LENGTH_OF_EMPTY_ATTACHMENT_JSON = 21
 DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN = 100
 SLEEP_TIME = 3

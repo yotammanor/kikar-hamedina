@@ -16,7 +16,7 @@ from facebook_feeds.models import Facebook_Status, User_Token, Facebook_Status_A
 
 
 FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.1')
-NUMBER_OF_TRIES_FOR_REQUEST = 3
+NUMBER_OF_TRIES_FOR_REQUEST = getattr(settings, 'NUMBER_OF_TRIES_FOR_REQUEST', 2)
 LENGTH_OF_EMPTY_ATTACHMENT_JSON = 21
 
 # The error code from fb API for a deleted status.
