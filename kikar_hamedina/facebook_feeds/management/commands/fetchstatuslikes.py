@@ -4,7 +4,6 @@ import urllib
 from time import sleep
 import dateutil
 import logging
-import urllib2
 from optparse import make_option
 from collections import defaultdict
 from django.conf import settings
@@ -69,57 +68,51 @@ class Command(BaseCommand):
         """
         Receives a Facebook status ID
         Returns a dictionary with status properties, an empty dict on error or None if status believed to be deleted.
-        :param limit:
+        :param limit: num of elements (status likes) per response
+        :param status_id: likes for this status
+
         """
         api_version = 'v2.6'
-        print api_version
         likes_number = limit
-        api_request_path = "{0}/reactions/".format(status_id)
+        api_request_path = "{0}/{1}/reactions/".format(api_version, status_id)
         args_for_request = {'limit': likes_number,
                             'fields': "id,username,link,name,type,profile_type",
                             }
 
         try_number = 1
-        print args_for_request
         while try_number <= NUMBER_OF_TRIES_FOR_REQUEST:
             num_of_pages = 1
-            print 'page num: {}'.format(num_of_pages)
+            print('page num: {}'.format(num_of_pages))
 
             try:
-                args_for_request['access_token'] = self.graph.access_token
-                full_path = 'https://graph.facebook.com/' + api_version + '/' + api_request_path + '?' + urllib.urlencode(
-                    args_for_request)
-                print full_path
-                response = urllib2.urlopen(full_path)
-                return_statuses = json.loads(response.read())
-                # return_statuses = self.graph.request(path=api_request_path, args=args_for_request)
+                return_statuses = self.graph.request(path=api_request_path, args=args_for_request)
             except Exception as e:
                 warning_msg = "Failed an attempt for status #({0}) from FB API.".format(status_id)
-                print e
+                print(e)
                 logger = logging.getLogger('django')
                 logger.warning(warning_msg)
                 try_number += 1
                 continue
             if not ('paging' in return_statuses and 'next' in return_statuses['paging']):
-                print 'only one page, returning'
+                print('only one page, returning')
                 return return_statuses
 
-            print 'More than one page, trying to use paging'
+            print('More than one page, trying to use paging')
             list_of_statuses = []
             list_of_statuses += return_statuses['data']
             args_for_request['after'] = return_statuses['paging']['cursors']['after']
             next_page = True
             while try_number <= NUMBER_OF_TRIES_FOR_REQUEST and next_page:
                 num_of_pages += 1
-                print 'page num: {}'.format(num_of_pages)
+                print('page num: {}'.format(num_of_pages))
                 try:
-                    print args_for_request['after']
+                    print(args_for_request['after'])
                     return_statuses = self.graph.request(path=api_request_path, args=args_for_request)
                 except Exception:
                     warning_msg = "Failed an attempt for status #({0}) from FB API.".format(status_id)
                     logger = logging.getLogger('django')
                     logger.warning(warning_msg)
-                    print 'try_number:', try_number
+                    print('try_number:', try_number)
                     try_number += 1
                     continue
                 list_of_statuses += return_statuses['data']
@@ -129,7 +122,7 @@ class Command(BaseCommand):
                     next_page = False
 
                 if not num_of_pages % 5:
-                    print 'sleeping for %d seconds.' % SLEEP_TIME
+                    print('sleeping for %d seconds.' % SLEEP_TIME)
                     sleep(SLEEP_TIME)
             return_statuses = {'data': list_of_statuses}
             return return_statuses
@@ -152,12 +145,12 @@ class Command(BaseCommand):
 
         facebook_user, created = Facebook_User.objects.get_or_create(facebook_id=like_from_id)
         if created:
-            print '\tCreate Liking User'
+            print('\tCreate Liking User')
             facebook_user.name = like_from_name
         facebook_user.type = like_defaultdict['profile_type']
         facebook_user.save()
 
-        print '\tCreate like_object'
+        print('\tCreate like_object')
 
         like_obj, created = Facebook_Like.objects.get_or_create(status=parent_status_object, user=facebook_user)
         like_obj.type = like_type
@@ -190,7 +183,7 @@ class Command(BaseCommand):
                                                                         settings.FACEBOOK_SECRET_KEY)
                 if status.feed.requires_user_token:
                     # If the Status's Feed is set to require a user-token, and none exist in our db, the feed is skipped.
-                    print 'feed %d requires user token, skipping.' % status.id
+                    print('feed %d requires user token, skipping.' % status.id)
                     is_skip = True
 
                     # Get the data using the pre-set token
@@ -199,14 +192,14 @@ class Command(BaseCommand):
             # Set facebook graph access token to user access token
             token = User_Token.objects.filter(feeds__id=status.id).order_by('-date_of_creation').first()
             if not token:
-                print 'No Token found for User Profile %s' % status
+                print('No Token found for User Profile %s' % status)
                 is_skip = True
             else:
-                print 'using token by user_id: %s' % token.user_id
+                print('using token by user_id: %s' % token.user_id)
                 self.graph.access_token = token.token
 
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
-            print 'Profile %s is of type %s, skipping.' % (status.id, status.feed_type)
+            print('Profile %s is of type %s, skipping.' % (status.id, status.feed_type))
             is_skip = True
 
         if not is_skip:
@@ -223,7 +216,7 @@ class Command(BaseCommand):
         """
 
         post_number_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN
-        print 'Variable post_number_limit set to: {0}.'.format(post_number_limit)
+        print('Variable post_number_limit set to: {0}.'.format(post_number_limit))
 
         list_of_statuses = list()
         # Case no args - fetch all statuses or by options
