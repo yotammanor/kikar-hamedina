@@ -468,7 +468,7 @@ class Facebook_Like(models.Model):
 
 class Facebook_Status_Comment(models.Model):
     comment_id = models.CharField(unique=True, max_length=128, primary_key=True)
-    parent = models.ForeignKey('Facebook_Status')
+    parent = models.ForeignKey('Facebook_Status', related_name='comments')
     comment_from = models.ForeignKey('Facebook_User', related_name='comments')
     content = models.TextField()
     like_count = models.PositiveIntegerField(default=0, blank=True)
