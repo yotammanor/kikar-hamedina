@@ -1,5 +1,6 @@
 import json
 import urllib
+from csv import DictReader
 
 from time import sleep
 import dateutil
@@ -60,6 +61,11 @@ class Command(BaseCommand):
                     dest='update-deleted',
                     default=False,
                     help="Update is_deleted flag: set to True/False for deleted/existing statuses"),
+        make_option('--file',
+                    action='store',
+                    dest='file_path',
+                    default=None,
+                    help="execute on list of status ids from file"),
     )
 
     graph = facebook.GraphAPI()
@@ -230,6 +236,11 @@ class Command(BaseCommand):
                 criteria['feed__id__in'] = options['feed-ids'].split(',')
             db_statuses = Facebook_Status.objects_no_filters.filter(**criteria).order_by('-published')
             list_of_statuses = list(db_statuses)
+
+            if options['file_path']:
+                with open(options['file_path'], 'r') as f:
+                    reader = DictReader(f)
+                    list_of_statuses = [x['status_id'] for x in reader]
 
         # Case arg exists - fetch status by id supplied
         elif len(args) == 1:
