@@ -17,6 +17,8 @@ from core.models import UserSearch
 from core.models import PARTY_MODEL, MEMBER_MODEL
 from core.params import MAX_STATUSES_IN_RSS_FEED
 
+DEFAULT_DAYS_BACK_RSS = 30
+
 
 class ExtendedRSSFeed(Rss201rev2Feed):
     """
@@ -104,7 +106,8 @@ class MemberRSSFeed(KikarRSSFeedBase):
 
     def items(self, obj):
         return Facebook_Status.objects.filter(
-            feed__persona__object_id=obj.id).order_by(
+            feed__persona__object_id=obj.id).filter(
+            published__gte=timezone.now() - timezone.timedelta(days=DEFAULT_DAYS_BACK_RSS)).order_by(
             '-published')[:MAX_STATUSES_IN_RSS_FEED]
 
 
@@ -126,12 +129,12 @@ class PartyRSSFeed(KikarRSSFeedBase):
 
     def items(self, obj):
         return Facebook_Status.objects.filter(
-            feed__persona__object_id__in=[x.id for x in MEMBER_MODEL.objects.filter(current_party=obj)]).order_by(
+            feed__persona__object_id__in=[x.id for x in MEMBER_MODEL.objects.filter(current_party=obj)]).filter(
+            published__gte=timezone.now() - timezone.timedelta(days=DEFAULT_DAYS_BACK_RSS)).order_by(
             '-published')[:MAX_STATUSES_IN_RSS_FEED]
 
 
 class KeywordsByUserRSSFeed(KikarRSSFeedBase):
-
     def get_object(self, request, user_id):
         return get_object_or_404(User, pk=user_id)
 
