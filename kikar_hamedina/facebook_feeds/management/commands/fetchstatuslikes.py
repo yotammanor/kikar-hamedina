@@ -245,7 +245,8 @@ class Command(BaseCommand):
             if options['file_path']:
                 with open(options['file_path'], 'r') as f:
                     reader = DictReader(f)
-                    list_of_statuses = [x['status_id'] for x in reader]
+                    list_of_status_ids = [x['status_id'] for x in reader]
+                    list_of_statuses = Facebook_Status.objects.filter(status_id__in=list_of_status_ids)
 
         # Case arg exists - fetch status by id supplied
         elif len(args) == 1:
