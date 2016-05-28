@@ -66,6 +66,11 @@ class Command(BaseCommand):
                     dest='file_path',
                     default=None,
                     help="execute on list of status ids from file"),
+        make_option('--skip',
+                    action='store_true',
+                    dest='skip',
+                    default=False,
+                    help="skip statuses that has data for them"),
     )
 
     graph = facebook.GraphAPI()
@@ -263,6 +268,10 @@ class Command(BaseCommand):
 
         # Iterate over list_of_statuses
         for i, status in enumerate(list_of_statuses):
+            if status.comments.exists():
+                self.stdout.write(
+                    'Skipping status {0} of {1}: {2}.'.format(i + 1, len(list_of_statuses), status.status_id))
+                continue
             self.stdout.write(
                 'Working on status {0} of {1}: {2}.'.format(i + 1, len(list_of_statuses), status.status_id))
             likes_data = self.fetch_likes_data(status=status, limit=post_number_limit)
