@@ -265,11 +265,11 @@ class Command(BaseCommand):
         else:
             raise CommandError('Please enter a valid status id')
 
-        self.stdout.write('Starting to update {0} statuses'.format(len(list_of_statuses)))
+        self.stdout.write('Starting to update likes for {0} statuses'.format(len(list_of_statuses)))
 
         # Iterate over list_of_statuses
         for i, status in enumerate(list_of_statuses):
-            if status.comments.exists():
+            if options['skip'] and status.likes.exists():
                 self.stdout.write(
                     'Skipping status {0} of {1}: {2}.'.format(i + 1, len(list_of_statuses), status.status_id))
                 continue
