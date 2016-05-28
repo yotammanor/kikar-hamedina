@@ -172,6 +172,7 @@ class Command(BaseCommand):
             data_dict['data']['likes'] = 0
             data_dict['data']['talking_about_count'] = 0
             data_dict['data']['about'] = None
+            return data_dict
 
         elif feed.feed_type == 'PP':  # 'PP - Public Page'
             try:
