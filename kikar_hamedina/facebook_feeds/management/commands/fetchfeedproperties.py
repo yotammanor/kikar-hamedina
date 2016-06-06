@@ -172,6 +172,7 @@ class Command(BaseCommand):
             data_dict['data']['likes'] = 0
             data_dict['data']['talking_about_count'] = 0
             data_dict['data']['about'] = None
+            return data_dict
 
         elif feed.feed_type == 'PP':  # 'PP - Public Page'
             try:
@@ -203,7 +204,7 @@ class Command(BaseCommand):
             self.fetch_data_by_feed_id(feed.vendor_id,
                                        "id,name,username,picture.type(square).fields(url),about,birthday,website,link,likes,talking_about_count",
                                        is_insist)}
-
+        #todo: in V2.6 likes changes to fan_count, and likes becomes an edge of liked pages.
         return data_dict
 
     def handle(self, *args, **options):

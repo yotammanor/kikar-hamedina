@@ -783,7 +783,6 @@ class CustomView(SearchView):
     def get_queryset(self, **kwargs):
         sv = get_object_or_404(UserSearch, title=self.kwargs['title'])
         query_filter = sv.queryset_q
-        print query_filter
         if self.request.GET.get('range', None) or self.request.GET.get('range', None) != 'default':
             date_range_q = filter_by_date(self.request)
         else:
@@ -793,7 +792,6 @@ class CustomView(SearchView):
             order_by = get_order_by(self.request)
         else:
             order_by = json.loads(sv.order_by)
-
         return Facebook_Status.objects.filter(query_filter).filter(date_range_q).order_by(*order_by)
 
     def get_context_data(self, **kwargs):

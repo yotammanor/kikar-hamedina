@@ -14,12 +14,10 @@ from django.db.models.loading import get_model
 
 from mks.models import Knesset, Party, Member
 
-
 SOURCE_API_URL = getattr(settings, 'SOURCE_API_URL', 'http://oknesset.org/api')
 SOURCE_API_VERSION = getattr(settings, 'SOURCE_API_VERSION', 'v2')
 DEFAULT_SOURCE_ARGS = getattr(settings, 'DEFAULT_SOURCE_ARGS', {'format': 'json'})
 DATE_FORMAT_AT_SOURCE = getattr(settings, 'DATE_FORMAT_AT_SOURCE', '%Y-%m-%d')
-
 
 LIST_INDEX_START = 0
 SLEEP_TIME = 9
@@ -87,10 +85,10 @@ class Command(BaseCommand):
         input_value = ''
         if not is_yes_for_all:
             input_value = raw_input('Do you want to delete member: %s, %s? press Y for Yes, any other key for No.' % (
-            object_id, object_for_removal))
+                object_id, object_for_removal))
 
         if is_yes_for_all or input_value == 'Y':
-            print 'deleting member %s' % object_id
+            print('deleting member %s' % object_id)
             object_for_removal.delete()
 
     def inspect_list_of_all_objects(self, list_of_object_id, object_type, options):
@@ -106,14 +104,14 @@ class Command(BaseCommand):
 
         redundant_objects = set_of_local_objects - set_of_source_objects
         missing_objects = set_of_source_objects - set_of_local_objects
-        print 'redundant_objects:', redundant_objects
-        print 'missing_objects:', missing_objects
+        print('redundant_objects:', redundant_objects)
+        print('missing_objects:', missing_objects)
 
         if not options['noinput'] or is_yes_for_all:
             for object_id in redundant_objects:
                 self.remove_redundant_object(object_id, object_type, is_yes_for_all)
 
-        print 'exist in both:', set_of_local_objects & set_of_source_objects
+        print('exist in both:', set_of_local_objects & set_of_source_objects)
 
         if options['new_mks_only']:
             return list(missing_objects)
@@ -143,7 +141,7 @@ class Command(BaseCommand):
 
         local_member, created = Member.objects.get_or_create(id=member_id)
         if created:
-            print 'Yay, new mk was added!'
+            print('Yay, new mk was added!')
         # pprint.pprint(dir(local_member))
         local_member.name_he = member_from_source['name']
         local_member.current_position = member_from_source['current_position']
@@ -159,12 +157,12 @@ class Command(BaseCommand):
         local_member.place_of_birth = member_from_source['place_of_birth']
 
         party_id = member_from_source['party_url'].split('/')[2]  # splitting: u'/party/29/'
-        print 'party_id extracted:', party_id
+        print('party_id extracted:', party_id)
         try:
             party = Party.objects.get(id=party_id)
             party.members.add(local_member)
         except:
-            print 'missing party id in db'
+            print('missing party id in db')
             pass
 
         local_member.date_of_death = self.format_date(member_from_source['date_of_death'])
@@ -195,9 +193,9 @@ class Command(BaseCommand):
         # local_member.user = member_from_source['user']
         # local_member.backlinks_enabled = member_from_source['backlinks_enabled']
 
-        print ' Saving %s to db..' % member_id,
+        print(' Saving %s to db..' % member_id,)
         local_member.save()
-        print 'done.'
+        print('done.')
 
     def update_party_instance(self, party_id, options):
         party_from_source = self.get_request_from_source('party', party_id)
@@ -216,9 +214,9 @@ class Command(BaseCommand):
         # local_party.end_date = self.format_date(party_from_source['end_date'])
         # local_party.number_of_seats = party_from_source['number_or_seats']
 
-        print ' Saving %s to db..' % party_id,
+        print('Saving %s to db..' % party_id,)
         local_party.save()
-        print 'done.'
+        print('done.')
 
     def handle(self, *args, **options):
         """
@@ -228,13 +226,13 @@ class Command(BaseCommand):
         # update party data
 
         if options['party-mode']:
-            print "it's party time!"
+            print("it's party time!")
             list_of_parties = Party.current_knesset.all()
             list_of_party_ids = [party.id for party in list_of_parties]
             list_of_party_ids = self.inspect_list_of_all_objects(list_of_party_ids, 'party', options)
 
             for i, party_id in enumerate(list_of_party_ids):
-                print 'working on %d of %d: party: %s' % (i + 1, len(list_of_party_ids), party_id)
+                print('working on %d of %d: party: %s' % (i + 1, len(list_of_party_ids), party_id))
                 self.update_party_instance(party_id, options)
                 sleep(SLEEP_TIME)
 
@@ -271,13 +269,14 @@ class Command(BaseCommand):
             # if executed as update for all members, test for gaps between source and local.
             if test_for_all_members:
                 list_of_member_ids = self.inspect_list_of_all_objects(list_of_member_ids, 'member', options)
-                print list_of_member_ids
+                print(list_of_member_ids)
 
             # Iterate over list_of_members of direct update on selected members
             for i, member_id in enumerate(list_of_member_ids[LIST_INDEX_START:]):
-                print 'working on %d of %d: member: %s' % (i + LIST_INDEX_START + 1, len(list_of_member_ids[LIST_INDEX_START:]), member_id),
-                self.update_member_instance(member_id)
-                print 'sleep for %d secs' % SLEEP_TIME
+                print('working on %d of %d: member: %s' % (
+                    i + LIST_INDEX_START + 1, len(list_of_member_ids[LIST_INDEX_START:]), member_id),
+                      self.update_member_instance(member_id))
+                print('sleep for %d secs' % SLEEP_TIME)
                 sleep(SLEEP_TIME)
 
-        print 'Done.'
+        print('Done.')
