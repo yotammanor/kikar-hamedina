@@ -257,6 +257,9 @@ LOGGING = {
 
 TASTYPIE_DEFAULT_FORMATS = ['json']
 
+
+NUMBER_OF_TRIES_FOR_REQUEST = 2
+
 try:
     from .local_settings import *
 except ImportError:
