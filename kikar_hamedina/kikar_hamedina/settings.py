@@ -125,17 +125,8 @@ ROOT_URLCONF = 'kikar_hamedina.urls'
 
 WSGI_APPLICATION = 'kikar_hamedina.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'kikar',
-#         'USER': 'kikar',
-#         'PASSWORD': 'kikar',
-#         'HOST': 'localhost'
-#     }
-# }
+# schema://user:password@localhost:5432/db_name
 config = dj_database_url.config(default='postgres://kikar:kikar@localhost:5432/kikar')
-
 DATABASES = {'default': config}
 
 # Default language, that will be used for requests without language prefix
