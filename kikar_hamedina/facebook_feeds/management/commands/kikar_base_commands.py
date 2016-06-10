@@ -23,7 +23,6 @@ class KikarBaseCommand(BaseCommand):
 
 class KikarCommentCommand(KikarBaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument('comment_id', nargs='?', type=str)
         parser.add_argument('--file',
                             action='store',
                             dest='file_path',
