@@ -471,6 +471,7 @@ class Facebook_Status_Comment(models.Model):
     parent = models.ForeignKey('Facebook_Status', related_name='comments')
     comment_from = models.ForeignKey('Facebook_User', related_name='comments')
     content = models.TextField()
+    processed_content = models.TextField(null=True, blank=True)
     like_count = models.PositiveIntegerField(default=0, blank=True)
     comment_count = models.PositiveIntegerField(default=0, blank=True)
     published = models.DateTimeField()
