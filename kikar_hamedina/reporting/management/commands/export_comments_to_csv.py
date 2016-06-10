@@ -2,7 +2,7 @@
 from csv import DictWriter
 from facebook_feeds.management.commands.kikar_base_commands import KikarCommentCommand
 from mks.models import Member
-from reporting.utils import xlsx_to_dict_generator, normalize
+from reporting.utils import xlsx_to_dict_generator, normalize, EMOJI_DICT_UNICODE_TO_NAME
 import re
 from django.utils import timezone
 import datetime
@@ -11,35 +11,31 @@ TAB_NAME = 'Permutations'
 
 
 class Command(KikarCommentCommand):
+    def text_manipulation_emojis(self, text):
+        for emoji_code, emoji_name in EMOJI_DICT_UNICODE_TO_NAME.iteritems():
+            text = re.sub(emoji_code, emoji_name, text, flags=re.U)
+        return text
+
     def text_manipulation_mk_names(self, text, context_status, permutations_dict):
 
-        # Target
-        base_pattern = ur"""(?P<pre>
-                                (^|[\s\t\n\r]+)
-                                [\d\]\[\$\*\.\^\?\+=-@#%,;:\<\>/\'\[\]\(\){{}}\\]*
-                                [\u05e9\u05d1\u05dc\u05de\u05d5\u05d4]?
-                            )
-                           (?P<mk>{})
+        base_pattern = ur"""
 
-                           (?P<post>
-                                [\d\]\[\$\*\.\^\?\+=-@\#%,;:\<\>/\'\[\]\(\){{}}\\]*
-                                ($|[\s\t\n\r]+)
+                            (?P<pre>                                                 # part before mk name
+
+                                (^|[\s\t\n\r]+)                                      # either beginning or space
+                                [\d\]\[\$\*\.\^\?\+=-@#%!,;:\<\>/\'\[\]\(\){{}}\\]*  # allow for special chars
+                                [\u05e9\u05d1\u05dc\u05de\u05d5\u05d4]?              # leading letters in Hebrew
+                            )
+                           (?P<mk>{})                                                # mk name permutation formatted in
+
+                           (?P<post>                                                 # part after mk name
+
+                                (
+                                $|                                                   # either end of text
+                                [\s\t\n\r]+|                                         # or one or more space characters
+                                [\d\]\[\$\*\.\^\?\+=-@#%!,;:\<\>/\'\[\]\(\){{}}\\]+  # or one or more special characters
+                                )
                            )"""
-        # Test
-        # base_pattern = u'(?P<pre>(?P<space_beg>^|[\s\t\n\r]+)[\d\]\[\$\*\.\^\?\+=-@#%,;:\<\>/\'\[\]\(\){{}}\\]*[\u05e9\u05d1\u05dc\u05de\u05d5\u05d4]?)(?P<mk>{})(?P<post>[\d\]\[\$\*\.\^\?\+=-@%,;:\<\>/\'\[\]\(\){{}}\\]*(?P=space_beg)$'
-        # Source
-        # base_pattern = ur"""(?P<pre>                                                     # part before mk name
-        #                         (^|[\s\t\n\r]+)                                         # either begining or space
-        #                         [\d\]\[\$\*\.\^\?\+=-@#%!,;:\<\>/\'\[\]\(\){{}}\\]*      # allow for special chars
-        #                         [\u05e9\u05d1\u05dc\u05de\u05d5\u05d4]?                 # leading letters in hebrew
-        #                     )
-        #                    (?P<mk>{})                                                   # mk name is formatted in
-        #
-        #                    (?P<post>                                                    # part after mk name
-        #                         [\d\]\[\$\*\.\^\?\+=-@#%!,;:\<\>/\'\[\]\(\){{}}\\]*      # allow for special chars
-        #                         ($|[\s\t\n\r]+)                                     # require space
-        #                                                                          # end wild (this is maintained)
-        #                    )"""
         base_replace_pattern = '\g<pre>{}\g<post>'
 
         # get permutations for context_status.mk.id
@@ -84,6 +80,7 @@ class Command(KikarCommentCommand):
 
         return text
 
+
     def handle(self, *args, **options):
         print('Start.')
 
@@ -116,6 +113,7 @@ class Command(KikarCommentCommand):
         for i, comment in enumerate(comments):
             processed_text = self.text_manipulation_mk_names(comment.content, context_status=comment.parent,
                                                              permutations_dict=permutations_dict)
+            processed_text = self.text_manipulation_emojis(text=processed_text)
             print('writing comment {} of {}'.format(i + 1, comments.count()))
             dict_row = {
                 'comment_id': comment.comment_id,
