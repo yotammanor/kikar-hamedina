@@ -73,12 +73,18 @@ class KikarStatusCommand(KikarBaseCommand):
                             type=str,
                             dest='feed-ids',
                             default=None,
-                            help='Specify particular feed ids you want to update likes for with list of ids (e.g. 51, 54)'),
+                            help='Specify feed ids you want the command to work on, as a list of ids (e.g. 51, 54)'),
+        parser.add_argument('--mk-ids',
+                            action='store',
+                            type=str,
+                            dest='mk-ids',
+                            default=None,
+                            help='Specify mk ids you want the command to work on, as a list of ids (e.g. 51, 54)'),
         parser.add_argument('--update-deleted',
                             action='store_true',
                             dest='update-deleted',
                             default=False,
-                            help="Update is_deleted flag: set to True/False for deleted/existing statuses"),
+                            help="set the value of is_deleted=True if status is not found in fb request"),
         parser.add_argument('--file',
                             action='store',
                             dest='file_path',
@@ -101,6 +107,8 @@ class KikarStatusCommand(KikarBaseCommand):
                 criteria['published__lt'] = dateutil.parser.parse(options['to-date'])
             if options['feed-ids']:
                 criteria['feed__id__in'] = options['feed-ids'].split(',')
+            if options['mk-ids']:
+                criteria['feed__persona__object_id__in'] = options['mk-ids'].split(',')
             db_statuses = Facebook_Status.objects_no_filters.filter(**criteria).order_by('-published')
             list_of_statuses = list(db_statuses)
 
