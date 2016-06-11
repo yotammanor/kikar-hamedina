@@ -101,22 +101,9 @@ class TextProcessor(object):
             full_patterns_dict[mk_id]['patterns_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm in
                                                           current_perms]
             # Non-self patterns:
-            current_perms = []
-            # get permutations for all but context_status.mk.id
-            relevant_ids = [x for x in self.permutations_dict.keys() if not x == mk_id]
-            #  build list of permutations - base_name, non_writer, roles
-            for mk_id_other in relevant_ids:
-                current_perms.append(self.permutations_dict[mk_id_other]['base_name'])
-                current_perms += self.permutations_dict[mk_id_other]['names_as_non_writer']
-                current_perms += self.permutations_dict[mk_id_other]['roles_19th_knesset']
-                current_perms += self.permutations_dict[mk_id_other]['roles_20th_knesset']
-                # if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
-                #     current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
-                # else:
-                #     current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
+            current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
             current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
             full_patterns_dict[mk_id]['current_perms_non_self'] = current_perms
-            # each permutation found, replace with MK_NON_WRITER_NAME
             full_patterns_dict[mk_id]['patterns_non_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm
                                                               in
                                                               current_perms]
@@ -152,7 +139,7 @@ class TextProcessor(object):
                           flags=re.U | re.X | re.I)
 
         # # get permutations for all but context_status.mk.id
-        # relevant_ids = [x for x in self.permutations_dict.keys() if not x == context_status.feed.persona.object_id]
+        relevant_ids = [x for x in self.permutations_dict.keys() if not x == context_status.feed.persona.object_id]
         # #  build list of permutations - base_name, non_writer, roles
         # current_perms = []
         # for mk_id in relevant_ids:
@@ -166,10 +153,12 @@ class TextProcessor(object):
         # # each permutation found, replace with MK_NON_WRITER_NAME
         # patterns = [self.BASE_PATTERN.format(unicode(perm).replace(' ', '\s')) for perm in current_perms]
         # each permutation found, replace with MK_WRITER_NAME
-        for pattern in self.full_patterns_dict[mk_id]['patterns_non_self']:
-            # text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text, re.UNICODE)
-            text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text,
-                          flags=re.U | re.X | re.I)
+
+        for mk_id in relevant_ids:
+            for pattern in self.full_patterns_dict[mk_id]['patterns_non_self']:
+                # text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text, re.UNICODE)
+                text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text,
+                              flags=re.U | re.X | re.I)
         return text
 
 
