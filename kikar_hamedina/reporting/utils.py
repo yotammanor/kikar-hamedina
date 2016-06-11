@@ -37,31 +37,13 @@ def xlsx_to_dict_generator(f, tab_name):
 class TextProcessor(object):
     def __init__(self, permutations_file_name='Alternative Names.xlsx',
                  permutations_tab_name='Permutations',
-                 permutations_dict=None):
+                 permutations_dict=None,
+                 patterns_dict=None):
+        print('Creating TextProcessor..')
         self.EMOJI_DICT_UNICODE_TO_NAME = EMOJI_DICT_UNICODE_TO_NAME
         self.EMOJI_DICT_NAME_TO_UNICODE = EMOJI_DICT_NAME_TO_UNICODE
         self._TAB_NAME = permutations_tab_name
-        self._permutations_file_name = permutations_file_name
-        self.permutations_dict = permutations_dict or self._create_permutations_dict()
-
-    def _create_permutations_dict(self):
-        with open(self._permutations_file_name, 'rb') as f:
-            permutations_dict = {}
-            for row in xlsx_to_dict_generator(f, '%s' % self._TAB_NAME):
-                row['names_as_writer'] = [x for x in normalize(row['names_as_writer']).split(';') if x]
-                row['names_as_non_writer'] = [x for x in normalize(row['names_as_non_writer']).split(';') if x]
-                row['roles_19th_knesset'] = [x for x in normalize(row['roles_19th_knesset']).split(';') if x]
-                row['roles_20th_knesset'] = [x for x in normalize(row['roles_20th_knesset']).split(';') if x]
-                permutations_dict[row['id']] = row
-            return permutations_dict
-
-    def text_manipulation_emojis(self, text):
-        for emoji_code, emoji_name in self.EMOJI_DICT_UNICODE_TO_NAME.iteritems():
-            text = re.sub(emoji_code, emoji_name, text, flags=re.U)
-        return text
-
-    def text_manipulation_mk_names(self, text, context_status):
-        base_pattern = ur"""
+        self.BASE_PATTERN = ur"""
 
                             (?P<pre>                                                 # part before mk name
 
@@ -79,47 +61,115 @@ class TextProcessor(object):
                                 [\d\]\[\$\*\.\^\?\+=-@#%!,;:\<\>/\'\[\]\(\){{}}\\]+  # or one or more special characters
                                 )
                            )"""
-        base_replace_pattern = '\g<pre>{}\g<post>'
+        self.BASE_REPLACE_PATTERN = '\g<pre>{}\g<post>'
 
-        # get permutations for context_status.mk.id
-        relevant_ids = [context_status.feed.persona.object_id]
-        current_perms = []
-        # build full list of permuations as regex patterns - base_name, non_writer, writer, roles
-        for mk_id in relevant_ids:
+        self._permutations_file_name = permutations_file_name
+        self.permutations_dict = permutations_dict or self._create_permutations_dict()
+        self.full_patterns_dict = patterns_dict or self._create_patterns_dict(self.permutations_dict)
+        print('Created! ')
+
+    def _create_permutations_dict(self):
+        with open(self._permutations_file_name, 'rb') as f:
+            permutations_dict = {}
+            for row in xlsx_to_dict_generator(f, '%s' % self._TAB_NAME):
+                row['names_as_writer'] = [x for x in normalize(row['names_as_writer']).split(';') if x]
+                row['names_as_non_writer'] = [x for x in normalize(row['names_as_non_writer']).split(';') if x]
+                row['roles_19th_knesset'] = [x for x in normalize(row['roles_19th_knesset']).split(';') if x]
+                row['roles_20th_knesset'] = [x for x in normalize(row['roles_20th_knesset']).split(';') if x]
+                permutations_dict[row['id']] = row
+            return permutations_dict
+
+    def _create_patterns_dict(self, permutations_dict):
+        full_patterns_dict = {}
+        for mk_id in permutations_dict.keys():
+            full_patterns_dict[mk_id] = {}
+            full_patterns_dict[mk_id]['permutations_dict'] = permutations_dict[mk_id]
+            # Self patterns:
+            current_perms = []
             current_perms.append(self.permutations_dict[mk_id]['base_name'])
             current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
             current_perms += self.permutations_dict[mk_id]['names_as_writer']
-            if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
-                current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
-            else:
-                current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
-        ## handle .?!~@#$%^&*()_+~`"1234567890;,<>/[]{}\|*-+ etc. or trailing-non-letters until space
-        current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
-        patterns = [base_pattern.format(perm.replace(' ', '\s')) for perm in current_perms]
-        # each permutation found, replace with MK_WRITER_NAME
+            current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
+            current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
+            # if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
+            #     current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
+            # else:
+            #     current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
+            ## handle .?!~@#$%^&*()_+~`"1234567890;,<>/[]{}\|*-+ etc. or trailing-non-letters until space
+            current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
+            full_patterns_dict[mk_id]['current_perms_self'] = current_perms
+            full_patterns_dict[mk_id]['patterns_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm in
+                                                          current_perms]
+            # Non-self patterns:
+            current_perms = []
+            # get permutations for all but context_status.mk.id
+            relevant_ids = [x for x in self.permutations_dict.keys() if not x == mk_id]
+            #  build list of permutations - base_name, non_writer, roles
+            for mk_id_other in relevant_ids:
+                current_perms.append(self.permutations_dict[mk_id_other]['base_name'])
+                current_perms += self.permutations_dict[mk_id_other]['names_as_non_writer']
+                current_perms += self.permutations_dict[mk_id_other]['roles_19th_knesset']
+                current_perms += self.permutations_dict[mk_id_other]['roles_20th_knesset']
+                # if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
+                #     current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
+                # else:
+                #     current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
+            current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
+            full_patterns_dict[mk_id]['current_perms_non_self'] = current_perms
+            # each permutation found, replace with MK_NON_WRITER_NAME
+            full_patterns_dict[mk_id]['patterns_non_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm
+                                                              in
+                                                              current_perms]
+        return full_patterns_dict
 
-        for pattern in patterns:
+    def text_manipulation_emojis(self, text):
+        for emoji_code, emoji_name in self.EMOJI_DICT_UNICODE_TO_NAME.iteritems():
+            text = re.sub(emoji_code, emoji_name, text, flags=re.U)
+        return text
+
+    def text_manipulation_mk_names(self, text, context_status):
+        mk_id = context_status.feed.persona.object_id
+        # get permutations for context_status.mk.id
+        # relevant_ids = [context_status.feed.persona.object_id]
+        # current_perms = []
+        # # build full list of permuations as regex patterns - base_name, non_writer, writer, roles
+        # for mk_id in relevant_ids:
+        #     current_perms.append(self.permutations_dict[mk_id]['base_name'])
+        #     current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
+        #     current_perms += self.permutations_dict[mk_id]['names_as_writer']
+        #     if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
+        #         current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
+        #     else:
+        #         current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
+        # ## handle .?!~@#$%^&*()_+~`"1234567890;,<>/[]{}\|*-+ etc. or trailing-non-letters until space
+        # current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
+        # patterns = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm in current_perms]
+        # # each permutation found, replace with MK_WRITER_NAME
+
+        for pattern in self.full_patterns_dict[mk_id]['patterns_self']:
             # text = re.sub(pattern, u'\g<pre>MK_WRITER_OF_POST\g<post>', text, re.UNICODE)
-            text = re.sub(pattern, base_replace_pattern.format('MK_WRITER_OF_POST'), text, flags=re.U | re.X | re.I)
+            text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_WRITER_OF_POST'), text,
+                          flags=re.U | re.X | re.I)
 
-        # get permutations for all but context_status.mk.id
-        relevant_ids = [x for x in self.permutations_dict.keys() if not x == context_status.feed.persona.object_id]
-        #  build list of permutations - base_name, non_writer, roles
-        current_perms = []
-        for mk_id in relevant_ids:
-            current_perms.append(self.permutations_dict[mk_id]['base_name'])
-            current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
-            if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
-                current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
-            else:
-                current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
-        current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
-        # each permutation found, replace with MK_NON_WRITER_NAME
-        patterns = [base_pattern.format(unicode(perm).replace(' ', '\s')) for perm in current_perms]
+        # # get permutations for all but context_status.mk.id
+        # relevant_ids = [x for x in self.permutations_dict.keys() if not x == context_status.feed.persona.object_id]
+        # #  build list of permutations - base_name, non_writer, roles
+        # current_perms = []
+        # for mk_id in relevant_ids:
+        #     current_perms.append(self.permutations_dict[mk_id]['base_name'])
+        #     current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
+        #     if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
+        #         current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
+        #     else:
+        #         current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
+        # current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
+        # # each permutation found, replace with MK_NON_WRITER_NAME
+        # patterns = [self.BASE_PATTERN.format(unicode(perm).replace(' ', '\s')) for perm in current_perms]
         # each permutation found, replace with MK_WRITER_NAME
-        for pattern in patterns:
-            # text = re.sub(pattern, base_replace_pattern.format('MK_NOT_WRITER_OF_POST'), text, re.UNICODE)
-            text = re.sub(pattern, base_replace_pattern.format('MK_NOT_WRITER_OF_POST'), text, flags=re.U | re.X | re.I)
+        for pattern in self.full_patterns_dict[mk_id]['patterns_non_self']:
+            # text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text, re.UNICODE)
+            text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text,
+                          flags=re.U | re.X | re.I)
         return text
 
 
