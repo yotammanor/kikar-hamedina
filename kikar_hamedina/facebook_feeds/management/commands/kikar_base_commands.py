@@ -97,7 +97,7 @@ class KikarStatusCommand(KikarBaseCommand):
                             help="skip statuses that has data for them"),\
         parser.add_argument('--workers',
                             action='store',
-                            dest=str,
+                            dest=int,
                             default=1,
                             help="number of workers for concurrency"),
 
