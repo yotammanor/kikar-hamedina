@@ -29,7 +29,7 @@ class Command(KikarStatusCommand):
             if not status.comments.exists():
                 self.stdout.write('No Comments found for status {}'.format(status.status_id))
                 continue
-            with futures.ThreadPoolExecutor(max_workers=10) as executer:
+            with futures.ThreadPoolExecutor(max_workers=options['workers']) as executer:
                 [executer.submit(self.worker, j, comment, status, processor) for j, comment in
                  enumerate(status.comments.all())]
         info_msg = "Successfully saved all statuses to db"

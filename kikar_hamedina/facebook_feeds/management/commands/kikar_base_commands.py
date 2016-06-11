@@ -94,7 +94,12 @@ class KikarStatusCommand(KikarBaseCommand):
                             action='store_true',
                             dest='skip',
                             default=False,
-                            help="skip statuses that has data for them"),
+                            help="skip statuses that has data for them"),\
+        parser.add_argument('--workers',
+                            action='store',
+                            dest=str,
+                            default=1,
+                            help="number of workers for concurrency"),
 
     def parse_statuses(self, args, options):
         list_of_statuses = list()
