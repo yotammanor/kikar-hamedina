@@ -126,5 +126,5 @@ class KikarStatusCommand(KikarBaseCommand):
         # Case invalid args
         else:
             raise CommandError('Please enter a valid status id')
-        self.stdout.write('Starting to update likes for {0} statuses'.format(len(list_of_statuses)))
+        self.stdout.write('Working on total of {0} statuses'.format(len(list_of_statuses)))
         return list_of_statuses
