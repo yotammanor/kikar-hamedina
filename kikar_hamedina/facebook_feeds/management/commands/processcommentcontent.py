@@ -19,7 +19,7 @@ class Command(KikarStatusCommand):
         processor = TextProcessor()
         # Iterate over list_of_statuses
         for i, status in enumerate(list_of_statuses):
-            self.stdout.write('working on status } of {}'.format(i + 1, len(list_of_statuses)))
+            self.stdout.write('working on status {} of {}'.format(i + 1, len(list_of_statuses)))
             if not status.comments.exists():
                 self.stdout.write('No Comments found for status {}'.format(status.status_id))
                 continue
