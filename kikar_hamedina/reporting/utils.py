@@ -132,6 +132,8 @@ class TextProcessor(object):
         # current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
         # patterns = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm in current_perms]
         # # each permutation found, replace with MK_WRITER_NAME
+        if not mk_id:
+            return text
 
         for pattern in self.full_patterns_dict[mk_id]['patterns_self']:
             # text = re.sub(pattern, u'\g<pre>MK_WRITER_OF_POST\g<post>', text, re.UNICODE)
