@@ -3,6 +3,7 @@ import re
 
 from django.utils import timezone
 
+
 def normalize_header_name(header):
     if header:
         return header.strip().lower().replace(' ', '_').replace('/', '_')
@@ -34,12 +35,14 @@ def xlsx_to_dict_generator(f, tab_name):
 
 
 class TextProcessor(object):
-    def __init__(self, permutations_file_name='Alternative Names.xlsx'):
+    def __init__(self, permutations_file_name='Alternative Names.xlsx',
+                 permutations_tab_name='Permutations',
+                 permutations_dict=None):
         self.EMOJI_DICT_UNICODE_TO_NAME = EMOJI_DICT_UNICODE_TO_NAME
         self.EMOJI_DICT_NAME_TO_UNICODE = EMOJI_DICT_NAME_TO_UNICODE
-        self._TAB_NAME = 'Permutations'
+        self._TAB_NAME = permutations_tab_name
         self._permutations_file_name = permutations_file_name
-        self.permutations_dict = self._create_permutations_dict()
+        self.permutations_dict = permutations_dict or self._create_permutations_dict()
 
     def _create_permutations_dict(self):
         with open(self._permutations_file_name, 'rb') as f:
