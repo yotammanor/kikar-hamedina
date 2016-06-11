@@ -1,18 +1,24 @@
 import logging
 from facebook_feeds.management.commands.kikar_base_commands import KikarStatusCommand
 from reporting.utils import TextProcessor
+from concurrent import futures
 
 
 class Command(KikarStatusCommand):
     help = 'Retrieve all comments for a status, process content text and save to db..'
 
+    def worker(self, j, comment, status, processor):
+        self.stdout.write('\tworking on comment {} of {}'.format(j + 1, status.comments.count()))
+        text = processor.text_manipulation_mk_names(text=comment.content, context_status=status)
+        text = processor.text_manipulation_emojis(text=text)
+        comment.processed_content = text
+        comment.save()
+
     def handle(self, *args, **options):
         """
-        Executes fetchstatuslikes manage.py command.
-        Receives either one status ID or filtering options for multiple statuses,
-        and updates the likes data for status(es) selected.
-
-        Options exist for running within a given date range.
+        Executes processcommentcontent manage.py command.
+        Receives one or more status ids.
+        takes all comments for status(es) and saves processed_content field after text manipulation.
         """
 
         list_of_statuses = self.parse_statuses(args, options)
@@ -23,12 +29,9 @@ class Command(KikarStatusCommand):
             if not status.comments.exists():
                 self.stdout.write('No Comments found for status {}'.format(status.status_id))
                 continue
-            for j, comment in enumerate(status.comments.all()):
-                self.stdout.write('\tworking on comment {} of {}'.format(j + 1, status.comments.count()))
-                text = processor.text_manipulation_mk_names(text=comment.content, context_status=status)
-                text = processor.text_manipulation_emojis(text=text)
-                comment.processed_content = text
-                comment.save()
+            with futures.ThreadPoolExecutor(max_workers=10) as executer:
+                [executer.submit(self.worker, j, comment, status, processor) for j, comment in
+                 enumerate(status.comments.all())]
         info_msg = "Successfully saved all statuses to db"
         logger = logging.getLogger('django')
         logger.info(info_msg)
