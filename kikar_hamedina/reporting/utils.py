@@ -84,11 +84,10 @@ class TextProcessor(object):
         for mk_id in permutations_dict.keys():
             full_patterns_dict[mk_id] = {}
             full_patterns_dict[mk_id]['permutations_dict'] = permutations_dict[mk_id]
-            # Self patterns:
+            # non-self patterns:
             current_perms = []
             current_perms.append(self.permutations_dict[mk_id]['base_name'])
             current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
-            current_perms += self.permutations_dict[mk_id]['names_as_writer']
             current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
             current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
             # if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
@@ -98,15 +97,16 @@ class TextProcessor(object):
             ## handle .?!~@#$%^&*()_+~`"1234567890;,<>/[]{}\|*-+ etc. or trailing-non-letters until space
             current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
             full_patterns_dict[mk_id]['current_perms_self'] = current_perms
-            full_patterns_dict[mk_id]['patterns_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm in
-                                                          current_perms]
-            # Non-self patterns:
-            current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
-            current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
-            full_patterns_dict[mk_id]['current_perms_non_self'] = current_perms
             full_patterns_dict[mk_id]['patterns_non_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm
                                                               in
                                                               current_perms]
+            # Self patterns:
+            current_perms += self.permutations_dict[mk_id]['names_as_writer']
+            current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
+            full_patterns_dict[mk_id]['current_perms_non_self'] = current_perms
+            full_patterns_dict[mk_id]['patterns_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm
+                                                          in
+                                                          current_perms]
         return full_patterns_dict
 
     def text_manipulation_emojis(self, text):
@@ -158,7 +158,7 @@ class TextProcessor(object):
 
         for mk_id in relevant_ids:
             for pattern in self.full_patterns_dict[mk_id]['patterns_non_self']:
-                # text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text, re.UNICODE)
+                # text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST:{}'.format(mk_id)), text,
                 text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text,
                               flags=re.U | re.X | re.I)
         return text

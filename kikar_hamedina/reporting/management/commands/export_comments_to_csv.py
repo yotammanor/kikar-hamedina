@@ -28,6 +28,7 @@ class Command(KikarCommentCommand):
         headers = {field_name: field_name for field_name in field_names}
         csv_data.writerow(headers)
 
+        # processor = TextProcessor(permutations_file_name='Alternative_Names_Test.xlsx')
         processor = TextProcessor()
 
         for i, comment in enumerate(comments):
