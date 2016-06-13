@@ -100,6 +100,10 @@ class TextProcessor(object):
             full_patterns_dict[mk_id]['patterns_non_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm
                                                               in
                                                               current_perms]
+            full_patterns_dict[mk_id]['patterns_non_self_test'] = [self.BASE_PATTERN.format(
+                '|'.join([perm.replace(' ', '\s') for perm
+                          in
+                          current_perms]))]
             # Self patterns:
             current_perms += self.permutations_dict[mk_id]['names_as_writer']
             current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
@@ -107,6 +111,10 @@ class TextProcessor(object):
             full_patterns_dict[mk_id]['patterns_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm
                                                           in
                                                           current_perms]
+            full_patterns_dict[mk_id]['patterns_self_test'] = [self.BASE_PATTERN.format(
+                '|'.join([perm.replace(' ', '\s') for perm
+                          in
+                          current_perms]))]
         return full_patterns_dict
 
     def text_manipulation_emojis(self, text):
@@ -135,7 +143,7 @@ class TextProcessor(object):
         if not mk_id:
             return text
 
-        for pattern in self.full_patterns_dict[mk_id]['patterns_self']:
+        for pattern in self.full_patterns_dict[mk_id]['patterns_self_test']:
             # text = re.sub(pattern, u'\g<pre>MK_WRITER_OF_POST\g<post>', text, re.UNICODE)
             text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_WRITER_OF_POST'), text,
                           flags=re.U | re.X | re.I)
@@ -157,7 +165,7 @@ class TextProcessor(object):
         # each permutation found, replace with MK_WRITER_NAME
 
         for mk_id in relevant_ids:
-            for pattern in self.full_patterns_dict[mk_id]['patterns_non_self']:
+            for pattern in self.full_patterns_dict[mk_id]['patterns_non_self_test']:
                 # text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST:{}'.format(mk_id)), text,
                 text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text,
                               flags=re.U | re.X | re.I)
