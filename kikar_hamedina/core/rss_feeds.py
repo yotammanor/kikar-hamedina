@@ -15,9 +15,7 @@ from core.views import SearchView
 from core.query_utils import filter_by_date, get_order_by
 from core.models import UserSearch
 from core.models import PARTY_MODEL, MEMBER_MODEL
-from core.params import MAX_STATUSES_IN_RSS_FEED
-
-DEFAULT_DAYS_BACK_RSS = 30
+from core.params import MAX_STATUSES_IN_RSS_FEED, FEED_TIME_TO_LIVE, DEFAULT_DAYS_BACK_RSS
 
 
 class ExtendedRSSFeed(Rss201rev2Feed):
@@ -47,6 +45,8 @@ class ExtendedRSSFeed(Rss201rev2Feed):
 class KikarRSSFeedBase(Feed):
     description_template = 'rss/default_status_description.html'
     mime_type = 'application/rss+xml; charset=utf-8'
+
+    ttl = FEED_TIME_TO_LIVE
 
     def item_pubdate(self, item):
         return item.published
