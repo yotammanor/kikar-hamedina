@@ -27,7 +27,7 @@ class Command(KikarStatusCommand):
         # Iterate over list_of_statuses
         i = 1
         with futures.ThreadPoolExecutor(max_workers=options['workers']) as executer:
-            for status in list_of_statuses.iterator():
+            for status in list_of_statuses:
                 for comment in status.comments.all():
                     executer.submit(self.worker, i, comment, status, processor)
                     i += 1
