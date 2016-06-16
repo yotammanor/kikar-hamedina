@@ -100,6 +100,13 @@ class TextProcessor(object):
             full_patterns_dict[mk_id]['patterns_self'] = [re.compile(built_pattern, flags=re.U | re.X | re.I)]
         return full_patterns_dict
 
+    def text_manipulation_flatten_text(self,text, delimiter=None, delimiter_rep='*'):
+        uni_text = re.sub(ur'[\r\n]+', ur'        ', text, flags=re.I | re.U | re.X)
+        if delimiter:
+            uni_text = uni_text.replace(delimiter, delimiter_rep)
+        uni_text = unicode(uni_text).encode('utf-8')
+        return uni_text
+
     def text_manipulation_emojis(self, text):
         for emoji_code, emoji_name in self.EMOJI_DICT_UNICODE_TO_NAME.iteritems():
             text = re.sub(emoji_code, emoji_name, text, flags=re.U)

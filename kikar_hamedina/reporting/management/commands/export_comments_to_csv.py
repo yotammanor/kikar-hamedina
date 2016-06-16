@@ -1,10 +1,9 @@
 #!encoding utf-8
 from csv import DictWriter
 from facebook_feeds.management.commands.kikar_base_commands import KikarCommentCommand
-from reporting.utils import xlsx_to_dict_generator, normalize, TextProcessor
+from reporting.utils import TextProcessor
 
-
-
+DELIMITER = '~'
 
 
 class Command(KikarCommentCommand):
@@ -16,15 +15,17 @@ class Command(KikarCommentCommand):
         field_names = [
             'comment_id',
             'parent_status_id',
-            'link',
+            'parent_status_content',
+            'parent_status_link',
+            'comment_link',
             'content',
+            'content_processed',
             'published',
             'commentator_id',
             'like_count',
             'comment_count',
-            'content_processed'
         ]
-        csv_data = DictWriter(f, fieldnames=field_names, delimiter='~')
+        csv_data = DictWriter(f, fieldnames=field_names, delimiter=DELIMITER)
         headers = {field_name: field_name for field_name in field_names}
         csv_data.writerow(headers)
 
@@ -38,18 +39,16 @@ class Command(KikarCommentCommand):
             dict_row = {
                 'comment_id': comment.comment_id,
                 'parent_status_id': comment.parent.status_id,
-                'link': 'www.facebook.com/{}'.format(comment.comment_id),
-                'content': unicode(comment.content).encode('utf-8').replace('\r\n', '\t\t').replace('~', '*').replace(
-                    '\n',
-                    '\t'),
+                'parent_status_content': processor.text_manipulation_flatten_text(comment.parent.content,
+                                                                                  delimiter=DELIMITER),
+                'parent_status_link': comment.parent.get_link,
+                'comment_link': 'www.facebook.com/{}'.format(comment.comment_id),
+                'content': processor.text_manipulation_flatten_text(comment.content, delimiter=DELIMITER),
+                'content_processed': processor.text_manipulation_flatten_text(processed_text, delimiter=DELIMITER),
                 'published': comment.published,
                 'commentator_id': comment.comment_from.facebook_id,
                 'like_count': comment.like_count,
-                'comment_count': comment.comment_count,
-                'content_processed': unicode(processed_text).encode('utf-8').replace('\r\n', '\t\t').replace('~',
-                                                                                                             '*').replace(
-                    '\n',
-                    '\t')
+                'comment_count': comment.comment_count
             }
             csv_data.writerow(dict_row)
 
