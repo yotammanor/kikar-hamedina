@@ -26,9 +26,12 @@ class Command(KikarStatusCommand):
         processor = TextProcessor()
         # Iterate over list_of_statuses
         list_of_comments = Facebook_Status_Comment.objects.filter(parent__status_id__in=list_of_statuses)
+        num_of_comments = list_of_comments.count()
+        i = 0
         with futures.ThreadPoolExecutor(max_workers=options['workers']) as executer:
-            for i, comment in enumerate(list_of_comments):
-                executer.submit(self.worker, i, comment, comment.parent, processor, len(list_of_comments))
+            for comment in list_of_comments.iterator():
+                executer.submit(self.worker, i, comment, comment.parent, processor, num_of_comments)
+                i += 1
         info_msg = "Successfully saved all statuses to db"
         logger = logging.getLogger('django')
         logger.info(info_msg)
