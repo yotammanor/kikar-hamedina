@@ -1,3 +1,5 @@
+### encoding:utf8 ###
+
 import openpyxl
 import re
 
@@ -44,24 +46,23 @@ class TextProcessor(object):
         self.EMOJI_DICT_NAME_TO_UNICODE = EMOJI_DICT_NAME_TO_UNICODE
         self._TAB_NAME = permutations_tab_name
         self.BASE_PATTERN = ur"""
+        (?P<pre>                                                                        # part before mk name
+          (?P<leading_spacelike>                                                        # space characters or similar
 
-                            (?P<pre>                                                 # part before mk name
+            ^|                                                                          # beginning of string, or
+            [\s\t\n\r\.,\d\]\[\$\*\.\^\?\+=\-@#%!"/,;:\<\>\'\[\]\(\){{}}\\]+            # space or special character
+          )
+          [\u05e9\u05d1\u05dc\u05de\u05d5\u05d4]?                                       #leading letters in Hebrew
+        )
+        (?P<mk>{})                                                                      # mk name permutation formatted in
 
-                                (^|[\s\t\n\r]+)                                      # either beginning or space
-                                [\d\]\[\$\*\.\^\?\+=-@#%!,;:\<\>/\'\[\]\(\){{}}\\]*  # allow for special chars
-                                [\u05e9\u05d1\u05dc\u05de\u05d5\u05d4]?              # leading letters in Hebrew
-                            )
-                           (?P<mk>{})                                                # mk name permutation formatted in
-
-                           (?P<post>                                                 # part after mk name
-
-                                (
-                                $|                                                   # either end of text
-                                [\s\t\n\r]+|                                         # or one or more space characters
-                                [\d\]\[\$\*\.\^\?\+=-@#%!,;:\<\>/\'\[\]\(\){{}}\\]+  # or one or more special characters
-                                )
-                           )"""
-        self.BASE_REPLACE_PATTERN = '\g<pre>{}\g<post>'
+        (?=                                                                             # positive lookahead - after mk name
+            $|                                                                          # either end of text
+            [\s\t\n\r]+|                                                                # or one or more space characters
+            [\s\t\n\r\.,\d\]\[\$\*\.\^\?\+=\-@#%!"/,;:\<\>\'\[\]\(\){{}}\\]+            # or one or more special characters
+        )
+        """
+        self.BASE_REPLACE_PATTERN = u'\g<pre>{}'
 
         self._permutations_file_name = permutations_file_name
         self.permutations_dict = permutations_dict or self._create_permutations_dict()
@@ -77,7 +78,7 @@ class TextProcessor(object):
                 row['roles_19th_knesset'] = [x for x in normalize(row['roles_19th_knesset']).split(';') if x]
                 row['roles_20th_knesset'] = [x for x in normalize(row['roles_20th_knesset']).split(';') if x]
                 permutations_dict[row['id']] = row
-            return permutations_dict
+        return permutations_dict
 
     def _create_patterns_dict(self, permutations_dict):
         full_patterns_dict = {}
@@ -85,36 +86,18 @@ class TextProcessor(object):
             full_patterns_dict[mk_id] = {}
             full_patterns_dict[mk_id]['permutations_dict'] = permutations_dict[mk_id]
             # non-self patterns:
-            current_perms = []
-            current_perms.append(self.permutations_dict[mk_id]['base_name'])
+            current_perms = [self.permutations_dict[mk_id]['base_name']]
             current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
             current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
             current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
-            # if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
-            #     current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
-            # else:
-            #     current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
-            ## handle .?!~@#$%^&*()_+~`"1234567890;,<>/[]{}\|*-+ etc. or trailing-non-letters until space
             current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
-            full_patterns_dict[mk_id]['current_perms_self'] = current_perms
-            full_patterns_dict[mk_id]['patterns_non_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm
-                                                              in
-                                                              current_perms]
-            full_patterns_dict[mk_id]['patterns_non_self_test'] = [self.BASE_PATTERN.format(
-                '|'.join([perm.replace(' ', '\s') for perm
-                          in
-                          current_perms]))]
+            built_pattern = self.BASE_PATTERN.format('|'.join([perm.replace(' ', '\s') for perm in current_perms]))
+            full_patterns_dict[mk_id]['patterns_non_self'] = [re.compile(built_pattern, flags=re.U | re.X | re.I)]
             # Self patterns:
             current_perms += self.permutations_dict[mk_id]['names_as_writer']
             current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
-            full_patterns_dict[mk_id]['current_perms_non_self'] = current_perms
-            full_patterns_dict[mk_id]['patterns_self'] = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm
-                                                          in
-                                                          current_perms]
-            full_patterns_dict[mk_id]['patterns_self_test'] = [self.BASE_PATTERN.format(
-                '|'.join([perm.replace(' ', '\s') for perm
-                          in
-                          current_perms]))]
+            built_pattern = self.BASE_PATTERN.format('|'.join([perm.replace(' ', '\s') for perm in current_perms]))
+            full_patterns_dict[mk_id]['patterns_self'] = [re.compile(built_pattern, flags=re.U | re.X | re.I)]
         return full_patterns_dict
 
     def text_manipulation_emojis(self, text):
@@ -124,51 +107,22 @@ class TextProcessor(object):
 
     def text_manipulation_mk_names(self, text, context_status):
         mk_id = context_status.feed.persona.object_id
-        # get permutations for context_status.mk.id
-        # relevant_ids = [context_status.feed.persona.object_id]
-        # current_perms = []
-        # # build full list of permuations as regex patterns - base_name, non_writer, writer, roles
-        # for mk_id in relevant_ids:
-        #     current_perms.append(self.permutations_dict[mk_id]['base_name'])
-        #     current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
-        #     current_perms += self.permutations_dict[mk_id]['names_as_writer']
-        #     if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
-        #         current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
-        #     else:
-        #         current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
-        # ## handle .?!~@#$%^&*()_+~`"1234567890;,<>/[]{}\|*-+ etc. or trailing-non-letters until space
-        # current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
-        # patterns = [self.BASE_PATTERN.format(perm.replace(' ', '\s')) for perm in current_perms]
-        # # each permutation found, replace with MK_WRITER_NAME
         if not mk_id:
             return text
 
-        for pattern in self.full_patterns_dict[mk_id]['patterns_self_test']:
+        repl_self = self.BASE_REPLACE_PATTERN.format('MK_WRITER_OF_POST')
+        for pattern in self.full_patterns_dict[mk_id]['patterns_self']:
             # text = re.sub(pattern, u'\g<pre>MK_WRITER_OF_POST\g<post>', text, re.UNICODE)
-            text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_WRITER_OF_POST'), text,
-                          flags=re.U | re.X | re.I)
+            text = pattern.sub(repl_self, text)
 
         # # get permutations for all but context_status.mk.id
         relevant_ids = [x for x in self.permutations_dict.keys() if not x == context_status.feed.persona.object_id]
-        # #  build list of permutations - base_name, non_writer, roles
-        # current_perms = []
-        # for mk_id in relevant_ids:
-        #     current_perms.append(self.permutations_dict[mk_id]['base_name'])
-        #     current_perms += self.permutations_dict[mk_id]['names_as_non_writer']
-        #     if context_status.published <= timezone.datetime(2015, 3, 18, tzinfo=timezone.get_default_timezone()):
-        #         current_perms += self.permutations_dict[mk_id]['roles_19th_knesset']
-        #     else:
-        #         current_perms += self.permutations_dict[mk_id]['roles_20th_knesset']
-        # current_perms = sorted(current_perms, key=lambda x: (len(x.split(' ')), len(x)), reverse=True)
-        # # each permutation found, replace with MK_NON_WRITER_NAME
-        # patterns = [self.BASE_PATTERN.format(unicode(perm).replace(' ', '\s')) for perm in current_perms]
-        # each permutation found, replace with MK_WRITER_NAME
-
+        repl_non_self = self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST')
         for mk_id in relevant_ids:
-            for pattern in self.full_patterns_dict[mk_id]['patterns_non_self_test']:
+            for pattern in self.full_patterns_dict[mk_id]['patterns_non_self']:
                 # text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST:{}'.format(mk_id)), text,
-                text = re.sub(pattern, self.BASE_REPLACE_PATTERN.format('MK_NOT_WRITER_OF_POST'), text,
-                              flags=re.U | re.X | re.I)
+                text = pattern.sub(repl_non_self, text)
+
         return text
 
 
