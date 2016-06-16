@@ -8,7 +8,8 @@ from concurrent import futures
 class Command(KikarStatusCommand):
     help = 'Retrieve all comments for a status, process content text and save to db..'
 
-    def worker(self, comment, status, processor):
+    def worker(self, i, comment, status, processor):
+        self.stdout.write('working on comment {} of {}'.format(i + 1, len(list_of_comments)))
         text = processor.text_manipulation_mk_names(text=comment.content, context_status=status)
         text = processor.text_manipulation_emojis(text=text)
         comment.processed_content = text
@@ -25,10 +26,9 @@ class Command(KikarStatusCommand):
         processor = TextProcessor()
         # Iterate over list_of_statuses
         list_of_comments = Facebook_Status_Comment.objects.filter(parent__status_id__in=list_of_statuses)
-        for i, comment in enumerate(list_of_comments):
-            self.stdout.write('working on comment {} of {}'.format(i + 1, len(list_of_comments)))
-            with futures.ThreadPoolExecutor(max_workers=options['workers']) as executer:
-                executer.submit(self.worker, comment, comment.parent, processor)
+        with futures.ThreadPoolExecutor(max_workers=options['workers']) as executer:
+            for i, comment in enumerate(list_of_comments):
+                executer.submit(self.worker, i, comment, comment.parent, processor)
         info_msg = "Successfully saved all statuses to db"
         logger = logging.getLogger('django')
         logger.info(info_msg)
