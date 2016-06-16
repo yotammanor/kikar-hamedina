@@ -1,5 +1,6 @@
 import logging
 from facebook_feeds.management.commands.kikar_base_commands import KikarStatusCommand
+from facebook_feeds.models import Facebook_Status_Comment
 from reporting.utils import TextProcessor
 from concurrent import futures
 
@@ -7,8 +8,7 @@ from concurrent import futures
 class Command(KikarStatusCommand):
     help = 'Retrieve all comments for a status, process content text and save to db..'
 
-    def worker(self, j, comment, status, processor):
-        self.stdout.write('\tworking on comment {} of {}'.format(j + 1, status.comments.count()))
+    def worker(self, comment, status, processor):
         text = processor.text_manipulation_mk_names(text=comment.content, context_status=status)
         text = processor.text_manipulation_emojis(text=text)
         comment.processed_content = text
@@ -24,14 +24,11 @@ class Command(KikarStatusCommand):
         list_of_statuses = self.parse_statuses(args, options)
         processor = TextProcessor()
         # Iterate over list_of_statuses
-        for i, status in enumerate(list_of_statuses):
-            self.stdout.write('working on status {} of {}'.format(i + 1, len(list_of_statuses)))
-            if not status.comments.exists():
-                self.stdout.write('No Comments found for status {}'.format(status.status_id))
-                continue
+        list_of_comments = Facebook_Status_Comment.objects.filter(parent__status_id__in=list_of_statuses)
+        for i, comment in enumerate(list_of_comments):
+            self.stdout.write('working on comment {} of {}'.format(i + 1, len(list_of_comments)))
             with futures.ThreadPoolExecutor(max_workers=options['workers']) as executer:
-                [executer.submit(self.worker, j, comment, status, processor) for j, comment in
-                 enumerate(status.comments.all())]
+                executer.submit(self.worker, comment, comment.parent, processor)
         info_msg = "Successfully saved all statuses to db"
         logger = logging.getLogger('django')
         logger.info(info_msg)
