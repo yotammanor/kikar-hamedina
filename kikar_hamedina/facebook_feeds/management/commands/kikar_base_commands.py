@@ -99,7 +99,7 @@ class KikarStatusCommand(KikarBaseCommand):
                             action='store',
                             type=int,
                             dest='workers',
-                            default=1,
+                            default=0,
                             help="number of workers for concurrency"),
 
     def parse_statuses(self, args, options):

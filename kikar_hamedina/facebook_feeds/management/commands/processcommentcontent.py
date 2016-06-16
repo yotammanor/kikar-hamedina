@@ -26,11 +26,17 @@ class Command(KikarStatusCommand):
         processor = TextProcessor()
         # Iterate over list_of_statuses
         i = 1
-        with futures.ThreadPoolExecutor(max_workers=options['workers']) as executer:
+        if not options['workers']:
             for status in list_of_statuses:
                 for comment in status.comments.all():
-                    executer.submit(self.worker, i, comment, status, processor)
+                    self.worker(i, comment, status, processor)
                     i += 1
+        else:
+            with futures.ThreadPoolExecutor(max_workers=options['workers']) as executer:
+                for status in list_of_statuses:
+                    for comment in status.comments.all():
+                        executer.submit(self.worker, i, comment, status, processor)
+                        i += 1
         info_msg = "Successfully saved all statuses to db"
         logger = logging.getLogger('django')
         logger.info(info_msg)
