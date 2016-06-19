@@ -14,6 +14,8 @@ class Command(KikarCommentCommand):
         f = open('{}_full_data.csv'.format(options['file_path'].split('.csv')[0]), 'wb')
         field_names = [
             'comment_id',
+            'mk_id',
+            'mk_name',
             'parent_status_id',
             'parent_status_content',
             'parent_status_link',
@@ -37,6 +39,8 @@ class Command(KikarCommentCommand):
             print('writing comment {} of {}'.format(i + 1, comments.count()))
             dict_row = {
                 'comment_id': comment.comment_id,
+                'mk_id': comment.status.feed.persona.content_object.id,
+                'mk_name': comment.status.feed.persona.content_object.name,
                 'parent_status_id': comment.parent.status_id,
                 'parent_status_content': processor.text_manipulation_flatten_text(comment.parent.content,
                                                                                   delimiter=DELIMITER),
