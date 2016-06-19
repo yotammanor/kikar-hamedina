@@ -40,7 +40,8 @@ class Command(KikarCommentCommand):
             dict_row = {
                 'comment_id': comment.comment_id,
                 'mk_id': comment.parent.feed.persona.content_object.id,
-                'mk_name': comment.parent.feed.persona.content_object.name,
+                'mk_name': processor.text_manipulation_flatten_text(comment.parent.feed.persona.content_object.name,
+                                                                    delimiter=DELIMITER),
                 'parent_status_id': comment.parent.status_id,
                 'parent_status_content': processor.text_manipulation_flatten_text(comment.parent.content,
                                                                                   delimiter=DELIMITER),
