@@ -60,7 +60,7 @@ class Command(KikarBaseCommand):
         file_name = 'commentator_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d'))
         with open(file_name, 'wb') as f:
             field_names = [
-                'feed_id'
+                'feed_id',
                 'link',
                 'mk_id',
                 'mk_name',
