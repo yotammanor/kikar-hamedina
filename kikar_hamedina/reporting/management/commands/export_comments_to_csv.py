@@ -32,6 +32,7 @@ class Command(KikarCommentCommand):
             'content_processed',
             'published',
             'commentator_id',
+            'commentator_also_liked_status',
             'like_count',
             'comment_count',
         ]
@@ -61,6 +62,8 @@ class Command(KikarCommentCommand):
                 'content_processed': processor.text_manipulation_flatten_text(processed_text, delimiter=DELIMITER),
                 'published': comment.published,
                 'commentator_id': comment.comment_from.facebook_id,
+                'commentator_also_liked_status': comment.comment_from.likes.filter(
+                    status__status_id=comment.parent.status_id).exists(),
                 'like_count': comment.like_count,
                 'comment_count': comment.comment_count
             }

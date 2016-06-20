@@ -25,8 +25,9 @@ class Command(KikarBaseCommand):
                             help="choose year to filter on"
                             )
 
-    def build_commentator_data(self, feeds, **kwargs):
+    def build_commentator_data(self, feeds, year=None):
         counter = dict()
+        years = ['2014','2015'] if year else [year]
         for feed in feeds.order_by('id'):
             print(feed.id)
             counter[feed.id] = {}
@@ -34,28 +35,25 @@ class Command(KikarBaseCommand):
                                           'comments_2015': set()}
             counter[feed.id]['full'] = {'likes_2014': long(), 'likes_2015': long(), 'comments_2014': long(),
                                         'comments_2015': long()}
-            for status in feed.facebook_status_set.filter(**kwargs).order_by('published'):
-                if not status.is_comment:
-                    year = status.published.strftime('%Y')
-                    counter[status.feed.id]['unique']['likes_%s' % year] = counter[status.feed.id]['unique'][
-                        'likes_%s' % year].union(
-                        set(status.likes.values_list('user', flat=True)))
-                    counter[status.feed.id]['unique']['comments_%s' % year] = counter[status.feed.id]['unique'][
-                        'comments_%s' % year].union(
-                        set(status.comments.values_list('comment_from_id', flat=True)))
-                    counter[status.feed.id]['full']['likes_%s' % year] += status.likes.count()
-                    counter[status.feed.id]['full']['comments_%s' % year] += status.comments.count()
-                    print('\t%s' % status.published)
+            for year in years:
+                for status in feed.facebook_status_set.filter(published__year=year).order_by('published'):
+                    if not status.is_comment:
+                        counter[status.feed.id]['unique']['likes_%s' % year] = counter[status.feed.id]['unique'][
+                            'likes_%s' % year].union(
+                            set(status.likes.values_list('user', flat=True)))
+                        counter[status.feed.id]['unique']['comments_%s' % year] = counter[status.feed.id]['unique'][
+                            'comments_%s' % year].union(
+                            set(status.comments.values_list('comment_from_id', flat=True)))
+                        counter[status.feed.id]['full']['likes_%s' % year] += status.likes.count()
+                        counter[status.feed.id]['full']['comments_%s' % year] += status.comments.count()
+                        print('\t%s' % status.published)
         return counter
 
     def handle(self, *args, **options):
         print('Start.')
-        kwargs = None
         feed = options['feed']
         feeds = Facebook_Feed.objects.filter(id=feed) if feed else Facebook_Feed.objects.all()
-        if options['year']:
-            kwargs = {'published__year': options['year']}
-        counter = self.build_commentator_data(feeds, **kwargs)
+        counter = self.build_commentator_data(feeds, year=options['year'])
         file_name = 'commentator_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
         with open(file_name, 'wb') as f:
             field_names = [
