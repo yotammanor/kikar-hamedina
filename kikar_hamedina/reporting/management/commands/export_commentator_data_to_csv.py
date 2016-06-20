@@ -10,7 +10,6 @@ DELIMITER = '~'
 
 
 class Command(KikarBaseCommand):
-
     def add_arguments(self, parser):
         parser.add_argument('--year',
                             action='store',
@@ -29,6 +28,7 @@ class Command(KikarBaseCommand):
     def build_commentator_data(self, feeds, **kwargs):
         counter = dict()
         for feed in feeds.order_by('id'):
+            print(feed.id)
             counter[feed.id] = {}
             counter[feed.id]['unique'] = {'likes_2014': set(), 'likes_2015': set(), 'comments_2014': set(),
                                           'comments_2015': set()}
@@ -46,7 +46,6 @@ class Command(KikarBaseCommand):
                     counter[status.feed.id]['full']['likes_%s' % year] += status.likes.count()
                     counter[status.feed.id]['full']['comments_%s' % year] += status.comments.count()
                     print('\t%s' % status.published)
-            print(feed.id)
         return counter
 
     def handle(self, *args, **options):
@@ -57,7 +56,7 @@ class Command(KikarBaseCommand):
         if options['year']:
             kwargs = {'published__year': options['year']}
         counter = self.build_commentator_data(feeds, **kwargs)
-        file_name = 'commentator_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d'))
+        file_name = 'commentator_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
         with open(file_name, 'wb') as f:
             field_names = [
                 'feed_id',
