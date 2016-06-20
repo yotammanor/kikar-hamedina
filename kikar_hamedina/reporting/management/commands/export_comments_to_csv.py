@@ -7,6 +7,14 @@ DELIMITER = '~'
 
 
 class Command(KikarCommentCommand):
+    def add_arguments(self, parser):
+        parser.add_argument('--translate',
+                            action='store_true',
+                            dest='translate',
+                            default=False,
+                            help="translate comment data"
+                            )
+
     def handle(self, *args, **options):
         print('Start.')
 
@@ -35,6 +43,8 @@ class Command(KikarCommentCommand):
 
         for i, comment in enumerate(comments):
             processed_text = processor.text_manipulation_mk_names(text=comment.content, context_status=comment.parent)
+            if options['translate']:
+                processed_text = processor.text_manipulation_translate_text(text=processed_text)
             processed_text = processor.text_manipulation_emojis(text=processed_text)
             print('writing comment {} of {}'.format(i + 1, comments.count()))
             dict_row = {
