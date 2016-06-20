@@ -3,14 +3,13 @@ from csv import DictWriter
 
 from django.utils import timezone
 
-from facebook_feeds.management.commands.kikar_base_commands import KikarCommentCommand
+from facebook_feeds.management.commands.kikar_base_commands import KikarBaseCommand
 from facebook_feeds.models import Facebook_Feed, Facebook_Status
-from reporting.utils import TextProcessor
 
 DELIMITER = '~'
 
 
-class Command(KikarCommentCommand):
+class Command(KikarBaseCommand):
     def build_commentator_data(self, **kwargs):
         counter = dict()
         for feed in Facebook_Feed.objects.all():
@@ -30,13 +29,13 @@ class Command(KikarCommentCommand):
                     set(status.comments.values_list('comment_from_id', flat=True)))
                 counter[status.feed.id]['full']['likes_%s' % year] += status.likes.count()
                 counter[status.feed.id]['full']['comments_%s' % year] += status.comments.count()
-                print(status.published, status.status_id)
+                print(status.published)
         return counter
 
     def handle(self, *args, **options):
         print('Start.')
         counter = self.build_commentator_data()
-        file_name = 'commentator_data_{}.csv'.format(timezone.now().strftime('%Y_%M_%D'))
+        file_name = 'commentator_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d'))
         with open(file_name, 'wb') as f:
             field_names = [
                 'mk_id',
