@@ -3,7 +3,10 @@
 import openpyxl
 import re
 
+import requests
 from django.utils import timezone
+
+from kikar_hamedina.local_settings import GOOGLE_TRANSLATE_KEY
 
 
 def normalize_header_name(header):
@@ -100,7 +103,16 @@ class TextProcessor(object):
             full_patterns_dict[mk_id]['patterns_self'] = [re.compile(built_pattern, flags=re.U | re.X | re.I)]
         return full_patterns_dict
 
-    def text_manipulation_flatten_text(self,text, delimiter=None, delimiter_rep='*'):
+    def text_manipulation_translate_text(self, text, api_key=GOOGLE_TRANSLATE_KEY, source='en', target='he',
+                                         format='text'):
+        url = u'https://www.googleapis.com/language/translate/v2'
+        kwargs = {'key': api_key, 'q': text, 'source': source, 'target': target, 'format': format}
+        res = requests.get(url=url, params=kwargs)
+        if res.status_code == 200:
+            return res.json()['data']['translations'][0]['translatedText']
+        return text
+
+    def text_manipulation_flatten_text(self, text, delimiter=None, delimiter_rep='*'):
         uni_text = re.sub(ur'[\r\n]+', ur'        ', text, flags=re.I | re.U | re.X)
         if delimiter:
             uni_text = uni_text.replace(delimiter, delimiter_rep)
