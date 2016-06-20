@@ -27,7 +27,7 @@ class Command(KikarBaseCommand):
 
     def build_commentator_data(self, feeds, year=None):
         counter = dict()
-        years = ['2014','2015'] if year else [year]
+        years = ['2014', '2015'] if not year else [year]
         for feed in feeds.order_by('id'):
             print(feed.id)
             counter[feed.id] = {}
