@@ -46,7 +46,7 @@ class Command(KikarBaseCommand):
                         set(status.comments.values_list('comment_from_id', flat=True)))
                     counter[status.feed.id]['full']['likes_%s' % year] += status.likes.count()
                     counter[status.feed.id]['full']['comments_%s' % year] += status.comments.count()
-                    print('\t', status.published)
+                    print('\t%s' % status.published)
             print(feed.id)
         return counter
 
@@ -85,7 +85,7 @@ class Command(KikarBaseCommand):
                        'mk_party': unicode(feed.persona.content_object.current_party.name).encode(
                            'utf-8') if feed.persona.content_object else None,
                        'feed_id': feed.id,
-                       'link': 'http://www.facebook.com/{}'.fornat(feed.vendor_id),
+                       'link': 'http://www.facebook.com/{}'.format(feed.vendor_id),
                        'likes_2014_unique': len(counter[feed.id]['unique']['likes_2014']),
                        'likes_2015_unique': len(counter[feed.id]['unique']['likes_2015']),
                        'likes_2014_full': counter[feed.id]['full']['likes_2014'],
