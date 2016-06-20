@@ -26,9 +26,8 @@ class Command(KikarBaseCommand):
                             help="choose year to filter on"
                             )
 
-    def build_commentator_data(self, feed, **kwargs):
+    def build_commentator_data(self, feeds, **kwargs):
         counter = dict()
-        feeds = Facebook_Feed.objects.filter(id=feed) if feed else Facebook_Feed.objects.all()
         for feed in feeds.order_by('id'):
             counter[feed.id] = {}
             counter[feed.id]['unique'] = {'likes_2014': set(), 'likes_2015': set(), 'comments_2014': set(),
@@ -54,6 +53,7 @@ class Command(KikarBaseCommand):
         print('Start.')
         kwargs = None
         feed = options['feed']
+        feeds = Facebook_Feed.objects.filter(id=feed) if feed else Facebook_Feed.objects.all()
         if options['year']:
             kwargs = {'published__year': options['year']}
         counter = self.build_commentator_data(feed, **kwargs)
@@ -78,7 +78,7 @@ class Command(KikarBaseCommand):
             csv_data = DictWriter(f, fieldnames=field_names, delimiter=DELIMITER)
             headers = {field_name: field_name for field_name in field_names}
             csv_data.writerow(headers)
-            for feed in Facebook_Feed.objects.all():
+            for feed in feeds:
                 row = {'mk_id': feed.persona.object_id,
                        'mk_name': unicode(feed.persona.content_object.name).encode(
                            'utf-8') if feed.persona.content_object else feed.username,
