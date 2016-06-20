@@ -56,7 +56,7 @@ class Command(KikarBaseCommand):
         feeds = Facebook_Feed.objects.filter(id=feed) if feed else Facebook_Feed.objects.all()
         if options['year']:
             kwargs = {'published__year': options['year']}
-        counter = self.build_commentator_data(feed, **kwargs)
+        counter = self.build_commentator_data(feeds, **kwargs)
         file_name = 'commentator_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d'))
         with open(file_name, 'wb') as f:
             field_names = [
