@@ -19,9 +19,17 @@ class Command(KikarBaseCommand):
                             help="choose year to filter on"
                             )
 
-    def build_commentator_data(self, **kwargs):
+        parser.add_argument('--feed',
+                            action='store',
+                            dest='feed',
+                            default=None,
+                            help="choose year to filter on"
+                            )
+
+    def build_commentator_data(self, feed, **kwargs):
         counter = dict()
-        for feed in Facebook_Feed.objects.all().order_by('id'):
+        feeds = Facebook_Feed.objects.filter(id=feed) if feed else Facebook_Feed.objects.all()
+        for feed in feeds.order_by('id'):
             counter[feed.id] = {}
             counter[feed.id]['unique'] = {'likes_2014': set(), 'likes_2015': set(), 'comments_2014': set(),
                                           'comments_2015': set()}
@@ -45,9 +53,10 @@ class Command(KikarBaseCommand):
     def handle(self, *args, **options):
         print('Start.')
         kwargs = None
+        feed = options['feed']
         if options['year']:
             kwargs = {'published__year': options['year']}
-        counter = self.build_commentator_data(**kwargs)
+        counter = self.build_commentator_data(feed, **kwargs)
         file_name = 'commentator_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d'))
         with open(file_name, 'wb') as f:
             field_names = [
