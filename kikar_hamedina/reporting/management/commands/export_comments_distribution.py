@@ -4,10 +4,9 @@ from csv import DictWriter
 from django.utils import timezone
 
 from facebook_feeds.management.commands.kikar_base_commands import KikarBaseCommand
-from facebook_feeds.models import Facebook_Feed, Facebook_Status, Facebook_Status_Comment
-from mks.models import Member
+from facebook_feeds.models import Facebook_Feed, Facebook_Status_Comment
 
-DELIMITER = '~'
+DELIMITER = ','
 
 
 class Command(KikarBaseCommand):
