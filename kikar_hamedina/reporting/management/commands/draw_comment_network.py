@@ -9,7 +9,7 @@ class Command(BaseCommand):
     def create_graph(self):
         G = nx.Graph()
         i = 1
-        for facebook_user in Facebook_User.objects.all()[:10]:
+        for facebook_user in Facebook_User.objects.all().order_by('?')[:10000]:
             print(i)
             G.add_node(facebook_user.facebook_id, type='user', object=facebook_user)
             for feed in Facebook_Feed.objects.all():
@@ -19,7 +19,7 @@ class Command(BaseCommand):
             i += 1
 
         nx.draw(G)
-        plt.savefig("graph_text.png")
+        plt.savefig("graph_test.png")
 
     def handle(self, *args, **options):
         print('start.')
