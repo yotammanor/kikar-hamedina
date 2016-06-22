@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
 import networkx as nx
+import matplotlib.pyplot as plt
 
-from facebook_feeds.models import Facebook_Status_Comment, Facebook_User, Facebook_Feed
+from facebook_feeds.models import Facebook_User, Facebook_Feed
 
 
 class Command(BaseCommand):
@@ -16,6 +17,9 @@ class Command(BaseCommand):
                 num_of_comments = facebook_user.comments.filter(parent__feed__id=feed.id).count()
                 G.add_edge(facebook_user.facebook_id, feed.id, weight=num_of_comments)
             i += 1
+
+        nx.draw(G)
+        plt.savefig("graph_text.png")
 
     def handle(self, *args, **options):
         print('start.')
