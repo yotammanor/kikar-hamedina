@@ -305,7 +305,7 @@ class Command(BaseCommand):
             except AttributeError:
                 # exception - trying to set an empty token (NoneType) as graph.access_token
                 # Fallback: Set facebook graph access token to app access token
-                self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                         settings.FACEBOOK_SECRET_KEY)
                 if status.feed.requires_user_token:
                     # If the Status's Feed is set to require a user-token, and none exist in our db, the feed is skipped.
