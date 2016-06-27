@@ -64,6 +64,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
       # python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
       # sudo -u postgres pg_dump kikar | gzip > ../devOps/kikar_setup.db.gz
+      python manage.py migrate
       python manage.py fetchfeedproperties || true
       # python manage.py classify_and_test_autotag 1
     EOS

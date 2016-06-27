@@ -21,12 +21,13 @@ from ...models import \
     Facebook_Status as Facebook_Status_Model, \
     User_Token as User_Token_Model, \
     Facebook_Status_Attachment as Facebook_Status_Attachment_Model
+from .kikar_base_commands import KikarStatusCommand
 
 FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.5')
 
 SLEEP_TIME = 3
 
-NUMBER_OF_TRIES_FOR_REQUEST = 3
+NUMBER_OF_TRIES_FOR_REQUEST = getattr(settings, 'NUMBER_OF_TRIES_FOR_REQUEST', 2)
 
 LENGTH_OF_EMPTY_ATTACHMENT_JSON = 21
 
@@ -376,8 +377,8 @@ class Command(BaseCommand):
 
             except AttributeError:
                 # Fallback: Set facebook graph access token to app access token
-                self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
-                                                                        settings.FACEBOOK_SECRET_KEY)
+                self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                          settings.FACEBOOK_SECRET_KEY)
                 if feed.requires_user_token:
                     # If the Feed is set to require a user-token, and none exist in our db, the feed is skipped.
                     print 'feed %d requires user token, skipping.' % feed.id
@@ -386,7 +387,7 @@ class Command(BaseCommand):
 
                     # Get the data using the pre-set token
             if use_app_token:
-                self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                         settings.FACEBOOK_SECRET_KEY)
             return {'feed_id': feed.id,
                     'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit, date_filters)}

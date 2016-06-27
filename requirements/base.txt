@@ -3,7 +3,7 @@ django-contrib-comments==1.6.1
 ipython
 django-extensions==1.5.9
 djangorestframework==2.3.10
-facebook-sdk==0.4.0
+facebook-sdk==1.0.0
 psycopg2==2.5.3
 python-mimeparse==0.1.4
 six==1.10.0
@@ -12,7 +12,7 @@ django-staticfiles-fontawesome==2.0.0
 django-endless-pagination==2.0
 pyreadline==2.0
 pytz==2015.7
-requests==2.1.0
+requests==2.10.0
 unidecode==0.04.14
 dropbox==2.0.0
 pandas==0.17.1
@@ -30,7 +30,8 @@ django-autotag
 django-taggit
 unicode-slugify
 solid_i18n==1.1.1
-
+dj-database-url==0.4.1
+networkx==1.11
 
 django-debug-toolbar>=1.0
 nose

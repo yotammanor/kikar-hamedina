@@ -454,14 +454,24 @@ class Facebook_User(models.Model):
     type = models.CharField(max_length=32, null=True, blank=True)
 
     def __unicode__(self):
-        return 'Facebook User:{} ({})'.format(self.name, self.facebook_id)
+        return u'Facebook User:{} ({})'.format(self.name, self.facebook_id)
+
+
+class Facebook_Like(models.Model):
+    user = models.ForeignKey('Facebook_User', related_name='likes')
+    status = models.ForeignKey('Facebook_Status', related_name='likes')
+    type = models.CharField(max_length=32, default='like')
+
+    def __unicode__(self):
+        return u'{}: on {} by {}'.format(self.type, self.status.status_id, self.user.facebook_id)
 
 
 class Facebook_Status_Comment(models.Model):
     comment_id = models.CharField(unique=True, max_length=128, primary_key=True)
-    parent = models.ForeignKey('Facebook_Status')
-    comment_from = models.ForeignKey('Facebook_User')
+    parent = models.ForeignKey('Facebook_Status', related_name='comments')
+    comment_from = models.ForeignKey('Facebook_User', related_name='comments')
     content = models.TextField()
+    processed_content = models.TextField(null=True, blank=True)
     like_count = models.PositiveIntegerField(default=0, blank=True)
     comment_count = models.PositiveIntegerField(default=0, blank=True)
     published = models.DateTimeField()
