@@ -27,13 +27,15 @@ class Command(KikarCommentCommand):
         csv_data = DictWriter(f, fieldnames=field_names, delimiter=DELIMITER)
         processor = TextProcessor()
 
-        for i, comment in enumerate(comments):
+        i = 0
+        for comment in comments:
             processed_text = comment.content
             # processed_text = processor.text_manipulation_mk_names(text=comment.content, context_status=comment.parent)
             if options['translate']:
                 processed_text = processor.text_manipulation_translate_text(text=processed_text)
             processed_text = processor.text_manipulation_emojis(text=processed_text)
             print('writing comment {} of {}'.format(i + 1, comments.count()))
+            i += 1
             dict_row = {
                 'content': processor.text_manipulation_flatten_text(processed_text, delimiter=DELIMITER),
             }
