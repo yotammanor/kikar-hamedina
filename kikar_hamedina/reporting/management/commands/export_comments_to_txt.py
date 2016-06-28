@@ -28,18 +28,19 @@ class Command(KikarCommentCommand):
         processor = TextProcessor()
 
         i = 0
-        for comment in comments:
-            processed_text = comment.content
-            # processed_text = processor.text_manipulation_mk_names(text=comment.content, context_status=comment.parent)
-            if options['translate']:
-                processed_text = processor.text_manipulation_translate_text(text=processed_text)
-            processed_text = processor.text_manipulation_emojis(text=processed_text)
-            print('writing comment {} of {}'.format(i + 1, comments.count()))
-            i += 1
-            dict_row = {
-                'content': processor.text_manipulation_flatten_text(processed_text, delimiter=DELIMITER),
-            }
-            csv_data.writerow(dict_row)
+        for status in Facebook_Status.objects.all():
+            for comment in status.commentsa.all():
+                processed_text = comment.content
+                # processed_text = processor.text_manipulation_mk_names(text=comment.content, context_status=comment.parent)
+                if options['translate']:
+                    processed_text = processor.text_manipulation_translate_text(text=processed_text)
+                processed_text = processor.text_manipulation_emojis(text=processed_text)
+                print('writing comment {} of {}'.format(i + 1, comments.count()))
+                i += 1
+                dict_row = {
+                    'content': processor.text_manipulation_flatten_text(processed_text, delimiter=DELIMITER),
+                }
+                csv_data.writerow(dict_row)
 
         f.close()
         print('Done.')
