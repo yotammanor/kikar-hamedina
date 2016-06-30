@@ -29,7 +29,7 @@ class Command(KikarCommentCommand):
         processor = TextProcessor()
 
         i = 0
-        for status in Facebook_Status.objects.all():
+        for status in Facebook_Status.objects_no_filters.filter(is_comment=False):
             for comment in status.comments.all():
                 processed_text = comment.content
                 # processed_text = processor.text_manipulation_mk_names(text=comment.content, context_status=comment.parent)
