@@ -34,7 +34,7 @@ class Command(KikarBaseCommand):
 
     def handle(self, *args, **options):
         print('Start.')
-        all = Facebook_Status_Comment.objects.count()
+        all = Facebook_Status_Comment.objects.filter(parent__is_comment=False).count()
         feed = options['feed']
         feeds = Facebook_Feed.objects.filter(id=feed) if feed else Facebook_Feed.objects.all()
         counter = dict()
