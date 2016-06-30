@@ -40,7 +40,8 @@ class Command(KikarBaseCommand):
         counter = dict()
         for feed in feeds.order_by('id'):
             print(feed.id)
-            counter[feed.id] = Facebook_Status_Comment.objects.filter(parent__feed__id=feed.id).count()
+            counter[feed.id] = Facebook_Status_Comment.objects.filter(parent__feed__id=feed.id,
+                                                                      parent__is_comment=False).count()
         file_name = 'comments_distribution_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
         field_names = [
             'feed_id',
