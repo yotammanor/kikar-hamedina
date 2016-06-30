@@ -34,7 +34,7 @@ class Command(KikarBaseCommand):
 
     def handle(self, *args, **options):
         print('Start.')
-        languages = list({x for x in Facebook_Status_Comment.objects.all().values_list('lang', flat=True)})
+        languages = ['he', 'en', 'ar', 'ru', '']
         feed = options['feed']
         feeds = Facebook_Feed.objects.filter(id=feed) if feed else Facebook_Feed.objects.all()
         counter = dict()
@@ -46,6 +46,7 @@ class Command(KikarBaseCommand):
             counter[feed.id]['total'] = comments_for_feed.count()
             for lang in languages:
                 counter[feed.id][lang] = comments_for_feed.filter(lang=lang).count()
+            counter[feed.id]['other'] = comments_for_feed.exclude(lang__in=languages).count()
         file_name = 'comments_language_distribution_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
         field_names = [
                           'feed_id',
