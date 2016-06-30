@@ -1,5 +1,8 @@
 #!encoding utf-8
 from csv import DictWriter
+
+from django.utils import timezone
+
 from facebook_feeds.management.commands.kikar_base_commands import KikarCommentCommand
 from facebook_feeds.models import Facebook_Status
 from reporting.utils import TextProcessor
@@ -20,8 +23,8 @@ class Command(KikarCommentCommand):
     def handle(self, *args, **options):
         print('Start.')
 
-        comments = self.parse_comments(options)
-        f = open('{}_content_only.txt'.format(options['file_path'].split('.csv')[0]), 'wb')
+        file_name = 'content_only_{}.txt'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
+        f = open(file_name, 'wb')
         field_names = [
             'content',
         ]
