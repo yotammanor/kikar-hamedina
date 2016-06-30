@@ -46,7 +46,7 @@ class Command(KikarBaseCommand):
             counter[feed.id]['total'] = comments_for_feed.count()
             for lang in languages:
                 counter[feed.id][lang] = comments_for_feed.filter(lang=lang).count()
-        file_name = 'comments_distribution_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
+        file_name = 'comments_language_distribution_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
         field_names = [
                           'feed_id',
                           'link',
