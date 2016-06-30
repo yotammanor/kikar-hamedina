@@ -480,7 +480,7 @@ class Facebook_Status_Comment(models.Model):
     message_tags = models.TextField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False, null=False)
     locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1))
-    lang = models.CharField(null=True, blank=True, max_length=6)
+    lang = models.CharField(null=True, blank=True, max_length=6, db_index=True)
     objects = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
 
     tags = TaggableManager(through=TaggedItem, manager=_KikarTaggableManager)
