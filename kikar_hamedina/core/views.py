@@ -79,8 +79,8 @@ class HotTopicsView(ListView):
         queryset = Tag.objects.filter(is_for_main_display=True,
                                       kikartags_taggeditem_items__object_id__in=[status.id for status in
                                                                                  relevant_statuses]).annotate(
-                number_of_posts=Count('kikartags_taggeditem_items')).order_by(
-                '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
+            number_of_posts=Count('kikartags_taggeditem_items')).order_by(
+            '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -154,10 +154,10 @@ class AllStatusesView(StatusListView):
     def get_context_data(self, **kwargs):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
         feeds = Facebook_Feed.objects.filter(
-                facebook_status__published__gte=(
-                    datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
+            facebook_status__published__gte=(
+                datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
         context['side_bar_list'] = MEMBER_MODEL.objects.filter(
-                id__in=[feed.persona.owner_id for feed in feeds]).distinct().order_by('name')
+            id__in=[feed.persona.owner_id for feed in feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
 
@@ -192,7 +192,7 @@ class SearchView(StatusListView):
         context['excluded'] = Facebook_Status.objects.filter(status_id__in=params_dict['excluded'])
 
         context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
-                x.name for x in context['tags'])
+            x.name for x in context['tags'])
 
         return_queryset = apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
         context['number_of_results'] = return_queryset.count()
@@ -252,7 +252,7 @@ class MemberView(StatusFilterUnifiedView):
             'entries': MemberView.objects.all(),
         }
         return render_to_response(
-                template, context, context_instance=RequestContext(request))
+            template, context, context_instance=RequestContext(request))
 
     def get_queryset(self, **kwargs):
         self.persona = get_object_or_404(MEMBER_MODEL, id=self.kwargs['id']).facebook_persona
@@ -286,7 +286,8 @@ class PartyView(StatusFilterUnifiedView):
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         return apply_request_params(
-                Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
+            Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
+
 
 # TOFIx..
 class PartyMembersView(StatusFilterUnifiedView):
@@ -299,8 +300,7 @@ class PartyMembersView(StatusFilterUnifiedView):
         all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
                                all_members_for_party if member.facebook_persona]
         return apply_request_params(
-                Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
-
+            Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
 
 
 class TagView(StatusFilterUnifiedView):
@@ -351,9 +351,9 @@ class TagView(StatusFilterUnifiedView):
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
         all_feeds_for_tag = Facebook_Feed.objects.filter(
-                facebook_status__id__in=[status.id for status in context['object_list']]).distinct()
+            facebook_status__id__in=[status.id for status in context['object_list']]).distinct()
         context['side_bar_list'] = MEMBER_MODEL.objects.filter(
-                id__in=[feed.persona.owner_id for feed in all_feeds_for_tag]).distinct().order_by('name')
+            id__in=[feed.persona.owner_id for feed in all_feeds_for_tag]).distinct().order_by('name')
         return context
 
 
@@ -469,8 +469,9 @@ def status_update(request, status_id):
     try:
         if status.needs_refresh:
             update_status_command = updatestatus.Command()
-            update_status_command.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
-                                                                                     settings.FACEBOOK_SECRET_KEY)
+            update_status_command.graph.access_token = update_status_command.graph.get_app_access_token(
+                settings.FACEBOOK_APP_ID,
+                settings.FACEBOOK_SECRET_KEY)
             status_response_dict = update_status_command.fetch_status_object_data(status_id) or {}
 
             response_data['likes'] = getattr(getattr(getattr(status_response_dict, 'likes', 0), 'summary', 0),
@@ -589,15 +590,15 @@ def search_bar(request):
         try:
             for party in search_bar_parties(search_text):
                 response_data['results'].append(
-                        result_factory(party.id, party.name, "party"))
+                    result_factory(party.id, party.name, "party"))
 
             for member in search_bar_members(search_text):
                 response_data['results'].append(
-                        result_factory(member.id, member.name, "member", party=member.current_party.name))
+                    result_factory(member.id, member.name, "member", party=member.current_party.name))
 
             for tag in search_bar_tags(search_text):
                 response_data['results'].append(
-                        result_factory(tag.id, tag.name, "tag"))
+                    result_factory(tag.id, tag.name, "tag"))
 
         except Exception as e:
             print "search bar exception:", e
@@ -622,7 +623,7 @@ def search_bar_parties(search_text):
         party_query = combined_party_name_query & Q(knesset__number=CURRENT_KNESSET_NUMBER)
 
     return PARTY_MODEL.objects.filter(party_query).distinct().order_by(
-            'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
+        'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
 
 
 def search_bar_members(search_text):
@@ -672,7 +673,7 @@ def return_suggested_tags(request, status_id):
 
     for tag in Facebook_Status.objects.get(status_id=status_id).suggested_tags(n=3):
         response_data['results'].append(
-                result_factory(tag.id, tag.name, "tag", tag.percent))
+            result_factory(tag.id, tag.name, "tag", tag.percent))
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
