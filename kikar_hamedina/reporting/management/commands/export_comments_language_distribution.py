@@ -34,24 +34,27 @@ class Command(KikarBaseCommand):
 
     def handle(self, *args, **options):
         print('Start.')
-        all = Facebook_Status_Comment.objects.filter(parent__is_comment=False).count()
+        languages = list({x for x in Facebook_Status_Comment.objects.all().values_list('lang', flat=True)})
         feed = options['feed']
         feeds = Facebook_Feed.objects.filter(id=feed) if feed else Facebook_Feed.objects.all()
         counter = dict()
         for feed in feeds.order_by('id'):
             print(feed.id)
-            counter[feed.id] = Facebook_Status_Comment.objects.filter(parent__feed__id=feed.id,
-                                                                      parent__is_comment=False).count()
-        file_name = 'comments_distribution_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
+            comments_for_feed = Facebook_Status_Comment.objects.filter(parent__feed__id=feed.id,
+                                                                       parent__is_comment=False)
+            counter[feed.id] = dict()
+            counter[feed.id]['total'] = comments_for_feed.count()
+            for lang in languages:
+                counter[feed.id][lang] = comments_for_feed.filter(lang=lang).count()
+        file_name = 'comments_language_distribution_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
         field_names = [
-            'feed_id',
-            'link',
-            'mk_id',
-            'mk_name',
-            'mk_party',
-            'number_of_comments',
-            'ratio_of_comments',
-        ]
+                          'feed_id',
+                          'link',
+                          'mk_id',
+                          'mk_name',
+                          'mk_party',
+                          'number_of_comments',
+                      ] + languages
         headers = {field_name: field_name for field_name in field_names}
         with open(file_name, 'wb') as f:
             csv_data = DictWriter(f, fieldnames=field_names, delimiter=DELIMITER)
@@ -64,8 +67,10 @@ class Command(KikarBaseCommand):
                            'utf-8') if feed.persona.content_object else None,
                        'feed_id': feed.id,
                        'link': 'http://www.facebook.com/{}'.format(feed.vendor_id),
-                       'number_of_comments': counter[feed.id],
-                       'ratio_of_comments': float(counter[feed.id]) / all,
+                       'number_of_comments': counter[feed.id]['total'],
                        }
+                for lang in languages:
+                    row[lang] = counter[feed.id][lang]
+
                 csv_data.writerow(row)
         print('Done.')

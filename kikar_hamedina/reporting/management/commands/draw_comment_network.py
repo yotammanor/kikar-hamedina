@@ -14,7 +14,8 @@ class Command(BaseCommand):
             G.add_node(facebook_user.facebook_id, type='user', object=facebook_user)
             for feed in Facebook_Feed.objects.all():
                 G.add_node(feed.id, type='mk', object=feed)
-                num_of_comments = facebook_user.comments.filter(parent__feed__id=feed.id).count()
+                num_of_comments = facebook_user.comments.filter(parent__feed__id=feed.id,
+                                                                parent__is_comment=False).count()
                 G.add_edge(facebook_user.facebook_id, feed.id, weight=num_of_comments)
             i += 1
 

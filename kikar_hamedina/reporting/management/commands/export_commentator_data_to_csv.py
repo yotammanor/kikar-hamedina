@@ -64,7 +64,7 @@ class Command(KikarBaseCommand):
         else:
             for feed in feeds.order_by('id'):
                 print(feed.id)
-                statuses = feed.facebook_status_set.all()
+                statuses = feed.facebook_status_set.filter(is_comment=False)
                 counter[feed.id] = self.build_commentator_data(statuses, year=options['year'])
         file_name = 'commentator_data_{}.csv'.format(timezone.now().strftime('%Y_%m_%d_%H_%M_%S'))
         with open(file_name, 'wb') as f:

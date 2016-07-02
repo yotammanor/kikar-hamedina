@@ -30,18 +30,26 @@ class KikarCommentCommand(KikarBaseCommand):
                             help="execute on list of comment ids from file"
                             )
 
+        parser.add_argument('--all',
+                            action='store_true',
+                            dest='all_statuses',
+                            default=False,
+                            help="execute on all statuses")
+
     def parse_comments(self, options):
         list_of_comments = list()
-        if options['file_path']:
+        if options['all_statuses']:
+            list_of_comments = Facebook_Status_Comment.objects.all()
+        elif options['file_path']:
             with open(options['file_path'], 'r') as f:
                 reader = DictReader(f)
                 list_of_comment_ids = [x['comment_id'] for x in reader]
                 list_of_comments = Facebook_Status_Comment.objects.filter(comment_id__in=list_of_comment_ids)
+
         return list_of_comments
 
 
 class KikarStatusCommand(KikarBaseCommand):
-
     def add_arguments(self, parser):
         parser.add_argument('status_id', nargs='?', type=str)
         parser.add_argument('-f',
@@ -94,7 +102,7 @@ class KikarStatusCommand(KikarBaseCommand):
                             action='store_true',
                             dest='skip',
                             default=False,
-                            help="skip statuses that has data for them"),\
+                            help="skip statuses that has data for them"), \
         parser.add_argument('--workers',
                             action='store',
                             type=int,

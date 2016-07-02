@@ -81,7 +81,7 @@ class Command(BaseCommand):
             print('working on feed {} of {}'.format(i + 1, feeds.count()))
             residual = None
             sampled_comments_for_feed = []
-            statuses_for_feed = Facebook_Status.objects.filter(feed__id=feed.id).filter(
+            statuses_for_feed = Facebook_Status.objects.filter(feed__id=feed.id, is_comment=False).filter(
                 published__range=[from_date, to_date]).order_by(
                 'comment_count')
 

@@ -381,7 +381,7 @@ class Command(BaseCommand):
                                                                           settings.FACEBOOK_SECRET_KEY)
                 if feed.requires_user_token:
                     # If the Feed is set to require a user-token, and none exist in our db, the feed is skipped.
-                    print 'feed %d requires user token, skipping.' % feed.id
+                    print('feed %d requires user token, skipping.' % feed.id)
                     data_dict = {'feed_id': feed.id, 'statuses': []}
                     return data_dict
 
@@ -396,16 +396,16 @@ class Command(BaseCommand):
             # Set facebook graph access token to user access token
             token = User_Token_Model.objects.filter(feeds__id=feed.id).order_by('-date_of_creation').first()
             if not token:
-                print 'No Token found for User Profile %s' % feed
+                print('No Token found for User Profile %s' % feed)
                 return {'feed_id': feed.id, 'statuses': []}
             else:
-                print 'using token by user_id: %s' % token.user_id
+                print('using token by user_id: %s' % token.user_id)
                 self.graph.access_token = token.token
                 return {'feed_id': feed.id,
                         'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit,
                                                                         date_filters)}
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
-            print 'Profile %s is of type %s, skipping.' % (feed.id, feed.feed_type)
+            print('Profile %s is of type %s, skipping.' % (feed.id, feed.feed_type))
             return {'feed_id': feed.id, 'statuses': []}
 
     def handle(self, *args, **options):
@@ -423,7 +423,7 @@ class Command(BaseCommand):
             post_number_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_INITIAL_RUN
         else:
             post_number_limit = DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN
-        print 'Variable post_number_limit set to: {0}.'.format(post_number_limit)
+        print('Variable post_number_limit set to: {0}.'.format(post_number_limit))
 
         use_app_token = options['use_app_token']
 
