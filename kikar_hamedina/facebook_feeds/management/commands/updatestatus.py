@@ -24,7 +24,7 @@ DELETED_STATUS_ERROR_CODE = 100
 
 
 class Command(BaseCommand):
-    args = '<feed_id>'
+    args = '<status_id>'
     help = 'Updates a single status'
     option_list = BaseCommand.option_list + (
         make_option('-f',
@@ -55,7 +55,14 @@ class Command(BaseCommand):
                     action='store_true',
                     dest='update-deleted',
                     default=False,
-                    help="Update is_deleted flag: set to True/False for deleted/existing statuses"),
+                    help=u'Update is_deleted flag: set to True/False for deleted/existing statuses'),
+        make_option('-t',
+                    '--use-app-token',
+                    action='store_true',
+                    dest='use_app_token',
+                    default=False,
+                    help='Use app access token for all types and cases of requests'
+                    )
     )
 
     graph = facebook.GraphAPI()
@@ -88,7 +95,7 @@ class Command(BaseCommand):
                 logger.warning(warning_msg)
 
                 if try_number == NUMBER_OF_TRIES_FOR_REQUEST:
-                    error_msg = "Failed three attempts for feed #({0}) from FB API.".format(status_id)
+                    error_msg = "Failed {} attempts for feed #({}) from FB API.".format(NUMBER_OF_TRIES_FOR_REQUEST, status_id)
                     logger = logging.getLogger('django.request')
                     logger.warning(error_msg)
                     status_data = {}
@@ -288,10 +295,11 @@ class Command(BaseCommand):
         status.is_deleted = True
         status.save()
 
-    def fetch_status_data(self, status):
+    def fetch_status_data(self, status, use_app_token):
         """
         Returns a Dict object with Status data, by Status ID, empty Dict if not working,
         None if status deleted.
+        :param use_app_token:
         """
 
         status_dict = dict()
@@ -307,25 +315,29 @@ class Command(BaseCommand):
                 # Fallback: Set facebook graph access token to app access token
                 self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                         settings.FACEBOOK_SECRET_KEY)
+
                 if status.feed.requires_user_token:
                     # If the Status's Feed is set to require a user-token, and none exist in our db, the feed is skipped.
-                    print 'feed %d requires user token, skipping.' % status.id
+                    print('status %d requires user token, skipping.' % status.status_id)
                     is_skip = True
 
                     # Get the data using the pre-set token
-
+            if use_app_token:
+                self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                          settings.FACEBOOK_SECRET_KEY)
+                is_skip = False
         elif status.feed.feed_type == 'UP':  # feed_type == 'UP' - User Profile
             # Set facebook graph access token to user access token
             token = User_Token.objects.filter(feeds__id=status.id).order_by('-date_of_creation').first()
             if not token:
-                print 'No Token found for User Profile %s' % status
+                print('No Token found for User Profile %s' % status)
                 is_skip = True
             else:
-                print 'using token by user_id: %s' % token.user_id
+                print('using token by user_id: %s' % token.user_id)
                 self.graph.access_token = token.token
 
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
-            print 'Profile %s is of type %s, skipping.' % (status.id, status.feed_type)
+            print('Profile %s is of type %s, skipping.' % (status.id, status.feed_type))
             is_skip = True
 
         if not is_skip:
@@ -343,6 +355,7 @@ class Command(BaseCommand):
 
         list_of_statuses = list()
         # Case no args - fetch all feeds
+        use_app_token = options['use_app_token']
         if len(args) == 0:
             criteria = {}
             if options['from-date'] is not None:
@@ -374,7 +387,7 @@ class Command(BaseCommand):
         # Iterate over list_of_statuses
         for i, status in enumerate(list_of_statuses):
             self.stdout.write('Working on status {0} of {1}: {2}.'.format(i+1, len(list_of_statuses), status.status_id))
-            status_data = self.fetch_status_data(status)
+            status_data = self.fetch_status_data(status, use_app_token)
             self.stdout.write('Successfully fetched status: {0}.'.format(status.pk))
 
             if status_data:
