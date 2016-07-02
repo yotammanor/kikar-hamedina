@@ -171,7 +171,7 @@ class SearchView(StatusListView):
     def get_queryset(self):
         params_dict = get_parsed_request(get_params=self.request.GET)
         query_Q = parse_to_q_object(self.request.GET, params_dict)
-        print 'get_queryset_executed:', query_Q
+        # print 'get_queryset_executed:', query_Q
 
         return apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
 
@@ -270,6 +270,8 @@ class MemberView(StatusFilterUnifiedView):
 
         dif_dict = feed.popularity_dif(POPULARITY_DIF_DAYS_BACK)
         context['change_in_popularity'] = dif_dict
+        time_since_updated = timezone.now() - feed.locally_updated
+        context['time_since_updated'] = time_since_updated.days
 
         return context
 
@@ -605,12 +607,12 @@ def search_bar(request):
 
 
 def search_bar_parties(search_text):
-    query_direct_name = Q(name__contains=search_text)
+    query_direct_name = Q(name__icontains=search_text)
 
     if IS_ELECTIONS_MODE:
-        query_alternative_names = Q(candidatelistaltname__name__contains=search_text)
+        query_alternative_names = Q(candidatelistaltname__name__icontains=search_text)
     else:
-        query_alternative_names = Q(partyaltname__name__contains=search_text)
+        query_alternative_names = Q(partyaltname__name__icontains=search_text)
 
     combined_party_name_query = query_direct_name | query_alternative_names
 
@@ -625,15 +627,15 @@ def search_bar_parties(search_text):
 
 def search_bar_members(search_text):
     # Members
-    query_direct_name = Q(name__contains=search_text)
+    query_direct_name = Q(name__icontains=search_text)
 
     if IS_ELECTIONS_MODE:
-        query_alternative_names = Q(person__personaltname__name__contains=search_text)
-        combined_member_name_query = Q(person__name__contains=search_text) | query_alternative_names
+        query_alternative_names = Q(person__personaltname__name__icontains=search_text)
+        combined_member_name_query = Q(person__name__icontains=search_text) | query_alternative_names
         member_query = combined_member_name_query
         member_order_by = 'person__name'
     else:
-        query_alternative_names = Q(memberaltname__name__contains=search_text)
+        query_alternative_names = Q(memberaltname__name__icontains=search_text)
         combined_member_name_query = query_direct_name | query_alternative_names
         member_query = combined_member_name_query & Q(is_current=True)
         member_order_by = 'name'
@@ -643,7 +645,7 @@ def search_bar_members(search_text):
 
 
 def search_bar_tags(search_text):
-    query_direct_name = Q(name__contains=search_text)
+    query_direct_name = Q(name__icontains=search_text)
     query_tag_synonyms = Q(synonyms__tag__name=search_text)
     combined_tag_name_query = query_direct_name | query_tag_synonyms
 
@@ -781,7 +783,6 @@ class CustomView(SearchView):
     def get_queryset(self, **kwargs):
         sv = get_object_or_404(UserSearch, title=self.kwargs['title'])
         query_filter = sv.queryset_q
-        print query_filter
         if self.request.GET.get('range', None) or self.request.GET.get('range', None) != 'default':
             date_range_q = filter_by_date(self.request)
         else:
@@ -791,7 +792,6 @@ class CustomView(SearchView):
             order_by = get_order_by(self.request)
         else:
             order_by = json.loads(sv.order_by)
-
         return Facebook_Status.objects.filter(query_filter).filter(date_range_q).order_by(*order_by)
 
     def get_context_data(self, **kwargs):

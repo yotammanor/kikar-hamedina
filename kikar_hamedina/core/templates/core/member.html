@@ -8,32 +8,34 @@
     <i class="fa fa-user"></i> {{ object.name }}
 {% endblock %}
 
-{% block details %}
-    {% with object.facebook_persona.get_main_feed as feed %}
-        {% load humanize %}
-        {% load core_extras %}
+{% block context-header %}
+    <div class="container well" id="details-container">
+        {% with object.facebook_persona.get_main_feed as feed %}
+            {% load humanize %}
+            {% load core_extras %}
 
-        <img src="{{ feed.picture_large }}" class="img-rounded pull-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}" id="profile-photo">
+            <img src="{{ feed.picture_large }}"
+                 class="img-rounded pull-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}" id="profile-photo">
 
-        <p>
-            <i class="fa fa-group"></i>
-            <a href="{% url 'party' object.current_party.id %}">{{ object.current_party.name }}</a>
-        </p>
-        {% if object.facebook_persona %}
             <p>
-                <i class="fa fa-thumbs-up"></i>
-                {{ feed.current_fan_count|floatformat:1|intcomma|slice:":-2" }}
+                <i class="fa fa-group"></i>
+                <a href="{% url 'party' object.current_party.id %}">{{ object.current_party.name }}</a>
+            </p>
+            {% if object.facebook_persona %}
+                <p>
+                    <i class="fa fa-thumbs-up"></i>
+                    {{ feed.current_fan_count|floatformat:1|intcomma|slice:":-2" }}
                 <span id="difference-in-fan-count">({% if change_in_popularity.fan_count_dif_nominal > 0 %}
                     +{% endif %}{{ change_in_popularity.fan_count_dif_growth_rate | percent }}
                     {% trans 'last month' %}{% if change_in_popularity.is_interpolated %},
                         {% trans 'approximately' %}{% endif %})</span>
-            </p>
-            <i class="fa fa-bar-chart-o"></i>
-            <span>
+                </p>
+                <i class="fa fa-bar-chart-o"></i>
+                <span>
                 <span class="hidden-object" id="insights-loading">{% trans 'Loading additional data...' %}</span>
                 <i class="hidden-object fa fa-exclamation" id="insights-error"></i>
             </span>
-            <span id="insights" style="display: none" data-objectid="{{ object.id }}">
+                <span id="insights" style="display: none" data-objectid="{{ object.id }}">
                 <b>{% trans 'Last Month' %}:</b>
                 <span id="ins_n_month">-</span> {% trans 'Statuses' %},
                 <span id="ins_mean_likes_month">-</span> {% trans 'Likes on average' %}
@@ -41,37 +43,60 @@
                 <span id="ins_n_week">-</span> {% trans 'Statuses' %},
                 <span id="ins_mean_likes_week">-</span> {% trans 'Likes on average' %}
             </span>
-        {% endif %}
-        {% if object.ok_url or object.current_party.ok_url %}
-            <p>
-                <img src="/static/media/oknesset_icon.png"/>
-                {% if object.ok_url %}
-                    <a href="{{ object.ok_url }}">{{ object.name }}</a> /
-                {% endif %}
-                {% if object.current_party.ok_url %}
-                    <a href="{{ object.current_party.ok_url }}">{{ object.current_party.name }}</a>
-                {% endif %}
-                {% trans 'At Open Knesset' %}
-            </p>
-        {% endif %}
+            {% endif %}
+            {% if object.ok_url or object.current_party.ok_url %}
+                <p>
+                    <img src="/static/media/oknesset_icon.png"/>
+                    {% if object.ok_url %}
+                        <a href="{{ object.ok_url }}">{{ object.name }}</a> /
+                    {% endif %}
+                    {% if object.current_party.ok_url %}
+                        <a href="{{ object.current_party.ok_url }}">{{ object.current_party.name }}</a>
+                    {% endif %}
+                    {% trans 'At Open Knesset' %}
+                </p>
+            {% endif %}
 
-    {% endwith %}
+            {% if time_since_updated >= 3 %}
+                <div class="alert alert-danger" role="alert">
+                    <strong>{% blocktrans %}Last update at{% endblocktrans %}
+                        {{ feed.locally_updated }}.</strong>
+                    {% blocktrans %} This is probably a problem, and we'd love to{% endblocktrans %}
+                    <a href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - דיווח על תקלה">{% blocktrans %}hear about
+                        it!{% endblocktrans %}</a>
+                </div>
+            {% else %}
+                <p>{% blocktrans %}Last update at{% endblocktrans %}: {{ feed.locally_updated }}</p>
+            {% endif %}
+        {% endwith %}
+    </div>
 {% endblock %}
 
 {% block noposts %}
-    {% if not object.facebook_persona %}
+    {% if object.facebook_persona and object.facebook_persona.get_main_feed.feed_type == 'UP' %}
+        <p>{% trans "Due to technical limitations, we can't collect data on private Facebook Users." %}</p>
+        <p>{% trans "You can check it out on " %}<a
+                href="http://wwww.facebook.com/{{ object.facebook_persona.get_main_feed.vendor_id }}"
+                target="_blank">{% trans 'Facebook' %}</a>.
+        </p>
+        <p>
+            {% trans 'Does MK ' %}{{ object.name }} {% trans 'has a Public Facebook Page' %}? <a
+                href="mailto:yotammanor@gmail.com?subject='כיכר המדינה - דף פייסבוק חסר לחבר/ת כנסת'"
+                target="_blank">{% trans 'Tell us' %}</a> {% trans 'please' %}!
+        </p>
+        {% elif not object.facebook_persona %}
         <p>{% trans 'Facebook Page not found for MK' %} {{ object.name }}.
             {% if object.email %}
                 {% trans 'You can' %}<a href="mailto:{{ object.email }}" target="_blank">
                 {% trans 'send' %}{% if object.is_female %}{% trans 'her' %}{% else %}
-                    {% trans 'him' %}{% endif %}{% trans 'an email' %}
-            </a>.
+                    {% trans 'him' %}{% endif %} {% trans 'an email' %}</a>.
             {% endif %}
         </p>
         <p>
-        {% trans 'Does MK ' %}{{ object.name }}{% trans 'has a Facebook Page' %}? <a
-            href="mailto:yotammanor@gmail.com?subject='כיכר המדינה - דף פייסבוק חסר לחבר/ת כנסת'"
-            target="_blank">{% trans 'Tell us' %}!</a>!
+            {% trans 'Does MK ' %}{{ object.name }} {% trans 'has a Facebook Page' %}? <a
+                href="mailto:yotammanor@gmail.com?subject='כיכר המדינה - דף פייסבוק חסר לחבר/ת כנסת'"
+                target="_blank">{% trans 'Tell us' %}</a> {% trans 'please' %}!
+        </p>
     {% endif %}
 {% endblock %}
 
@@ -81,4 +106,3 @@
 {% block scripts %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/updateInsightsForMember.js"></script>
 {% endblock %}
-

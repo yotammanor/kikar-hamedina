@@ -8,18 +8,18 @@
     שליפות מוגדרות מראש
 {% endblock %}
 
-{% block details %}
-
-    {% if requested_user %}
+{% block context-header %}
+    <div class="container well" id="details-container">
+        {% if requested_user %}
+            <h4>
+                משתמש:
+                {{ requested_user.username }}
+            </h4>
+        {% endif %}
         <h4>
-            משתמש:
-            {{ requested_user.username }}
+            מס' שאילתות: {{ object_list.count }}
         </h4>
-    {% endif %}
-    <h4>
-        מס' שאילתות: {{ object_list.count }}
-    </h4>
-
+    </div>
 {% endblock %}
 
 {% block main_content %}
@@ -34,8 +34,11 @@
                 {% if user.is_superuser %}
                     עריכה
                 {% else %}
-           SandBox
+                    SandBox
                 {% endif %}
+            </th>
+            <th>
+                עדכונים במייל
             </th>
             {% if user.is_superuser %}
                 <th>
@@ -52,6 +55,11 @@
                 <td><a href="{% url 'custom' custom.title %}"><i class="fa fa-link"></i></a></td>
                 {% load core_extras %}
                 <td><a href="{% url 'search-gui' %}{{ custom.path | path_to_params }}"><i class="fa fa-edit"></i></a>
+                </td>
+                <td><a id="notifier-link"
+                       href="http://82.196.4.213/addfeed/kikar?type=custom&link=http://{{ request.get_host }}{% url 'custom-query-rss' custom.title %}"
+                       target="_blank"><i class="fa fa-bell"
+                                          aria-hidden="true"></i></a>
                 </td>
                 {% if user.is_superuser %}
                     <td><a data-toggle="modal" class="delete-query-btn" data-target="#delete-query-modal"

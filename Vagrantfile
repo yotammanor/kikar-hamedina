@@ -20,8 +20,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :inline => "apt-get update"
   config.vm.provision :shell, :inline => "apt-get install -y curl"
   config.vm.provision :shell, :inline => "curl -sL https://deb.nodesource.com/setup | bash"
-
   config.vm.provision :shell, :inline => "apt-get install -y postgresql postgresql-contrib python-dev python-pip python-numpy python-pandas python-pillow ipython libpq-dev git-core build-essential nodejs gettext"
+  config.vm.provision :shell, :inline => "npm -g install npm@latest"
   config.vm.provision :shell, :inline => "npm install ngrok -g"
 
   #Generate config files and initialize DB
@@ -58,12 +58,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       [ ! -d logs ] && mkdir logs
       if [ ! -f ../devOps/kikar_setup.db.gz ];
       then
-        wget https://dl.dropboxusercontent.com/u/47989767/kikar_setup.db.gz -P ../devOps/ -q
+        wget https://s3-eu-west-1.amazonaws.com/kikar-dev/kikar_setup.db.gz -P ../devOps/ -q
       fi
       gunzip -c ../devOps/kikar_setup.db.gz | sudo -u postgres psql kikar
       # [ -f ../devOps/user_backup.json ] && python manage.py loaddata ../devOps/user_backup.json
       # python manage.py dumpdata --indent=4 auth > ../devOps/user_backup.json
       # sudo -u postgres pg_dump kikar | gzip > ../devOps/kikar_setup.db.gz
+      python manage.py migrate
       python manage.py fetchfeedproperties || true
       # python manage.py classify_and_test_autotag 1
     EOS
@@ -86,6 +87,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     EOS
   end
   
+  
+    # Display the VirtualBox GUI when booting the machine
+	# very usfual for debuging!
+    #vb.gui = true
+  
+    # # Customize the amount of memory on the VM:
+    # vb.memory = "1024"
+   #end
+   
   # Download statuses
   config.vm.provision :shell do |shell|
     shell.inline = <<-EOS

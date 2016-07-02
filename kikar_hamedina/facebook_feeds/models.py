@@ -14,6 +14,8 @@ from facebook_feeds.managers import Facebook_StatusManager, \
     Facebook_FeedManager, DataFrameManager
 from kikartags.managers import _KikarTaggableManager
 from kikartags.models import TaggedItem
+from langdetect import detect
+from langdetect.lang_detect_exception import LangDetectException
 
 DEFAULT_THRESHOLD = 0
 
@@ -126,7 +128,7 @@ class Facebook_Feed(models.Model):
         if self.feed_type == 'PP':
             try:
                 popularity = Feed_Popularity.objects.filter(feed=self).latest(
-                        'date_of_creation').fan_count
+                    'date_of_creation').fan_count
             except Feed_Popularity.DoesNotExist:
                 pass
         return popularity
@@ -145,11 +147,11 @@ class Facebook_Feed(models.Model):
 
         feed_current_count = self.current_fan_count
         asked_for_date_of_value = timezone.now() - datetime.timedelta(
-                days=days_back)
+            days=days_back)
         try:
             popularity_history_timeseries = self.feed_popularity_set.all().to_timeseries(
-                    'fan_count',
-                    index='date_of_creation')
+                'fan_count',
+                index='date_of_creation')
             first_value = popularity_history_timeseries.iloc[
                 -1].name.to_pydatetime()
             last_value = popularity_history_timeseries.iloc[
@@ -159,11 +161,11 @@ class Facebook_Feed(models.Model):
                     (asked_for_date_of_value > last_value) or \
                     (popularity_history_timeseries.count().fan_count <= 1):
                 # if history starts after date of request, or there isn't enough data, don't extrapolate.
-                fan_count_at_requested_date = 0
+                fan_count_at_requested_date = feed_current_count
 
             else:
                 resampled_history_raw = popularity_history_timeseries.resample(
-                        'D')
+                    'D')
                 if resampled_history_raw.loc[
                     asked_for_date_of_value.date()].isnull().fan_count:
                     # if requested date's data is missing - interpolate from existing data
@@ -177,10 +179,10 @@ class Facebook_Feed(models.Model):
                         asked_for_date_of_value.date()].fan_count
 
             fan_count_dif_nominal = int(
-                    feed_current_count) - fan_count_at_requested_date
+                feed_current_count) - fan_count_at_requested_date
             if fan_count_at_requested_date != 0:
                 fan_count_dif_growth_rate = float(
-                        fan_count_dif_nominal) / fan_count_at_requested_date
+                    fan_count_dif_nominal) / fan_count_at_requested_date
             else:
                 fan_count_dif_growth_rate = 0.0
 
@@ -231,7 +233,7 @@ class Feed_Popularity(models.Model):
 
     def __unicode__(self):
         return slugify(self.feed.name) + " " + str(
-                self.date_of_creation.date())
+            self.date_of_creation.date())
         # strftime("%Y_%M_%D_%H:%m:%s", self.date_of_creation)
 
 
@@ -307,7 +309,7 @@ class Facebook_Status(models.Model):
             return False
 
     @property
-    def set_is_comment(self):
+    def resolve_is_comment(self):
         """
         A Method for deciding whether a status is a comment or not, according to the method's logic.
         Returns True or False.
@@ -324,7 +326,7 @@ class Facebook_Status(models.Model):
                     # print 'Comment:', self, pattern, ':', story_string
                     return True
             except (KeyError, IndexError) as e:
-                print 'Format error', self, sp, e
+                print('Format error', self, sp, e)
         # print 'Not a comment', self
         return False
 
@@ -343,7 +345,7 @@ class Facebook_Status(models.Model):
         refresh_interval = (
                                normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
         need_refresh = self.locally_updated + timezone.timedelta(
-                seconds=refresh_interval) < now
+            seconds=refresh_interval) < now
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
         # need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
@@ -424,6 +426,25 @@ class Facebook_Status_Attachment(models.Model):
     def is_internal_link(self):
         return 'https://www.facebook.com/' in self.link
 
+    @property
+    def is_youtube_video(self):
+        if self.type == 'video':
+            if 'youtube.com' in self.source:
+                return True
+        return False
+
+    @property
+    def source_clean(self):
+        if not self.source:
+            return self.source
+        split_source = self.source.split('?')
+        if len(split_source) <= 1:
+            return split_source[0]
+        params = split_source[-1]
+        params_dict = {x.split('=')[0]: x.split('=')[1] for x in params.split('&')}
+        params_dict.pop('autoplay', None)
+        return split_source[0] + '?' + '&'.join(['{}={}'.format(key, value) for key, value in params_dict.items()])
+
 
 def later():
     return timezone.now() + timezone.timedelta(days=60)
@@ -435,21 +456,31 @@ class Facebook_User(models.Model):
     type = models.CharField(max_length=32, null=True, blank=True)
 
     def __unicode__(self):
-        return 'Facebook User:{} ({})'.format(self.name, self.facebook_id)
+        return u'Facebook User:{} ({})'.format(self.name, self.facebook_id)
+
+
+class Facebook_Like(models.Model):
+    user = models.ForeignKey('Facebook_User', related_name='likes')
+    status = models.ForeignKey('Facebook_Status', related_name='likes')
+    type = models.CharField(max_length=32, default='like')
+
+    def __unicode__(self):
+        return u'{}: on {} by {}'.format(self.type, self.status.status_id, self.user.facebook_id)
 
 
 class Facebook_Status_Comment(models.Model):
     comment_id = models.CharField(unique=True, max_length=128, primary_key=True)
-    parent = models.ForeignKey('Facebook_Status')
-    comment_from = models.ForeignKey('Facebook_User')
+    parent = models.ForeignKey('Facebook_Status', related_name='comments')
+    comment_from = models.ForeignKey('Facebook_User', related_name='comments')
     content = models.TextField()
+    processed_content = models.TextField(null=True, blank=True)
     like_count = models.PositiveIntegerField(default=0, blank=True)
     comment_count = models.PositiveIntegerField(default=0, blank=True)
     published = models.DateTimeField()
     message_tags = models.TextField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False, null=False)
     locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1))
-
+    lang = models.CharField(null=True, blank=True, max_length=6, db_index=True)
     objects = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
 
     tags = TaggableManager(through=TaggedItem, manager=_KikarTaggableManager)
@@ -495,10 +526,17 @@ class Facebook_Status_Comment(models.Model):
         refresh_interval = (
                                normalized_age * refresh_range) + MIN_STATUS_REFRESH_INTERVAL
         need_refresh = self.locally_updated + timezone.timedelta(
-                seconds=refresh_interval) < now
+            seconds=refresh_interval) < now
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
         # need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
+
+    def content_lang(self):
+        try:
+            return detect(self.content)
+        except LangDetectException as e:
+            return u''
+
 
     class Meta:
         verbose_name_plural = 'Facebook_Status_Comments'

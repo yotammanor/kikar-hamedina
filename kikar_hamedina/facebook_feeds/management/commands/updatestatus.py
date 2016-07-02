@@ -16,7 +16,7 @@ from facebook_feeds.models import Facebook_Status, User_Token, Facebook_Status_A
 
 
 FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.1')
-NUMBER_OF_TRIES_FOR_REQUEST = 3
+NUMBER_OF_TRIES_FOR_REQUEST = getattr(settings, 'NUMBER_OF_TRIES_FOR_REQUEST', 2)
 LENGTH_OF_EMPTY_ATTACHMENT_JSON = 21
 
 # The error code from fb API for a deleted status.
@@ -243,7 +243,7 @@ class Command(BaseCommand):
                 status_object.updated = current_time_of_update
                 status_object.story = story
                 status_object.story_tags = story_tags
-                status_object.is_comment = status_object.set_is_comment
+                status_object.is_comment = status_object.resolve_is_comment
                 if status_object.is_deleted and options['update-deleted']:
                     status_object.is_deleted = False
                     self.stdout.write('Status no longer marked deleted')
@@ -273,7 +273,7 @@ class Command(BaseCommand):
                                             story=story,
                                             story_tags=story_tags)
 
-            status_object.is_comment = status_object.set_is_comment
+            status_object.is_comment = status_object.resolve_is_comment
 
             if status_object_defaultdict['link']:
                 # There's an attachment
@@ -305,7 +305,7 @@ class Command(BaseCommand):
             except AttributeError:
                 # exception - trying to set an empty token (NoneType) as graph.access_token
                 # Fallback: Set facebook graph access token to app access token
-                self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
                                                                         settings.FACEBOOK_SECRET_KEY)
                 if status.feed.requires_user_token:
                     # If the Status's Feed is set to require a user-token, and none exist in our db, the feed is skipped.

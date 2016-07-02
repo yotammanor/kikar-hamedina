@@ -54,3 +54,7 @@ class Command(BaseCommand):
         self.save_data_to_csv(top_statuses, field_names, file_name)
 
         print 'Done.'
+
+    # w = DictWriter(f, fieldnames=['status_id','content', 'published', 'feed', 'likes'], delimiter='~')
+    # for row in a.all():
+    #    w.writerow({'status_id':row.status_id, 'published':row.published, 'likes':row.like_count, 'feed':row.feed.vendor_id, 'content':unicode(row.content).encode('utf-8').replace('\r\n', '\t\t').replace('~', '*').replace('\n','\t')})

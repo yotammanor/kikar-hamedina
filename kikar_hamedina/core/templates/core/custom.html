@@ -22,7 +22,8 @@
     {#    {% endif %}#}
 {% endblock %}
 
-{% block details %}
+{% block context-header %}
+<div class="container well" id="details-container">
     <div class="h4">
         מספר תוצאות: {{ number_of_results }}
     </div>
@@ -38,4 +39,5 @@
 תיאור וקישור:
         <a href="{{ saved_query.path }}"> {{ saved_query.description }}</a>
     </div>
+</div>
 {% endblock %}

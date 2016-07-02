@@ -4,6 +4,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from solid_i18n.urls import solid_i18n_patterns as patterns
 
 from core.api import PersonaResource
+from core.sitemap import MkSitemap, PartySitemap, StaticViewSitemap
 from . import views
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, TAG_NAME_CHARSET
 from kikartags.models import Tag as Tag
@@ -14,7 +15,8 @@ from api import MemberResource, PartyResource, KnessetResource, Facebook_StatusR
     Facebook_Status_CommentResource, Facebook_FeedResource, TagResource, CommentTagResource
 from insights import StatsMemberResource, StatsPartyResource
 from core.models import MEMBER_MODEL, PARTY_MODEL
-from core.rss_feeds import LatestStatusesRSSFeed, PartyRSSFeed, KeywordsByUserRSSFeed, CustomQueryRSSFeed
+from core.rss_feeds import LatestStatusesRSSFeed, PartyRSSFeed, MemberRSSFeed, KeywordsByUserRSSFeed, CustomQueryRSSFeed
+from django.contrib.sitemaps.views import sitemap
 
 v1_api = Api(api_name='v1')
 v1_api.register(MemberResource())
@@ -28,6 +30,12 @@ v1_api.register(TagResource())
 v1_api.register(CommentTagResource())
 v1_api.register(StatsMemberResource())
 v1_api.register(StatsPartyResource())
+
+sitemaps = {
+    'mk': MkSitemap,
+    'party': PartySitemap,
+    'static': StaticViewSitemap
+}
 
 urlpatterns = patterns('',
                        # homepage
@@ -76,7 +84,7 @@ urlpatterns = patterns('',
                            queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-members'),
                        url(r'^parties/$', views.AllParties.as_view(
-                               queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
+                           queryset=Party.objects.filter(knesset__number=settings.CURRENT_KNESSET_NUMBER)),
                            name='all-parties'),
                        url(r'^tags/$', views.AllTags.as_view(queryset=Tag.objects.all()),
                            name='all-tags'),
@@ -90,21 +98,24 @@ urlpatterns = patterns('',
                        # unused Views for statuses
                        url(r'^status-comments/$', views.OnlyCommentsView.as_view(), name='status-comments'),
                        url(r'^untagged/$', views.AllStatusesView.as_view(
-                               queryset=Facebook_Status.objects.filter(tags=None,
-                                                                       feed__persona__object_id__isnull=False).order_by(
-                                       '-published')),
+                           queryset=Facebook_Status.objects.filter(tags=None,
+                                                                   feed__persona__object_id__isnull=False).order_by(
+                               '-published')),
                            kwargs={'context_object': 'untagged'},
                            name='untagged'),
                        url(r'^review-tags/$', views.ReviewTagsView.as_view(), name='review-tags'),
                        # rss feeds
                        url(r'^latest/feed/$', LatestStatusesRSSFeed(), name='rss-feed-latest'),
                        url(r'^party/(?P<party_id>\d+)/rss/$', PartyRSSFeed()),
+                       url(r'^member/(?P<member_id>\d+)/rss/$', MemberRSSFeed()),
                        url(r'^user/(?P<user_id>\d+)/rss/$', KeywordsByUserRSSFeed()),
                        url(r'^custom/(?P<title>[\w\d\.\s-]+)/rss/$', CustomQueryRSSFeed(), name='custom-query-rss'),
                        url(r'^custom/(?P<title>[\w\d\.\s-]+)/rss/widget/$', views.CustomWidgetView.as_view(),
                            name='custom-query-rss-widget'),
                        url(r'^latest/widget/$', views.WidgetView.as_view(), name='rss-widget-latest'),
                        url(r'^suggested_tags/(?P<status_id>[-_\w]+)/$', views.return_suggested_tags),
+                       url(r'^sitemap\.xml/$', sitemap, {'sitemaps': sitemaps},
+                           name='django.contrib.sitemaps.views.sitemap'),
                        ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = format_suffix_patterns(urlpatterns)

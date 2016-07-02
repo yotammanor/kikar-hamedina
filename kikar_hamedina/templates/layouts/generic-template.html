@@ -18,6 +18,34 @@
     <title>{% block title %}{% endblock title %}
         {% blocktrans %}| Kikar Hamedina{% endblocktrans %}
     </title>
+    <meta name="License" content="CC-by-sa-3.0 Attribution-NonCommercial-ShareAlike 3.0">
+    {% block social_share %}
+        <!-- Open graph meta tags supported by facebook, whatsapp, linkedin and more -->
+        <meta property="og:image" content="http://kikar.org/static/media/kikar_hamedina_logo_900_472.png"/>
+        <meta property="fb:app_id" content="711830842197328"/>
+        <meta property="og:title" content="{% trans 'Kikar Hamedina' %}">
+        <meta property="og:description" content="{% blocktrans %}Today, around a 100 of the Knesset Members are
+          using Facebook on a daily basis. We collect and organize what they write,
+           and help you join the conversation. A project by the Public Knowledge
+            Workshop.{% endblocktrans %}">
+        <meta property="og:url" content="http://kikar.org//">
+        <meta property="og:site_name" content="{% trans 'Kikar Hamedina' %}">
+{#        <meta property="og:image:secure_url" content="https://kikar.org/static/media/kikar_hamedina_logo.png">#}
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="{% trans 'Kikar Hamedina' %}" />
+        <meta name="twitter:description" content="{% blocktrans %}Today, around a 100 of the Knesset Members are
+          using Facebook on a daily basis. We collect and organize what they write,
+           and help you join the conversation. A project by the Public Knowledge
+            Workshop.{% endblocktrans %}"> />
+        <meta name="twitter:image" content="http://kikar.org/static/media/kikar_hamedina_logo_506_256.png" />
+
+        <!-- For some other bots-->
+        <link rel="image_src" href="{% static '"media/kikar_hamedina_logo.png"' %}"/>
+
+
+    {% endblock %}
 
     <!-- Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -112,6 +140,13 @@
                 </a>
             </li>
         </script>
+        <script id="result-default-link-all-mks-template" type="text/x-handlebars-template">
+            <li class="result-container" style="background-color: beige">
+                <a href="{% endverbatim %}{% url 'all-members' %}{% verbatim %}" tabindex="-1" id="option-{{count}}" role="option">
+                   <div class="result-main-text"><i class="fa fa-bookmark"></i>{% endverbatim %} {% trans 'All MKs' %}{% verbatim %}</div>
+                </a>
+            </li>
+        </script>
     {% endverbatim %}
 
     <!-- Google Analytics -->
@@ -124,7 +159,7 @@
           ga('send', 'pageview');
     </script>
 </head>
-<body>
+<body data-lang="{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}" data-lang-dir="{{ LANGUAGE_BIDI }}">
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
 
@@ -265,11 +300,6 @@
             </div>
         </div>
         {% block context-header %}
-            <div class="container well" id="details-container">
-                {% block details %}
-
-                {% endblock %}
-            </div>
         {% endblock %}
 
         {% block main_content %}

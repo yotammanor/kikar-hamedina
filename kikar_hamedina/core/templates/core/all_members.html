@@ -8,103 +8,149 @@
     {% trans 'All Members of Knesset' %}
 {% endblock %}
 
-{% block details %}
-<p>{% trans 'All the numbers in the page are referencing the monthly average.' %}</p>
-<p>{% trans "Grayscaled MK's don't have a public Facebook page." %}</p>
-{% endblock %}
+
 
 {% block main_content %}
 
-  {% for party in object_list %}
-    <h3 class="page-header">{{ party.name }}</h3>
-    <div class="party__info" data-party-id="{{ party.id }}">
-      <div>
-        <span class="fa fa-group"></span>  {% trans 'Number of Facebook Pages for Party' %}: {{ party.current_members.count }}
-      </div>
-      <span class="fa fa-bar-chart"></span>
-      {% trans 'Last Month' %}:
-      <span class="avg_statuses">...</span> {% trans 'Statuses' %} {% trans 'and' %}
-      <span class="avg_likes">...</span> {% trans 'Likes on average' %}
-    </div>
-
-    <div class="party__members">
-      {% for member in party.current_members %}
-          <div class="member__container" data-member-id={{ member.id }}>
-
-            {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP'%}
-                <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img">
-            {% else %}
-                <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled">
-            {% endif %}
-
-            <h3 class="member__name">{{ member.name }}</h3>
-
-            <div class="member__stats">
-              <div>
-                <span class="fa fa-comment"></span>  {% trans 'Statuses' %}: <span class="avg_statuses">...</span>
-              </div>
-              <div>
-                <span class="fa fa-thumbs-up"></span>  {% trans 'Likes' %}: <span class="avg_likes">...</span>
-              </div>
+    {% for party in object_list %}
+        <a href="{% url 'party' party.id %}"><h2 class="page-header">{{ party.name }}</h2></a>
+        <div class="party__info" data-party-id="{{ party.id }}">
+            <div>
+                <span class="fa fa-group"></span> {% trans 'Number of Facebook Pages for Party' %}:
+                <span dir="ltr">{{ party.current_members_with_active_public_facebook_persona.count }}
+                / {{ party.current_members.count }}
+                    </span>
             </div>
+            <span class="fa fa-bar-chart"></span>
+            {% trans 'Last Month' %}:
+            <span class="avg_statuses"><i
+                    class="fa fa-spinner fa-spin"></i></span> {% trans 'Statuses' %}, {% trans 'with' %}
+            <span class="avg_likes"><i class="fa fa-spinner fa-spin"></i></span> {% trans 'Likes per status' %}
+            ({% trans 'on average' %})
+        </div>
 
-            <a class="member__more-info"href="/member/{{ member.id }}">{% trans 'More Info' %}</a>
+        <div class="party__members">
+            {% for member in party.current_members %}
+                <div class="member__container" data-member-id={{ member.id }}>
 
-          </div>
-      {% endfor %}
-    </div>
+                    <a href="{% url 'member' member.id %}">
+                        {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP' %}
+                            <img src="{{ member.facebook_persona.get_main_feed.picture_large }}" class="member__img"
+                                 alt="">
+                        {% else %}
 
-  {% endfor %}
+                            {% trans "This MK doesn't have a public Facebook Page" as title %}
+                            <img src="{{ member.highres_img_url }}" class="member__img member__img--grayscaled"
+                                 data-toggle="tooltip" data-placement="top"
+                                 title="{{ title }}" alt="">
+                        {% endif %}
+
+                        <h3 class="member__name">{{ member.name }}</h3>
+                    </a>
+                    {% if member.facebook_persona and member.facebook_persona.get_main_feed.picture_large and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type == 'PP' %}
+
+                        <div class="member__stats">
+                            <div>
+                                <span class="fa fa-comment"></span> {% trans 'Statuses' %} {% trans 'this month' %}:
+                                <span class="avg_statuses"><i class="fa fa-spinner fa-spin"></i></span>
+                            </div>
+                            <div>
+                                <span class="fa fa-thumbs-up"></span> {% trans 'Page Likes' %}: <span
+                                    class="likes"><i class="fa fa-spinner fa-spin"></i></span>
+                            </div>
+                        </div>
+
+                        {% if request.GET.debug == 'true' %}
+                            <div>
+                                {% trans 'Last Page info update at' %}:
+                                {{ member.facebook_persona.get_main_feed.locally_updated }}
+                            </div>
+                            <div>
+                                {% trans 'Date of Last Status at' %}:
+                                {% with status=member.facebook_persona.get_main_feed.facebook_status_set.last %}
+                                    {{ status.published }}
+                                {% endwith %}
+                            </div>
+                        {% endif %}
+                        {% elif member.facebook_persona and member.facebook_persona.get_main_feed and member.facebook_persona.get_main_feed.feed_type != 'PP' %}
+                        <p>{% trans "Due to technical limitations, we can't collect data on private Facebook Users." %}</p>
+                        <p>{% trans "You can check it out on " %}<a
+                                href="http://wwww.facebook.com/{{ member.facebook_persona.get_main_feed.vendor_id }}"
+                                target="_blank">{% trans 'Facebook' %}</a></p>
+
+                    {% else %}
+                        <p>{% trans 'Facebook Page Missing' %}.</p>
+                        <p><a
+                                href="mailto:yotammanor@gmail.com?subject='כיכר המדינה - דף פייסבוק חסר לחבר/ת כנסת'"
+                                target="_blank">{% trans 'Tell us' %}</a> {% trans 'if you know of a page, please' %}!
+                        </p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+    {% endfor %}
 
 {% endblock %}
 
 {% block scripts %}
     <script type="text/javascript">
 
-      // extracts the last segment from the given path
-      function lastSegmentFrom(path) {
-        path = path.split('/');
-        return path[ path.length - 2 ];
-      }
+        // extracts the last segment from the given path
+        function lastSegmentFrom(path) {
+            path = path.split('/');
+            return path[path.length - 2];
+        }
 
-      /**
-       * url - the URL for the AJAX request
-       * container - the class name which contains the insights
-       * type = party / member
-       */
-      function insertInsights(url, container, type) {
+        /**
+         * url - the URL for the AJAX request
+         * container - the class name which contains the insights
+         * type = party / member
+         */
+        function insertInsights(url, container, type) {
 
-        var objects, // objects from JSON
-            items = {}, // represents each item in objects
-            itemID;
+            var objects, // objects from JSON
+                    items = {}, // represents each item in objects
+                    itemID;
 
-        $.getJSON(url, function(data) {
+            $.getJSON(url, function (data) {
 
-          var objects = data.objects;
+                var objects = data.objects;
 
-          // creating the items object, which holds the item insights
-          $.each(objects, function(i, item) {
-            itemID = lastSegmentFrom(item[type]);
-            items[itemID] = {
-              AvgLikes: Math.round(item.mean_status_likes_last_month),
-              AvgStatuses: item.n_statuses_last_month,
-            };
-          });
+                // creating the items object, which holds the item insights
+                $.each(objects, function (i, item) {
+                    itemID = lastSegmentFrom(item[type]);
+                    items[itemID] = {
+                        Likes: item.like_count,
+                        AvgLikes: Math.round(item.mean_status_likes_last_month),
+                        AvgStatuses: item.n_statuses_last_month,
+                    };
+                });
 
-          // manipulates the DOM
-          $(container).each(function( i, elm ) {
-            itemID = elm.getAttribute('data-' + type + '-id');
-            $(elm).find('.avg_likes').text(items[itemID].AvgLikes);
-            // TOFIX (BACKEND): AvgStatuses is null instead of 0 if there's no facebook page
-            $(elm).find('.avg_statuses').text(items[itemID].AvgStatuses || 0);
-          })
+                // manipulates the DOM
+                $(container).each(function (i, elm) {
+                    itemID = elm.getAttribute('data-' + type + '-id');
 
-        });
+                    // check if the member doesn't have a facebook page
+                    if (type == 'member' && !items[itemID].Likes) {
+                        $(elm).find('.member__stats').hide()
+                    } else {
+                        type == 'party' ? $(elm).find('.avg_likes').text(items[itemID].AvgLikes) :
+                                $(elm).find('.likes').text(items[itemID].Likes.toLocaleString());
+                        $(elm).find('.avg_statuses').text(items[itemID].AvgStatuses);
+                    }
+                })
 
-      }
+            });
 
-      insertInsights('/api/v1/insights/party/', '.party__info', 'party');
-      insertInsights('/api/v1/insights/member/?limit=300', '.member__container', 'member');
+        }
+
+        insertInsights('/api/v1/insights/party/', '.party__info', 'party');
+        insertInsights('/api/v1/insights/member/?limit=300', '.member__container', 'member');
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
 
     </script>
 {% endblock %}

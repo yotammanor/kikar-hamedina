@@ -9,12 +9,14 @@ from facebook_feeds.models import Facebook_Status, Facebook_Feed, Tag as OldTag,
     Facebook_Status_Comment, Facebook_Persona
 from kikartags.models import Tag as Tag
 from core.models import MEMBER_MODEL, PARTY_MODEL
+from core.utils import add_html_tag
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 
 from django.template.defaultfilters import urlize, truncatewords_html, linebreaks
 from django.contrib.humanize.templatetags import humanize
 from core.templatetags.core_extras import append_separators
 from mks.models import Knesset
+import re
 
 MAX_LENGTH_FOR_STATUS_CONTENT = 80
 
@@ -58,6 +60,9 @@ class PartyResource(ModelResource):
         queryset = PARTY_MODEL.objects.all()
         resource_name = 'party'
 
+    def dehydrate(self, bundle):
+        bundle.data['kikar_link'] = 'http://www.kikar.org/party/' + str(bundle.obj.id)
+        return bundle
 
 class PersonaResource(ModelResource):
     class Meta:
@@ -69,6 +74,7 @@ class PersonaResource(ModelResource):
             'object_id': ALL,
             'alt_object_id': ALL,
         }
+
 
 class Facebook_FeedResource(ModelResource):
     owner = fields.ToOneField(MemberResource, attribute='owner', null=True)
@@ -109,7 +115,18 @@ class MemberResource(ModelResource):
         persona = bundle.obj.facebook_persona
         if persona is not None:
             return get_resource_uri(persona.get_main_feed, self.main_feed)
+
         return None
+
+    def dehydrate(self, bundle):
+        bundle.data['kikar_link'] = 'http://www.kikar.org/member/' + str(bundle.obj.id)
+        persona = bundle.obj.facebook_persona
+
+        if persona is not None:
+            bundle.data['facebook_link'] = persona.get_main_feed.link
+        else:
+            bundle.data['feed_url'] = None
+        return bundle
 
 
 class TagResource(ModelResource):
@@ -190,18 +207,36 @@ class Facebook_StatusResource(ModelResource):
         bundle.data['member'] = bundle.obj.feed.persona.owner.name
         bundle.data['party'] = bundle.obj.feed.persona.owner.current_party.name
         bundle.data['published_str'] = humanize.naturaltime(bundle.obj.published)
-        bundle.data['content_snippet'] = truncatewords_html(linebreaks(append_separators(urlize(bundle.obj.content))),
-                                                            MAX_LENGTH_FOR_STATUS_CONTENT)
+
+        if 'content__contains' in bundle.request.GET:  # add a full snippet with highlighted search field
+            htmlized_content = linebreaks(append_separators(urlize(bundle.obj.content)))
+            search_pattern = re.compile(bundle.request.GET['content__contains'])
+            bundle.data['content_snippet'] = re.sub(search_pattern, add_html_tag, htmlized_content)
+            # print bundle.data['content_snippet']
+        else:  # add a shortened snippet
+            bundle.data['content_snippet'] = truncatewords_html(
+                linebreaks(append_separators(urlize(bundle.obj.content))),
+                MAX_LENGTH_FOR_STATUS_CONTENT)
+
         if bundle.obj.has_attachment:
             bundle.data['has_attachment'] = True
             bundle.data['attachment'] = {
                 'type': bundle.obj.attachment.type,
+                'is_photo': bundle.obj.attachment.type == 'photo',
+                'is_video': bundle.obj.attachment.type == 'video',
+                'is_youtube_video': bundle.obj.attachment.is_youtube_video,
+                'is_link': bundle.obj.attachment.type == 'link',
+                'is_event': bundle.obj.attachment.type == 'event',
+                'is_music': bundle.obj.attachment.type == 'music',
+                'is_note': bundle.obj.attachment.type == 'note',
+                'is_nonetype': not bundle.obj.attachment.type,
                 'link': bundle.obj.attachment.link,
                 'picture': bundle.obj.attachment.picture,
                 'name': bundle.obj.attachment.name,
                 'caption': bundle.obj.attachment.caption,
                 'description': bundle.obj.attachment.description,
-                'source': bundle.obj.attachment.source
+                'source': bundle.obj.attachment.source,
+                'source_clean': bundle.obj.attachment.source_clean
             }
         return bundle
 
