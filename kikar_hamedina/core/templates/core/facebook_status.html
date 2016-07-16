@@ -32,10 +32,9 @@
                         </span>
                         <span>|</span>
                         <span>
-                            <a class="link-on-blue" title="{{ status.published }}"
+                            <a class="link-on-blue" title="{{ status.published |naturaltime_ext:LANGUAGE_CODE }}"
                                href="{% url 'status-detail' status.status_id %}">
-                                {% if LANGUAGE_CODE != 'he' %}
-                                    Published: {% endif %}{{ status.published | naturaltime }}
+                                {{ status.published |naturaltime_ext:LANGUAGE_CODE }}
                             </a>
                         </span>
                         {% if request.path == '/preview/' %}
