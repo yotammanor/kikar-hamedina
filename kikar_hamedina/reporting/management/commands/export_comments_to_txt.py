@@ -35,7 +35,8 @@ class Command(KikarCommentCommand):
         for status in Facebook_Status.objects_no_filters.filter(is_comment=False):
             for comment in status.comments.all():
                 processed_text = comment.content
-                # processed_text = processor.text_manipulation_mk_names(text=comment.content, context_status=comment.parent)
+                processed_text = processor.text_manipulation_mk_names(text=processed_text,
+                                                                      context_status=comment.parent)
                 if options['translate']:
                     processed_text = processor.text_manipulation_translate_text(text=processed_text)
                 processed_text = processor.text_manipulation_emojis(text=processed_text)
