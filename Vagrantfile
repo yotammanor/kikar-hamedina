@@ -15,6 +15,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "private_network", ip: "192.168.100.100"
   config.vm.network :forwarded_port, guest: $port, host: $port, auto_correct: true
 
+  config.vm.define :kikar do |t|
+  end
+
   #Generate config files and initialize DB
   config.vm.provision :shell do |shell|
     shell.inline = <<-EOS
