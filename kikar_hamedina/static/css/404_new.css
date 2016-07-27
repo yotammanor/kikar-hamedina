@@ -1,0 +1,131 @@
+
+body {
+    background: #EEEEEE;
+}
+
+.margin-md {
+    margin: 20px;
+}
+
+.row {
+    color: #171748;
+}
+
+.container {
+    margin-top: 30px;
+    font-family: "Alef", Arial, Sans-Serif;
+}
+
+.header {
+    background: #0E5491;
+    color: #fff;
+    text-align: center;
+    font-size: 28px;
+    padding: 3px;
+    font-weight: 300;
+    letter-spacing: 0.6px;
+}
+
+.main-img-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0px auto;
+}
+
+.main-img-container svg {
+    fill: #171748;
+}
+
+.main-img-footer {
+    position: absolute;
+    bottom: 13.5%;
+    left: 60%;
+    transform: translateX(-50%);
+    z-index: -1;
+}
+
+.main-img-footer:after {
+    display: block;
+    content: "";
+    width: 190px;
+    height: 8px;
+    background: #0E5491;
+    border-radius: 3px;
+}
+
+.main-msg-container {
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.main-msg {
+    position: relative;
+    color: #171748;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.main-msg .quote-author {
+    position: absolute;
+    left: 0;
+    font-weight: normal;
+    font-size: 13px;
+}
+
+.main-msg .quote-author:after {
+    display: inline-block;
+    content: "";
+    width: 14px;
+    height: 1.5px;
+    background: #171748;
+    vertical-align: middle;
+    margin: 0 3px 0.9px 3px;
+}
+
+.seperator {
+    border-bottom: 3px solid #171748;
+    margin: 60px 20px 20px 20px;
+}
+
+.sorry-msg {
+    font-size: 21px;
+}
+
+.sorry-msg a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+    body {
+        background: #0E5491;
+    }
+
+    .header {
+        font-size: 24px;
+    }
+
+    .header, .main-img-footer:after {
+        background: #093E6B;
+    }
+
+    .main-msg {
+        font-size: 16px;
+    }
+
+    .main-msg .quote-author,
+    .sorry-msg {
+        color: #fff;
+    }
+
+    .sorry-msg {
+        font-size: 17px;
+        font-weight: 300;
+    }
+}
