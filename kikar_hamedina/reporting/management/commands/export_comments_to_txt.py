@@ -1,5 +1,5 @@
 #!encoding utf-8
-from csv import DictWriter
+from csv import DictWriter, DictReader
 
 from django.utils import timezone
 
@@ -19,6 +19,16 @@ class Command(KikarCommentCommand):
                             default=False,
                             help="translate comment data"
                             )
+        parser.add_argument('--from-db',
+                            action='store_true',
+                            dest='from_db',
+                            default=False,
+                            help='use processed_content field')
+        parser.add_argument('--exclude-ids-from-path',
+                            action='store',
+                            dest='exclude_from_path',
+                            default=None,
+                            help='exclude ids in file')
 
     def handle(self, *args, **options):
         print('Start.')
@@ -31,12 +41,23 @@ class Command(KikarCommentCommand):
         csv_data = DictWriter(f, fieldnames=field_names, delimiter=DELIMITER)
         processor = TextProcessor()
 
+        excluded_ids = []
+        if options['exclude_from_path']:
+            with open(options['exclude_from_path'], 'rb') as g:
+                r = DictReader(g)
+                excluded_ids = [x['comment_id'] for x in r]
+
         i = 0
         for status in Facebook_Status.objects_no_filters.filter(is_comment=False):
             for comment in status.comments.all():
-                processed_text = comment.content
-                processed_text = processor.text_manipulation_mk_names(text=processed_text,
-                                                                      context_status=comment.parent)
+                if comment.comment_id in excluded_ids:
+                    continue
+                if options['from_db']:
+                    processed_text = comment.processed_content
+                else:
+                    processed_text = comment.content
+                    processed_text = processor.text_manipulation_mk_names(text=processed_text,
+                                                                          context_status=comment.parent)
                 if options['translate']:
                     processed_text = processor.text_manipulation_translate_text(text=processed_text)
                 processed_text = processor.text_manipulation_emojis(text=processed_text)
