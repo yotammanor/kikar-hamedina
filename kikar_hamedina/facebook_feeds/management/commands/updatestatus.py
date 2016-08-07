@@ -14,8 +14,7 @@ from facebook import GraphAPIError
 
 from facebook_feeds.models import Facebook_Status, User_Token, Facebook_Status_Attachment
 
-
-FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.1')
+FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.7')
 NUMBER_OF_TRIES_FOR_REQUEST = getattr(settings, 'NUMBER_OF_TRIES_FOR_REQUEST', 2)
 LENGTH_OF_EMPTY_ATTACHMENT_JSON = 21
 
@@ -73,12 +72,19 @@ class Command(BaseCommand):
         Returns a dictionary with status properties, an empty dict on error or None if status believed to be deleted.
         """
         status_data = dict()
-        api_request_path = "{0}".format(status_id)
-        args_for_request = {'version': FACEBOOK_API_VERSION,
-                            'fields': "from, message, id, created_time, \
-                             updated_time, type, link, caption, picture, description, name,\
-                             status_type, story, story_tags ,object_id, properties, source, to, shares, \
-                             likes.summary(true).limit(1), comments.summary(true).limit(1)"}
+        api_request_path = "{0}/".format(FACEBOOK_API_VERSION, status_id)
+        args_for_request = {'ids': ','.join([status_id]),
+                            'fields': "from,message,id,created_time,updated_time, type, link, caption, picture, \
+                             description, name, status_type, story, story_tags ,object_id, properties, source, to, \
+                             shares, likes.summary(true).limit(0), \
+                             comments.summary(true).limit(0), reactions.type(LOVE).as(love).summary(1).limit(0), \
+                             reactions.type(ANGRY).as(angry).summary(1).limit(0),\
+                             reactions.type(LIKE).as(like).summary(1).limit(0),\
+                             reactions.type(WOW).as(wow).summary(1).limit(0),\
+                             reactions.type(HAHA).as(haha).summary(1).limit(0),\
+                             reactions.type(SAD).as(sad).summary(1).limit(0),\
+                             reactions.type(THANKFUL).as(thankful).summary(1).limit(0)"
+                            }
 
         try_number = 1
         while try_number <= NUMBER_OF_TRIES_FOR_REQUEST:
@@ -95,20 +101,21 @@ class Command(BaseCommand):
                 logger.warning(warning_msg)
 
                 if try_number == NUMBER_OF_TRIES_FOR_REQUEST:
-                    error_msg = "Failed {} attempts for feed #({}) from FB API.".format(NUMBER_OF_TRIES_FOR_REQUEST, status_id)
+                    error_msg = "Failed {} attempts for feed #({}) from FB API.".format(NUMBER_OF_TRIES_FOR_REQUEST,
+                                                                                        status_id)
                     logger = logging.getLogger('django.request')
                     logger.warning(error_msg)
                     status_data = {}
 
                 try_number += 1
 
-            # except:
-            #     print 'here2'
-            #     sys.exc_info()
+                # except:
+                #     print 'here2'
+                #     sys.exc_info()
 
         if not status_data:
-            print 'empty dict for status returned'
-        return status_data
+            print('empty dict for status returned')
+        return status_data[status_id]
 
     def get_picture_attachment_json(self, attachment):
         api_request_path = "{0}/".format(attachment.facebook_object_id)
@@ -128,7 +135,6 @@ class Command(BaseCommand):
         logger = logging.getLogger('django.request')
         logger.warning(error_msg)
         return {}
-
 
     @staticmethod
     def insert_status_attachment(status, status_object_defaultdict):
@@ -161,14 +167,14 @@ class Command(BaseCommand):
             attachment.picture = attachment_defaultdict['picture']
             # get source for picture attachments
             if attachment.type == 'photo':
-                print '\tgetting picture source'
+                print('\tgetting picture source')
                 photo_object = self.get_picture_attachment_json(attachment)
                 selected_attachment_object = sorted(photo_object['images'], key=lambda x: x['height'], reverse=True)[0]
                 attachment.source = selected_attachment_object['source']
                 attachment.source_width = selected_attachment_object['width']
                 attachment.source_height = selected_attachment_object['height']
             elif attachment.type == 'video':
-                print '\tsetting video source'
+                print('\tsetting video source')
                 attachment.source = attachment_defaultdict['source']
             attachment.save()
         else:
@@ -200,6 +206,7 @@ class Command(BaseCommand):
         to the db.
         """
         # Create a datetime object from int received in status_object
+
         current_time_of_update = datetime.datetime.strptime(retrieved_status_data['updated_time'],
                                                             '%Y-%m-%dT%H:%M:%S+0000').replace(tzinfo=timezone.utc)
 
@@ -239,9 +246,9 @@ class Command(BaseCommand):
         try:
 
             if ((status_object.updated <= current_time_of_update) or options['force-update'] or
-                (options['update-deleted'] and status_object.is_deleted)):
+                    (options['update-deleted'] and status_object.is_deleted)):
                 # If post_id exists but of earlier update time, fields are updated.
-                print 'update status_object'
+                print('update status_object')
                 status_object.content = message
                 status_object.like_count = like_count
                 status_object.comment_count = comment_count
@@ -255,19 +262,18 @@ class Command(BaseCommand):
                     status_object.is_deleted = False
                     self.stdout.write('Status no longer marked deleted')
 
-
                 # update attachment data
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
             elif options['force-attachment-update']:
                 # force update of attachment only, regardless of time
-                print 'Forcing update attachment'
+                print('Forcing update attachment')
                 status_object.save()
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
                 # If post_id exists but of equal or later time (unlikely, but may happen), disregard
                 # Should be an else here for this case but as it is, just disregard
         except AttributeError:
             # If status_id is NoneType, and does not exist at all, create it from data.
-            print 'create status_object'
+            print('create status_object')
             status_object = Facebook_Status(feed_id=retrieved_status_data['from']['id'],
                                             status_id=retrieved_status_data['id'],
                                             content=message,
@@ -314,7 +320,7 @@ class Command(BaseCommand):
                 # exception - trying to set an empty token (NoneType) as graph.access_token
                 # Fallback: Set facebook graph access token to app access token
                 self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
-                                                                        settings.FACEBOOK_SECRET_KEY)
+                                                                          settings.FACEBOOK_SECRET_KEY)
 
                 if status.feed.requires_user_token:
                     # If the Status's Feed is set to require a user-token, and none exist in our db, the feed is skipped.
@@ -386,7 +392,8 @@ class Command(BaseCommand):
 
         # Iterate over list_of_statuses
         for i, status in enumerate(list_of_statuses):
-            self.stdout.write('Working on status {0} of {1}: {2}.'.format(i+1, len(list_of_statuses), status.status_id))
+            self.stdout.write(
+                'Working on status {0} of {1}: {2}.'.format(i + 1, len(list_of_statuses), status.status_id))
             status_data = self.fetch_status_data(status, use_app_token)
             self.stdout.write('Successfully fetched status: {0}.'.format(status.pk))
 
@@ -401,7 +408,8 @@ class Command(BaseCommand):
                     info_msg = 'Successfully marked status deleted: {0}.'.format(status.pk)
                     self.stdout.write(info_msg)
                 else:
-                    self.stdout.write('Ignoring deleted status: {0} (use --update-deleted to update DB).'.format(status.pk))
+                    self.stdout.write(
+                        'Ignoring deleted status: {0} (use --update-deleted to update DB).'.format(status.pk))
                     info_msg = 'Ignoring deleted status: {0}.'.format(status.pk)
 
             else:
