@@ -61,20 +61,16 @@ def path_to_params(path):
 def language_clean_uri(uri):
     return uri.split('/en')[-1].split('/ar')[-1].split('/he')[-1]
 
+
 @register.filter(name='naturaltime_ext')
 def naturaltime_ext(value, locale):
-    formatted_value = ''
-
-    if locale != 'he':
-        formatted_value = 'Published: '
-
     time_differ = timezone.now() - value
     if time_differ.days < 7:
-        formatted_value += naturaltime(value)
+        formatted_value = naturaltime(value)
     else:
         if locale != 'he':
-            formatted_value += format(value, 'F jS, Y, g a')
+            formatted_value = format(value, 'F jS, Y, g a')
         else:
-            formatted_value += format(value, 'j בF Y, H:i')
+            formatted_value = format(value, 'j בF Y, H:i')
 
     return formatted_value

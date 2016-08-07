@@ -55,7 +55,7 @@
     <div class="panel-body">
         <div class="status-content">
             {% autoescape off %}
-            {{ status.content | urlize | append_separators  | linebreaks  }}
+            {{ status.content | urlize | append_separators  | linebreaks }}
             {% endautoescape %}
         </div>
         {% if status.has_attachment %}
@@ -125,15 +125,15 @@
 				<b>{% trans 'likes' %}:</b> <span
                     id="{{ status.status_id }}-likes">{{ status.like_count|floatformat:1|intcomma|slice:":-2" }}</span>.
 			</span>
-			<span>
+                <span>
 				<b>{% trans 'comments' %}:</b> <span
-                    id="{{ status.status_id }}-comments">{{ status.comment_count|floatformat:1|intcomma|slice:":-2" }}</span>.
+                        id="{{ status.status_id }}-comments">{{ status.comment_count|floatformat:1|intcomma|slice:":-2" }}</span>.
 			</span>
-			<span>
+                <span>
 				<b>{% trans 'shares' %}: </b> <span
-                    id="{{ status.status_id }}-shares">{{ status.share_count|floatformat:1|intcomma|slice:":-2" }}</span>.
+                        id="{{ status.status_id }}-shares">{{ status.share_count|floatformat:1|intcomma|slice:":-2" }}</span>.
 			</span>
-            <span>
+                <span>
                 <i class="hidden-object fa fa-spinner fa-spin"
                    id="status-metrics-is-updating-indicator-{{ status.status_id }}"></i>
                 <i class="hidden-object fa fa-exclamation"
@@ -143,7 +143,7 @@
             <div class="col-md-8">
 
                 <strong style="display:{% if status.tags.count > 0 %}inline{% else %}none{% endif %}">{% trans 'Tags' %}: </strong>
-			<span id="{{ status.id }}-tags">
+                <span id="{{ status.id }}-tags">
 			{% for tag in status.tags.all %}
                 {% with tag|proper_tag as tag %}
                     <a href="{% url 'tag' 'name' tag.name %}">
