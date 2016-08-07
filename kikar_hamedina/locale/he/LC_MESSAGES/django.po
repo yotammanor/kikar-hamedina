@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-18 21:54+0300\n"
+"POT-Creation-Date: 2016-07-25 22:42+0300\n"
 "PO-Revision-Date: 2016-04-18 20:12+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -167,7 +167,7 @@ msgid "registered"
 msgstr "ע\"ר"
 
 #: core/templates/core/all_members.html:5
-#: templates/layouts/generic-template.html:118
+#: templates/layouts/generic-template.html:146
 msgid "All MKs"
 msgstr "כל חברות וחברי הכנסת"
 
@@ -266,8 +266,8 @@ msgstr "לייקים, בממוצע"
 
 #: core/templates/core/billboards_list.html:3
 #: core/templates/core/billboards_list.html:6
-#: templates/layouts/generic-template.html:173
-#: templates/layouts/generic-template.html:228
+#: templates/layouts/generic-template.html:201
+#: templates/layouts/generic-template.html:256
 msgid "Billboards"
 msgstr "המצעד"
 
@@ -542,7 +542,7 @@ msgid "Advanced Search"
 msgstr "חיפוש מתקדם"
 
 #: core/templates/core/searchgui.html:51
-#: templates/layouts/generic-template.html:157
+#: templates/layouts/generic-template.html:185
 msgid "Knesset Member, Party, a Subject discussed, or any keyword..."
 msgstr "חבר/ת כנסת, מפלגה, נושא, או מילות מפתח"
 
@@ -821,7 +821,13 @@ msgstr "מספר בוחרים"
 msgid "How many people voted for this person"
 msgstr "מספר האנשים שהצביעו בעד המועמד"
 
+#: templates/404.html:4
+msgid "Page Not Found"
+msgstr ""
+
 #: templates/layouts/generic-template.html:11
+#: templates/layouts/generic-template.html:27
+#: templates/layouts/generic-template.html:38
 msgid ""
 "Today, around a 100 of the Knesset Members are\n"
 "          using Facebook on a daily basis. We collect and organize what they "
@@ -838,30 +844,33 @@ msgstr ""
 msgid "| Kikar Hamedina"
 msgstr "| כיכר המדינה"
 
-#: templates/layouts/generic-template.html:147
+#: templates/layouts/generic-template.html:26
+#: templates/layouts/generic-template.html:32
+#: templates/layouts/generic-template.html:37
+#: templates/layouts/generic-template.html:175
 msgid "Kikar Hamedina"
 msgstr "כיכר המדינה"
 
-#: templates/layouts/generic-template.html:155
+#: templates/layouts/generic-template.html:183
 msgid "search"
 msgstr "חיפוש"
 
-#: templates/layouts/generic-template.html:178
-#: templates/layouts/generic-template.html:233
+#: templates/layouts/generic-template.html:206
+#: templates/layouts/generic-template.html:261
 msgid "About"
 msgstr "אודות"
 
-#: templates/layouts/generic-template.html:184
-#: templates/layouts/generic-template.html:239
+#: templates/layouts/generic-template.html:212
+#: templates/layouts/generic-template.html:267
 msgid "Donate"
 msgstr "תרומה"
 
-#: templates/layouts/generic-template.html:208
-#: templates/layouts/generic-template.html:245
+#: templates/layouts/generic-template.html:236
+#: templates/layouts/generic-template.html:273
 msgid "Tagging"
 msgstr "תיוג"
 
-#: templates/layouts/generic-template.html:222
+#: templates/layouts/generic-template.html:250
 msgid "Options"
 msgstr "אפשרויות"
 

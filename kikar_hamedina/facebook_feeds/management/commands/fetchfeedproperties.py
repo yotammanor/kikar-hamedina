@@ -9,6 +9,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 import facebook
 from unidecode import unidecode
+
+from core.models import MEMBER_MODEL
 from facebook_feeds.models import \
     Facebook_Feed, \
     Facebook_Status, \
@@ -16,14 +18,14 @@ from facebook_feeds.models import \
     Feed_Popularity
 from concurrent import futures
 
-FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.5')
+FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.7')
 _LOGGER_SCRAPING = logging.getLogger('scraping')
 
 
 # Todo: using single transaction (?)
 class Command(BaseCommand):
-    args = '<person_id>'
-    help = 'Fetches a person'
+    args = '<feed_id>'
+    help = 'Fetches feed properties from Facebook API and updates to DB.'
     errors_count = 0
     warning_count = 0
 
@@ -43,11 +45,20 @@ class Command(BaseCommand):
                                    help='Use app access token for all types and cases of requests'
                                    )
 
+    option_mk_id = make_option('-m',
+                               '--mk',
+                               action='store',
+                               dest='mk_id',
+                               default=None,
+                               help='Update Main feed that belongs to MK id'
+                               )
+
     option_list_helper = list()
     for x in BaseCommand.option_list:
         option_list_helper.append(x)
     option_list_helper.append(option_insist)
     option_list_helper.append(option_app_token)
+    option_list_helper.append(option_mk_id)
     option_list = tuple(option_list_helper)
 
     graph = facebook.GraphAPI()
@@ -57,21 +68,14 @@ class Command(BaseCommand):
         Receives a feed_id for a facebook
         Returns properties about this feed
         """
-        api_request = str(feed_id)
+        api_request_path = "{0}/{1}".format(FACEBOOK_API_VERSION, str(feed_id))
 
         args_for_request = {
-            'version': FACEBOOK_API_VERSION,
             'fields': fetch_fields
         }
 
-        args_for_large_pic_request = {
-            'version': FACEBOOK_API_VERSION,
-            'fields': 'picture.type(large).fields(url)'
-        }
-
         try:
-            user_profile_properties = self.graph.request(path=api_request, args=args_for_request)
-            large_pic_response = self.graph.request(path=api_request, args=args_for_large_pic_request)
+            user_profile_properties = self.graph.request(path=api_request_path, args=args_for_request)
         except facebook.GraphAPIError as e:
             self.errors_count = + 1
             _LOGGER_SCRAPING.warning('Fetch Feed Properties: GraphAPI error, feed #%s. %s: %s',
@@ -80,12 +84,11 @@ class Command(BaseCommand):
                                      e)
             if is_insist:
                 user_profile_properties = {}
-                large_pic_response = {'picture': {'data': {'url': ''}}}
             else:
                 raise
 
         try:
-            user_profile_properties['picture_large'] = large_pic_response['picture']['data']['url']
+            user_profile_properties['picture_large'] = user_profile_properties['picture']['data']['url']
         except (LookupError, TypeError):
             self.warning_count = + 1
             # Fallback: assign null value to picture_large
@@ -114,14 +117,14 @@ class Command(BaseCommand):
                 feed.picture_large = feed_dict['picture_large']
                 feed.username = feed_dict['username']
                 feed.website = feed_dict['website']
-                feed.current_fan_count = feed_dict['likes']
+                feed.current_fan_count = feed_dict['fan_count']
                 # save feed object.
                 feed.save()
                 # feed_popularity data
                 feed_popularity = Feed_Popularity(
                     feed=feed,
                     date_of_creation=timezone.now(),
-                    fan_count=feed_dict['likes'],
+                    fan_count=feed_dict['fan_count'],
                     talking_about_count=feed_dict['talking_about_count'],
                 )
                 feed_popularity.save()
@@ -163,7 +166,7 @@ class Command(BaseCommand):
 
             data_dict = {'feed_id': feed.id, 'data':
                 self.fetch_data_by_feed_id(feed.vendor_id,
-                                           "id,name,picture.type(square).fields(url),website,about,link,first_name,last_name,birthday",
+                                           "id,name,picture.type(large).fields(url),website,about,link,first_name,last_name,birthday",
                                            is_insist)}
 
             # Transform data to fit existing public page
@@ -189,22 +192,21 @@ class Command(BaseCommand):
                     return empty_data_dict
 
                 # Fallback: Set facebook graph access token to app access token
-                self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
-                                                                        settings.FACEBOOK_SECRET_KEY)
+                self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                          settings.FACEBOOK_SECRET_KEY)
         else:  # Deprecated or malfunctioning profile ('NA', 'DP')
             _LOGGER_SCRAPING.info('Fetch Feed Properties: Feed pk {0} is of type {1}, skipping.'
                                   .format(feed.id, feed.feed_type))
             return empty_data_dict
 
         if use_app_token and not feed.requires_user_token:
-            self.graph.access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
-                                                                    settings.FACEBOOK_SECRET_KEY)
+            self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                                      settings.FACEBOOK_SECRET_KEY)
         # Get the data using the pre-set token
         data_dict = {'feed_id': feed.id, 'data':
             self.fetch_data_by_feed_id(feed.vendor_id,
-                                       "id,name,username,picture.type(square).fields(url),about,birthday,website,link,likes,talking_about_count",
+                                       "id,name,username,picture.type(square).fields(url),about,birthday,website,link,fan_count,talking_about_count",
                                        is_insist)}
-        #todo: in V2.6 likes changes to fan_count, and likes becomes an edge of liked pages.
         return data_dict
 
     def handle(self, *args, **options):
@@ -217,8 +219,15 @@ class Command(BaseCommand):
         use_app_token = options['use_app_token']
         list_of_feeds = list()
 
+        if options['mk_id']:
+            try:
+                feed = MEMBER_MODEL.objects.get(id=options['mk_id']).facebook_persona.get_main_feed
+                list_of_feeds.append(feed)
+            except (Facebook_Feed.DoesNotExist, MEMBER_MODEL.DoesNotExist) as e:
+                raise CommandError('No Feed found for MK ID:{}'.format(options['mk_id']))
+
         # Case no args - fetch all feeds
-        if len(args) == 0:
+        elif len(args) == 0:
             list_of_feeds = [feed for feed in Facebook_Feed.objects.all().filter(feed_type='PP')]
         # Case arg exists - fetch feed by id supplied
         elif len(args) == 1:
@@ -235,7 +244,7 @@ class Command(BaseCommand):
             raise CommandError('Please enter a valid feed id')
 
         def worker(feed):
-            self.stdout.write('Working on feed: {0}.'.format(feed.pk))
+            self.stdout.write('Working on feed: {0} (Member ID:{1}).'.format(feed.pk, feed.persona.object_id))
             # get feed properties from facebook
             feed_data = self.get_feed_data(feed, is_insist, use_app_token)
             # update fetched data to feed in database

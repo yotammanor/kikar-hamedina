@@ -16,14 +16,15 @@ from django.utils import timezone
 from django.core.mail import send_mail
 import facebook
 import logging
+
+from core.models import MEMBER_MODEL
 from ...models import \
-    Facebook_Feed as Facebook_Feed_Model, \
+    Facebook_Feed, \
     Facebook_Status as Facebook_Status_Model, \
     User_Token as User_Token_Model, \
     Facebook_Status_Attachment as Facebook_Status_Attachment_Model
-from .kikar_base_commands import KikarStatusCommand
 
-FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.5')
+FACEBOOK_API_VERSION = getattr(settings, 'FACEBOOK_API_VERSION', 'v2.7')
 
 SLEEP_TIME = 3
 
@@ -37,7 +38,7 @@ DEFAULT_STATUS_SELECT_LIMIT_FOR_REGULAR_RUN = 20
 
 class Command(BaseCommand):
     args = '<feed_id>'
-    help = 'Fetches a feed'
+    help = 'Fetches Statuses for selected feed, and saves or updates statuses to DB.'
     option_list = BaseCommand.option_list + (
         make_option('-i',
                     '--initial',
@@ -88,25 +89,32 @@ class Command(BaseCommand):
                     dest='use_app_token',
                     default=False,
                     help='Use app access token for all types and cases of requests'
+                    ),
+        make_option('-m',
+                    '--mk',
+                    action='store',
+                    dest='mk_id',
+                    default=None,
+                    help='Update Main feed that belongs to MK id'
                     )
     )
 
     def fetch_status_objects_from_feed(self, feed_id, post_number_limit, date_filters):
         """
         Receives a feed_id for a facebook
-        Returns a facebook-sdk fql query, with all status objects published by the page itself.
+        Returns a facebook-sdk api query, with all status objects published by the page itself.
 
         ?fields=from, message, id, created_time, updated_time, type, link, caption, picture, description, name,
         status_type, story, story_tags ,object_id, properties, source, to, shares, likes.summary(true).limit(1),
         comments.summary(true).limit(1)
         """
-        api_request_path = "{0}/posts".format(feed_id)
+        api_request_path = "{0}/{1}/posts".format(FACEBOOK_API_VERSION, feed_id)
         args_for_request = {'limit': post_number_limit,
-                            'version': FACEBOOK_API_VERSION,
                             'fields': "from, message, id, created_time, \
-                             updated_time, type, link, caption, picture, description, name,\
-                             status_type, story, story_tags ,object_id, properties, source, to, shares, \
-                             likes.summary(true).limit(1), comments.summary(true).limit(1).filter(toplevel)"}
+                             updated_time, type, link, caption, picture, description, name, permalink_url, \
+                             status_type, story, story_tags ,object_id, properties, source, to, shares, attachments, \
+                             likes.summary(true).limit(0), comments.summary(true).limit(0).filter(toplevel),\
+                                      reactions.limit(0).type(ANGRY)"}
 
         use_paging = False
         if date_filters['from_date']:
@@ -128,7 +136,7 @@ class Command(BaseCommand):
             if not use_paging:
                 return return_statuses
             else:
-                print 'trying to use paging'
+                print('trying to use paging')
                 from_date_ordinal = dateutil.parser.parse(date_filters['from_date']).toordinal()
                 list_of_statuses = []
                 num_of_pages = 1
@@ -141,7 +149,7 @@ class Command(BaseCommand):
                     next_page = return_statuses['paging']['next']
                 else:
                     next_page = None
-                print 'next_page exists:', bool(next_page)
+                print('next_page exists:', bool(next_page))
                 while oldest_status_so_far.toordinal() >= from_date_ordinal and \
                                 try_number <= NUMBER_OF_TRIES_FOR_REQUEST and next_page:
                     try:
@@ -150,19 +158,19 @@ class Command(BaseCommand):
                         warning_msg = "Failed an attempt for feed #({0}) from FB API.".format(feed_id)
                         logger = logging.getLogger('django')
                         logger.warning(warning_msg)
-                        print 'try_number:', try_number
+                        print('try_number:', try_number)
                         try_number += 1
                         continue
                     list_of_statuses += response['data']
                     oldest_status_so_far = dateutil.parser.parse(list_of_statuses[-1]['created_time'])
                     if not 'paging' in response:
-                        print 'no more pages for this response.'
+                        print('no more pages for this response.')
                         break
                     next_page = response['paging']['next']
                     num_of_pages += 1
-                    print num_of_pages, oldest_status_so_far
+                    print(num_of_pages, oldest_status_so_far)
                     if not num_of_pages % 5:
-                        print 'sleeping for %d seconds.' % SLEEP_TIME
+                        print('sleeping for %d seconds.' % SLEEP_TIME)
                         sleep(SLEEP_TIME)
                 return_statuses = {'data': list_of_statuses}
                 return return_statuses
@@ -172,9 +180,8 @@ class Command(BaseCommand):
         return []
 
     def get_picture_attachment_json(self, attachment):
-        api_request_path = "{0}/".format(attachment.facebook_object_id)
-        args_for_request = {'version': FACEBOOK_API_VERSION,
-                            'fields': "id, images, height, source"}
+        api_request_path = "{0}/{1}/".format(FACEBOOK_API_VERSION, attachment.facebook_object_id)
+        args_for_request = {'fields': "id, images, height, source"}
         try_number = 1
         while try_number <= NUMBER_OF_TRIES_FOR_REQUEST:
             try:
@@ -221,20 +228,20 @@ class Command(BaseCommand):
             attachment.picture = attachment_defaultdict['picture']
             # get source for picture attachments
             if attachment.type == 'photo':
-                print '\tgetting picture source'
+                print('\tgetting picture source')
                 photo_object = self.get_picture_attachment_json(attachment)
                 if 'images' not in photo_object:
-                    print 'no images'
+                    print('no images')
                     return
                 selected_attachment_object = sorted(photo_object['images'], key=lambda x: x['height'], reverse=True)[0]
                 attachment.source = selected_attachment_object['source']
                 attachment.source_width = selected_attachment_object['width']
                 attachment.source_height = selected_attachment_object['height']
                 if not random.randrange(1, 100) % 5:
-                    print 'sleeping for %d seconds.' % SLEEP_TIME
+                    print('sleeping for %d seconds.' % SLEEP_TIME)
                     sleep(SLEEP_TIME)
             elif attachment.type == 'video':
-                print '\tsetting video source'
+                print('\tsetting video source')
                 attachment.source = attachment_defaultdict['source']
             attachment.save()
         else:
@@ -246,19 +253,19 @@ class Command(BaseCommand):
         """
         If attachment exists, create or update all relevant fields.
         """
-        print 'create_or_update attachment'
+        print('create_or_update attachment')
         if status_object_defaultdict['link']:
             attachment, created = Facebook_Status_Attachment_Model.objects.get_or_create(
                 status=status_object)
             # print 'I have an attachment. Created now: %s; Length of data in field link: %d; field picture: %d;  id: %s' % (
             # created, len(status_object_defaultdict['link']), len(str(status_object_defaultdict['picture'])),
             # status.status_id)
-            print 'created:', created
-            print 'attachment id:', attachment.id
+            print('created:', created)
+            print('attachment id:', attachment.id)
             self.update_status_attachment(attachment, status_object_defaultdict)
         else:
-            print 'passing:',
-            print status_object_defaultdict['link'], status_object_defaultdict['picture']
+            print('passing:',)
+            print(status_object_defaultdict['link'], status_object_defaultdict['picture'])
             pass
             # print 'i don''t have an attachment; Link field: %s; Picture field: %s; id: %s' % (
             # str(status_object_defaultdict['link']), str(status_object_defaultdict['picture']), status.status_id)
@@ -280,7 +287,7 @@ class Command(BaseCommand):
         else:
             message = ''
         if status_object_defaultdict['likes']:
-
+            # todo: reactions
             like_count = status_object_defaultdict['likes']['summary'].get('total_count', 0)
         else:
             like_count = 0
@@ -293,18 +300,11 @@ class Command(BaseCommand):
             share_count = status_object_defaultdict['shares']['count']
         else:
             share_count = 0
-        if status_object_defaultdict['status_type']:
-            type_of_status = status_object_defaultdict['status_type']
-        else:
-            type_of_status = None
-        if status_object_defaultdict['story']:
-            story = status_object_defaultdict['story']
-        else:
-            story = None
-        if status_object_defaultdict['story_tags']:
-            story_tags = status_object_defaultdict['story_tags']
-        else:
-            story_tags = None
+
+        type_of_status = status_object_defaultdict['status_type']
+        story = status_object_defaultdict['story']
+        # todo: v2.5+ returns story_tags as array instead of objects
+        story_tags = status_object_defaultdict['story_tags']
 
         published = datetime.datetime.strptime(status_object_defaultdict['created_time'],
                                                '%Y-%m-%dT%H:%M:%S+0000').replace(tzinfo=timezone.utc)
@@ -316,7 +316,7 @@ class Command(BaseCommand):
 
             if status_object.updated <= current_time_of_update or options['force-update']:
                 # If post_id exists but of earlier update time, fields are updated.
-                print 'update status'
+                print('update status')
                 status_object.content = message
                 status_object.like_count = like_count
                 status_object.comment_count = comment_count
@@ -333,14 +333,14 @@ class Command(BaseCommand):
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
             elif options['force-attachment-update']:
                 # force update of attachment, regardless of time
-                print 'Forcing update attachment'
+                print('Forcing update attachment')
                 status_object.save()
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
                 # If post_id exists but of equal or later time (unlikely, but may happen), disregard
                 # Should be an else here for this case but as it is, just disregard
         except Facebook_Status_Model.DoesNotExist:
             # If post_id does not exist at all, create it from data.
-            print 'create status'
+            print('create status')
             status_object = Facebook_Status_Model(feed_id=feed_id,
                                                   status_id=status_object['id'],
                                                   content=message,
@@ -361,7 +361,7 @@ class Command(BaseCommand):
                 self.create_or_update_attachment(status_object, status_object_defaultdict)
         finally:
             # save status object.
-            print 'saving status'
+            print('saving status')
             status_object.save()
 
     def get_feed_statuses(self, feed, post_number_limit, date_filters, use_app_token):
@@ -388,7 +388,7 @@ class Command(BaseCommand):
                     # Get the data using the pre-set token
             if use_app_token:
                 self.graph.access_token = self.graph.get_app_access_token(settings.FACEBOOK_APP_ID,
-                                                                        settings.FACEBOOK_SECRET_KEY)
+                                                                          settings.FACEBOOK_SECRET_KEY)
             return {'feed_id': feed.id,
                     'statuses': self.fetch_status_objects_from_feed(feed.vendor_id, post_number_limit, date_filters)}
 
@@ -429,16 +429,23 @@ class Command(BaseCommand):
 
         list_of_feeds = list()
         # Case no args - fetch all feeds
-        if len(args) == 0:
-            manager = Facebook_Feed_Model.current_feeds if options['current-only'] else Facebook_Feed_Model.objects
+        if options['mk_id']:
+            try:
+                feed = MEMBER_MODEL.objects.get(id=options['mk_id']).facebook_persona.get_main_feed
+                list_of_feeds.append(feed)
+            except (Facebook_Feed.DoesNotExist, MEMBER_MODEL.DoesNotExist) as e:
+                raise CommandError('No Feed found for MK ID:{}'.format(options['mk_id']))
+
+        elif len(args) == 0:
+            manager = Facebook_Feed.current_feeds if options['current-only'] else Facebook_Feed.objects
             list_of_feeds = [feed for feed in manager.all().order_by('id')]
         # Case arg exists - fetch feed by id supplied
         elif len(args) == 1:
             feed_id = int(args[0])
             try:
-                feed = Facebook_Feed_Model.objects.get(pk=feed_id)
+                feed = Facebook_Feed.objects.get(pk=feed_id)
                 list_of_feeds.append(feed)
-            except Facebook_Feed_Model.DoesNotExist:
+            except Facebook_Feed.DoesNotExist:
                 warning_msg = "Feed #({0}) does not exist.".format(feed_id)
                 logger = logging.getLogger('django')
                 logger.warning(warning_msg)
@@ -465,7 +472,7 @@ class Command(BaseCommand):
             logger = logging.getLogger('django')
             logger.info(info_msg)
             if date_filters['from_date'] or date_filters['to_date']:
-                print 'sleeping for %d seconds.' % SLEEP_TIME
+                print('sleeping for %d seconds.' % SLEEP_TIME)
                 sleep(SLEEP_TIME)
         info_msg = "Successfully saved all statuses to db"
         logger = logging.getLogger('django')
