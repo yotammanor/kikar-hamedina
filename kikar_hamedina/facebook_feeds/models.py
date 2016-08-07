@@ -14,6 +14,8 @@ from facebook_feeds.managers import Facebook_StatusManager, \
     Facebook_FeedManager, DataFrameManager
 from kikartags.managers import _KikarTaggableManager
 from kikartags.models import TaggedItem
+from langdetect import detect
+from langdetect.lang_detect_exception import LangDetectException
 
 DEFAULT_THRESHOLD = 0
 
@@ -324,7 +326,7 @@ class Facebook_Status(models.Model):
                     # print 'Comment:', self, pattern, ':', story_string
                     return True
             except (KeyError, IndexError) as e:
-                print 'Format error', self, sp, e
+                print('Format error', self, sp, e)
         # print 'Not a comment', self
         return False
 
@@ -478,7 +480,7 @@ class Facebook_Status_Comment(models.Model):
     message_tags = models.TextField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False, null=False)
     locally_updated = models.DateTimeField(blank=True, default=timezone.datetime(1970, 1, 1))
-
+    lang = models.CharField(null=True, blank=True, max_length=6, db_index=True)
     objects = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
 
     tags = TaggableManager(through=TaggedItem, manager=_KikarTaggableManager)
@@ -528,6 +530,13 @@ class Facebook_Status_Comment(models.Model):
         # print 'Refresh? %s age=%.3f norm=%.5f int=%.1f updated=%s now=%s' % (
         # need_refresh, age_secs, normalized_age, refresh_interval, self.locally_updated, now)
         return need_refresh
+
+    def content_lang(self):
+        try:
+            return detect(self.content)
+        except LangDetectException as e:
+            return u''
+
 
     class Meta:
         verbose_name_plural = 'Facebook_Status_Comments'

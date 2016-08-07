@@ -32,6 +32,7 @@ unicode-slugify
 solid_i18n==1.1.1
 dj-database-url==0.4.1
 networkx==1.11
+langdetect==1.0.6
 
 django-debug-toolbar>=1.0
 nose
