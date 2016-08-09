@@ -36,6 +36,7 @@ class Command(KikarCommentCommand):
             'commentator_also_liked_status',
             'like_count',
             'comment_count',
+            'language',
         ]
         csv_data = DictWriter(f, fieldnames=field_names, delimiter=DELIMITER)
         headers = {field_name: field_name for field_name in field_names}
@@ -66,7 +67,8 @@ class Command(KikarCommentCommand):
                 'commentator_also_liked_status': comment.comment_from.likes.filter(
                     status__status_id=comment.parent.status_id).exists(),
                 'like_count': comment.like_count,
-                'comment_count': comment.comment_count
+                'comment_count': comment.comment_count,
+                'language': comment.content_lang()
             }
             csv_data.writerow(dict_row)
 
