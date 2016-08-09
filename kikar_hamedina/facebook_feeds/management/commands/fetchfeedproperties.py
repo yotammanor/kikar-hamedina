@@ -88,11 +88,13 @@ class Command(BaseCommand):
                 raise
 
         try:
-            user_profile_properties['picture_large'] = user_profile_properties['picture']['data']['url']
+            user_profile_properties['picture_large'] = user_profile_properties['picture_large']['data']['url']
+            user_profile_properties['picture_square'] = user_profile_properties['picture_square']['data']['url']
         except (LookupError, TypeError):
             self.warning_count = + 1
             # Fallback: assign null value to picture_large
             user_profile_properties['picture_large'] = None
+            user_profile_properties['picture_square'] = None
             _LOGGER_SCRAPING.warning('Fetch Feed Properties: feed #{0} has no large pic'
                                      .format(feed_id))
 
@@ -113,7 +115,7 @@ class Command(BaseCommand):
                 feed.birthday = feed_dict['birthday']
                 feed.name = feed_dict['name']
                 feed.link = feed_dict['link']
-                feed.picture_square = feed_dict['picture']['data']['url']
+                feed.picture_square = feed_dict['picture_square']
                 feed.picture_large = feed_dict['picture_large']
                 feed.username = feed_dict['username']
                 feed.website = feed_dict['website']
@@ -205,7 +207,7 @@ class Command(BaseCommand):
         # Get the data using the pre-set token
         data_dict = {'feed_id': feed.id, 'data':
             self.fetch_data_by_feed_id(feed.vendor_id,
-                                       "id,name,username,picture.type(large).fields(url),about,birthday,website,link,fan_count,talking_about_count",
+                                       "id,name,username,picture.type(large).as(picture_large),picture.type(square).as(picture_square).fields(url),about,birthday,website,link,fan_count,talking_about_count",
                                        is_insist)}
         return data_dict
 
