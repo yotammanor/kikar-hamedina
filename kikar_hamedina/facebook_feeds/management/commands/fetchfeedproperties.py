@@ -205,7 +205,7 @@ class Command(BaseCommand):
         # Get the data using the pre-set token
         data_dict = {'feed_id': feed.id, 'data':
             self.fetch_data_by_feed_id(feed.vendor_id,
-                                       "id,name,username,picture.type(square).fields(url),about,birthday,website,link,fan_count,talking_about_count",
+                                       "id,name,username,picture.type(large).fields(url),about,birthday,website,link,fan_count,talking_about_count",
                                        is_insist)}
         return data_dict
 
