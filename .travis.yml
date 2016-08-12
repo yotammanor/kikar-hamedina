@@ -2,5 +2,17 @@ language: python
 cache: pip
 python:
   - "2.7.11"
+
+before_install:
+  - export DJANGO_SETTINGS_MODULE=kikar_hamedina.settings
+  - export PYTHONPATH=$HOME/builds/agamrafaeli/kikar_hamedina
+
 install: "pip install -r requirements/base.txt"
-script: nosetests
+services: postgresql
+
+before_script:
+  - psql -c "CREATE DATABASE mydb;" -U postgres
+
+script:
+  - python manage.py syncdb --noinput
+  - nosetests
