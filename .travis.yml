@@ -5,7 +5,7 @@ python:
 
 before_install:
   - export DJANGO_SETTINGS_MODULE=kikar_hamedina.settings
-  - export PYTHONPATH=$HOME/builds/agamrafaeli/kikar_hamedina
+  - export PYTHONPATH=$HOME/builds/agamrafaeli/kikar-hamedina
 
 install: "pip install -r requirements/base.txt"
 services: postgresql
@@ -14,5 +14,5 @@ before_script:
   - psql -c "CREATE DATABASE mydb;" -U postgres
 
 script:
-  - python manage.py syncdb --noinput
+  - python kikar_hamedina/manage.py syncdb --noinput
   - nosetests
