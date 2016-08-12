@@ -15,7 +15,5 @@ before_script:
 
 script:
   - python kikar_hamedina/manage.py syncdb --noinput
-  - echo $PYTHONPATH
-  - pwd
-  - python -c "import kikar_hamedina.mks.models"
+  - python -c "import sys; print sys.path"
   - nosetests
