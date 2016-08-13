@@ -18,7 +18,7 @@ class BasicPagesTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_mk_page(self):
-        mk_page_url = "http://localhost:8000/member/{member_id}" % {"member_id": self.member_id}
+        mk_page_url = "http://localhost:8000/member/{member_id}".format(member_id=self.member_id)
         response = requests.get(mk_page_url)
         self.assertEqual(response.status_code, 200)
 
