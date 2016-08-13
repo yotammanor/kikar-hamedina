@@ -1,5 +1,43 @@
 [
   {
+        "pk": "18",
+        "model": "mks.knesset",
+        "fields": {
+            "start_date": "2009-02-24",
+            "end_date": "2013-02-05"
+        }
+    },
+    {
+        "pk": "19",
+        "model": "mks.knesset",
+        "fields": {
+            "start_date": "2013-02-05",
+            "end_date": "2015-03-17"
+        }
+    },
+    {
+        "pk": "20",
+        "model": "mks.knesset",
+        "fields": {
+            "start_date": "2015-03-18",
+            "end_date": null
+        }
+    },
+  {
+        "pk": "27",
+        "model": "mks.party",
+        "fields": {
+            "number_of_seats": null,
+            "name": "\u05d4\u05dc\u05d9\u05db\u05d5\u05d3",
+            "end_date": null,
+            "knesset": "20",
+            "is_coalition": "True",
+            "logo": "",
+            "number_of_members": "30",
+            "start_date": null
+        }
+    },
+  {
     "pk": "734",
     "model": "mks.member",
     "fields": {
