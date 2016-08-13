@@ -15,8 +15,6 @@ before_script:
   # Prepare DB
   - psql -c "CREATE DATABASE travisci;" -U postgres
   - python kikar_hamedina/manage.py syncdb --noinput
-  - wget https://s3-eu-west-1.amazonaws.com/kikar-dev/kikar_setup.db.gz
-  - gunzip -c kikar_setup.db.gz | sudo -u postgres psql kikar
 
   # Run server
   - python kikar_hamedina/manage.py runserver localhost:8000 &
