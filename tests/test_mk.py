@@ -4,6 +4,9 @@ import django
 django.setup()
 
 import requests
+from logging import getLogger
+
+logger = getLogger("my_logger")
 
 from mks import Member
 
@@ -15,5 +18,7 @@ class MemberTestCase(TestCase):
 
     def test_get_mk_page(self):
         all_members = Member.objects.all()
+        logger.info("Before")
         for member in enumerate(all_members):
-            print member.name
+            logger.info(member.name)
+        logger.info("After")
