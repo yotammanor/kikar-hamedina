@@ -4,7 +4,7 @@ python:
   - "2.7.11"
 
 before_install:
-  - export DJANGO_SETTINGS_MODULE=kikar_hamedina.settings
+  - export DJANGO_SETTINGS_MODULE=kikar_hamedina.travis_settings.py
   - export PYTHONPATH=$PYTHONPATH:$HOME/build/agamrafaeli/kikar-hamedina/kikar_hamedina
 
 install: "pip install -r requirements/base.txt"
