@@ -1,5 +1,8 @@
 from unittest import TestCase
 
+import django
+django.setup()
+
 import mks
 
 class MemberTestCase(TestCase):
