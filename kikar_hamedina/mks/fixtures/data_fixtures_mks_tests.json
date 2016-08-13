@@ -1,0 +1,41 @@
+[
+  {
+    "pk": "734",
+    "model": "mks.member",
+    "fields": {
+      "residence_economy": "5",
+      "bills_stats_first": "0",
+      "place_of_residence_lon": "34.5666667",
+      "current_position": "2",
+      "place_of_residence": "\u05d0\u05e9\u05e7\u05dc\u05d5\u05df",
+      "family_status": "\u05e0\u05e9\u05d5\u05d9",
+      "place_of_residence_lat": "31.6666667",
+      "average_weekly_presence_hours": null,
+      "date_of_birth": "1970-09-30",
+      "img_url": "http://www.knesset.gov.il/mk/images/members/erdan_gilad-s.jpg",
+      "email": "gerdan@knesset.gov.il",
+      "website": null,
+      "fax": "02-6753982",
+      "current_party": "27",
+      "current_role_descriptions": "\u05e9\u05e8 \u05dc\u05d1\u05d9\u05d8\u05d7\u05d5\u05df \u05e4\u05e0\u05d9\u05dd| \u05e9\u05e8 \u05dc\u05e0\u05d5\u05e9\u05d0\u05d9\u05dd \u05d0\u05e1\u05d8\u05e8\u05d8\u05d2\u05d9\u05d9\u05dd| \u05e9\u05e8 \u05d4\u05d4\u05e1\u05d1\u05e8\u05d4",
+      "end_date": null,
+      "area_of_residence": null,
+      "date_of_death": null,
+      "phone": "",
+      "is_current": "True",
+      "user": null,
+      "backlinks_enabled": "True",
+      "average_monthly_committee_presence": "0.0",
+      "name": "\u05d2\u05dc\u05e2\u05d3 \u05d0\u05e8\u05d3\u05df",
+      "gender": "M",
+      "bills_stats_approved": "0",
+      "residence_centrality": "6",
+      "start_date": "2009-02-24",
+      "bills_stats_proposed": "0",
+      "place_of_birth": "\u05d0\u05e9\u05e7\u05dc\u05d5\u05df, \u05d9\u05e9\u05e8\u05d0\u05dc",
+      "year_of_aliyah": null,
+      "number_of_children": "3",
+      "bills_stats_pre": "0"
+    }
+  }
+]
