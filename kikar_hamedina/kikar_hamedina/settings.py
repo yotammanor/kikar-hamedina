@@ -277,3 +277,7 @@ if "TRAVIS" in os.environ:
     }
 
     DEBUG = True
+
+    FACEBOOK_APP_ID = '711830842197328'
+    FACEBOOK_SECRET_KEY = '772cec8e6b20b02104e4a0c6bb7fad9e'
+    FACEBOOK_API_VERSION = 'v2.5'
