@@ -16,4 +16,5 @@ before_script:
 script:
   - python kikar_hamedina/manage.py syncdb --noinput
   - python -c "import sys; print sys.path"
+  - cat $HOME/builds/agamrafaeli/kikar-hamedina/kikar_hamedina/mks/__init__.py
   - nosetests
