@@ -13,6 +13,7 @@ services: postgresql
 before_script:
   - psql -c "CREATE DATABASE travisci;" -U postgres
   - python kikar_hamedina/manage.py syncdb --noinput
-  - python kikar_hamedina/manage.py runserver localhost:8000
+  - python kikar_hamedina/manage.py runserver localhost:8000 &
+  - sleep 3
 script:
   - nosetests
