@@ -17,7 +17,7 @@ class MemberTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_mk_page(self):
-        response = requests.get("http://localhost:8000/member/19")
+        response = requests.get("http://localhost:8000/member/731")
         self.assertEqual(response.status_code, 200)
 
 
