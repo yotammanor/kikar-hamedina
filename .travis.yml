@@ -5,7 +5,7 @@ python:
 
 before_install:
   - export DJANGO_SETTINGS_MODULE=kikar_hamedina.settings
-  - export PYTHONPATH=$PYTHONPATH:$HOME/builds/agamrafaeli/kikar-hamedina/kikar_hamedina
+  - export PYTHONPATH=$PYTHONPATH:$HOME/build/agamrafaeli/kikar-hamedina/kikar_hamedina
 
 install: "pip install -r requirements/base.txt"
 services: postgresql
@@ -16,5 +16,5 @@ before_script:
 script:
   - python kikar_hamedina/manage.py syncdb --noinput
   - python -c "import sys; print sys.path"
-  - cat $HOME/builds/agamrafaeli/kikar-hamedina/kikar_hamedina/mks/__init__.py
+  - cat $HOME/build/agamrafaeli/kikar-hamedina/kikar_hamedina/mks/__init__.py
   - nosetests
