@@ -25,8 +25,13 @@ class BasicPagesTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_party_page(self):
-
         party_page_url = self.base_url + "/party/{party_id}".format(party_id=self.party_id)
         response = requests.get(party_page_url)
         self.assertEqual(response.status_code, 200)
+
+    def test_get_search_page(self):
+        search_page_url = self.base_url + "/search"
+        response = requests.get(search_page_url)
+        self.assertEqual(response.status_code, 200)
+
 
