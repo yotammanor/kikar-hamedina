@@ -39,4 +39,8 @@ class BasicPagesTestCase(TestCase):
         response = requests.get(billboards_page_url)
         self.assertEqual(response.status_code, 200)
 
+    def test_get_about_page(self):
+        about_page_url = self.base_url + "/about"
+        response = requests.get(about_page_url)
+        self.assertEqual(response.status_code, 200)
 
