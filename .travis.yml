@@ -16,7 +16,6 @@ before_script:
   - psql -c "CREATE DATABASE travisci;" -U postgres
   - python kikar_hamedina/manage.py migrate
   - python kikar_hamedina/manage.py loaddata fixture data_fixture_mks.json --app mks
-  - python kikar_hamedina/manage.py loaddata fixture data_fixture_facebook_feeds.json --app facebook_feeds
 
   # Run server
   - python kikar_hamedina/manage.py runserver localhost:8000 &
