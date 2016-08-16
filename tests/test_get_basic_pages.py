@@ -1,4 +1,4 @@
-from django.test import TestCase
+from unittest import TestCase
 from django.test import Client as TestingClient
 
 import django
