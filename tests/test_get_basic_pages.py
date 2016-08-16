@@ -27,11 +27,11 @@ class BasicPagesTestCase(TestCase):
         response = self.client.get(party_page_url)
         self.assertEqual(response.status_code, 200)
 
-    # def test_get_search_page(self):
-    #     response = self.client.get("/search/")
-    #     self.assertEqual(response.status_code, 200)
-    #
-    # def test_get_about_page(self):
-    #     response = self.client.get("/about/")
-    #     self.assertEqual(response.status_code, 200)
+    def test_get_search_page(self):
+        response = self.client.get("/search/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_about_page(self):
+        response = self.client.get("/about/")
+        self.assertEqual(response.status_code, 200)
 
