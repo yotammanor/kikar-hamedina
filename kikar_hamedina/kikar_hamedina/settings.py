@@ -220,6 +220,7 @@ LOGGING = {
             'formatter': 'simple'
         },
         'console': {
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
