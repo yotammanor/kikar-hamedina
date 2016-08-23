@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-25 22:42+0300\n"
-"PO-Revision-Date: 2016-04-18 20:12+0300\n"
+"POT-Creation-Date: 2016-08-23 09:54+0300\n"
+"PO-Revision-Date: 2016-08-23 09:54+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.8\n"
 
 #: core/billboards.py:10 core/templates/core/date_filter.html:46
 #: core/templates/core/searchgui.html:120
@@ -265,7 +265,7 @@ msgid "Likes on average"
 msgstr "לייקים, בממוצע"
 
 #: core/templates/core/billboards_list.html:3
-#: core/templates/core/billboards_list.html:6
+#: core/templates/core/billboards_list.html:6 templates/404.html:89
 #: templates/layouts/generic-template.html:201
 #: templates/layouts/generic-template.html:256
 msgid "Billboards"
@@ -320,11 +320,11 @@ msgstr "במהלך הבחירות לכנסת ה-20"
 msgid "During \"Protective Edge\""
 msgstr "במהלך צוק איתן"
 
-#: core/templates/core/facebook_status.html:49
+#: core/templates/core/facebook_status.html:48
 msgid "(This status was deleted)"
 msgstr "(הסטאטוס נמחק)"
 
-#: core/templates/core/facebook_status.html:71
+#: core/templates/core/facebook_status.html:70
 msgid ""
 "Error loading photo. Click the small Facebook-Logo to the right, to see "
 "original status."
@@ -332,33 +332,33 @@ msgstr ""
 "תקלה בטעינת התמונה. אפשר ללחוץ על כפתור הפייסבוק הקטן מצד שמאל כדי לראות את "
 "הסטאטוס המקורי"
 
-#: core/templates/core/facebook_status.html:89
+#: core/templates/core/facebook_status.html:88
 msgid "Apologies, your broswer does not support displaying videos."
 msgstr " מתנצלים, הדפדפן שלך אינו תומך בהצגת סרטונים."
 
-#: core/templates/core/facebook_status.html:126
+#: core/templates/core/facebook_status.html:125
 msgid "likes"
 msgstr "אהבו"
 
-#: core/templates/core/facebook_status.html:130
+#: core/templates/core/facebook_status.html:129
 msgid "comments"
 msgstr "הגיבו"
 
-#: core/templates/core/facebook_status.html:134
+#: core/templates/core/facebook_status.html:133
 msgid "shares"
 msgstr "שיתפו"
 
-#: core/templates/core/facebook_status.html:146
+#: core/templates/core/facebook_status.html:145
 #: core/templates/core/search.html:14 core/templates/core/searchgui.html:180
 #: kikartags/models.py:32
 msgid "Tags"
 msgstr "תגיות"
 
-#: core/templates/core/facebook_status.html:204
+#: core/templates/core/facebook_status.html:203
 msgid "Insert Tag (Comma separated)"
 msgstr "הכנס תג (comma separated)"
 
-#: core/templates/core/facebook_status.html:213
+#: core/templates/core/facebook_status.html:212
 msgid "Add Tags"
 msgstr "הוספת תגיות"
 
@@ -821,9 +821,57 @@ msgstr "מספר בוחרים"
 msgid "How many people voted for this person"
 msgstr "מספר האנשים שהצביעו בעד המועמד"
 
-#: templates/404.html:4
+#: templates/404.html:4 templates/404.html.py:14
 msgid "Page Not Found"
+msgstr "עמוד לא נמצא"
+
+#: templates/404.html:64
+msgid "If our state will not end the desert - the desert might end the state"
+msgstr "אם המדינה לא תחסל את המדבר - עלול המדבר לחסל את המדינה"
+
+#: templates/404.html:68
+msgid "David Ben-Gurion"
+msgstr "דוד בן-גוריון"
+
+#: templates/404.html:83
+msgid ""
+"Apologies, it seems that you've reached into the heart of the desert, into a "
+"page that does not exist here"
+msgstr "אנחנו מצטערים, נראה שהגעת אל לב המדבר, לדף שאיננו קיים"
+
+#: templates/404.html:87
+msgid "You can return to the main menu"
+msgstr "אפשר לחזור לדף הראשי"
+
+#: templates/404.html:88
+msgid "here"
+msgstr "כאן"
+
+#: templates/404.html:88
+msgid "Or just see our"
+msgstr "או פשוט לראות את"
+
+#: templates/404_new.html:67
+msgid " 404-quote-msg "
 msgstr ""
+"אם המדינה לא תחסל את המדבר - \n"
+"עלול המדבר לחסל את המדינה"
+
+#: templates/404_new.html:71
+msgid "(404-quote-author)"
+msgstr "דוד בן-גוריון"
+
+#: templates/404_new.html:86
+msgid "(404-sorry-msg)"
+msgstr "אנחנו מצטערים, נראה שהגעת אל לב המדבר, לדף שאיננו קיים כאן יותר"
+
+#: templates/404_new.html:90
+msgid "(You can return to the main menu)"
+msgstr "(אפשר לחזור לדף הראשי)"
+
+#: templates/404_new.html:90
+msgid "(From here)"
+msgstr "(מכאן)"
 
 #: templates/layouts/generic-template.html:11
 #: templates/layouts/generic-template.html:27
