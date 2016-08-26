@@ -5,7 +5,7 @@ python:
 
 before_install:
   - export DJANGO_SETTINGS_MODULE=kikar_hamedina.settings
-  - export PYTHONPATH=$PYTHONPATH:$HOME/build/agamrafaeli/kikar-hamedina/kikar_hamedina
+  - export PYTHONPATH=$PYTHONPATH:$HOME/build/hasadna/kikar-hamedina/kikar_hamedina
 
 install: "pip install -r requirements/base.txt"
 
