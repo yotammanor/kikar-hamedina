@@ -10,8 +10,8 @@ class BasicPagesTestCase(TestCase):
         self.client = TestingClient()
 
         # Hardcoded configurations
-        self.member_id = "731"
-        self.party_id = "32"
+        self.member_id = "90" #Netanyahu
+        self.party_id = "2"
 
     def test_get_homepage(self):
         response = self.client.get("/")
