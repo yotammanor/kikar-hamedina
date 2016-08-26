@@ -260,3 +260,21 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+if "TRAVIS" in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE':   'django.db.backends.postgresql_psycopg2',
+            'NAME':     'travisci',
+            'USER':     'postgres',
+            'PASSWORD': '',
+            'HOST':     'localhost',
+            'PORT':     '',
+        }
+    }
+
+    DEBUG = True
+
+    FACEBOOK_APP_ID = '1090127617700980'
+    FACEBOOK_SECRET_KEY = 'fd9b75e36b581192447e8eca1ade8ee3'
+    FACEBOOK_API_VERSION = 'v2.7'
