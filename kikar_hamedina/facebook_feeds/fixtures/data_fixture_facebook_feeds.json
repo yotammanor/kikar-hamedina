@@ -2870,7 +2870,7 @@
             "feed_type": "PP", 
             "persona": "30", 
             "is_current": true, 
-            "locally_updated": "1970-01-01 00:00:00"
+            "locally_updated": null
         }
     }, 
     {

@@ -126,9 +126,6 @@ ROOT_URLCONF = 'kikar_hamedina.urls'
 WSGI_APPLICATION = 'kikar_hamedina.wsgi.application'
 
 # schema://user:password@localhost:5432/db_name
-
-
-
 config = dj_database_url.config(default='postgres://kikar:kikar@localhost:5432/kikar')
 DATABASES = {'default': config}
 
@@ -220,7 +217,6 @@ LOGGING = {
             'formatter': 'simple'
         },
         'console': {
-            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
