@@ -10,8 +10,8 @@ class Command(KikarStatusCommand):
 
     def worker(self, i, comment, status, processor):
         self.stdout.write('working on comment {}'.format(i))
-        text = processor.text_manipulation_mk_names(text=comment.content, context_status=status)
-        text = processor.text_manipulation_emojis(text=text)
+        text = processor.replace_mk_names(text=comment.content, context_status=status)
+        text = processor.replace_emojis_to_named_text(text=text)
         comment.processed_content = text
         comment.save()
 
