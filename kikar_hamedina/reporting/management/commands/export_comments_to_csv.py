@@ -6,13 +6,15 @@ import json
 import dateutil
 from django.utils import timezone
 
-from facebook_feeds.models import Facebook_Feed
+from facebook_feeds.models import Facebook_Feed, Facebook_Status
 from facebook_feeds.management.commands.kikar_base_commands import KikarCommentCommand
 from reporting.utils import TextProcessor
 
 from langdetect import detect
 from langdetect.lang_detect_exception import LangDetectException
 from functools32 import lru_cache
+
+RESEARCH_START_DATE = timezone.make_aware(timezone.datetime(2014, 1, 1))
 
 DELIMITER = '~'
 PARAGRAPH_LEN_THRESHOLD = 0
@@ -47,32 +49,40 @@ class Command(KikarCommentCommand):
                 'comment_id',
                 'MK_ID',
                 'mk_name',
-                'parent_status_id',
-                'parent_status_content',
-                'parent_status_link',
+                'post_status_id',
+                'post_content',
+                'post_link',
                 'comment_link',
-                'content',
-                'content_processed',
-                'published',
+                'comment_content',
+                'comment_content_processed',
+                'comment_time_of_publication',
+                'COMMENT_PUBLICATION_DAYS_FROM_RESEARCH_START_DATE',
+                'post_like_count',
+                'post_comment_count',
+                'post_share_count',
                 'comment_like_count',
                 'comment_comment_count',
-                'language',
-                'LEN_MESSAGE',
+                'comment_main_language',
+                'POST_LEN_MESSAGE',
+                'COMMENT_LEN_MESSAGE',
                 'COMMENTATOR_LIKED_POST',
                 'HAS_NAME_OF_POST_WRITER_MK_IN_COMMENT',
-                'NON_POST_WRITER_MK_IDS_IN_COMMENT',
+                'IDS_OF_MKS_MENTIONED_IN_COMMENT',
                 'NUM_OF_COMMENTS_BY_COMMENTATOR_ON_POST',
                 'COMMENTATOR_ID',
-                'POLITICAL_WING',
+                'POLITICAL_WING_HATNUA_LEFT',
+                'POLITICAL_WING_HATNUA_CENTER',
                 'PARTY_NAME',
                 'GENDER',
                 'AGE',
                 'MK_POLITICAL_STATUS',
                 'MK_POLITICAL_SENIORITY',
                 'IS_CURRENT_OR_PAST_PARTY_LEADER',
-                'IS_CURRENT_OR_PAST_PM_CONTENDER',
+                'IS_CURRENT_OR_PAST_PM_CANDIDATE',
                 'IS_PM',
-                'POST_TIME_OF_PUBLICATION',
+                'POST_PUBLICATION_TIMESTAMP',
+                'POST_PUBLICATION_DATE',
+                'POST_PUBLICATION_DAYS_FROM_RESEARCH_START_DATE',
                 'POST_WITH_PHOTO',
                 'POST_WITH_LINK',
                 'POST_WITH_VIDEO',
@@ -86,14 +96,19 @@ class Command(KikarCommentCommand):
                 'DAYS_FROM_THREE_TEENAGER_KIDNAP',
                 'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_START_DATE',
                 'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_END_DATE',
+                'DAYS_FROM_DUMA_ARSON_ATTACK',
                 'DAYS_FROM_THIRD_INTIFADA_START_DATE',
+                'DAYS_FROM_MK_BIRTHDAY',
                 'POST_PUBLISHED_ON_SATURDAY',
                 'COMMENT_PUBLISHED_ON_SATURDAY',
                 'NUM_OF_COMMENTS_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS',
                 'NUM_OF_LIKES_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS',
                 'RATIO_OF_COMMENTS_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS',
                 'RATIO_OF_LIKES_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS',
-
+                'NUM_OF_COMMENTS_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS',
+                'NUM_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS',
+                'RATIO_OF_COMMENTS_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS',
+                'RATIO_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS',
             ]
 
         else:
@@ -162,80 +177,135 @@ class Command(KikarCommentCommand):
 
         status_langs = self.detect_languages(comment.parent)
 
-        if mk:
-            return {
-                'comment_id': comment.comment_id,
-                'MK_ID': mk.id,
-                'mk_name': processor.flatten_text(mk.name,
-                                                  delimiter=DELIMITER),
-                'parent_status_id': comment.parent.status_id,
-                'parent_status_content': processor.flatten_text(comment.parent.content,
-                                                                delimiter=DELIMITER),
-                'parent_status_link': comment.parent.get_link,
-                'comment_link': 'www.facebook.com/{}'.format(comment.comment_id),
-                'content': processor.flatten_text(comment.content, delimiter=DELIMITER),
-                'content_processed': processor.flatten_text(processed_text, delimiter=DELIMITER),
-                'published': comment.published,
-                'comment_like_count': comment.like_count,
-                'comment_comment_count': comment.comment_count,
-                'language': comment.content_lang(),
-                'LEN_MESSAGE': len(comment.content),
-                'COMMENTATOR_LIKED_POST': comment.comment_from.likes.filter(
-                    status__status_id=comment.parent.status_id).exists(),
-                'HAS_NAME_OF_POST_WRITER_MK_IN_COMMENT': processor.is_mk_id_pattern_in_text(text=comment.content,
-                                                                                            mk_id=mk.id),
-                'NON_POST_WRITER_MK_IDS_IN_COMMENT': processor.get_mentioned_mks(text=comment.content),
-                'NUM_OF_COMMENTS_BY_COMMENTATOR_ON_POST': self.number_of_comments_by_commentator_on_statuses(
-                    comment.comment_from, [comment.parent]),
-                'COMMENTATOR_ID': comment.comment_from.facebook_id,
-                'POLITICAL_WING': self.get_political_wing(mk.current_party),
-                'PARTY_NAME': processor.flatten_text(mk.current_party.name),
-                'GENDER': processor.flatten_text(mk.gender),
-                'AGE': mk.age.years,
-                'MK_POLITICAL_STATUS': None,
-                'MK_POLITICAL_SENIORITY': None,
-                'IS_CURRENT_OR_PAST_PARTY_LEADER': self.is_current_or_past_party_leader(comment.parent.feed),
-                'IS_CURRENT_OR_PAST_PM_CONTENDER': self.is_current_or_past_pm_contender(comment.parent.feed),
-                'IS_PM': self.is_pm(comment.parent.feed),
-                'POST_TIME_OF_PUBLICATION': comment.parent.published,
-                'POST_WITH_PHOTO': comment.parent.has_attachment and comment.parent.attachment.type == 'photo',
-                'POST_WITH_LINK': comment.parent.has_attachment and comment.parent.attachment.type == 'link',
-                'POST_WITH_VIDEO': comment.parent.has_attachment and comment.parent.attachment.type == 'video',
-                'POST_WITH_STATUS': comment.parent.has_attachment and comment.parent.attachment.type == 'status',
-                'POST_WITH_TEXT_ONLY': not comment.parent.has_attachment,
-                'POST_IN_HEBREW': 'he' in status_langs,
-                'POST_IN_ENGLISH': 'en' in status_langs,
-                'POST_IN_ARABIC': 'ar' in status_langs,
-                'POST_IN_OTHER': bool([x for x in status_langs if x not in ['he', 'en', 'ar']]),
-                'DAYS_FROM_ELECTION': self.days_from_event(
-                    comment.parent.published, timezone.make_aware(timezone.datetime(2015, 3, 17))),
-                'DAYS_FROM_THREE_TEENAGER_KIDNAP': self.days_from_event(
-                    comment.parent.published, timezone.make_aware(timezone.datetime(2014, 6, 12))),
-                'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_START_DATE': self.days_from_event(
-                    comment.parent.published, timezone.make_aware(timezone.datetime(2015, 7, 8))),
-                'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_END_DATE': self.days_from_event(
-                    comment.parent.published, timezone.make_aware(timezone.datetime(2015, 8, 26))),
-                'DAYS_FROM_THIRD_INTIFADA_START_DATE': self.days_from_event(
-                    comment.parent.published, timezone.make_aware(timezone.datetime(2015, 9, 13))),
-                'POST_PUBLISHED_ON_SATURDAY': self.is_date_in_holiday(comment.parent.published),
-                'COMMENT_PUBLISHED_ON_SATURDAY': self.is_date_in_holiday(comment.published),
-                'NUM_OF_COMMENTS_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
-                    self.number_of_comments_by_commentator_for_feed_id(
-                        comment.comment_from, comment.parent.feed.id),
-                'NUM_OF_LIKES_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
-                    self.num_of_likes_by_commentator_for_feed_id(
-                        comment.comment_from, comment.parent.feed.id),
-                'RATIO_OF_COMMENTS_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
-                    self.ratio_of_commented_statuses_by_commentator_for_feed_id(comment.comment_from,
-                                                                                comment.parent.feed.id),
-                'RATIO_OF_LIKES_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
-                    self.ratio_of_likes_by_commentator_on_statuses_by_feed_id(comment.comment_from,
-                                                                              comment.parent.feed.id)
-            }
+        return {
+            'comment_id': comment.comment_id,
+            'MK_ID': mk.id,
+            'mk_name': processor.flatten_text(mk.name, delimiter=DELIMITER),
+            'post_status_id': comment.parent.status_id,
+            'post_content': processor.flatten_text(comment.parent.content, delimiter=DELIMITER),
+            'post_link': comment.parent.get_link,
+            'comment_link': 'www.facebook.com/{}'.format(comment.comment_id),
+            'comment_content': processor.flatten_text(comment.content, delimiter=DELIMITER),
+            'comment_content_processed': processor.flatten_text(processed_text, delimiter=DELIMITER),
+            'comment_time_of_publication': comment.published,
+            'COMMENT_PUBLICATION_DAYS_FROM_RESEARCH_START_DATE': self.days_from_research_start_date(comment.published),
+            'post_like_count': comment.parent.like_count,
+            'post_comment_count': comment.parent.comment_count,
+            'post_share_count': comment.parent.share_count,
+            'comment_like_count': comment.like_count,
+            'comment_comment_count': comment.comment_count,
+            'comment_main_language': comment.content_lang(),
+            'POST_LEN_MESSAGE': len(comment.parent.content),
+            'COMMENT_LEN_MESSAGE': len(comment.content),
+            'COMMENTATOR_LIKED_POST': comment.comment_from.likes.filter(
+                status__status_id=comment.parent.status_id).exists(),
+            'HAS_NAME_OF_POST_WRITER_MK_IN_COMMENT': processor.is_mk_id_pattern_in_text(text=comment.content,
+                                                                                        mk_id=mk.id),
+            'IDS_OF_MKS_MENTIONED_IN_COMMENT': ';'.join(
+                ['{}'.format(x) for x in processor.get_mentioned_mks(text=comment.content)]),
+            'NUM_OF_COMMENTS_BY_COMMENTATOR_ON_POST': self.number_of_comments_by_commentator_on_statuses(
+                comment.comment_from, [comment.parent]),
+            'COMMENTATOR_ID': comment.comment_from.facebook_id,
+            'POLITICAL_WING_HATNUA_LEFT': self.get_political_wing(mk.current_party, hatnua="LEFT"),
+            'POLITICAL_WING_HATNUA_CENTER': self.get_political_wing(mk.current_party, hatnua="CENTER"),
+            'PARTY_NAME': processor.flatten_text(mk.current_party.name),
+            'GENDER': processor.flatten_text(self.mk_gender_wrapper(mk)),
+            'AGE': mk.age.years,
+            'MK_POLITICAL_STATUS': None,
+            'MK_POLITICAL_SENIORITY': None,
+            'IS_CURRENT_OR_PAST_PARTY_LEADER': self.is_current_or_past_party_leader(comment.parent.feed),
+            'IS_CURRENT_OR_PAST_PM_CANDIDATE': self.is_current_or_past_pm_candidate(comment.parent.feed),
+            'IS_PM': self.is_pm(comment.parent.feed),
+            'POST_PUBLICATION_TIMESTAMP': comment.parent.published,
+            'POST_PUBLICATION_DATE': comment.parent.published.strftime('%Y/%m/%d'),
+            'POST_PUBLICATION_DAYS_FROM_RESEARCH_START_DATE': self.days_from_research_start_date(
+                comment.parent.published),
+            'POST_WITH_PHOTO': comment.parent.has_attachment and comment.parent.attachment.type == 'photo',
+            'POST_WITH_LINK': comment.parent.has_attachment and comment.parent.attachment.type == 'link',
+            'POST_WITH_VIDEO': comment.parent.has_attachment and comment.parent.attachment.type == 'video',
+            'POST_WITH_STATUS': comment.parent.has_attachment and comment.parent.attachment.type == 'status',
+            'POST_WITH_TEXT_ONLY': not comment.parent.has_attachment,
+            'POST_IN_HEBREW': 'he' in status_langs,
+            'POST_IN_ENGLISH': 'en' in status_langs,
+            'POST_IN_ARABIC': 'ar' in status_langs,
+            'POST_IN_OTHER': bool([x for x in status_langs if x not in ['he', 'en', 'ar']]),
+            'DAYS_FROM_ELECTION': self.days_from_event(
+                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 3, 17))),
+            'DAYS_FROM_THREE_TEENAGER_KIDNAP': self.days_from_event(
+                comment.parent.published, timezone.make_aware(timezone.datetime(2014, 6, 12))),
+            'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_START_DATE': self.days_from_event(
+                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 7, 8))),
+            'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_END_DATE': self.days_from_event(
+                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 8, 26))),
+            'DAYS_FROM_DUMA_ARSON_ATTACK': self.days_from_event(
+                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 7, 31))),
+            'DAYS_FROM_THIRD_INTIFADA_START_DATE': self.days_from_event(
+                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 9, 13))),
+            'DAYS_FROM_MK_BIRTHDAY': self.days_from_birthday(comment.parent.published, mk),
+            'POST_PUBLISHED_ON_SATURDAY': self.is_date_in_holiday(comment.parent.published),
+            'COMMENT_PUBLISHED_ON_SATURDAY': self.is_date_in_holiday(comment.published),
+            'NUM_OF_COMMENTS_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
+                self.number_of_comments_by_commentator_for_feed_id(
+                    comment.comment_from, comment.parent.feed.id),
+            'NUM_OF_LIKES_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
+                self.num_of_likes_by_commentator_for_feed_id(
+                    comment.comment_from, comment.parent.feed.id),
+            'RATIO_OF_COMMENTS_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
+                self.ratio_of_commented_statuses_by_commentator_for_feed_id(comment.comment_from,
+                                                                            comment.parent.feed.id),
+            'RATIO_OF_LIKES_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
+                self.ratio_of_likes_by_commentator_on_statuses_by_feed_id(comment.comment_from,
+                                                                          comment.parent.feed.id),
+            'NUM_OF_COMMENTS_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or self.num_of_comments_by_commentator_on_all_statuses(
+                comment.comment_from),
+            'NUM_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or self.num_of_likes_by_commentator_on_all_statuses(
+                comment.comment_from),
+            'RATIO_OF_COMMENTS_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or
+                self.ratio_of_commented_statuses_by_commentator_on_all_statuses(comment.comment_from),
+            'RATIO_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or self.ratio_of_likes_by_commentator_on_all_statuses(
+                comment.comment_from),
+        }
+
+    def days_from_research_start_date(self, date):
+        return (date - RESEARCH_START_DATE).days
+
+    def mk_gender_wrapper(self, mk):
+        if mk.gender:
+            return mk.gender
+        if mk.id in [910, 920, 921, 938, 945]:
+            return 'M'
+        elif mk.id in [935]:
+            return 'F'
+        else:
+            return ''
+
+    def days_from_birthday(self, pub_date, mk):
+        birthday_this_year = self.mk_birthday_for_year(mk, year=pub_date.year)
+        birthday_last_year = self.mk_birthday_for_year(mk, year=pub_date.year - 1)
+        birthday_next_year = self.mk_birthday_for_year(mk, year=pub_date.year + 1)
+        return min(abs(pub_date - birthday_this_year).days,
+                   abs(pub_date - birthday_last_year).days,
+                   abs(pub_date - birthday_next_year).days)
+
+    def mk_birthday_for_year(self, mk, year=2016):
+        if mk.date_of_birth:
+            return timezone.make_aware((timezone.datetime(year, mk.date_of_birth.month, mk.date_of_birth.day)))
+        return None
+
+    def ratio_of_commented_statuses_by_commentator_on_all_statuses(self, commentator):
+        return self.num_of_comments_by_commentator_on_all_statuses(commentator) * 1.0 / self.count_all_statuses()
 
     def ratio_of_commented_statuses_by_commentator_for_feed_id(self, commentator, feed_id):
-        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set.all()
-        return self.number_of_commented_on_statuses_for_feed_id(commentator, feed_id) * 1.0 / statuses.count()
+        return self.number_of_commented_on_statuses_for_feed_id(commentator, feed_id) * 1.0 / \
+               self.count_statuses_for_feed_id(feed_id)
+
+    @lru_cache(maxsize=180)
+    def num_of_comments_by_commentator_on_all_statuses(self, commentator):
+        statuses = Facebook_Status.objects.all()
+        count_statuses = 0
+        for status in statuses:
+            count_statuses += int(self.is_status_commented_on_by_commentator(commentator, status))
+        return count_statuses
 
     @lru_cache(maxsize=180)
     def number_of_commented_on_statuses_for_feed_id(self, commentator, feed_id):
@@ -269,21 +339,39 @@ class Command(KikarCommentCommand):
         return num_of_comments
 
     def ratio_of_likes_by_commentator_on_statuses_by_feed_id(self, commentator, feed_id):
-        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set.all()
-        return self.num_of_likes_by_commentator_for_feed_id(commentator, feed_id) * 1.0 / statuses.count()
+        return self.num_of_likes_by_commentator_for_feed_id(commentator,
+                                                            feed_id) * 1.0 / self.count_statuses_for_feed_id(feed_id)
+
+    def ratio_of_likes_by_commentator_on_all_statuses(self, commentator):
+        return self.num_of_likes_by_commentator_on_all_statuses(commentator) * 1.0 / self.count_all_statuses()
+
+    @lru_cache(maxsize=5)
+    def count_all_statuses(self):
+        return Facebook_Status.objects.all().count()
+
+    @lru_cache(maxsize=180)
+    def count_statuses_for_feed_id(self, feed_id):
+        return Facebook_Feed.objects.get(id=feed_id).facebook_status_set.count()
 
     @lru_cache(maxsize=180)
     def num_of_likes_by_commentator_for_feed_id(self, commentator, feed_id):
         statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set.all()
         return self.number_of_likes_by_commentator_on_statuses(commentator, statuses)
 
+    @lru_cache(maxsize=180)
+    def num_of_likes_by_commentator_on_all_statuses(self, commentator):
+        statuses = Facebook_Status.objects.all()
+        return self.number_of_likes_by_commentator_on_statuses(commentator, statuses)
+
     def number_of_likes_by_commentator_on_statuses(self, commentator, statuses):
         return commentator.likes.filter(status__in=statuses).count()
 
-    def get_political_wing(self, party):
+    def get_political_wing(self, party, hatnua='LEFT'):
+        if party.id in [21]:  # Hatnua
+            return hatnua
         if party.id in [30, 31, 27, 14, 17]:  # Habait Hayehudi, Israel-Beitenu, Likud, Likud-Israel Beitenu
             return 'RIGHT'
-        elif party.id in [32, 15, 21, 25, 29]:  # Yesh Atid, Kulanu, Kadima, Hatnua
+        elif party.id in [32, 15, 25, 29]:  # Yesh Atid, Kulanu, Kadima
             return 'CENTER'
         elif party.id in [33, 16, 20, 28]:  # Meretz, Haavoda
             return 'LEFT'
@@ -325,7 +413,7 @@ class Command(KikarCommentCommand):
             return True
         return False
 
-    def is_current_or_past_pm_contender(self, feed):
+    def is_current_or_past_pm_candidate(self, feed):
         if feed.id in [14, 12, 51, 4]:  # Lapid, Hertzog, Yechimovich, Livni
             return True
         return False
