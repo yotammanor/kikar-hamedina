@@ -269,8 +269,24 @@ class Command(KikarCommentCommand):
                 comment.comment_from),
         }
 
-    def is_party_in_coalition_during_date(self, party, date):
+    def is_party_in_coalition_during_date(self, party, published):
+        if party.id in [14, 27, 30, 17]:  # likud, Habayt Hayehudi
+            return True
+        elif party.id in [33, 10, 16, 20, 22, 28, 25, 35]:  # Meretz, Haavoda, Arab Parties, Kadima
+            return False
+        elif party.id in [32, 19, 34]:  # Kulanu, Yehadut Hatora
+            return published.date() >= timezone.datetime(2015, 4, 29).date()  # Coalition Agreement w. parties
+        elif party.id in [36, 18]:  # Shas
+            return published.date() >= timezone.datetime(2015, 5, 4).date()  # Coalition Agreement w. party
+        elif party.id in [15, 21, 29]:  # Yesh Atid, Hatnua
+            return published.date() < self.get_gov_33_break_date()
+        elif party.id in [31]:  # Israel Beiteinu
+            return published.date() < timezone.datetime(2015, 5, 6).date()  # date of gov 33 start, without Istael Beitenu
+            # until 2016.5.26, beyond research range
         return None
+
+    def get_gov_33_break_date(self):
+        return timezone.datetime(2014, 12, 4).date()
 
     def days_from_research_start_date(self, date):
         return (date - RESEARCH_START_DATE).days
