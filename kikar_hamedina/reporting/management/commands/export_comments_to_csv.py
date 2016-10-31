@@ -72,6 +72,7 @@ class Command(KikarCommentCommand):
                 'COMMENTATOR_ID',
                 'POLITICAL_WING_HATNUA_LEFT',
                 'POLITICAL_WING_HATNUA_CENTER',
+                'IS_COALITION',
                 'PARTY_NAME',
                 'GENDER',
                 'AGE',
@@ -208,6 +209,7 @@ class Command(KikarCommentCommand):
             'COMMENTATOR_ID': comment.comment_from.facebook_id,
             'POLITICAL_WING_HATNUA_LEFT': self.get_political_wing(mk.current_party, hatnua="LEFT"),
             'POLITICAL_WING_HATNUA_CENTER': self.get_political_wing(mk.current_party, hatnua="CENTER"),
+            'IS_COALITION': self.is_party_in_coalition_during_date(mk.current_party, comment.parent.published),
             'PARTY_NAME': processor.flatten_text(mk.current_party.name),
             'GENDER': processor.flatten_text(self.mk_gender_wrapper(mk)),
             'AGE': mk.age.years,
@@ -261,10 +263,14 @@ class Command(KikarCommentCommand):
             'NUM_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or self.num_of_likes_by_commentator_on_all_statuses(
                 comment.comment_from),
             'RATIO_OF_COMMENTS_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or
-                self.ratio_of_commented_statuses_by_commentator_on_all_statuses(comment.comment_from),
+                                                                   self.ratio_of_commented_statuses_by_commentator_on_all_statuses(
+                                                                       comment.comment_from),
             'RATIO_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or self.ratio_of_likes_by_commentator_on_all_statuses(
                 comment.comment_from),
         }
+
+    def is_party_in_coalition_during_date(self, party, date):
+        return None
 
     def days_from_research_start_date(self, date):
         return (date - RESEARCH_START_DATE).days
