@@ -89,6 +89,7 @@ INSTALLED_APPS = (
     'video',
     'polymorphic',
     'corsheaders',
+    'waffle',
     # Ours
     'kikartags',
     'knesset',
@@ -119,6 +120,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pagination.middleware.PaginationMiddleware',
+    'waffle.middleware.WaffleMiddleware',
 )
 
 ROOT_URLCONF = 'kikar_hamedina.urls'
@@ -253,7 +255,6 @@ LOGGING = {
 
 TASTYPIE_DEFAULT_FORMATS = ['json']
 
-
 NUMBER_OF_TRIES_FOR_REQUEST = 2
 
 try:
@@ -264,12 +265,12 @@ except ImportError:
 if "TRAVIS" in os.environ:
     DATABASES = {
         'default': {
-            'ENGINE':   'django.db.backends.postgresql_psycopg2',
-            'NAME':     'travisci',
-            'USER':     'postgres',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'travisci',
+            'USER': 'postgres',
             'PASSWORD': '',
-            'HOST':     'localhost',
-            'PORT':     '',
+            'HOST': 'localhost',
+            'PORT': '',
         }
     }
 
