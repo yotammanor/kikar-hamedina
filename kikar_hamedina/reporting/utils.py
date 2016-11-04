@@ -1,10 +1,10 @@
-### encoding:utf8 ###
+# -*- coding: utf-8 -*-
 
 import openpyxl
 import re
 
 import requests
-from django.utils import timezone
+from functools32 import lru_cache
 
 from kikar_hamedina.local_settings import GOOGLE_TRANSLATE_KEY
 
@@ -103,8 +103,8 @@ class TextProcessor(object):
             full_patterns_dict[mk_id]['patterns_self'] = [re.compile(built_pattern, flags=re.U | re.X | re.I)]
         return full_patterns_dict
 
-    def text_manipulation_translate_text(self, text, api_key=GOOGLE_TRANSLATE_KEY, source='en', target='he',
-                                         format='text'):
+    def request_translated_text_from_google(self, text, api_key=GOOGLE_TRANSLATE_KEY, source='en', target='he',
+                                            format='text'):
         url = u'https://www.googleapis.com/language/translate/v2'
         kwargs = {'key': api_key, 'q': text, 'source': source, 'target': target, 'format': format}
         res = requests.get(url=url, params=kwargs)
@@ -112,19 +112,41 @@ class TextProcessor(object):
             return res.json()['data']['translations'][0]['translatedText']
         return text
 
-    def text_manipulation_flatten_text(self, text, delimiter=None, delimiter_rep='*'):
+    def flatten_text(self, text, delimiter=None, delimiter_rep='*'):
+        if not text:
+            return text
         uni_text = re.sub(ur'[\r\n]+', ur'        ', text, flags=re.I | re.U | re.X)
         if delimiter:
             uni_text = uni_text.replace(delimiter, delimiter_rep)
         uni_text = unicode(uni_text).encode('utf-8')
         return uni_text
 
-    def text_manipulation_emojis(self, text):
+    def replace_emojis_to_named_text(self, text):
         for emoji_code, emoji_name in self.EMOJI_DICT_UNICODE_TO_NAME.iteritems():
             text = re.sub(emoji_code, emoji_name, text, flags=re.U)
         return text
 
-    def text_manipulation_mk_names(self, text, context_status):
+    def get_mentioned_mks(self, text):
+        mk_ids_to_search = [x for x in self.permutations_dict.keys()]
+        mk_ids_in_text = []
+
+        for mk_id in mk_ids_to_search:
+            if self.is_mk_id_pattern_in_text(text, mk_id):
+                mk_ids_in_text.append(mk_id)
+
+        return mk_ids_in_text
+
+
+
+    @lru_cache(maxsize=180)
+    def is_mk_id_pattern_in_text(self, text, mk_id):
+        for pattern in self.full_patterns_dict[mk_id]['patterns_self']:
+            matchobj = pattern.match(text)
+            if matchobj:
+                return True
+        return False
+
+    def replace_mk_names(self, text, context_status):
         mk_id = context_status.feed.persona.object_id
         if not mk_id:
             return text

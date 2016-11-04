@@ -89,6 +89,7 @@ INSTALLED_APPS = (
     'video',
     'polymorphic',
     'corsheaders',
+    'waffle',
     # Ours
     'kikartags',
     'knesset',
@@ -119,6 +120,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pagination.middleware.PaginationMiddleware',
+    'waffle.middleware.WaffleMiddleware',
 )
 
 ROOT_URLCONF = 'kikar_hamedina.urls'
@@ -253,10 +255,27 @@ LOGGING = {
 
 TASTYPIE_DEFAULT_FORMATS = ['json']
 
-
 NUMBER_OF_TRIES_FOR_REQUEST = 2
 
 try:
     from .local_settings import *
 except ImportError:
     pass
+
+if "TRAVIS" in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'travisci',
+            'USER': 'postgres',
+            'PASSWORD': '',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
+    }
+
+    DEBUG = True
+
+    FACEBOOK_APP_ID = '1090127617700980'
+    FACEBOOK_SECRET_KEY = 'fd9b75e36b581192447e8eca1ade8ee3'
+    FACEBOOK_API_VERSION = 'v2.7'

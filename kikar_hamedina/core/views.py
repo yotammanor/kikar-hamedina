@@ -21,6 +21,9 @@ from django.contrib.auth.models import User
 import facebook
 from facebook import GraphAPIError
 from endless_pagination.views import AjaxListView
+
+import waffle
+
 from facebook_feeds.management.commands import updatestatus
 from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, TAG_NAME_REGEX
 from facebook_feeds.models import Tag as OldTag
@@ -467,7 +470,7 @@ def status_update(request, status_id):
     response_data['id'] = status.status_id
 
     try:
-        if status.needs_refresh:
+        if status.needs_refresh and waffle.flag_is_active(request, flag_name='status_update_request'):
             update_status_command = updatestatus.Command()
             update_status_command.graph.access_token = update_status_command.graph.get_app_access_token(
                 settings.FACEBOOK_APP_ID,
@@ -488,7 +491,6 @@ def status_update(request, status_id):
             finally:
                 response.status_code = 200
 
-
     except KeyError as e:
         response.status_code = 500
 
@@ -499,7 +501,7 @@ def status_update(request, status_id):
         raise e
 
     except Exception as e:
-        print 'status_update error:', e
+        print('status_update error:', e)
         raise
 
     finally:

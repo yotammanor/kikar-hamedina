@@ -32,7 +32,7 @@ $(document).ready(function () {
 
     $(".status-needs-refresh").each(function (index) {
         var status_id = $(this).data("statusid");
-        update_status_url = "/status_update/" + status_id + "/";
+        var update_status_url = "/status_update/" + status_id + "/";
         $("#status-metrics-is-updating-indicator-" + status_id).show();
         $.ajax({
             url: update_status_url,

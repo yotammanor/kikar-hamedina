@@ -56,15 +56,15 @@ class Command(KikarCommentCommand):
                     processed_text = comment.processed_content
                 else:
                     processed_text = comment.content
-                    processed_text = processor.text_manipulation_mk_names(text=processed_text,
-                                                                          context_status=comment.parent)
+                    processed_text = processor.replace_mk_names(text=processed_text,
+                                                                context_status=comment.parent)
                 if options['translate']:
-                    processed_text = processor.text_manipulation_translate_text(text=processed_text)
-                processed_text = processor.text_manipulation_emojis(text=processed_text)
+                    processed_text = processor.request_translated_text_from_google(text=processed_text)
+                processed_text = processor.replace_emojis_to_named_text(text=processed_text)
                 print('writing comment {}'.format(i + 1))
                 i += 1
                 dict_row = {
-                    'content': processor.text_manipulation_flatten_text(processed_text, delimiter=DELIMITER),
+                    'content': processor.flatten_text(processed_text, delimiter=DELIMITER),
                 }
                 csv_data.writerow(dict_row)
 
