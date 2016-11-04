@@ -47,8 +47,10 @@ class Command(KikarBaseCommand):
 
         if options['type'] == 'likes':
             facebook_users = Facebook_User.objects.all()
+            number_of_users = facebook_users.count()
             i = 0
-            for facebook_user in facebook_users:
+            for index in xrange(number_of_users):
+                facebook_user = facebook_users[index]
                 i += 1
                 print('working on user {}.'.format(i + 1))
 
