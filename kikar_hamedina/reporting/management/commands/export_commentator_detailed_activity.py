@@ -45,17 +45,24 @@ class Command(KikarBaseCommand):
     def build_commentator_data(self, options):
         counter = defaultdict(self.row_default_dict)
 
-        statuses = Facebook_Status.objects.all()
-        for i, status in enumerate(statuses):
-            print('working on {} of {}.'.format(i + 1, len(statuses)))
-            if status.is_comment:
-                continue
-            counter['num_of_statuses'][status.feed.id] += 1
-            if options['type'] == 'likes':
-                for like in status.likes.all():
-                    counter[like.user.facebook_id][status.feed.id] += 1
+        if options['type'] == 'likes':
+            facebook_users = Facebook_User.objects.all()
+            i = 0
+            for facebook_user in facebook_users:
+                i += 1
+                print('working on user {}.'.format(i + 1))
 
-            elif options['type'] == 'comments':
+                for status_like in facebook_user.likes.all():
+                    if not status_like.status.is_comment:
+                        counter[facebook_user.facebook_id][status_like.status.feed.id] += 1
+
+        elif options['type'] == 'comments':
+            statuses = Facebook_Status.objects.all()
+            for i, status in enumerate(statuses):
+                print('working on status {} of {}.'.format(i + 1, len(statuses)))
+                if status.is_comment:
+                    continue
+                counter['num_of_statuses'][status.feed.id] += 1
                 if options['count_commentator_once_per_status']:
                     commentator_ids = []
                     for comment in status.comments.all():
@@ -67,8 +74,8 @@ class Command(KikarBaseCommand):
                     for comment in status.comments.all():
                         counter[comment.comment_from.facebook_id][comment.parent.feed.id] += 1
 
-            else:
-                raise Exception('select --type "like" or "comment"')
+        else:
+            raise Exception('select --type "like" or "comment"')
 
         return counter
 
