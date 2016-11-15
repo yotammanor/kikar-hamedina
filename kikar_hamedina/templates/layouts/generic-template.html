@@ -119,8 +119,7 @@
         <script id="result-member-list-item-template" type="text/x-handlebars-template">
 
         <li class="result-container">
-        <
-        a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/member/{{ id }}"
+        <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/member/{{ id }}"
     tabindex="-1" id="option-{{ count }}" role="option">
         <div class="result-main-text"><i class="fa fa-user"></i> {{ name }}</div>
         <div class="result-sub-text">{{ party }}</div>
@@ -130,29 +129,23 @@
     </script>
     <script id="result-tag-list-item-template" type="text/x-handlebars-template">
     <li class="result-container">
-    <
-    a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/tag/name/{{ name }}"
+    <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/tag/name/{{ name }}"
     tabindex="-1" id="option-{{ count }}" role="option">
-        <div class="result-main-text"><i class="fa fa-tag"></i> {{ name }}</div>
-    </a>
+        <div class="result-main-text"><i class="fa fa-tag"></i> {{ name }}</div></a>
     </li>
     </script>
     <script id="result-party-list-item-template" type="text/x-handlebars-template">
     <li class="result-container">
-    <
-    a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/party/{{ id }}"
+    <a href="{% endverbatim %}{% if LANGUAGE_CODE != 'he' %}/{{ LANGUAGE_CODE }}{% endif %}{% verbatim %}/party/{{ id }}"
     tabindex="-1" id="option-{{ count }}" role="option">
-        <div class="result-main-text"><i class="fa fa-group"></i> {{ name }}</div>
-    </a>
+        <div class="result-main-text"><i class="fa fa-group"></i> {{ name }}</div></a>
     </li>
     </script>
     <script id="result-default-link-all-mks-template" type="text/x-handlebars-template">
     <li class="result-container" style="background-color: beige">
-    <a href="{% endverbatim %}{% url 'all-members' %}{% verbatim %}" tabindex="-1" id="option-{{ count }}" role="option"
-    >
+    <a href="{% endverbatim %}{% url 'all-members' %}{% verbatim %}" tabindex="-1" id="option-{{ count }}" role="option">
     <div class="result-main-text"><i class="fa fa-bookmark"></i>{% endverbatim %}
-    {% trans 'All MKs' %}{% verbatim %}</div>
-        </a>
+    {% trans 'All MKs' %}{% verbatim %}</div></a>
         </li>
         </script>
     {% endverbatim %}
