@@ -272,6 +272,7 @@ class Facebook_Status(models.Model):
     locally_updated = models.DateTimeField(blank=True,
                                            default=timezone.datetime(1970, 1,
                                                                      1))
+    publication_restricted = models.BooleanField(default=False, null=False)
 
     objects = Facebook_StatusManager()  # Filters out all rows with is_comment=True. Inherits from DataFrame Manager.
     objects_no_filters = DataFrameManager()  # default Manager with DataFrameManager, does not filter out is_comment=True.
