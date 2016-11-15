@@ -52,8 +52,12 @@
             </div>
         </div>
     </div>
-    <div class="panel-body">
+    <div class="panel-body">{% if status.publication_restricted %}
+        <div class="alert alert-danger"
+             role="alert">{% trans 'This status is under a gag order from court, and cannot be displayed.' %}</div>
+        {% else %}
         <div class="status-content">
+
             {% autoescape off %}
             {{ status.content | urlize | append_separators  | linebreaks }}
             {% endautoescape %}
@@ -224,5 +228,7 @@
             {% endif %}
             <!-- /Add tags option -->
         </div>
+        {% endif %}
+
     </div>
 </div>
