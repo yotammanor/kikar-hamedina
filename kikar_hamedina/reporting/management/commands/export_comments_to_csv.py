@@ -74,7 +74,7 @@ class Command(KikarCommentCommand):
                 'POLITICAL_WING_HATNUA_CENTER',
                 'IS_COALITION',
                 'PARTY_NAME',
-                'GENDER',
+                'IS_FEMALE',
                 'AGE',
                 'MK_POLITICAL_STATUS',
                 'MK_POLITICAL_SENIORITY',
@@ -211,7 +211,7 @@ class Command(KikarCommentCommand):
             'POLITICAL_WING_HATNUA_CENTER': self.get_political_wing(mk.current_party, hatnua="CENTER"),
             'IS_COALITION': self.is_party_in_coalition_during_date(mk.current_party, comment.parent.published),
             'PARTY_NAME': processor.flatten_text(mk.current_party.name),
-            'GENDER': processor.flatten_text(self.mk_gender_wrapper(mk)),
+            'IS_FEMALE': self.is_mk_female(mk),
             'AGE': mk.age.years,
             'MK_POLITICAL_STATUS': None,
             'MK_POLITICAL_SENIORITY': None,
@@ -236,9 +236,9 @@ class Command(KikarCommentCommand):
             'DAYS_FROM_THREE_TEENAGER_KIDNAP': self.days_from_event(
                 comment.parent.published, timezone.make_aware(timezone.datetime(2014, 6, 12))),
             'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_START_DATE': self.days_from_event(
-                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 7, 8))),
+                comment.parent.published, timezone.make_aware(timezone.datetime(2014, 7, 8))),
             'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_END_DATE': self.days_from_event(
-                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 8, 26))),
+                comment.parent.published, timezone.make_aware(timezone.datetime(2014, 8, 26))),
             'DAYS_FROM_DUMA_ARSON_ATTACK': self.days_from_event(
                 comment.parent.published, timezone.make_aware(timezone.datetime(2015, 7, 31))),
             'DAYS_FROM_THIRD_INTIFADA_START_DATE': self.days_from_event(
@@ -281,7 +281,8 @@ class Command(KikarCommentCommand):
         elif party.id in [15, 21, 29]:  # Yesh Atid, Hatnua
             return published.date() < self.get_gov_33_break_date()
         elif party.id in [31]:  # Israel Beiteinu
-            return published.date() < timezone.datetime(2015, 5, 6).date()  # date of gov 33 start, without Istael Beitenu
+            return published.date() < timezone.datetime(2015, 5,
+                                                        6).date()  # date of gov 33 start, without Istael Beitenu
             # until 2016.5.26, beyond research range
         return None
 
@@ -290,6 +291,9 @@ class Command(KikarCommentCommand):
 
     def days_from_research_start_date(self, date):
         return (date - RESEARCH_START_DATE).days
+
+    def is_mk_female(self, mk):
+        return self.mk_gender_wrapper(mk) == 'F'
 
     def mk_gender_wrapper(self, mk):
         if mk.gender:
