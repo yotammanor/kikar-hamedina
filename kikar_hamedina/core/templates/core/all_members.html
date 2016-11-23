@@ -67,7 +67,7 @@
                             </div>
                             <div>
                                 {% trans 'Date of Last Status at' %}:
-                                {% with status=member.facebook_persona.get_main_feed.facebook_status_set.last %}
+                                {% with status=member.facebook_persona.get_main_feed.facebook_status_set.latest %}
                                     {{ status.published }}
                                 {% endwith %}
                             </div>

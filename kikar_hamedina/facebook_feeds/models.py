@@ -279,6 +279,10 @@ class Facebook_Status(models.Model):
 
     tags = TaggableManager(through=TaggedItem, manager=_KikarTaggableManager)
 
+    class Meta:
+        get_latest_by = 'published'
+        verbose_name_plural = 'Facebook_Statuses'
+
     def __unicode__(self):
         return self.status_id
 
@@ -362,8 +366,6 @@ class Facebook_Status(models.Model):
             tag.percent = int(suggestions_dict[str(tag.id)] * 100)
         return tags
 
-    class Meta:
-        verbose_name_plural = 'Facebook_Statuses'
 
 
 # status_with_photo = '161648040544835_720225251353775'
