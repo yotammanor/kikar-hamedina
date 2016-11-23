@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-15 10:28+0200\n"
-"PO-Revision-Date: 2016-11-15 10:32+0200\n"
+"POT-Creation-Date: 2016-11-23 12:12+0200\n"
+"PO-Revision-Date: 2016-11-23 11:46+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #: core/billboards.py:10 core/templates/core/date_filter.html:46
 #: core/templates/core/searchgui.html:120
@@ -167,7 +167,7 @@ msgid "registered"
 msgstr "ע\"ר"
 
 #: core/templates/core/all_members.html:5
-#: templates/layouts/generic-template.html:154
+#: templates/layouts/generic-template.html:148
 msgid "All MKs"
 msgstr "כל חברות וחברי הכנסת"
 
@@ -181,15 +181,15 @@ msgid "Number of Facebook Pages for Party"
 msgstr "מס' עמודי פייסבוק פעילים למפלגה"
 
 #: core/templates/core/all_members.html:25
-#: core/templates/core/date_filter.html:51 core/templates/core/member.html:39
+#: core/templates/core/date_filter.html:51 core/templates/core/member.html:40
 #: core/templates/core/party.html:16 core/templates/core/searchgui.html:122
 msgid "Last Month"
 msgstr "בחודש האחרון"
 
 #: core/templates/core/all_members.html:27
 #: core/templates/core/all_members.html:54
-#: core/templates/core/all_parties.html:31 core/templates/core/member.html:40
-#: core/templates/core/member.html.py:43 core/templates/core/party.html:17
+#: core/templates/core/all_parties.html:31 core/templates/core/member.html:41
+#: core/templates/core/member.html.py:44 core/templates/core/party.html:17
 #: core/templates/core/party.html.py:20
 msgid "Statuses"
 msgstr "סטאטוסים"
@@ -226,17 +226,17 @@ msgstr "עדכון אחרון למידע אודות העמוד בתאריך"
 msgid "Date of Last Status at"
 msgstr "סטאטוס אחרון בתאריך"
 
-#: core/templates/core/all_members.html:76 core/templates/core/member.html:77
+#: core/templates/core/all_members.html:76 core/templates/core/member.html:88
 msgid ""
 "Due to technical limitations, we can't collect data on private Facebook "
 "Users."
 msgstr "עקב מגבלות טכניות, אנחנו לא יכולים לאסוף מידע על דפי פייסבוק פרטיים."
 
-#: core/templates/core/all_members.html:77 core/templates/core/member.html:78
+#: core/templates/core/all_members.html:77 core/templates/core/member.html:89
 msgid "You can check it out on "
 msgstr "ניתן לצפות בדף ישירות ב"
 
-#: core/templates/core/all_members.html:79 core/templates/core/member.html:80
+#: core/templates/core/all_members.html:79 core/templates/core/member.html:91
 msgid "Facebook"
 msgstr "פייסבוק"
 
@@ -244,8 +244,8 @@ msgstr "פייסבוק"
 msgid "Facebook Page Missing"
 msgstr "דף פייסבוק חסר"
 
-#: core/templates/core/all_members.html:85 core/templates/core/member.html:85
-#: core/templates/core/member.html.py:98
+#: core/templates/core/all_members.html:85 core/templates/core/member.html:96
+#: core/templates/core/member.html:109
 msgid "Tell us"
 msgstr "ספרו לנו"
 
@@ -258,16 +258,16 @@ msgstr "אם ידוע לכם על דף, בבקשה"
 msgid "All Parties"
 msgstr "כל המפלגות"
 
-#: core/templates/core/all_parties.html:35 core/templates/core/member.html:41
-#: core/templates/core/member.html.py:44 core/templates/core/party.html:18
+#: core/templates/core/all_parties.html:35 core/templates/core/member.html:42
+#: core/templates/core/member.html.py:45 core/templates/core/party.html:18
 #: core/templates/core/party.html.py:21
 msgid "Likes on average"
 msgstr "לייקים, בממוצע"
 
 #: core/templates/core/billboards_list.html:3
 #: core/templates/core/billboards_list.html:6
-#: templates/layouts/generic-template.html:218
-#: templates/layouts/generic-template.html:273
+#: templates/layouts/generic-template.html:211
+#: templates/layouts/generic-template.html:266
 msgid "Billboards"
 msgstr "המצעד"
 
@@ -324,7 +324,7 @@ msgstr "במהלך צוק איתן"
 msgid "(This status was deleted)"
 msgstr "(הסטאטוס נמחק)"
 
-#: core/templates/core/facebook_status.html:58
+#: core/templates/core/facebook_status.html:57
 msgid "This status is under a gag order from court, and cannot be displayed."
 msgstr "הסטטוס הנוכחי נמצא תחת צו איסור פרסום, ולא ניתן להציגו."
 
@@ -379,69 +379,75 @@ msgstr "בחודש האחרון"
 msgid "approximately"
 msgstr "בקירוב"
 
-#: core/templates/core/member.html:35
+#: core/templates/core/member.html:36
 msgid "Loading additional data..."
 msgstr "טוען נתונים נוספים..."
 
-#: core/templates/core/member.html:42
+#: core/templates/core/member.html:43
 msgid "Last week"
 msgstr "בשבוע האחרון"
 
-#: core/templates/core/member.html:56
+#: core/templates/core/member.html:58
 msgid "At Open Knesset"
 msgstr "באתר כנסת פתוחה"
 
-#: core/templates/core/member.html:62 core/templates/core/member.html.py:69
-msgid "Last update at"
-msgstr "עדכון אחרון בתאריך"
+#: core/templates/core/member.html:63
+msgid "On Facebook"
+msgstr "בפייסבוק"
 
-#: core/templates/core/member.html:64
+#: core/templates/core/member.html:65
+msgid "Last Collected Status at"
+msgstr "סטאטוס אחרון נאסף בתאריך"
+
+#: core/templates/core/member.html:71 core/templates/core/member.html.py:74
+msgid "Page details updated at"
+msgstr "מידע אודות העמוד נאסף בתאריך"
+
+#: core/templates/core/member.html:76
 msgid " This is probably a problem, and we'd love to"
 msgstr "זוהי כנראה תקלה, ונשמח מאוד"
 
-#: core/templates/core/member.html:65
-msgid ""
-"hear about\n"
-"                        it!"
+#: core/templates/core/member.html:77
+msgid "hear about it!"
 msgstr "לשמוע על כך!"
 
-#: core/templates/core/member.html:83 core/templates/core/member.html.py:96
+#: core/templates/core/member.html:94 core/templates/core/member.html:107
 msgid "Does MK "
 msgstr "יש ל"
 
-#: core/templates/core/member.html:83
+#: core/templates/core/member.html:94
 msgid "has a Public Facebook Page"
 msgstr "יש דף פייסבוק פומבי"
 
-#: core/templates/core/member.html:85 core/templates/core/member.html.py:98
+#: core/templates/core/member.html:96 core/templates/core/member.html:109
 msgid "please"
 msgstr "בבקשה"
 
-#: core/templates/core/member.html:88
+#: core/templates/core/member.html:99
 msgid "Facebook Page not found for MK"
 msgstr "לא נמצא עמוד פייסבוק עבור"
 
-#: core/templates/core/member.html:90
+#: core/templates/core/member.html:101
 msgid "You can"
 msgstr "אפשר"
 
-#: core/templates/core/member.html:91
+#: core/templates/core/member.html:102
 msgid "send"
 msgstr "לשלוח"
 
-#: core/templates/core/member.html:91
+#: core/templates/core/member.html:102
 msgid "her"
 msgstr "לה"
 
-#: core/templates/core/member.html:92
+#: core/templates/core/member.html:103
 msgid "him"
 msgstr "לו"
 
-#: core/templates/core/member.html:92
+#: core/templates/core/member.html:103
 msgid "an email"
 msgstr "דוא\"ל"
 
-#: core/templates/core/member.html:96
+#: core/templates/core/member.html:107
 msgid "has a Facebook Page"
 msgstr "דף פייסבוק"
 
@@ -546,7 +552,7 @@ msgid "Advanced Search"
 msgstr "חיפוש מתקדם"
 
 #: core/templates/core/searchgui.html:51
-#: templates/layouts/generic-template.html:201
+#: templates/layouts/generic-template.html:194
 msgid "Knesset Member, Party, a Subject discussed, or any keyword..."
 msgstr "חבר/ת כנסת, מפלגה, נושא, או מילות מפתח"
 
@@ -851,30 +857,30 @@ msgstr "| כיכר המדינה"
 #: templates/layouts/generic-template.html:26
 #: templates/layouts/generic-template.html:32
 #: templates/layouts/generic-template.html:37
-#: templates/layouts/generic-template.html:190
+#: templates/layouts/generic-template.html:183
 msgid "Kikar Hamedina"
 msgstr "כיכר המדינה"
 
-#: templates/layouts/generic-template.html:198
+#: templates/layouts/generic-template.html:191
 msgid "search"
 msgstr "חיפוש"
 
-#: templates/layouts/generic-template.html:223
-#: templates/layouts/generic-template.html:278
+#: templates/layouts/generic-template.html:216
+#: templates/layouts/generic-template.html:271
 msgid "About"
 msgstr "אודות"
 
-#: templates/layouts/generic-template.html:229
-#: templates/layouts/generic-template.html:284
+#: templates/layouts/generic-template.html:222
+#: templates/layouts/generic-template.html:277
 msgid "Donate"
 msgstr "תרומה"
 
-#: templates/layouts/generic-template.html:253
-#: templates/layouts/generic-template.html:290
+#: templates/layouts/generic-template.html:246
+#: templates/layouts/generic-template.html:283
 msgid "Tagging"
 msgstr "תיוג"
 
-#: templates/layouts/generic-template.html:267
+#: templates/layouts/generic-template.html:260
 msgid "Options"
 msgstr "אפשרויות"
 
@@ -988,7 +994,12 @@ msgstr "RSS Feed of trackbacks on"
 msgid "Edit the entry"
 msgstr "ערוך/ערכי רשומה"
 
-#~ msgid "hear about it!"
+#~ msgid "Last update at"
+#~ msgstr "עדכון אחרון בתאריך"
+
+#~ msgid ""
+#~ "hear about\n"
+#~ "                        it!"
 #~ msgstr "לשמוע על כך!"
 
 #, fuzzy

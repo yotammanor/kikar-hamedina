@@ -10,7 +10,7 @@
 
 {% block context-header %}
     <div class="container well" id="details-container">
-        {% with object.facebook_persona.get_main_feed as feed %}
+        {% with feed=object.facebook_persona.get_main_feed %}
             {% load humanize %}
             {% load core_extras %}
 
@@ -25,24 +25,26 @@
                 <p>
                     <i class="fa fa-thumbs-up"></i>
                     {{ feed.current_fan_count|floatformat:1|intcomma|slice:":-2" }}
-                <span id="difference-in-fan-count">({% if change_in_popularity.fan_count_dif_nominal > 0 %}
-                    +{% endif %}{{ change_in_popularity.fan_count_dif_growth_rate | percent }}
-                    {% trans 'last month' %}{% if change_in_popularity.is_interpolated %},
-                        {% trans 'approximately' %}{% endif %})</span>
+                    <span id="difference-in-fan-count">({% if change_in_popularity.fan_count_dif_nominal > 0 %}
+                        +{% endif %}{{ change_in_popularity.fan_count_dif_growth_rate | percent }}
+                        {% trans 'last month' %}{% if change_in_popularity.is_interpolated %},
+                            {% trans 'approximately' %}{% endif %})</span>
                 </p>
-                <i class="fa fa-bar-chart-o"></i>
-                <span>
-                <span class="hidden-object" id="insights-loading">{% trans 'Loading additional data...' %}</span>
-                <i class="hidden-object fa fa-exclamation" id="insights-error"></i>
-            </span>
-                <span id="insights" style="display: none" data-objectid="{{ object.id }}">
-                <b>{% trans 'Last Month' %}:</b>
-                <span id="ins_n_month">-</span> {% trans 'Statuses' %},
-                <span id="ins_mean_likes_month">-</span> {% trans 'Likes on average' %}
-                <b style="padding-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}: 2em">{% trans 'Last week' %}:</b>
-                <span id="ins_n_week">-</span> {% trans 'Statuses' %},
-                <span id="ins_mean_likes_week">-</span> {% trans 'Likes on average' %}
-            </span>
+                <p>
+                    <i class="fa fa-bar-chart-o"></i>
+                    <span>
+                    <span class="hidden-object" id="insights-loading">{% trans 'Loading additional data...' %}</span>
+                    <i class="hidden-object fa fa-exclamation" id="insights-error"></i>
+                </span>
+                    <span id="insights" style="display: none" data-objectid="{{ object.id }}">
+                    <b>{% trans 'Last Month' %}:</b>
+                    <span id="ins_n_month">-</span> {% trans 'Statuses' %},
+                    <span id="ins_mean_likes_month">-</span> {% trans 'Likes on average' %}
+                    <b style="padding-{% if LANGUAGE_BIDI %}right{% else %}left{% endif %}: 2em">{% trans 'Last week' %}:</b>
+                    <span id="ins_n_week">-</span> {% trans 'Statuses' %},
+                    <span id="ins_mean_likes_week">-</span> {% trans 'Likes on average' %}
+                </span>
+                </p>
             {% endif %}
             {% if object.ok_url or object.current_party.ok_url %}
                 <p>
@@ -56,18 +58,26 @@
                     {% trans 'At Open Knesset' %}
                 </p>
             {% endif %}
+            <p>&nbsp;<i class="fa fa-facebook-square"></i>&nbsp;<a
+                    href="http://www.facebook.com/{{ feed.vendor_id }}"
+                    target="_blank">{{ object.name }}</a> {% trans 'On Facebook' %}
+            </p>
+            <p>&nbsp;<i class="fa fa-clock-o"></i> {% trans 'Last Collected Status at' %}:
+                {% with status=feed.facebook_status_set.latest %}
+                    {{ status.published }}.
+                {% endwith %}
+                {% if time_since_updated < 3 %}
+                    {% blocktrans %}Page details updated at{% endblocktrans %}: {{ feed.locally_updated }}
+                {% else %}
+                    <span class="text-danger" role="alert">
+                        <strong>{% blocktrans %}Page details updated at{% endblocktrans %}
+                            {{ feed.locally_updated }}.</strong>
+                        {% blocktrans %} This is probably a problem, and we'd love to{% endblocktrans %}
+                        <a href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - דיווח על תקלה">{% blocktrans %}hear about it!{% endblocktrans %}</a>
+                    </span>
+                {% endif %}
+            </p>
 
-            {% if time_since_updated >= 3 %}
-                <div class="alert alert-danger" role="alert">
-                    <strong>{% blocktrans %}Last update at{% endblocktrans %}
-                        {{ feed.locally_updated }}.</strong>
-                    {% blocktrans %} This is probably a problem, and we'd love to{% endblocktrans %}
-                    <a href="mailto:yotammanor@gmail.com?subject=כיכר המדינה - דיווח על תקלה">{% blocktrans %}hear about
-                        it!{% endblocktrans %}</a>
-                </div>
-            {% else %}
-                <p>{% blocktrans %}Last update at{% endblocktrans %}: {{ feed.locally_updated }}</p>
-            {% endif %}
         {% endwith %}
     </div>
 {% endblock %}
