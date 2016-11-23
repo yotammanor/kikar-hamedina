@@ -123,6 +123,10 @@ class Facebook_Feed(models.Model):
         return super(Facebook_Feed, self).save(*args, **kwargs)
 
     @property
+    def facebook_status_set_no_filters(self):
+        return Facebook_Status.objects_no_filters.filter(feed__id=self.id, is_comment=False)
+
+    @property
     def get_current_fan_count(self):
         popularity = 0
         if self.feed_type == 'PP':

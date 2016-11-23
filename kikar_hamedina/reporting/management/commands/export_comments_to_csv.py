@@ -335,7 +335,7 @@ class Command(KikarCommentCommand):
 
     @lru_cache(maxsize=180)
     def number_of_commented_on_statuses_for_feed_id(self, commentator, feed_id):
-        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set.all()
+        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set_no_filters.all()
         count_statuses = 0
         for status in statuses:
             count_statuses += int(self.is_status_commented_on_by_commentator(commentator, status))
@@ -347,7 +347,7 @@ class Command(KikarCommentCommand):
 
     @lru_cache(maxsize=180)
     def number_of_comments_by_commentator_for_feed_id(self, commentator, feed_id):
-        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set.all()
+        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set_no_filters.all()
         return self.number_of_comments_by_commentator_on_statuses(commentator, statuses)
 
     def number_of_comments_by_commentator_on_statuses(self, commentator, statuses):
@@ -356,7 +356,7 @@ class Command(KikarCommentCommand):
     @lru_cache(maxsize=180)
     def get_number_of_comments_for_feed(self, feed_id):
         feed = Facebook_Feed.objects.get(id=feed_id)
-        return self.get_number_of_comments(feed.facebook_status_set.all())
+        return self.get_number_of_comments(feed.facebook_status_set_no_filters.all())
 
     def get_number_of_comments(self, statuses):
         num_of_comments = 0
@@ -377,11 +377,11 @@ class Command(KikarCommentCommand):
 
     @lru_cache(maxsize=180)
     def count_statuses_for_feed_id(self, feed_id):
-        return Facebook_Feed.objects.get(id=feed_id).facebook_status_set.count()
+        return Facebook_Feed.objects.get(id=feed_id).facebook_status_set_no_filters.count()
 
     @lru_cache(maxsize=180)
     def num_of_likes_by_commentator_for_feed_id(self, commentator, feed_id):
-        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set.all()
+        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set_no_filters.all()
         return self.number_of_likes_by_commentator_on_statuses(commentator, statuses)
 
     @lru_cache(maxsize=180)

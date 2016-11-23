@@ -39,7 +39,8 @@ class Command(BaseCommand):
         end_time = timezone.datetime(2014, 11, 30, 0, 0, 0, 0, tzinfo=timezone.get_current_timezone())
         top_statuses = list()
         for feed in Facebook_Feed.objects.all():
-            b = feed.facebook_status_set.filter(published__range=(start_time, end_time)).order_by('like_count').last()
+
+            b = feed.facebook_status_set_no_filters.filter(published__range=(start_time, end_time)).order_by('like_count').last()
             if b:
                 top_statuses.append(b)
 
