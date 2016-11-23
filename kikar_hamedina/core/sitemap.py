@@ -17,8 +17,9 @@ class MkSitemap(Sitemap):
         return MEMBER_MODEL.objects.filter(is_current=True)
 
     def lastmod(self, obj):
-        if obj.facebook_persona and obj.facebook_persona.get_main_feed.facebook_status_set.exists():
-            return obj.facebook_persona.get_main_feed.facebook_status_set.all().order_by('-published').first().published
+        if obj.facebook_persona and obj.facebook_persona.get_main_feed.facebook_status_set_no_filters.exists():
+            return obj.facebook_persona.get_main_feed.facebook_status_set_no_filters.all().order_by(
+                '-published').first().published
         return DEFAULT_MIN_DATE
 
 
@@ -31,9 +32,11 @@ class PartySitemap(Sitemap):
 
     def lastmod(self, obj):
         members = obj.current_members()
-        update_dates = [member.facebook_persona.get_main_feed.facebook_status_set.all().order_by('-published')
-                        .first().published for member in members
-                        if (member.facebook_persona and member.facebook_persona.get_main_feed.facebook_status_set.exists())]
+        update_dates = [
+            member.facebook_persona.get_main_feed.facebook_status_set_no_filters.all().order_by('-published')
+                .first().published for member in members
+            if
+            (member.facebook_persona and member.facebook_persona.get_main_feed.facebook_status_set_no_filters.exists())]
         return max(update_dates + [DEFAULT_MIN_DATE])
 
 

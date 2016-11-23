@@ -62,7 +62,7 @@ class Command(KikarBaseCommand):
             csv_data.writerow(headers)
 
             for feed in feeds:
-                statuses = feed.facebook_status_set.all()
+                statuses = feed.facebook_status_set_no_filters.all()
                 row = {'mk_id': feed.persona.object_id,
                        'mk_name': unicode(feed.persona.content_object.name).encode(
                            'utf-8') if feed.persona.content_object else feed.username,

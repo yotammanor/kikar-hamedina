@@ -67,7 +67,8 @@ class Command(BaseCommand):
 
         feeds_data = []
         for feed in feeds:
-            week_status_set = feed.facebook_status_set.filter(
+
+            week_status_set = feed.facebook_status_set_no_filters.filter(
                 published__gte=timezone.now() - timezone.timedelta(days=7))
 
             num_of_weekly_statuses = engine.n_statuses_last_week([feed.id])
