@@ -49,7 +49,7 @@ function rebuildOrderByHrefAttr(obj, data_param_name, arg_name) {
         var url_args = getUrlVars();
         var new_url_args = '';
         for (var i = 0; i < url_args.length; i++) {
-            if (url_args[i] != arg_name) {
+            if (url_args[i] != arg_name && url_args[i] != "") {
                 new_url_args += url_args[i] + '=' + url_args[url_args[i]] + "&"
             }
         }
@@ -65,11 +65,6 @@ $(document).ready(function () {
     // on load, render order-by links as needed.
     $("#order-by-options").children().each(function () {
         rebuildOrderByHrefAttr($(this), "order-by", "order_by")
-    });
-
-    // on load, render filter-by-date links as needed.
-    $("#filter-by-date-range-options").children().each(function () {
-        rebuildOrderByHrefAttr($(this), "range", "range")
     });
 
     // Set active order-by link style.
@@ -90,7 +85,7 @@ $(document).ready(function () {
 
     // set default order-by if needed.
     if (set_custom == true) {
-        order_by_custom.show()
+        order_by_custom.show();
         order_by_custom.addClass('active')
     }
 
@@ -113,28 +108,5 @@ $(document).ready(function () {
         orderByActiveElem.data('orderBy', orderByActiveElem.data('orderBy').replace('-', ''))
     }
     rebuildOrderByHrefAttr(orderByActiveElem, "order-by", "order_by");
-
-    // Set active filter-by-date link style.
-
-    var default_filter = true;
-    if (typeof vars['range'] === 'string' && !vars['from_date'] && !vars['to_date']){
-        range_param =vars['range']
-    } else {
-        range_param = false;
-        default_filter = false;
-    }
-
-    if (range_param != false) {
-        $('#filter-by-date-range-options').children().not('.heading').each(function () {
-            default_filter = setActiveElem($(this), 'range', range_param, default_filter)
-        });
-    }
-
-    // set default filter-by-date if needed.
-
-    if (default_filter == true) {
-        $('#default-filter').addClass('active')
-    }
-
 
 });
