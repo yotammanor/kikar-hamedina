@@ -1,6 +1,8 @@
 
 ![](https://github.com/hasadna/kikar-hamedina/blob/dev/kikar_hamedina/static/media/kikar_hamedina_logo.png)
 
+[![Build Status](https://travis-ci.org/hasadna/kikar-hamedina.svg?branch=master)](https://travis-ci.org/hasadna/kikar-hamedina)
+
 #Welcome to Kikar Hamdina#
 
 Welcome to Kikar Hamedina, An Open-Source Project by The Public Knowledge Workshop.
