@@ -13,7 +13,13 @@ function getParameterByName(name) {
 
 function deconstuctURL(fullPath) {
     //var url;
-    var searchTerms = {'member': [], 'party': [], 'tag': [], 'search_str': [], 'excluded': []};
+    var searchTerms = {
+        'member': [],
+        'party': [],
+        'tag': [],
+        'search_str': [],
+        'excluded': []
+    };
     //$(".result-info").each(function () {
     //    type = $(this).data('type');
     //    id = $(this).data('id');
@@ -110,8 +116,11 @@ function deconstuctURL(fullPath) {
         $("input:radio[name=selected-order-by][value=" + orderBy + "]").attr('checked', 'checked');
     }
 
-    var dateRange = getParameterByName('range');
-    dateRange.length > 0 && $('#range-option').val(dateRange);
+    var fromDate = getParameterByName('from_date');
+    fromDate.length > 0 && $('#input-from-date').val(fromDate);
+
+    var toDate = getParameterByName('to_date');
+    toDate.length > 0 && $('#input-to-date').val(toDate);
 
     var operator = getParameterByName('tags_and_search_str_operator');
     operator.length > 0 && $('#searchgui-selected-operator-' + operator.split('_operator')[0]).attr('checked', 'checked');
@@ -121,7 +130,13 @@ function deconstuctURL(fullPath) {
 
 function buildURL(baseURL) {
     var url;
-    var searchTerms = {'member': [], 'party': [], 'tag': [], 'search_str': [], 'excluded': []};
+    var searchTerms = {
+        'member': [],
+        'party': [],
+        'tag': [],
+        'search_str': [],
+        'excluded': []
+    };
     $(".result-info").each(function () {
         type = $(this).data('type');
         id = $(this).data('id');
@@ -165,8 +180,15 @@ function buildURL(baseURL) {
         orderBy = '-' + orderBy
     } else if (orderByDir == 'asc') {
     }
-    var dateRange = $('#range-option').val();
-    url += "tags_and_search_str_operator=" + operator + "&order_by=" + orderBy + "&range=" + dateRange;
+    var fromDate = $('#input-from-date').val();
+    var toDate = $('#input-to-date').val();
+    url += "tags_and_search_str_operator=" + operator + "&order_by=" + orderBy;
+    if(fromDate != "") {
+        url += "&from_date=" + fromDate
+    }
+    if(toDate != ""){
+        url += "&to_date=" + toDate
+    }
     return url
 }
 
@@ -246,7 +268,13 @@ function updateSearchGUIObjectsVisibility() {
 
      */
     var tempScrollTop = $(window).scrollTop();
-    var searchTerms = {'member': [], 'party': [], 'tag': [], 'search_str': [], 'excluded': []};
+    var searchTerms = {
+        'member': [],
+        'party': [],
+        'tag': [],
+        'search_str': [],
+        'excluded': []
+    };
     $(".result-info").each(function () {
         var type = $(this).data('type');
         var id = $(this).data('id');
@@ -274,6 +302,24 @@ function updateSearchGUIObjectsVisibility() {
 }
 
 $(document).ready(function () {
+    // Initialize datepicker
+    var date_input = $('#search-gui-date-filter-input .input-daterange');
+    var options = {
+        format: "dd-mm-yyyy",
+        maxViewMode: 2,
+        endDate: "+1d",
+        todayBtn: "linked",
+        language: $('#datepicker').data('datepicker-options-language'),
+        orientation: "top left",
+        todayHighlight: true,
+        rtl: true
+
+    };
+    date_input.datepicker(options);
+    $('#datepicker input').on("focus", function (event) {
+        $('.datepicker').css("left", "inherit"); // Fix RTL display
+    });
+
 //  cleans results list at loading.
     $(".fa-trash").parent().click(function () {
         $('#searchgui-text-input').val('');

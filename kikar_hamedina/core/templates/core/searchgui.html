@@ -3,32 +3,49 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
 {% block scripts %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/searchgui.js" xmlns="http://www.w3.org/1999/html"
-            xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"></script>
+    <!-- Bootstrap Date-Picker Plugin -->
+    <script type="text/javascript"
+            src="{{ STATIC_URL }}vendor/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <script src="{{ STATIC_URL }}vendor/bootstrap-datepicker/1.4.1/locales/bootstrap-datepicker.he.min.js"
+            charset="UTF-8"></script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}js/searchgui.js"
+            xmlns="http://www.w3.org/1999/html"
+            xmlns="http://www.w3.org/1999/html"
+            xmlns="http://www.w3.org/1999/html"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/searchGui.css"/>
 {% endblock %}
 
-{% block title %}{% blocktrans %}Advanced Search{% endblocktrans %}{% endblock title %}
+{% block title %}{% blocktrans %}Advanced Search
+{% endblocktrans %}{% endblock title %}
 
 {% block h1 %}{% endblock h1 %}
 
 {% block handlebar_templates %}
     {% verbatim %}
-        <script id="search-gui-result-list-item-template" type="text/x-handlebars-template">
-        <a href="#" class="list-group-item" id="{{ type }}{{ id }}" data-name="{{ name }}" data-type="{{ type }}"
+        <script id="search-gui-result-list-item-template"
+                type="text/x-handlebars-template">
+        <a href="#" class="list-group-item" id="{{ type }}{{ id }}"
+           data-name="{{ name }}" data-type="{{ type }}"
            data-id="{{ id }}" data-icon="{{ icon }}">
         <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
         <span class="badge hidden-badge"><i
-        class="fa fa-arrow-{% endverbatim %}{% if LANGUAGE_BIDI %}left{% else %}right{% endif %}{% verbatim %}"></i>
+        class="fa fa-arrow-{% endverbatim %}{% if LANGUAGE_BIDI %}left{% else %}right{% endif %}{% verbatim %}"
+    ></i>
     </span>
     {{ name }}
     </a>
     </script>
 
-    <script id="search-gui-added-list-item-template" type="text/x-handlebars-template">
+    <script id="search-gui-added-list-item-template"
+            type="text/x-handlebars-template">
         <a href="#" class="list-group-item" id="{{ type }}{{ id }}">
             <span class="badge"><i class="fa fa-{{ icon }}"></i></span>
-            <span class="badge hidden-badge result-info" data-id="{{ id }}" data-type="{{ type }}"
+            <span class="badge hidden-badge result-info" data-id="{{ id }}"
+                  data-type="{{ type }}"
                   data-name="{{ name }}"><i class="fa fa-times"></i></span>
             {{ name }}
         </a>
@@ -47,22 +64,32 @@
                 <div class="list-group">
                     <li class="list-group-item">
                         <div class="input-group">
-                            <input type="text" class="form-control" id="searchgui-text-input"
+                            <input type="text" class="form-control"
+                                   id="searchgui-text-input"
                                    placeholder='{% blocktrans %}Knesset Member, Party, a Subject discussed, or any keyword...{% endblocktrans %}'>
                             <span class="input-group-btn">
-                                 <button class="btn btn-default" type="button" id="searchgui-add-word"
+                                 <button class="btn btn-default" type="button"
+                                         id="searchgui-add-word"
                                          data-word-num="1">{% trans 'Add Word' %}</button>
                             </span>
-                            <span class="input-group-btn searchgui-execute-btn" id="searchgui-go-button">
-                                <button class="btn btn-success"><i class="fa fa-search"></i></button>
+                            <span class="input-group-btn searchgui-execute-btn"
+                                  id="searchgui-go-button">
+                                <button class="btn btn-success"><i
+                                        class="fa fa-search"></i></button>
                             </span>
-                            <span id="searchgui-preview-button" class="searchgui-execute-btn">
+                            <span id="searchgui-preview-button"
+                                  class="searchgui-execute-btn">
                                 <button class="btn btn-info">{% trans 'Preview' %}</button>
                             </span>
-                            <span id="searchgui-exclude-status" style="display: none;" data-status-num="1"></span>
+                            <span id="searchgui-exclude-status"
+                                  style="display: none;"
+                                  data-status-num="1"></span>
                             {% if user.is_authenticated %}
-                                <span id="searchgui-save-button" class="searchgui-execute-btn">
-                                <button class="btn btn-danger" data-toggle="modal" data-target="#save-query-modal">
+                                <span id="searchgui-save-button"
+                                      class="searchgui-execute-btn">
+                                <button class="btn btn-danger"
+                                        data-toggle="modal"
+                                        data-target="#save-query-modal">
                                     {% trans 'Save Query' %}
                                 </button>
                             </span>
@@ -71,80 +98,86 @@
                         </div>
                         <div class="container {% if not LANGUAGE_BIDI %}attachment-container-en{% endif %}"
                              id="modifiers-container">
-                            <div class="col-md-12 input-group" id="searchgui-order-by-input">
-                                <div class="col-md-1"><span><b>{% trans 'Order' %}:</b></span></div>
+                            <div class="col-md-12 input-group"
+                                 id="searchgui-order-by-input">
+                                <div class="col-md-1">
+                                    <span><b>{% trans 'Order' %}:</b></span>
+                                </div>
                                 <div class="col-md-7">
                                     <input type="radio" class="form-inline"
                                            id="searchgui-order-by-published"
-                                           name="selected-order-by" value="published"
+                                           name="selected-order-by"
+                                           value="published"
                                            checked>{% trans 'By Date' %}</input>
-                                    <input type="radio" class="form-inline" id="searchgui-order-by-like-count"
+                                    <input type="radio" class="form-inline"
+                                           id="searchgui-order-by-like-count"
                                            name="selected-order-by"
                                            value="like_count">{% trans 'By Like Count' %} </input>
-                                    <input type="radio" class="form-inline" id="searchgui-order-by-share-count"
+                                    <input type="radio" class="form-inline"
+                                           id="searchgui-order-by-share-count"
                                            name="selected-order-by"
                                            value="share_count">{% trans 'By Comment Count' %}</input>
                                 </div>
-                                <div class="col-md-4 input-group" id="search-gui-order-by-direction-input">
-                                    <input type="radio" class="form-inline" id="searchgui-order-by-dir-desc"
-                                           name="selected-order-by-dir" value="desc"
+                                <div class="col-md-4 input-group"
+                                     id="search-gui-order-by-direction-input">
+                                    <input type="radio" class="form-inline"
+                                           id="searchgui-order-by-dir-desc"
+                                           name="selected-order-by-dir"
+                                           value="desc"
                                            checked="checked">{% trans 'descending' %}</input>
-                                    <input type="radio" class="form-inline" id="searchgui-order-by-dir-asc"
-                                           name="selected-order-by-dir" value="asc">{% trans 'ascending' %}
+                                    <input type="radio" class="form-inline"
+                                           id="searchgui-order-by-dir-asc"
+                                           name="selected-order-by-dir"
+                                           value="asc">{% trans 'ascending' %}
                                     </input>
                                 </div>
 
                             </div>
-                            <div class="col-md-12 input-group" id="searchgui-date-filter">
+                            <div class="col-md-12 input-group"
+                                 id="searchgui-date-filter">
                                 <div class="form-group">
                                     <div class="col-md-1">
 
                                         <label for="sel1"><span><b>{% trans 'Date' %}:</b></span></label>
                                     </div>
 
-                                    <div class="col-md-4" id="search-gui-date-filter-input">
-                                        <select class="form-control" name="range" id="range-option">
-                                            <option value="default">{% blocktrans %}No
-                                                Filter{% endblocktrans %}</option>
-                                            <option value="day">{% blocktrans %}Last 24
-                                                Hours{% endblocktrans %}</option>
-                                            <option value="current_day">            {% blocktrans %}
-                                                During{% endblocktrans %}
-                                                {% now "j" %}
-                                                {% trans 'Of' %}
-                                                {% now "F" %}
-                                                {% blocktrans %}(Starting midnight){% endblocktrans %}</option>
-                                            <option value="week">{% blocktrans %}Last
-                                                Week{% endblocktrans %}
-                                            </option>
-                                            <option value="two_week">{% blocktrans %}Last Two Weeks{% endblocktrans %}
-                                            </option>
-                                            <option value="month">{% blocktrans %}Last Month{% endblocktrans %}
-                                            </option>
-                                            <option value="current_month"> {% blocktrans %}During {% endblocktrans %}
-                                                {% now "F" %}</option>
-                                            <option value="current_year">
-                                                {% blocktrans %}During {% endblocktrans %}
-                                                {% now "Y" %}
-                                            </option>
-                                            <option value="elections_20">{% blocktrans %}During 20th Knesset
-                                                Election Campaign{% endblocktrans %}
-                                            </option>
-                                            <option value="protective-edge">{% blocktrans %}During
-                                                "Protective Edge"{% endblocktrans %}
-                                            </option>
-                                        </select>
+                                    <div class="col-md-6"
+                                         id="search-gui-date-filter-input">
+                                        <div class="input-daterange input-group"
+                                             id="datepicker"
+                                             data-datepicker-options-language="{{ LANGUAGE_CODE }}">
+                                            <input type="text"
+                                                   class="input-sm form-control"
+                                                   name="from-date"
+                                                   id="input-from-date"
+                                                   placeholder="dd-mm-yyyy"/>
+                                            <span class="input-group-addon">{% trans 'to' %}</span>
+                                            <input type="text"
+                                                   class="input-sm form-control"
+                                                   name="to-date"
+                                                   id="input-to-date"
+                                                   placeholder="{% trans 'Empty clears filter' %}"/>
+                                            <span class="input-group-addon btn btn-primary"
+                                                  id="custom-date-filter-submit"><i
+                                                    class="fa fa-filter"></i></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 input-group" id="searchgui-operator-input">
+                            <div class="col-md-12 input-group"
+                                 id="searchgui-operator-input">
                                 <div class="col-md-1"></div>
                                 <div class="col-md-11">
                                     <input type="radio" class="form-inline"
                                            id="searchgui-selected-operator-or"
-                                           name="selected-operator" value="or_operator" checked> {% trans 'Or' %}
-                                    <input type="radio" class="form-inline" id="searchgui-selected-operator-and"
-                                           name="selected-operator" value="and_operator"> {% trans 'And' %} <br>
+                                           name="selected-operator"
+                                           value="or_operator"
+                                           checked> {% trans 'Or' %}
+                                    <input type="radio" class="form-inline"
+                                           id="searchgui-selected-operator-and"
+                                           name="selected-operator"
+                                           value="and_operator"> {% trans 'And' %}
+                                    <br>
                                     <span>
 {% trans '(Free text And/Or Tags must appear)' %}
                                     </span>
@@ -199,9 +232,11 @@
     <div class="row">
         <div class="container" id="preview-container">
             <div class='embed-container'>
-                <p id="loading" style="text-align: center; display: none"><i class="fa fa-spinner fa-spin fa-4x"></i>
+                <p id="loading" style="text-align: center; display: none"><i
+                        class="fa fa-spinner fa-spin fa-4x"></i>
                 </p>
-                <iframe src="" style='border:0' id="preview-iframe" scrolling='yes'></iframe>
+                <iframe src="" style='border:0' id="preview-iframe"
+                        scrolling='yes'></iframe>
             </div>
 
         </div>
