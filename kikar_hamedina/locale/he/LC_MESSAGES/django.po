@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-23 12:12+0200\n"
-"PO-Revision-Date: 2016-11-23 11:46+0200\n"
+"POT-Creation-Date: 2016-12-08 13:09+0200\n"
+"PO-Revision-Date: 2016-12-08 13:13+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: core/billboards.py:10 core/templates/core/date_filter.html:46
+#: core/billboards.py:10 core/templates/core/date_filter.html:117
 #: core/templates/core/searchgui.html:120
 msgid "Last Two Weeks"
 msgstr "בשבועיים האחרונים"
@@ -51,7 +51,7 @@ msgstr "כמות חציונית של #like לסטאטוס"
 msgid "Top Statuses by Number of  #like "
 msgstr "הסטאטוס עם כמות ה-#like הגבוהה ביותר"
 
-#: core/billboards.py:88 core/templates/core/date_filter.html:40
+#: core/billboards.py:88 core/templates/core/date_filter.html:112
 #: core/templates/core/party.html:19
 msgid "Last Week"
 msgstr "בשבוע האחרון"
@@ -181,7 +181,7 @@ msgid "Number of Facebook Pages for Party"
 msgstr "מס' עמודי פייסבוק פעילים למפלגה"
 
 #: core/templates/core/all_members.html:25
-#: core/templates/core/date_filter.html:51 core/templates/core/member.html:40
+#: core/templates/core/date_filter.html:122 core/templates/core/member.html:40
 #: core/templates/core/party.html:16 core/templates/core/searchgui.html:122
 msgid "Last Month"
 msgstr "בחודש האחרון"
@@ -226,17 +226,17 @@ msgstr "עדכון אחרון למידע אודות העמוד בתאריך"
 msgid "Date of Last Status at"
 msgstr "סטאטוס אחרון בתאריך"
 
-#: core/templates/core/all_members.html:76 core/templates/core/member.html:88
+#: core/templates/core/all_members.html:76 core/templates/core/member.html:87
 msgid ""
 "Due to technical limitations, we can't collect data on private Facebook "
 "Users."
 msgstr "עקב מגבלות טכניות, אנחנו לא יכולים לאסוף מידע על דפי פייסבוק פרטיים."
 
-#: core/templates/core/all_members.html:77 core/templates/core/member.html:89
+#: core/templates/core/all_members.html:77 core/templates/core/member.html:88
 msgid "You can check it out on "
 msgstr "ניתן לצפות בדף ישירות ב"
 
-#: core/templates/core/all_members.html:79 core/templates/core/member.html:91
+#: core/templates/core/all_members.html:79 core/templates/core/member.html:90
 msgid "Facebook"
 msgstr "פייסבוק"
 
@@ -244,8 +244,8 @@ msgstr "פייסבוק"
 msgid "Facebook Page Missing"
 msgstr "דף פייסבוק חסר"
 
-#: core/templates/core/all_members.html:85 core/templates/core/member.html:96
-#: core/templates/core/member.html:109
+#: core/templates/core/all_members.html:85 core/templates/core/member.html:95
+#: core/templates/core/member.html:108
 msgid "Tell us"
 msgstr "ספרו לנו"
 
@@ -271,54 +271,56 @@ msgstr "לייקים, בממוצע"
 msgid "Billboards"
 msgstr "המצעד"
 
-#: core/templates/core/date_filter.html:5
+#: core/templates/core/date_filter.html:73
 msgid "Filter By Date:"
 msgstr "סינון לפי תאריך:"
 
-#: core/templates/core/date_filter.html:9
-msgid "Simple Filtering is disabled when advanced filtering is activated"
-msgstr "הסינון הפשוט אינו פעיל בעת שימוש בסינון מתקדם"
+#: core/templates/core/date_filter.html:74
+msgid "Add date(s), Click"
+msgstr "בחר(י) טווח, לחצ(י)"
 
-#: core/templates/core/date_filter.html:16
+#: core/templates/core/date_filter.html:82
+msgid "to"
+msgstr "עד"
+
+#: core/templates/core/date_filter.html:85
+msgid "Empty clears filter"
+msgstr "ריק=בלי פילטר"
+
+#: core/templates/core/date_filter.html:95
 msgid "Default Filter"
 msgstr "סינון ברירת מחדל"
 
-#: core/templates/core/date_filter.html:18
+#: core/templates/core/date_filter.html:97
 msgid "No Filter"
 msgstr "ללא סינון"
 
-#: core/templates/core/date_filter.html:25
-msgid "Last 24 Hours"
-msgstr "ביממה האחרונה"
-
-#: core/templates/core/date_filter.html:31
+#: core/templates/core/date_filter.html:103
 msgid "During"
 msgstr "במהלך"
 
-#: core/templates/core/date_filter.html:33
+#: core/templates/core/date_filter.html:105
 #: core/templates/core/searchgui.html:114
 msgid "Of"
 msgstr "ל"
 
-#: core/templates/core/date_filter.html:35
+#: core/templates/core/date_filter.html:107
 #: core/templates/core/searchgui.html:116
 msgid "(Starting midnight)"
 msgstr "(החל מחצות)"
 
-#: core/templates/core/date_filter.html:57
-#: core/templates/core/date_filter.html:63
+#: core/templates/core/date_filter.html:127
+#: core/templates/core/date_filter.html:132
 #: core/templates/core/searchgui.html:124
 #: core/templates/core/searchgui.html:127
 msgid "During "
 msgstr "במהלך"
 
-#: core/templates/core/date_filter.html:70
-msgid "During 20th Knesset Election Campaign"
+#: core/templates/core/date_filter.html:138
+msgid ""
+"During 20th Knesset Election\n"
+"                    Campaign"
 msgstr "במהלך הבחירות לכנסת ה-20"
-
-#: core/templates/core/date_filter.html:76
-msgid "During \"Protective Edge\""
-msgstr "במהלך צוק איתן"
 
 #: core/templates/core/facebook_status.html:48
 msgid "(This status was deleted)"
@@ -399,55 +401,55 @@ msgstr "בפייסבוק"
 msgid "Last Collected Status at"
 msgstr "סטאטוס אחרון נאסף בתאריך"
 
-#: core/templates/core/member.html:71 core/templates/core/member.html.py:74
+#: core/templates/core/member.html:70 core/templates/core/member.html.py:73
 msgid "Page details updated at"
 msgstr "מידע אודות העמוד נאסף בתאריך"
 
-#: core/templates/core/member.html:76
+#: core/templates/core/member.html:75
 msgid " This is probably a problem, and we'd love to"
 msgstr "זוהי כנראה תקלה, ונשמח מאוד"
 
-#: core/templates/core/member.html:77
+#: core/templates/core/member.html:76
 msgid "hear about it!"
 msgstr "לשמוע על כך!"
 
-#: core/templates/core/member.html:94 core/templates/core/member.html:107
+#: core/templates/core/member.html:93 core/templates/core/member.html:106
 msgid "Does MK "
 msgstr "יש ל"
 
-#: core/templates/core/member.html:94
+#: core/templates/core/member.html:93
 msgid "has a Public Facebook Page"
 msgstr "יש דף פייסבוק פומבי"
 
-#: core/templates/core/member.html:96 core/templates/core/member.html:109
+#: core/templates/core/member.html:95 core/templates/core/member.html:108
 msgid "please"
 msgstr "בבקשה"
 
-#: core/templates/core/member.html:99
+#: core/templates/core/member.html:98
 msgid "Facebook Page not found for MK"
 msgstr "לא נמצא עמוד פייסבוק עבור"
 
-#: core/templates/core/member.html:101
+#: core/templates/core/member.html:100
 msgid "You can"
 msgstr "אפשר"
 
-#: core/templates/core/member.html:102
+#: core/templates/core/member.html:101
 msgid "send"
 msgstr "לשלוח"
 
-#: core/templates/core/member.html:102
+#: core/templates/core/member.html:101
 msgid "her"
 msgstr "לה"
 
-#: core/templates/core/member.html:103
+#: core/templates/core/member.html:102
 msgid "him"
 msgstr "לו"
 
-#: core/templates/core/member.html:103
+#: core/templates/core/member.html:102
 msgid "an email"
 msgstr "דוא\"ל"
 
-#: core/templates/core/member.html:107
+#: core/templates/core/member.html:106
 msgid "has a Facebook Page"
 msgstr "דף פייסבוק"
 
@@ -993,6 +995,20 @@ msgstr "RSS Feed of trackbacks on"
 #: templates/zinnia/entry_detail_base.html:47
 msgid "Edit the entry"
 msgstr "ערוך/ערכי רשומה"
+
+#~ msgid "At least one input"
+#~ msgstr "לפחות תאריך אחד"
+
+#~ msgid ""
+#~ "Simple Filtering is disabled when advanced\n"
+#~ "                    filtering is activated"
+#~ msgstr "הסינון הפשוט אינו פעיל בעת שימוש בסינון מתקדם"
+
+#~ msgid "Last 24 Hours"
+#~ msgstr "ביממה האחרונה"
+
+#~ msgid "During \"Protective Edge\""
+#~ msgstr "במהלך צוק איתן"
 
 #~ msgid "Last update at"
 #~ msgstr "עדכון אחרון בתאריך"

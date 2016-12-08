@@ -1,79 +1,144 @@
 {# Dynamic styling done with "static/js/renderLinksForStatusListHandlers.js" #}
 
 {% load i18n %}
-<ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
-    <li class="heading"><b>{% blocktrans %}Filter By Date:{% endblocktrans %}</b>
+{% get_current_language as LANGUAGE_CODE %}
+{% load core_extras %}
 
-        <p>{% if 'from_date' in request.GET or 'to_date' in request.GET %}
-            <span class="label label-info">
-                {% blocktrans %}Simple Filtering is disabled when advanced filtering is activated{% endblocktrans %}
-            </span>
-        {% endif %}</p></li>
-    <li data-range="default" id="default-filter"
-        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% if '/custom/' in request.path %}
-                {% blocktrans %}Default Filter{% endblocktrans %}
-            {% else %}
-                {% blocktrans %}No Filter{% endblocktrans %}
-            {% endif %}
-        </a>
+<!-- Bootstrap Date-Picker Plugin -->
+<script type="text/javascript"
+        src="{{ STATIC_URL }}vendor/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<script src="{{ STATIC_URL }}vendor/bootstrap-datepicker/1.4.1/locales/bootstrap-datepicker.he.min.js"
+        charset="UTF-8"></script>
 
-    </li>
-    <li data-range="day" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% blocktrans %}Last 24 Hours{% endblocktrans %}
-        </a>
-    </li>
-    <li data-range="current_day"
-        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% blocktrans %}During{% endblocktrans %}
-            {% now "j" %}
-            {% trans 'Of' %}
-            {% now "F" %}
-            {% blocktrans %}(Starting midnight){% endblocktrans %}
-        </a>
-    </li>
-    <li data-range="week" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% blocktrans %}Last Week{% endblocktrans %}
-        </a>
-    </li>
-    <li data-range="two_weeks"
-        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% blocktrans %}Last Two Weeks{% endblocktrans %}
-        </a>
-    </li>
-    <li data-range="month" {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% blocktrans %}Last Month{% endblocktrans %}
-        </a>
-    </li>
-    <li data-range="current_month"
-        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% blocktrans %}During {% endblocktrans %}
-            {% now "F" %}</a>
-    </li>
-    <li data-range="current_year"
-        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% blocktrans %}During {% endblocktrans %}
-            {% now "Y" %}
-        </a>
-    </li>
-    <li data-range="elections_20"
-        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% blocktrans %}During 20th Knesset Election Campaign{% endblocktrans %}
-        </a>
-    </li>
-    <li data-range="protective-edge"
-        {% if 'from_date' in request.GET or 'to_date' in request.GET %}class="disabled" {% endif %}>
-        <a href="#">
-            {% blocktrans %}During "Protective Edge"{% endblocktrans %}
-        </a>
-    </li>
-</ul>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+
+<script>
+    $(document).ready(function () {
+        // Initialize datepicker
+        var date_input = $('#datepicker-container .input-daterange');
+        var options = {
+            format: "dd-mm-yyyy",
+            maxViewMode: 2,
+            endDate: "+1d",
+            todayBtn: "linked",
+            language: $('#datepicker').data('datepicker-options-language'),
+            orientation: "top left",
+            todayHighlight: true,
+            rtl: true
+
+        };
+        date_input.datepicker(options);
+        $('#datepicker input').on("focus", function (event) {
+            $('.datepicker').css("left", "inherit"); // Fix RTL display
+        });
+
+        //set default values from url
+
+        var url_args = getUrlVars();
+        $('#input-from-date').val(url_args["from_date"]);
+        $('#input-to-date').val(url_args["to_date"]);
+
+        $('#filter-by-date-range-options li').on('click', function (event) {
+            $('#input-from-date').val($(this).data('from-date'));
+            $('#input-to-date').val($(this).data('to-date'));
+        });
+
+        $('#custom-date-filter-submit').on('click', function (event) {
+            var fromDateValue = $('#input-from-date').val();
+            var toDateValue = $('#input-to-date').val();
+            var url_args = getUrlVars();
+            var new_url_args = '';
+            for (var i = 0; i < url_args.length; i++) {
+                if (url_args[i] == "from_date" || url_args[i] == "to_date" || url_args[i] == "") {
+                } else {
+                    new_url_args += url_args[i] + '=' + url_args[url_args[i]] + "&"
+                }
+            }
+            if (fromDateValue != "") {
+                new_url_args += "from_date=" + fromDateValue + "&"
+            }
+            if (toDateValue != "") {
+                new_url_args += "to_date=" + toDateValue
+            }
+            var new_uri = window.location.pathname + "?" + new_url_args;
+            window.location.href = new_uri;
+        })
+
+    })
+</script>
+<div class="row" id="preset-dates">
+    {% with DEFAULT_FORMAT="d-m-Y" %}<ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
+        <li class="heading"><b>{% trans 'Filter By Date:' %}</b>
+            <span style="color: darkgrey">&nbsp;{% trans 'Add date(s), Click' %} "<i
+                    class="fa fa-filter"></i>"</span>
+        </li>
+        <li id="datepicker-container">
+            <div class="input-daterange input-group" id="datepicker"
+                 data-datepicker-options-language="{{ LANGUAGE_CODE }}">
+                <input type="text" class="input-sm form-control"
+                       name="from-date" id="input-from-date"
+                       placeholder="dd-mm-yyyy"/>
+                <span class="input-group-addon">{% trans 'to' %}</span>
+                <input type="text" class="input-sm form-control"
+                       name="to-date" id="input-to-date"
+                       placeholder="{% trans 'Empty clears filter' %}"/>
+                <span class="input-group-addon btn btn-primary"
+                      id="custom-date-filter-submit"><i
+                        class="fa fa-filter"></i></span>
+            </div>
+        </li>
+        <li data-range="default" id="default-filter" data-from-date=""
+            data-to-date="">
+            <a class="btn btn-link">
+                {% if '/custom/' in request.path %}
+                    {% blocktrans %}Default Filter{% endblocktrans %}
+                {% else %}
+                    {% blocktrans %}No Filter{% endblocktrans %}
+                {% endif %}
+            </a>
+        </li>
+        <li data-from-date="08-11-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
+            <a class="btn btn-link">
+                {% blocktrans %}During{% endblocktrans %}
+                {% now "j" %}
+                {% trans 'Of' %}
+                {% now "F" %}
+                {% blocktrans %}(Starting midnight){% endblocktrans %}
+            </a>
+        </li>
+        <li data-from-date="01-11-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
+            <a class="btn btn-link">
+                {% blocktrans %}Last Week{% endblocktrans %}
+            </a>
+        </li>
+        <li data-from-date="22-11-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
+            <a class="btn btn-link">
+                {% blocktrans %}Last Two Weeks{% endblocktrans %}
+            </a>
+        </li>
+        <li data-from-date="08-11-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
+            <a class="btn btn-link">
+                {% blocktrans %}Last Month{% endblocktrans %}
+            </a>
+        </li>
+        <li data-from-date="01-12-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
+            <a class="btn btn-link">
+                {% blocktrans %}During {% endblocktrans %}
+                {% now "F" %}</a>
+        </li>
+        <li data-from-date="01-01-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
+            <a class="btn btn-link">
+                {% blocktrans %}During {% endblocktrans %}
+                {% now "Y" %}
+            </a>
+        </li>
+        <li data-from-date="08-12-2014" data-to-date="19-03-2015">
+            <a class="btn btn-link">
+                {% blocktrans %}During 20th Knesset Election
+                    Campaign{% endblocktrans %}
+            </a>
+        </li>
+    </ul>{% endwith %}
+</div>

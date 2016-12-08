@@ -74,3 +74,7 @@ def naturaltime_ext(value, locale):
             formatted_value = format(value, 'j בF Y, H:i')
 
     return formatted_value
+
+@register.simple_tag
+def tomorrow(requested_format):
+    return format(timezone.now() + timezone.timedelta(days=1), requested_format)
