@@ -1,6 +1,7 @@
 {% extends "core/facebook_statuses_page.html" %}
 {% load i18n %}
-{% block title %}{{ search_title }} | {% blocktrans %}Search Results{% endblocktrans %}{% endblock title %}
+{% block title %}{{ search_title }} | {% blocktrans %}Search Results
+{% endblocktrans %}{% endblock title %}
 
 {% block h1 %}
     <i class="fa fa-search"></i></br>
@@ -23,19 +24,24 @@
 {% endblock %}
 
 {% block context-header %}
-<div class="container well" id="details-container">
-    <div class="h4">
-        {% blocktrans %}Number of Results{% endblocktrans %} : {{ number_of_results }}
+    <div class="container well" id="details-container">
+        <div class="h4">
+            {% blocktrans %}Number of Results{% endblocktrans %}
+            : {{ number_of_results }}
+        </div>
+        <div><br>{% blocktrans %}Search didn't come out as precise as you wished? Try our Beta&nbsp;{% endblocktrans %}<a
+                href="{% url 'search-gui' %}">{% trans 'Advanced Search' %}</a>!
+        </div>
+        <h4>
+            {% if excluded %}<p>
+                {% blocktrans %}Excluded Statuses{% endblocktrans %}:
+                {% for status in excluded %}
+                    <a href="{% url 'status-detail' status.status_id %}"> {{ status.feed.persona.owner.name }}
+                        ({{ status.published|date:"d-m-Y" }})</a>
+                    {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </h4>
     </div>
-    <h4>
-        {% if excluded %}<p>
-            {% blocktrans %}Excluded Statuses{% endblocktrans %}:
-            {% for status in excluded %}
-                <a href="{% url 'status-detail' status.status_id %}"> {{ status.feed.persona.owner.name }}
-                    ({{ status.published|date:"d-m-Y" }})</a>{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        </p>
-        {% endif %}
-    </h4>
-</div>
 {% endblock %}

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-08 13:09+0200\n"
-"PO-Revision-Date: 2016-12-08 13:13+0200\n"
+"POT-Creation-Date: 2016-12-08 15:10+0200\n"
+"PO-Revision-Date: 2016-12-08 15:14+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -18,8 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: core/billboards.py:10 core/templates/core/date_filter.html:117
-#: core/templates/core/searchgui.html:120
+#: core/billboards.py:10 core/templates/core/date_filter.html:118
 msgid "Last Two Weeks"
 msgstr "בשבועיים האחרונים"
 
@@ -51,7 +50,7 @@ msgstr "כמות חציונית של #like לסטאטוס"
 msgid "Top Statuses by Number of  #like "
 msgstr "הסטאטוס עם כמות ה-#like הגבוהה ביותר"
 
-#: core/billboards.py:88 core/templates/core/date_filter.html:112
+#: core/billboards.py:88 core/templates/core/date_filter.html:113
 #: core/templates/core/party.html:19
 msgid "Last Week"
 msgstr "בשבוע האחרון"
@@ -181,8 +180,8 @@ msgid "Number of Facebook Pages for Party"
 msgstr "מס' עמודי פייסבוק פעילים למפלגה"
 
 #: core/templates/core/all_members.html:25
-#: core/templates/core/date_filter.html:122 core/templates/core/member.html:40
-#: core/templates/core/party.html:16 core/templates/core/searchgui.html:122
+#: core/templates/core/date_filter.html:123 core/templates/core/member.html:40
+#: core/templates/core/party.html:16
 msgid "Last Month"
 msgstr "בחודש האחרון"
 
@@ -279,44 +278,42 @@ msgstr "סינון לפי תאריך:"
 msgid "Add date(s), Click"
 msgstr "בחר(י) טווח, לחצ(י)"
 
-#: core/templates/core/date_filter.html:82
+#: core/templates/core/date_filter.html:83
+#: core/templates/core/searchgui.html:154
 msgid "to"
 msgstr "עד"
 
-#: core/templates/core/date_filter.html:85
+#: core/templates/core/date_filter.html:86
+#: core/templates/core/searchgui.html:159
 msgid "Empty clears filter"
 msgstr "ריק=בלי פילטר"
 
-#: core/templates/core/date_filter.html:95
+#: core/templates/core/date_filter.html:96
 msgid "Default Filter"
 msgstr "סינון ברירת מחדל"
 
-#: core/templates/core/date_filter.html:97
+#: core/templates/core/date_filter.html:98
 msgid "No Filter"
 msgstr "ללא סינון"
 
-#: core/templates/core/date_filter.html:103
+#: core/templates/core/date_filter.html:104
 msgid "During"
 msgstr "במהלך"
 
-#: core/templates/core/date_filter.html:105
-#: core/templates/core/searchgui.html:114
+#: core/templates/core/date_filter.html:106
 msgid "Of"
 msgstr "ל"
 
-#: core/templates/core/date_filter.html:107
-#: core/templates/core/searchgui.html:116
+#: core/templates/core/date_filter.html:108
 msgid "(Starting midnight)"
 msgstr "(החל מחצות)"
 
-#: core/templates/core/date_filter.html:127
-#: core/templates/core/date_filter.html:132
-#: core/templates/core/searchgui.html:124
-#: core/templates/core/searchgui.html:127
+#: core/templates/core/date_filter.html:128
+#: core/templates/core/date_filter.html:133
 msgid "During "
 msgstr "במהלך"
 
-#: core/templates/core/date_filter.html:138
+#: core/templates/core/date_filter.html:139
 msgid ""
 "During 20th Knesset Election\n"
 "                    Campaign"
@@ -355,7 +352,7 @@ msgid "shares"
 msgstr "שיתפו"
 
 #: core/templates/core/facebook_status.html:149
-#: core/templates/core/search.html:14 core/templates/core/searchgui.html:180
+#: core/templates/core/search.html:15 core/templates/core/searchgui.html:213
 #: kikartags/models.py:32
 msgid "Tags"
 msgstr "תגיות"
@@ -454,7 +451,7 @@ msgid "has a Facebook Page"
 msgstr "דף פייסבוק"
 
 #: core/templates/core/order_by_options.html:4
-#: core/templates/core/searchgui.html:80
+#: core/templates/core/searchgui.html:111
 msgid "By Date"
 msgstr "לפי תאריך"
 
@@ -490,7 +487,7 @@ msgstr "קישור"
 
 #: core/templates/core/save_query_modal.html:9
 #: core/templates/core/save_query_modal.html:40
-#: core/templates/core/searchgui.html:66
+#: core/templates/core/searchgui.html:93
 msgid "Save Query"
 msgstr "שמירת שליפה"
 
@@ -525,118 +522,88 @@ msgid "Cancel"
 msgstr "ביטול"
 
 #: core/templates/core/search.html:3
-msgid "Search Results"
-msgstr "תוצאות חיפוש"
+msgid "Search Results\n"
+msgstr "תוצאות חיפוש\n"
 
-#: core/templates/core/search.html:8 core/templates/core/searchgui.html:164
+#: core/templates/core/search.html:9 core/templates/core/searchgui.html:197
 msgid "MKs"
 msgstr "חברי כנסת"
 
-#: core/templates/core/search.html:11 core/templates/core/searchgui.html:172
+#: core/templates/core/search.html:12 core/templates/core/searchgui.html:205
 #: mks/models.py:88
 msgid "Parties"
 msgstr "מפלגות"
 
-#: core/templates/core/search.html:17
+#: core/templates/core/search.html:18
 msgid "Search Terms"
 msgstr "מילות חיפוש"
 
-#: core/templates/core/search.html:28
+#: core/templates/core/search.html:29
 msgid "Number of Results"
 msgstr "מספר תוצאות"
 
-#: core/templates/core/search.html:32 core/templates/core/searchgui.html:188
-msgid "Excluded Statuses"
-msgstr "סטאטוסים שסוננו"
+#: core/templates/core/search.html:32
+msgid "Search didn't come out as precise as you wished? Try our Beta&nbsp;"
+msgstr "החיפוש לא יצא מדויק כפי שקיווית? יש לנו גרסת בטא ל"
 
-#: core/templates/core/searchgui.html:11
+#: core/templates/core/search.html:33
 msgid "Advanced Search"
 msgstr "חיפוש מתקדם"
 
-#: core/templates/core/searchgui.html:51
+#: core/templates/core/search.html:37 core/templates/core/searchgui.html:221
+msgid "Excluded Statuses"
+msgstr "סטאטוסים שסוננו"
+
+#: core/templates/core/searchgui.html:22
+msgid "Advanced Search\n"
+msgstr "חיפוש מתקדם\n"
+
+#: core/templates/core/searchgui.html:69
 #: templates/layouts/generic-template.html:194
 msgid "Knesset Member, Party, a Subject discussed, or any keyword..."
 msgstr "חבר/ת כנסת, מפלגה, נושא, או מילות מפתח"
 
-#: core/templates/core/searchgui.html:54
+#: core/templates/core/searchgui.html:73
 msgid "Add Word"
 msgstr "הוספת מילה"
 
-#: core/templates/core/searchgui.html:60
+#: core/templates/core/searchgui.html:82
 msgid "Preview"
 msgstr "תצוגה מקדימה"
 
-#: core/templates/core/searchgui.html:75
+#: core/templates/core/searchgui.html:104
 msgid "Order"
 msgstr "סידור"
 
-#: core/templates/core/searchgui.html:83
+#: core/templates/core/searchgui.html:115
 msgid "By Like Count"
 msgstr "לפי מספר לייקים"
 
-#: core/templates/core/searchgui.html:86
+#: core/templates/core/searchgui.html:119
 msgid "By Comment Count"
 msgstr "לפי מספר תגובות"
 
-#: core/templates/core/searchgui.html:91
+#: core/templates/core/searchgui.html:127
 msgid "descending"
 msgstr "יורד"
 
-#: core/templates/core/searchgui.html:93
+#: core/templates/core/searchgui.html:131
 msgid "ascending"
 msgstr "עולה"
 
-#: core/templates/core/searchgui.html:102
+#: core/templates/core/searchgui.html:141
 msgid "Date"
 msgstr "תאריך"
 
-#: core/templates/core/searchgui.html:107
-msgid ""
-"No\n"
-"                                                Filter"
-msgstr "ללא פילטר"
-
-#: core/templates/core/searchgui.html:109
-msgid ""
-"Last 24\n"
-"                                                Hours"
-msgstr "יממה אחרונה"
-
-#: core/templates/core/searchgui.html:111
-msgid ""
-"\n"
-"                                                During"
-msgstr ""
-"\n"
-"במהלך"
-
-#: core/templates/core/searchgui.html:117
-msgid ""
-"Last\n"
-"                                                Week"
-msgstr "השבוע האחרון"
-
-#: core/templates/core/searchgui.html:130
-msgid ""
-"During 20th Knesset\n"
-"                                                Election Campaign"
-msgstr "במהלך הבחירות לכנסת ה-20"
-
-#: core/templates/core/searchgui.html:133
-msgid ""
-"During\n"
-"                                                \"Protective Edge\""
-msgstr "במהלך צוק איתן"
-
-#: core/templates/core/searchgui.html:145
+#: core/templates/core/searchgui.html:175
 msgid "Or"
 msgstr "או"
 
-#: core/templates/core/searchgui.html:147
+#: core/templates/core/searchgui.html:179
 msgid "And"
 msgstr "וגם"
 
-#: core/templates/core/searchgui.html:149
+#: core/templates/core/searchgui.html:182
 msgid "(Free text And/Or Tags must appear)"
 msgstr "(מילים וגם/או תגיות חייבות להופיע)"
 
@@ -995,6 +962,38 @@ msgstr "RSS Feed of trackbacks on"
 #: templates/zinnia/entry_detail_base.html:47
 msgid "Edit the entry"
 msgstr "ערוך/ערכי רשומה"
+
+#~ msgid ""
+#~ "No\n"
+#~ "                                                Filter"
+#~ msgstr "ללא פילטר"
+
+#~ msgid ""
+#~ "Last 24\n"
+#~ "                                                Hours"
+#~ msgstr "יממה אחרונה"
+
+#~ msgid ""
+#~ "\n"
+#~ "                                                During"
+#~ msgstr ""
+#~ "\n"
+#~ "במהלך"
+
+#~ msgid ""
+#~ "Last\n"
+#~ "                                                Week"
+#~ msgstr "השבוע האחרון"
+
+#~ msgid ""
+#~ "During 20th Knesset\n"
+#~ "                                                Election Campaign"
+#~ msgstr "במהלך הבחירות לכנסת ה-20"
+
+#~ msgid ""
+#~ "During\n"
+#~ "                                                \"Protective Edge\""
+#~ msgstr "במהלך צוק איתן"
 
 #~ msgid "At least one input"
 #~ msgstr "לפחות תאריך אחד"
