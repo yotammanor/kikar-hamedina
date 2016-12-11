@@ -31,7 +31,6 @@ kikar_hamedina/kikar_hamedina/local_settings.py
 kikar_hamedina/node_modules
 
 ### Jekyll
-_site
 .sass-cache
 .jekyll-metadata
 
@@ -88,3 +87,4 @@ build-iPhoneSimulator/
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc
 /common.cab
+!/docs/
