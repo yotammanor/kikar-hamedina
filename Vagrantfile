@@ -75,7 +75,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       cat <<EOT >> /etc/init/jekyll.conf
       script
         cd /vagrant/blog
-        bundle exec jekyll serve -s /vagrant/blog/ -H 0.0.0.0 -P 4000
+        bundle exec jekyll serve -s /vagrant/docs/ -H 0.0.0.0 -P 4000
         end script
       EOT
       STATUS="$(sudo status jekyll)"
