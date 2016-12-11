@@ -170,14 +170,16 @@ def parse_search_phrases(get_params):
         phrases_raw = [phrase for phrase
                        in get_params['search_str'].split(',')]
         for phrase in phrases_raw:
+            phrase = phrase.strip()
             phrase = remove_optional_quotes_from_phrase(phrase)
+            phrase = phrase.strip()
             phrases.append(phrase)
     return phrases
 
 
 def remove_optional_quotes_from_phrase(phrase, quote_symbol='"'):
     if phrase.startswith(quote_symbol) and phrase.endswith(quote_symbol):
-        phrase = phrase[1:-1]
+        phrase = phrase.strip(quote_symbol)
     return phrase
 
 

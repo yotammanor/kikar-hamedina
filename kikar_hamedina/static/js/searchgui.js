@@ -165,9 +165,8 @@ function buildURL(baseURL) {
         searchTerms['search_str'].push(inputValue)
     }
 
-    var search_str_ids = '"' + searchTerms['search_str'].join('","') + '"';
-    if (search_str_ids.length > 2) {
-        // length > 2 - is set because an empty string will be "" //
+    var search_str_ids =  searchTerms['search_str'].join(',');
+    if (search_str_ids.length > 0) {
         url += "search_str=" + search_str_ids + "&"
     }
     var excluded_ids = searchTerms['excluded'].join(',');
