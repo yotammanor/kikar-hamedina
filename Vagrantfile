@@ -14,6 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "https://s3-eu-west-1.amazonaws.com/kikar-dev/kikar_base.box"
   config.vm.network "private_network", ip: "192.168.100.100"
   config.vm.network :forwarded_port, guest: $port, host: $port, auto_correct: true
+  config.vm.network :forwarded_port, guest: 4000, host: 4000, auto_correct: true
 
   config.vm.define :kikar do |t|
   end
@@ -54,8 +55,41 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # python manage.py classify_and_test_autotag 1
     EOS
   end
+ # Blog setup
+  config.vm.provision :shell do |shell|
+    shell.inline = <<-EOS
+      set -e
+      apt-add-repository ppa:brightbox/ruby-ng
+      apt-get update
+      apt-get install ruby2.3 ruby2.3-dev
+      gem install bundler
+      cd /vagrant/
+      bundle install
 
-  # Start server process
+    EOS
+  end
+  # Start blog server process
+  config.vm.provision :shell do |shell|
+    shell.inline = <<-EOS
+      set -e
+      cat <<EOT >> /etc/init/jekyll.conf
+      script
+        cd /vagrant/blog
+        bundle exec jekyll serve -s /vagrant/blog/ -H 0.0.0.0 -P 4000
+        end script
+      EOT
+      STATUS="$(sudo status jekyll)"
+      if [[ $STATUS == *"start"* ]];
+      then
+        restart jekyll
+      else
+        start jekyll
+      fi
+
+    EOS
+  end
+
+  # Start kikar server process
   config.vm.provision :shell do |shell|
 	shell.args = $port
     shell.inline = <<-EOS
