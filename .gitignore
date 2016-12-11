@@ -31,7 +31,6 @@ kikar_hamedina/kikar_hamedina/local_settings.py
 kikar_hamedina/node_modules
 
 ### Jekyll
-_site
 .sass-cache
 .jekyll-metadata
 
