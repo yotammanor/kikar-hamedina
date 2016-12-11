@@ -174,15 +174,12 @@ class SearchView(StatusListView):
     def get_queryset(self):
         params_dict = get_parsed_request(get_params=self.request.GET)
         query_Q = parse_to_q_object(self.request.GET, params_dict)
-        # print 'get_queryset_executed:', query_Q
-
         return apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
 
         params_dict = get_parsed_request(get_params=self.request.GET)
-        print params_dict
         query_Q = parse_to_q_object(self.request.GET, params_dict)
         context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
 
