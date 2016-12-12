@@ -3,13 +3,15 @@
  * and allows for free search.
  * */
 
-function buildURIWithQuotes(SearchURI) {
+function buildURI(SearchURI) {
 //  This function receives target-uri for search,
-//  extracts input text from search box, add quotes to search string,
-//  and returns a ready-to-execute uri path with searc_str parameters.
+//  extracts input text from search box, and returns a ready-to-execute uri
+// path with search_str parameters.
 
     var inputText = $("#navbar-search-box").val();
-    return SearchURI + '?search_str="' + inputText + '"';
+    var value =  SearchURI + '?search_str=' + inputText.replace(/,(\s)+/gi,",");
+    console.log(value);
+    return value
 }
 
 function addDefaultBookMarks(count) {
@@ -100,7 +102,7 @@ $(document).ready(function () {
                         full_url = $('.active-result').attr('href');
                     }
                     else {
-                        uri = buildURIWithQuotes($("#search-bar-submit").data('target'));
+                        uri = buildURI($("#search-bar-submit").data('target'));
                         full_url = window.location.origin + encodeURI(uri);
                     }
                     window.location.assign(full_url);
@@ -121,7 +123,7 @@ $(document).ready(function () {
 
     // event: Click on submit search button
     $("#search-bar-submit").click(function () {
-        var uri = buildURIWithQuotes($("#search-bar-submit").data('target'));
+        var uri = buildURI($("#search-bar-submit").data('target'));
         window.location.assign(window.location.origin + encodeURI(uri))
     });
 

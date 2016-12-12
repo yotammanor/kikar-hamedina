@@ -122,7 +122,7 @@ function deconstuctURL(fullPath) {
     var toDate = getParameterByName('to_date');
     toDate.length > 0 && $('#input-to-date').val(toDate);
 
-    var operator = getParameterByName('tags_and_search_str_operator');
+    var operator = getParameterByName('operator');
     operator.length > 0 && $('#searchgui-selected-operator-' + operator.split('_operator')[0]).attr('checked', 'checked');
 
     return searchTerms;
@@ -165,9 +165,8 @@ function buildURL(baseURL) {
         searchTerms['search_str'].push(inputValue)
     }
 
-    var search_str_ids = '"' + searchTerms['search_str'].join('","') + '"';
-    if (search_str_ids.length > 2) {
-        // length > 2 - is set because an empty string will be "" //
+    var search_str_ids =  searchTerms['search_str'].join(',');
+    if (search_str_ids.length > 0) {
         url += "search_str=" + search_str_ids + "&"
     }
     var excluded_ids = searchTerms['excluded'].join(',');
@@ -182,7 +181,7 @@ function buildURL(baseURL) {
     }
     var fromDate = $('#input-from-date').val();
     var toDate = $('#input-to-date').val();
-    url += "tags_and_search_str_operator=" + operator + "&order_by=" + orderBy;
+    url += "operator=" + operator + "&order_by=" + orderBy;
     if(fromDate != "") {
         url += "&from_date=" + fromDate
     }
@@ -293,7 +292,7 @@ function updateSearchGUIObjectsVisibility() {
     for (var i = 0; i < results_to_delete.length; i++) {
         results_to_delete[i].remove()
     }
-    if (searchTerms['tag'].length > 0 && searchTerms['search_str'].length > 0) {
+    if (searchTerms['search_str'].length > 1) {
         $('#searchgui-operator-input').show()
     } else {
         $('#searchgui-operator-input').hide()

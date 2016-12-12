@@ -29,8 +29,13 @@
             {% blocktrans %}Number of Results{% endblocktrans %}
             : {{ number_of_results }}
         </div>
-        <div><br>{% blocktrans %}Search didn't come out as precise as you wished? Try our Beta&nbsp;{% endblocktrans %}<a
+        <div><br>
+        {% if 'operator' in request.GET %}
+            {% trans 'Need another try? Go back to ' %}<a href="{% url 'search-gui' %}?{{ request_arguments }}">{% trans 'Advanced Search' %}</a>
+        {% else %}
+            {% blocktrans %}Search didn't come out as precise as you wished? Try our Beta&nbsp;{% endblocktrans %}<a
                 href="{% url 'search-gui' %}">{% trans 'Advanced Search' %}</a>!
+        {% endif %}
         </div>
         <h4>
             {% if excluded %}<p>
