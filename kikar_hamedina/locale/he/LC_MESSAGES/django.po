@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-08 15:10+0200\n"
-"PO-Revision-Date: 2016-12-08 15:14+0200\n"
+"POT-Creation-Date: 2016-12-12 10:51+0200\n"
+"PO-Revision-Date: 2016-12-12 10:52+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -352,7 +352,7 @@ msgid "shares"
 msgstr "שיתפו"
 
 #: core/templates/core/facebook_status.html:149
-#: core/templates/core/search.html:15 core/templates/core/searchgui.html:213
+#: core/templates/core/search.html:15 core/templates/core/searchgui.html:211
 #: kikartags/models.py:32
 msgid "Tags"
 msgstr "תגיות"
@@ -525,11 +525,11 @@ msgstr "ביטול"
 msgid "Search Results\n"
 msgstr "תוצאות חיפוש\n"
 
-#: core/templates/core/search.html:9 core/templates/core/searchgui.html:197
+#: core/templates/core/search.html:9 core/templates/core/searchgui.html:195
 msgid "MKs"
 msgstr "חברי כנסת"
 
-#: core/templates/core/search.html:12 core/templates/core/searchgui.html:205
+#: core/templates/core/search.html:12 core/templates/core/searchgui.html:203
 #: mks/models.py:88
 msgid "Parties"
 msgstr "מפלגות"
@@ -542,15 +542,19 @@ msgstr "מילות חיפוש"
 msgid "Number of Results"
 msgstr "מספר תוצאות"
 
-#: core/templates/core/search.html:32
-msgid "Search didn't come out as precise as you wished? Try our Beta&nbsp;"
-msgstr "החיפוש לא יצא מדויק כפי שקיווית? יש לנו גרסת בטא ל"
+#: core/templates/core/search.html:34
+msgid "Need another try? Go back to "
+msgstr "עדיין לא מספיק? אפשר לחזור ל"
 
-#: core/templates/core/search.html:33
+#: core/templates/core/search.html:34 core/templates/core/search.html.py:37
 msgid "Advanced Search"
 msgstr "חיפוש מתקדם"
 
-#: core/templates/core/search.html:37 core/templates/core/searchgui.html:221
+#: core/templates/core/search.html:36
+msgid "Search didn't come out as precise as you wished? Try our Beta&nbsp;"
+msgstr "החיפוש לא יצא מדויק כפי שקיווית? יש לנו גרסת בטא ל"
+
+#: core/templates/core/search.html:42 core/templates/core/searchgui.html:219
 msgid "Excluded Statuses"
 msgstr "סטאטוסים שסוננו"
 
@@ -603,9 +607,9 @@ msgstr "או"
 msgid "And"
 msgstr "וגם"
 
-#: core/templates/core/searchgui.html:182
-msgid "(Free text And/Or Tags must appear)"
-msgstr "(מילים וגם/או תגיות חייבות להופיע)"
+#: core/templates/core/searchgui.html:181
+msgid "(Among search Terms and tags)"
+msgstr "(ביחס למילות החיפוש)"
 
 #: core/templates/core/tag.html:4 core/templates/core/tag.html.py:7
 #: kikartags/models.py:31
@@ -962,6 +966,9 @@ msgstr "RSS Feed of trackbacks on"
 #: templates/zinnia/entry_detail_base.html:47
 msgid "Edit the entry"
 msgstr "ערוך/ערכי רשומה"
+
+#~ msgid "(Free text And/Or Tags must appear)"
+#~ msgstr "(מילים וגם/או תגיות חייבות להופיע)"
 
 #~ msgid ""
 #~ "No\n"

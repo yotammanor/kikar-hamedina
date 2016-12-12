@@ -9,8 +9,10 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils import timezone
-from django.shortcuts import render, render_to_response, get_object_or_404, redirect, resolve_url
-from django.http import HttpResponseRedirect, HttpResponse, HttpRequest, QueryDict
+from django.shortcuts import render, render_to_response, get_object_or_404, \
+    redirect, resolve_url
+from django.http import HttpResponseRedirect, HttpResponse, HttpRequest, \
+    QueryDict
 from django.core.urlresolvers import resolve
 from django.views.generic import TemplateView, DetailView, ListView
 from django.views.decorators.csrf import csrf_protect
@@ -25,13 +27,15 @@ from endless_pagination.views import AjaxListView
 import waffle
 
 from facebook_feeds.management.commands import updatestatus
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, Feed_Popularity, TAG_NAME_REGEX
+from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, \
+    Feed_Popularity, TAG_NAME_REGEX
 from facebook_feeds.models import Tag as OldTag
 from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from core.insights import StatsEngine
 from core.billboards import Billboards
 from core.models import MEMBER_MODEL, PARTY_MODEL, UserSearch
-from core.query_utils import join_queries, get_parsed_request, parse_to_q_object, apply_request_params, get_order_by, \
+from core.query_utils import join_queries_discard_empty, get_parsed_request, \
+    parse_to_q_object, apply_request_params, get_order_by, \
     filter_by_date
 from core.params import *  # look at params.py for all constants used in Views.
 from core.qserializer import QSerializer
@@ -52,21 +56,28 @@ class AboutUsView(ListView):
         context['IS_ELECTION_MODE'] = IS_ELECTIONS_MODE
         context['statuses_last_day'] = new_statuses_last_day
         members = MEMBER_MODEL.objects.all()
-        members_with_persona = [member for member in members if member.facebook_persona and member.is_current]
+        members_with_persona = [member for member in members if
+                                member.facebook_persona and member.is_current]
         members_with_feed = [member for member in members_with_persona if
-                             member.facebook_persona.feeds.filter(feed_type='PP')]
+                             member.facebook_persona.feeds.filter(
+                                 feed_type='PP')]
         context['number_of_mks'] = len(members_with_feed)
 
-        party_ids = [x['id'] for x in PARTY_MODEL.current_knesset.all().values('id')]
+        party_ids = [x['id'] for x in
+                     PARTY_MODEL.current_knesset.all().values('id')]
 
         featured_party_id = choice(party_ids)
-        context['featured_party'] = PARTY_MODEL.objects.get(id=featured_party_id)
-        context['featured_search'] = {'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
-                                      'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
-        max_change = Facebook_Feed.current_feeds.get_largest_fan_count_difference(POPULARITY_DIF_DAYS_BACK,
-                                                                                  DEFAULT_POPULARITY_DIF_COMPARISON_TYPE,
-                                                                                  MIN_FAN_COUNT_FOR_REL_COMPARISON)
-        max_change['member'] = MEMBER_MODEL.objects.get(persona=max_change['feed'].persona)
+        context['featured_party'] = PARTY_MODEL.objects.get(
+            id=featured_party_id)
+        context['featured_search'] = {
+            'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
+            'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
+        max_change = Facebook_Feed.current_feeds.get_largest_fan_count_difference(
+            POPULARITY_DIF_DAYS_BACK,
+            DEFAULT_POPULARITY_DIF_COMPARISON_TYPE,
+            MIN_FAN_COUNT_FOR_REL_COMPARISON)
+        max_change['member'] = MEMBER_MODEL.objects.get(
+            persona=max_change['feed'].persona)
         context['top_growth'] = max_change
         return context
 
@@ -78,10 +89,12 @@ class HotTopicsView(ListView):
     def get_queryset(self):
 
         relevant_statuses = Facebook_Status.objects.filter(published__gte=(
-            datetime.date.today() - datetime.timedelta(days=NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS)))
+            datetime.date.today() - datetime.timedelta(
+                days=NUMBER_OF_LAST_DAYS_FOR_HOT_TAGS)))
         queryset = Tag.objects.filter(is_for_main_display=True,
-                                      kikartags_taggeditem_items__object_id__in=[status.id for status in
-                                                                                 relevant_statuses]).annotate(
+                                      kikartags_taggeditem_items__object_id__in=[
+                                          status.id for status in
+                                          relevant_statuses]).annotate(
             number_of_posts=Count('kikartags_taggeditem_items')).order_by(
             '-number_of_posts')[:NUMBER_OF_TAGS_TO_PRESENT]
         return queryset
@@ -90,15 +103,18 @@ class HotTopicsView(ListView):
         context = super(HotTopicsView, self).get_context_data(**kwargs)
         wrote_about_tag = dict()
         for tag in context['object_list']:
-            list_of_writers = Facebook_Feed.objects.filter(facebook_status__tags__id=tag.id).distinct()
+            list_of_writers = Facebook_Feed.objects.filter(
+                facebook_status__tags__id=tag.id).distinct()
             list_of_writers_with_latest_fan_count = list()
             for feed in list_of_writers:
                 list_of_writers_with_latest_fan_count.append({'feed': feed,
                                                               'fan_count': feed.current_fan_count})
-            sorted_list_of_writers = sorted(list_of_writers_with_latest_fan_count,
-                                            key=lambda x: x['fan_count'],
-                                            reverse=True)
-            wrote_about_tag[tag] = [feed['feed'] for feed in sorted_list_of_writers][
+            sorted_list_of_writers = sorted(
+                list_of_writers_with_latest_fan_count,
+                key=lambda x: x['fan_count'],
+                reverse=True)
+            wrote_about_tag[tag] = [feed['feed'] for feed in
+                                    sorted_list_of_writers][
                                    :NUMBER_OF_WROTE_ON_TOPIC_TO_DISPLAY]
         context['wrote_about_tag'] = wrote_about_tag
         return context
@@ -119,14 +135,19 @@ class BillboardsView(ListView):
         billboards = Billboards()
 
         context['list_of_billboards'] = []
-        context['list_of_billboards'].append(billboards.number_of_followers_board)
+        context['list_of_billboards'].append(
+            billboards.number_of_followers_board)
         # context['list_of_billboards'].append(billboards.popularity_relative_growth_board)
-        context['list_of_billboards'].append(billboards.popularity_growth_board)
+        context['list_of_billboards'].append(
+            billboards.popularity_growth_board)
         context['list_of_billboards'].append(billboards.number_of_status_board)
-        context['list_of_billboards'].append(billboards.median_status_likes_board)
+        context['list_of_billboards'].append(
+            billboards.median_status_likes_board)
         context['list_of_billboards'].append(billboards.top_likes_board)
 
-        context['list_of_billboards'] = sorted(context['list_of_billboards'], key=lambda x: x['order_of_board'])
+        context['list_of_billboards'] = sorted(context['list_of_billboards'],
+                                               key=lambda x: x[
+                                                   'order_of_board'])
 
         return context
 
@@ -136,7 +157,9 @@ class OnlyCommentsView(StatusListView):
     template_name = 'core/homepage_all_statuses.html'
 
     def get_queryset(self):
-        return apply_request_params(Facebook_Status.objects_no_filters.filter(is_comment=True), self.request)
+        return apply_request_params(
+            Facebook_Status.objects_no_filters.filter(is_comment=True),
+            self.request)
 
 
 class AllStatusesView(StatusListView):
@@ -146,7 +169,8 @@ class AllStatusesView(StatusListView):
     # paginate_by = 100
 
     def get_queryset(self):
-        retset = apply_request_params(super(AllStatusesView, self).get_queryset(), self.request)
+        retset = apply_request_params(
+            super(AllStatusesView, self).get_queryset(), self.request)
         # untagged url is known to be super heavy on the DB.
         # That is why it is hard coded limited to MAX_UNTAGGED matches.
         # Agam Rafaeli - 2/1/2015
@@ -158,9 +182,11 @@ class AllStatusesView(StatusListView):
         context = super(AllStatusesView, self).get_context_data(**kwargs)
         feeds = Facebook_Feed.objects.filter(
             facebook_status__published__gte=(
-                datetime.date.today() - datetime.timedelta(hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
+                datetime.date.today() - datetime.timedelta(
+                    hours=HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR))).distinct()
         context['side_bar_list'] = MEMBER_MODEL.objects.filter(
-            id__in=[feed.persona.owner_id for feed in feeds]).distinct().order_by('name')
+            id__in=[feed.persona.owner_id for feed in
+                    feeds]).distinct().order_by('name')
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
         return context
 
@@ -172,29 +198,38 @@ class SearchView(StatusListView):
     template_name = "core/search.html"
 
     def get_queryset(self):
+        print(dir(self.request))
         params_dict = get_parsed_request(get_params=self.request.GET)
         query_Q = parse_to_q_object(self.request.GET, params_dict)
-        return apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
+        return apply_request_params(Facebook_Status.objects.filter(query_Q),
+                                    self.request)
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
-
         params_dict = get_parsed_request(get_params=self.request.GET)
         query_Q = parse_to_q_object(self.request.GET, params_dict)
-        context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
+        context['members'] = MEMBER_MODEL.objects.filter(
+            id__in=params_dict['members_ids'])
 
-        context['parties'] = PARTY_MODEL.objects.filter(id__in=params_dict['parties_ids'])
+        context['parties'] = PARTY_MODEL.objects.filter(
+            id__in=params_dict['parties_ids'])
 
         context['tags'] = Tag.objects.filter(id__in=params_dict['tags_ids'])
 
         context['search_str'] = params_dict['phrases']
 
-        context['excluded'] = Facebook_Status.objects.filter(status_id__in=params_dict['excluded'])
+        context['excluded'] = Facebook_Status.objects.filter(
+            status_id__in=params_dict['excluded'])
 
-        context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
+        context['search_title'] = ", ".join(
+            [x for x in params_dict['phrases']]) or ", ".join(
             x.name for x in context['tags'])
 
-        return_queryset = apply_request_params(Facebook_Status.objects.filter(query_Q), self.request)
+        context['request_arguments'] = self.request. \
+            get_full_path().split('?')[-1]
+
+        return_queryset = apply_request_params(
+            Facebook_Status.objects.filter(query_Q), self.request)
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -232,14 +267,18 @@ class StatusFilterUnifiedView(StatusListView):
         else:
             selected_filter = variable_column
 
-        return apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_string}), self.request)
+        return apply_request_params(
+            Facebook_Status.objects.filter(**{selected_filter: search_string}),
+            self.request)
 
     def get_context_data(self, **kwargs):
-        context = super(StatusFilterUnifiedView, self).get_context_data(**kwargs)
+        context = super(StatusFilterUnifiedView, self).get_context_data(
+            **kwargs)
 
         object_id = self.kwargs['id']
         search_field = self.kwargs.get('search_field', 'id')
-        context['object'] = self.parent_model.objects.get(**{search_field: object_id})
+        context['object'] = self.parent_model.objects.get(
+            **{search_field: object_id})
         return context
 
 
@@ -255,10 +294,12 @@ class MemberView(StatusFilterUnifiedView):
             template, context, context_instance=RequestContext(request))
 
     def get_queryset(self, **kwargs):
-        self.persona = get_object_or_404(MEMBER_MODEL, id=self.kwargs['id']).facebook_persona
+        self.persona = get_object_or_404(MEMBER_MODEL,
+                                         id=self.kwargs['id']).facebook_persona
         if self.persona is None:
             return []
-        return apply_request_params(self.persona.get_main_feed.facebook_status_set, self.request)
+        return apply_request_params(
+            self.persona.get_main_feed.facebook_status_set, self.request)
 
     def get_context_data(self, **kwargs):
         context = super(MemberView, self).get_context_data(**kwargs)
@@ -282,11 +323,16 @@ class PartyView(StatusFilterUnifiedView):
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
-        all_members_for_party = get_object_or_404(PARTY_MODEL, id=search_string).current_members()
-        all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
-                               all_members_for_party if member.facebook_persona]
+        all_members_for_party = get_object_or_404(PARTY_MODEL,
+                                                  id=search_string).current_members()
+        all_feeds_for_party = [member.facebook_persona.get_main_feed for member
+                               in
+                               all_members_for_party if
+                               member.facebook_persona]
         return apply_request_params(
-            Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
+            Facebook_Status.objects.filter(
+                feed__id__in=[feed.id for feed in all_feeds_for_party]),
+            self.request)
 
 
 # TOFIx..
@@ -296,11 +342,16 @@ class PartyMembersView(StatusFilterUnifiedView):
 
     def get_queryset(self, **kwargs):
         search_string = self.kwargs['id']
-        all_members_for_party = get_object_or_404(PARTY_MODEL, id=search_string).current_members()
-        all_feeds_for_party = [member.facebook_persona.get_main_feed for member in
-                               all_members_for_party if member.facebook_persona]
+        all_members_for_party = get_object_or_404(PARTY_MODEL,
+                                                  id=search_string).current_members()
+        all_feeds_for_party = [member.facebook_persona.get_main_feed for member
+                               in
+                               all_members_for_party if
+                               member.facebook_persona]
         return apply_request_params(
-            Facebook_Status.objects.filter(feed__id__in=[feed.id for feed in all_feeds_for_party]), self.request)
+            Facebook_Status.objects.filter(
+                feed__id__in=[feed.id for feed in all_feeds_for_party]),
+            self.request)
 
 
 class TagView(StatusFilterUnifiedView):
@@ -309,7 +360,8 @@ class TagView(StatusFilterUnifiedView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.method.lower() in self.http_method_names:
-            handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
+            handler = getattr(self, request.method.lower(),
+                              self.http_method_not_allowed)
         else:
             handler = self.http_method_not_allowed
         try:
@@ -333,8 +385,10 @@ class TagView(StatusFilterUnifiedView):
         if selected_tag.synonyms.exists():
             # if has synonyms, add to queryset
             selected_filter = 'tags__in'
-            search_value = [synonym.tag for synonym in selected_tag.synonyms.all()]
-            search_value.append(selected_tag)  # don't forget the to add the original proper tag!
+            search_value = [synonym.tag for synonym in
+                            selected_tag.synonyms.all()]
+            search_value.append(
+                selected_tag)  # don't forget the to add the original proper tag!
 
         if hasattr(selected_tag, 'proper_form_of_tag'):
             # if is a synonym of another tag, redirect
@@ -346,14 +400,18 @@ class TagView(StatusFilterUnifiedView):
             # return HttpResponseRedirect(url)
             raise HasSynonymError('has synonym, redirect', redirect_url=url)
 
-        return apply_request_params(Facebook_Status.objects.filter(**{selected_filter: search_value}), self.request)
+        return apply_request_params(
+            Facebook_Status.objects.filter(**{selected_filter: search_value}),
+            self.request)
 
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
         all_feeds_for_tag = Facebook_Feed.objects.filter(
-            facebook_status__id__in=[status.id for status in context['object_list']]).distinct()
+            facebook_status__id__in=[status.id for status in
+                                     context['object_list']]).distinct()
         context['side_bar_list'] = MEMBER_MODEL.objects.filter(
-            id__in=[feed.persona.owner_id for feed in all_feeds_for_tag]).distinct().order_by('name')
+            id__in=[feed.persona.owner_id for feed in
+                    all_feeds_for_tag]).distinct().order_by('name')
         return context
 
 
@@ -364,15 +422,18 @@ class FacebookStatusDetailView(DetailView):
     slug_field = 'status_id'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Facebook_Status, status_id=self.kwargs['slug'])
+        return get_object_or_404(Facebook_Status,
+                                 status_id=self.kwargs['slug'])
 
     def get_queryset(self, **kwargs):
         return Facebook_Status.objects_no_filters.all()
 
     def get_context_data(self, **kwargs):
-        context = super(FacebookStatusDetailView, self).get_context_data(**kwargs)
+        context = super(FacebookStatusDetailView, self).get_context_data(
+            **kwargs)
         context['now'] = timezone.now()
-        context['member'] = MEMBER_MODEL.objects.get(id=context['object'].feed.persona.owner_id)
+        context['member'] = MEMBER_MODEL.objects.get(
+            id=context['object'].feed.persona.owner_id)
         return context
 
 
@@ -420,8 +481,10 @@ def get_data_from_facebook(request):
     user_access_token = request.POST['access_token']
     graph = facebook.GraphAPI(access_token=user_access_token)
     # Extension into long-term token
-    extended_access_token = graph.extend_access_token(settings.FACEBOOK_APP_ID, settings.FACEBOOK_SECRET_KEY)
-    print 'access token, changed \nfrom: %s \nto: %s ' % (user_access_token, extended_access_token)
+    extended_access_token = graph.extend_access_token(settings.FACEBOOK_APP_ID,
+                                                      settings.FACEBOOK_SECRET_KEY)
+    print 'access token, changed \nfrom: %s \nto: %s ' % (
+        user_access_token, extended_access_token)
     graph.access_token = extended_access_token['access_token']
     # create or update token for user in db
     user = graph.get_object('me')
@@ -431,7 +494,8 @@ def get_data_from_facebook(request):
         token.user_id = user['id']
     token.token = extended_access_token['access_token']
     token.date_of_creation = timezone.now()
-    token.date_of_expiration = timezone.now() + timezone.timedelta(seconds=int(extended_access_token['expires']))
+    token.date_of_expiration = timezone.now() + timezone.timedelta(
+        seconds=int(extended_access_token['expires']))
     token.save()
 
     # add or update relevant feeds for token
@@ -440,7 +504,8 @@ def get_data_from_facebook(request):
     relevant_feeds = []
     print 'checking %d user_profile feeds.' % len(user_profile_feeds)
     for i, feed in enumerate(user_profile_feeds):
-        print 'working on %d of %d, vendor_id: %s.' % (i + 1, len(user_profile_feeds), feed.vendor_id)
+        print 'working on %d of %d, vendor_id: %s.' % (
+            i + 1, len(user_profile_feeds), feed.vendor_id)
         try:
             statuses = graph.get_connections(feed.vendor_id, 'statuses')
             if statuses['data']:
@@ -449,7 +514,8 @@ def get_data_from_facebook(request):
         except GraphAPIError:
             print 'token not working for feed %s' % feed.vendor_id
             continue
-    print 'working on %d of %d user_profile feeds.' % (len(relevant_feeds), len(user_profile_feeds))
+    print 'working on %d of %d user_profile feeds.' % (
+        len(relevant_feeds), len(user_profile_feeds))
     for feed in relevant_feeds:
         token.feeds.add(feed)
     print 'adding %d feeds to token' % len(relevant_feeds)
@@ -467,24 +533,32 @@ def status_update(request, status_id):
     response_data['id'] = status.status_id
 
     try:
-        if status.needs_refresh and waffle.flag_is_active(request, flag_name='status_update_request'):
+        if status.needs_refresh and waffle.flag_is_active(request,
+                                                          flag_name='status_update_request'):
             update_status_command = updatestatus.Command()
             update_status_command.graph.access_token = update_status_command.graph.get_app_access_token(
                 settings.FACEBOOK_APP_ID,
                 settings.FACEBOOK_SECRET_KEY)
-            status_response_dict = update_status_command.fetch_status_object_data(status_id) or {}
+            status_response_dict = update_status_command.fetch_status_object_data(
+                status_id) or {}
 
-            response_data['likes'] = getattr(getattr(getattr(status_response_dict, 'likes', 0), 'summary', 0),
-                                             'total_count', 0)
-            response_data['comments'] = getattr(getattr(getattr(status_response_dict, 'comments', 0), 'summary', 0),
-                                                'total_count', 0)
-            response_data['shares'] = getattr(getattr(status_response_dict, 'shares', 0), 'count', 0)
+            response_data['likes'] = getattr(
+                getattr(getattr(status_response_dict, 'likes', 0), 'summary',
+                        0),
+                'total_count', 0)
+            response_data['comments'] = getattr(
+                getattr(getattr(status_response_dict, 'comments', 0),
+                        'summary', 0),
+                'total_count', 0)
+            response_data['shares'] = getattr(
+                getattr(status_response_dict, 'shares', 0), 'count', 0)
 
             try:
-                update_status_command.update_status_object_in_db(retrieved_status_data=status_response_dict,
-                                                                 status_object=status,
-                                                                 options={'force-update': True,
-                                                                          'force-attachment-update': True})
+                update_status_command.update_status_object_in_db(
+                    retrieved_status_data=status_response_dict,
+                    status_object=status,
+                    options={'force-update': True,
+                             'force-attachment-update': True})
             finally:
                 response.status_code = 200
 
@@ -541,7 +615,8 @@ def add_tag_to_status(request):
             status = Facebook_Status.objects_no_filters.get(id=status_id)
             status.tags.user_aware_add(request.user, taggit_tag)
             status.save()
-            response_data['tag'] = {'id': taggit_tag.id, 'name': taggit_tag.name}
+            response_data['tag'] = {'id': taggit_tag.id,
+                                    'name': taggit_tag.name}
             response_data['success'] = True
 
             # Old Deprecated Tagging
@@ -561,7 +636,8 @@ def add_tag_to_status(request):
         print status_id
 
     finally:
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+        return HttpResponse(json.dumps(response_data),
+                            content_type="application/json")
 
 
 # A handler for the search bar request from the client
@@ -593,7 +669,8 @@ def search_bar(request):
 
             for member in search_bar_members(search_text):
                 response_data['results'].append(
-                    result_factory(member.id, member.name, "member", party=member.current_party.name))
+                    result_factory(member.id, member.name, "member",
+                                   party=member.current_party.name))
 
             for tag in search_bar_tags(search_text):
                 response_data['results'].append(
@@ -603,14 +680,16 @@ def search_bar(request):
             print "search bar exception:", e
             raise
 
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    return HttpResponse(json.dumps(response_data),
+                        content_type="application/json")
 
 
 def search_bar_parties(search_text):
     query_direct_name = Q(name__icontains=search_text)
 
     if IS_ELECTIONS_MODE:
-        query_alternative_names = Q(candidatelistaltname__name__icontains=search_text)
+        query_alternative_names = Q(
+            candidatelistaltname__name__icontains=search_text)
     else:
         query_alternative_names = Q(partyaltname__name__icontains=search_text)
 
@@ -619,7 +698,8 @@ def search_bar_parties(search_text):
     if IS_ELECTIONS_MODE:
         party_query = combined_party_name_query
     else:
-        party_query = combined_party_name_query & Q(knesset__number=CURRENT_KNESSET_NUMBER)
+        party_query = combined_party_name_query & Q(
+            knesset__number=CURRENT_KNESSET_NUMBER)
 
     return PARTY_MODEL.objects.filter(party_query).distinct().order_by(
         'name')[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
@@ -630,8 +710,10 @@ def search_bar_members(search_text):
     query_direct_name = Q(name__icontains=search_text)
 
     if IS_ELECTIONS_MODE:
-        query_alternative_names = Q(person__personaltname__name__icontains=search_text)
-        combined_member_name_query = Q(person__name__icontains=search_text) | query_alternative_names
+        query_alternative_names = Q(
+            person__personaltname__name__icontains=search_text)
+        combined_member_name_query = Q(
+            person__name__icontains=search_text) | query_alternative_names
         member_query = combined_member_name_query
         member_order_by = 'person__name'
     else:
@@ -640,7 +722,8 @@ def search_bar_members(search_text):
         member_query = combined_member_name_query & Q(is_current=True)
         member_order_by = 'name'
 
-    return MEMBER_MODEL.objects.filter(member_query).distinct().select_related('current_party') \
+    return MEMBER_MODEL.objects.filter(member_query).distinct().select_related(
+        'current_party') \
                .order_by(member_order_by)[:NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
 
 
@@ -649,7 +732,8 @@ def search_bar_tags(search_text):
     query_tag_synonyms = Q(synonyms__tag__name=search_text)
     combined_tag_name_query = query_direct_name | query_tag_synonyms
 
-    return Tag.objects.filter_proper(combined_tag_name_query).distinct().order_by('name')[
+    return Tag.objects.filter_proper(
+        combined_tag_name_query).distinct().order_by('name')[
            :NUMBER_OF_SUGGESTIONS_IN_SEARCH_BAR]
 
 
@@ -659,7 +743,8 @@ def return_suggested_tags(request, status_id):
         'results': []
     }
 
-    def result_factory(object_id, name, object_type, percent, **additional_info):
+    def result_factory(object_id, name, object_type, percent,
+                       **additional_info):
         result = {
             'id': object_id,
             'name': name,
@@ -670,11 +755,13 @@ def return_suggested_tags(request, status_id):
         response_data['number_of_results'] += 1
         return result
 
-    for tag in Facebook_Status.objects.get(status_id=status_id).suggested_tags(n=3):
+    for tag in Facebook_Status.objects.get(status_id=status_id).suggested_tags(
+            n=3):
         response_data['results'].append(
             result_factory(tag.id, tag.name, "tag", tag.percent))
 
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    return HttpResponse(json.dumps(response_data),
+                        content_type="application/json")
 
 
 class WidgetView(DetailView):
@@ -686,7 +773,8 @@ class WidgetView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WidgetView, self).get_context_data(**kwargs)
-        context['object'] = {'title': 'latest', 'path': '/latest/feed/', 'latest': 'true'}
+        context['object'] = {'title': 'latest', 'path': '/latest/feed/',
+                             'latest': 'true'}
         return context
 
 
@@ -702,18 +790,23 @@ class CustomWidgetView(DetailView):
 def title_exists(request):
     if not request.GET.get('title', None):
         res = {'approved': False, 'message': 'No title supplied!'}
-        return HttpResponse(content=json.dumps(res), content_type="application/json")
+        return HttpResponse(content=json.dumps(res),
+                            content_type="application/json")
     title = request.GET.get('title', None)
     try:
         user_search = UserSearch.objects.get(title=title)
     except UserSearch.DoesNotExist:
-        res = {'approved': True, 'message': 'ok, no title saved with this name'}
-        return HttpResponse(content=json.dumps(res), content_type="application/json")
+        res = {'approved': True,
+               'message': 'ok, no title saved with this name'}
+        return HttpResponse(content=json.dumps(res),
+                            content_type="application/json")
     if user_search.user.id == request.user.id:
         res = {'approved': True, 'message': 'ok, title belongs to user'}
     else:
-        res = {'approved': False, 'message': 'This title belongs to another user, please select another one.'}
-    return HttpResponse(content=json.dumps(res), content_type="application/json")
+        res = {'approved': False,
+               'message': 'This title belongs to another user, please select another one.'}
+    return HttpResponse(content=json.dumps(res),
+                        content_type="application/json")
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -725,11 +818,14 @@ def delete_queryset(request):
         us.delete()
         res = {'message': 'custom query deleted successfully'}
     except UserSearch.DoesNotExist:
-        res = {'message': 'custom query deletion failed - no query with supplied title: {}'.format(title)}
+        res = {
+            'message': 'custom query deletion failed - no query with supplied title: {}'.format(
+                title)}
     except:
         res = {'message': 'custom query deletion failed - unknown reason'}
     finally:
-        return HttpResponse(content=json.dumps(res), content_type="application/json")
+        return HttpResponse(content=json.dumps(res),
+                            content_type="application/json")
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -759,7 +855,8 @@ def save_queryset_for_user(request):
 
     us, created = UserSearch.objects.get_or_create(user=user, title=title)
     if not created and us.user != request.user:
-        return HttpResponse(content=json.dumps({'message': 'failure'}), content_type="application/json")
+        return HttpResponse(content=json.dumps({'message': 'failure'}),
+                            content_type="application/json")
         raise Exception('User is not allowed to edit this query!')
     # print us
     us.queryset = dumped_queryset
@@ -771,7 +868,8 @@ def save_queryset_for_user(request):
 
     print us.queryset_dict
 
-    return HttpResponse(content=json.dumps({'message': 'success'}), content_type="application/json")
+    return HttpResponse(content=json.dumps({'message': 'success'}),
+                        content_type="application/json")
 
 
 class CustomView(SearchView):
@@ -783,7 +881,8 @@ class CustomView(SearchView):
     def get_queryset(self, **kwargs):
         sv = get_object_or_404(UserSearch, title=self.kwargs['title'])
         query_filter = sv.queryset_q
-        if self.request.GET.get('range', None) or self.request.GET.get('range', None) != 'default':
+        if self.request.GET.get('range', None) or self.request.GET.get('range',
+                                                                       None) != 'default':
             date_range_q = filter_by_date(self.request)
         else:
             date_range_q = sv.date_range_q
@@ -792,7 +891,8 @@ class CustomView(SearchView):
             order_by = get_order_by(self.request)
         else:
             order_by = json.loads(sv.order_by)
-        return Facebook_Status.objects.filter(query_filter).filter(date_range_q).order_by(*order_by)
+        return Facebook_Status.objects.filter(query_filter).filter(
+            date_range_q).order_by(*order_by)
 
     def get_context_data(self, **kwargs):
         context = super(CustomView, self).get_context_data(**kwargs)
@@ -810,7 +910,8 @@ class CustomView(SearchView):
         #     x.name for x in context['tags'])
 
         context['saved_query'] = sv
-        return_queryset = apply_request_params(Facebook_Status.objects.filter(query_filter), self.request)
+        return_queryset = apply_request_params(
+            Facebook_Status.objects.filter(query_filter), self.request)
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -823,7 +924,8 @@ class CustomViewByID(CustomView):
         # sv = UserSearch.objects.get(id=self.kwargs['id'])
         qserialzer = QSerializer()
         query_filter = qserialzer.loads(sv.queryset)
-        return apply_request_params(Facebook_Status.objects.filter(query_filter), self.request)
+        return apply_request_params(
+            Facebook_Status.objects.filter(query_filter), self.request)
 
     def get_context_data(self, **kwargs):
         context = super(CustomView, self).get_context_data(**kwargs)
@@ -841,7 +943,8 @@ class CustomViewByID(CustomView):
         #     x.name for x in context['tags'])
 
         context['saved_query'] = sv
-        return_queryset = apply_request_params(Facebook_Status.objects.filter(query_filter), self.request)
+        return_queryset = apply_request_params(
+            Facebook_Status.objects.filter(query_filter), self.request)
         context['number_of_results'] = return_queryset.count()
         context['side_bar_parameter'] = HOURS_SINCE_PUBLICATION_FOR_SIDE_BAR
 
@@ -862,7 +965,8 @@ class CustomsByUserView(ListView):
             user = User.objects.get(username=self.kwargs['username'])
         except User.DoesNotExist:
             return redirect(reverse('all-customs'))
-        return super(CustomsByUserView, self).dispatch(request, *args, **kwargs)
+        return super(CustomsByUserView, self).dispatch(request, *args,
+                                                       **kwargs)
 
     def get_queryset(self):
         try:
@@ -874,7 +978,8 @@ class CustomsByUserView(ListView):
     def get_context_data(self, **kwargs):
         try:
             context = super(CustomsByUserView, self).get_context_data(**kwargs)
-            context['requested_user'] = User.objects.get(username=self.kwargs['username'])
+            context['requested_user'] = User.objects.get(
+                username=self.kwargs['username'])
             return context
         except User.DoesNotExist:
             raise

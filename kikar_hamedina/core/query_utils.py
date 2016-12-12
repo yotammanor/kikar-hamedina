@@ -83,7 +83,7 @@ def get_date_range_dict():
             'start_date': timezone.datetime(2014, 7, 8, tzinfo=timezone.utc),
             'end_date': timezone.datetime(2014, 8, 26, tzinfo=timezone.utc)
         },
-        }
+    }
     return date_range_dict
 
 
@@ -118,7 +118,7 @@ def filter_by_date(request, datetime_field='published'):
     return Q(**{date_time_field_range: range_value})
 
 
-def join_queries(q1, q2, operator):
+def join_queries_discard_empty(q1, q2, operator):
     """Join two queries with operator (e.g. or_, and_) while handling empty queries"""
     return operator(q1, q2) if (q1 and q2) else (q1 or q2)
 
@@ -199,7 +199,61 @@ def parse_to_q_object(get_params, params_dict):
     if feeds:
         members_OR_parties_Q = Q(feed__id__in=[x.id for x in feeds])
 
-    # tags - search for all tags specified by their id
+    selected_operator = get_phrases_operator(get_params)
+    search_str_with_tags_Q = build_phrases_and_tags_query(params_dict,
+                                                          selected_operator)
+    query_Q = join_queries_discard_empty(members_OR_parties_Q,
+                                         search_str_with_tags_Q, and_)
+
+    if params_dict['excluded']:
+        excluded_query = Q(status_id__in=params_dict['excluded'])
+        excluded_query.negate()
+        query_Q = join_queries_discard_empty(query_Q, excluded_query, and_)
+
+    if settings.DEBUG:
+        from qserializer import QSerializer
+        qser = QSerializer()
+        print('query to be executed:')
+        from pprint import pprint
+        pprint(qser.serialize(query_Q.clone()))
+    return query_Q
+
+
+def build_phrases_and_tags_query(params_dict, selected_operator):
+    tags_Q = build_tags_query(params_dict, selected_operator)
+    search_str_Q = build_phrases_query(params_dict, selected_operator)
+
+    search_str_with_tags_Q = join_queries_discard_empty(tags_Q, search_str_Q,
+                                                        selected_operator)
+    if settings.DEBUG:
+        print ('search_str_with_tags_Q:', search_str_with_tags_Q)
+        print ('\n')
+    return search_str_with_tags_Q
+
+
+def build_phrases_query(params_dict, selected_operator):
+    '''keywords - searched both in content and in tags of posts.'''
+    search_str_Q = Q()
+    # If regexes cause security / performance problem - switch this flag
+    # to False to use a (not as good) text search instead
+    use_regex = True
+    for phrase in params_dict['phrases']:
+        if use_regex:
+            new_phrase_Q = build_query_phrase_as_regex(phrase)
+        else:
+            # Fallback code to use if we want to disable regex-based search
+            new_phrase_Q = Q(content__icontains=phrase)
+            new_phrase_Q = join_queries_discard_empty(
+                Q(tags__name__contains=phrase), new_phrase_Q, or_)
+
+        search_str_Q = join_queries_discard_empty(new_phrase_Q, search_str_Q,
+                                                  selected_operator)
+    return search_str_Q
+
+
+def build_tags_query(params_dict, selected_operator):
+    '''tags - search for all tags specified by their id.
+    '''
     tags_Q = Q()
     if params_dict['tags_ids']:
         # | Q(tags__synonyms__proper_form_of_tag__id=tag_id)
@@ -210,65 +264,37 @@ def parse_to_q_object(get_params, params_dict):
             print('tags_to_queries:', len(tags_to_queries))
         for query_for_single_tag in tags_to_queries:
             # tags_Q is empty for the first iteration
-            tags_Q = join_queries(query_for_single_tag, tags_Q, or_)
-
+            tags_Q = join_queries_discard_empty(query_for_single_tag, tags_Q,
+                                                selected_operator)
     if settings.DEBUG:
-        print 'tags_Q:', tags_Q
+        print('tags_Q:', tags_Q)
 
-    # keywords - searched both in content and in tags of posts.
+    return tags_Q
+
+
+def build_query_phrase_as_regex(phrase):
+    # Split into sub_phrases (remove whitespace, punctuation etc.)
+    sub_phrases = re.split(RE_SPLIT_WORD_UNICODE, phrase)
+    # If there are no sub_phrases - ignore this phrase
     search_str_Q = Q()
-    # If regexes cause security / performance problem - switch this flag
-    # to False to use a (not as good) text search instead
-    use_regex = True
-    for phrase in params_dict['phrases']:
-        if use_regex:
-            # Split into words (remove whitespace, punctuation etc.)
-            words = re.split(RE_SPLIT_WORD_UNICODE, phrase)
-            # If there are no words - ignore this phrase
-            if words:
-                # Build regex - all words we've found separated by 'non-word' characters
-                # and also allow VAV and/or HEI in front of each word.
-                # NOTE: regex syntax is DB dependent - this works on postgres
-                re_words = [u'\u05D5?\u05D4?' + word for word in words]
-                regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(
-                    re_words) + PG_RE_PHRASE_END
-                search_str_Q = join_queries(Q(content__iregex=regex),
-                                            search_str_Q, or_)
-        else:
-            # Fallback code to use if we want to disable regex-based search
-            search_str_Q = join_queries(Q(content__icontains=phrase),
-                                        search_str_Q, or_)
-        search_str_Q = Q(tags__name__contains=phrase) | search_str_Q
+    if sub_phrases:
+        # Build regex - all sub_phrases we've found separated by 'non-word' characters
+        # and also allow VAV and/or HEI in front of each word.
+        # NOTE: regex syntax is DB dependent - this works on postgres
+        re_words = [u'\u05D5?\u05D4?' + word for word in sub_phrases]
+        regex = PG_RE_PHRASE_START + PG_RE_NON_WORD_CHARS.join(
+            re_words) + PG_RE_PHRASE_END
+        search_str_Q = Q(content__iregex=regex)
+    return search_str_Q
 
+
+def get_phrases_operator(get_params):
     # tags query and keyword query concatenated. Logic is set according to request input
-    request_operator = get_params.get('tags_and_search_str_operator',
-                                      DEFAULT_OPERATOR)
-
+    request_operator = get_params.get('operator', DEFAULT_OPERATOR)
     if settings.DEBUG:
-        print 'selected_operator:', request_operator
-    selected_operator = and_ if request_operator == 'and_operator' else or_
-
-    search_str_with_tags_Q = join_queries(tags_Q, search_str_Q,
-                                          selected_operator)
-
-    if settings.DEBUG:
-        print 'search_str_with_tags_Q:', search_str_with_tags_Q
-        print '\n'
-
-    query_Q = join_queries(members_OR_parties_Q, search_str_with_tags_Q, and_)
-
-    if params_dict['excluded']:
-        excluded_query = Q(status_id__in=params_dict['excluded'])
-        excluded_query.negate()
-        query_Q = join_queries(query_Q, excluded_query, and_)
-
-    if settings.DEBUG:
-        from qserializer import QSerializer
-        qser = QSerializer()
-        print 'query to be executed:'
-        from pprint import pprint
-        pprint(qser.serialize(query_Q.clone()))
-    return query_Q
+        print('selected_operator:', request_operator)
+    selected_operator = and_ if request_operator == 'and' else or_
+    return selected_operator
 
 
 def apply_request_params(query, request):
