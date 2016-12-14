@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-12 10:51+0200\n"
-"PO-Revision-Date: 2016-12-12 10:52+0200\n"
+"POT-Creation-Date: 2016-12-14 16:39+0200\n"
+"PO-Revision-Date: 2016-12-14 16:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: core/billboards.py:10 core/templates/core/date_filter.html:118
+#: core/billboards.py:10 core/templates/core/date_filter.html:122
 msgid "Last Two Weeks"
 msgstr "בשבועיים האחרונים"
 
@@ -50,7 +50,7 @@ msgstr "כמות חציונית של #like לסטאטוס"
 msgid "Top Statuses by Number of  #like "
 msgstr "הסטאטוס עם כמות ה-#like הגבוהה ביותר"
 
-#: core/billboards.py:88 core/templates/core/date_filter.html:113
+#: core/billboards.py:88 core/templates/core/date_filter.html:115
 #: core/templates/core/party.html:19
 msgid "Last Week"
 msgstr "בשבוע האחרון"
@@ -180,7 +180,7 @@ msgid "Number of Facebook Pages for Party"
 msgstr "מס' עמודי פייסבוק פעילים למפלגה"
 
 #: core/templates/core/all_members.html:25
-#: core/templates/core/date_filter.html:123 core/templates/core/member.html:40
+#: core/templates/core/date_filter.html:129 core/templates/core/member.html:40
 #: core/templates/core/party.html:16
 msgid "Last Month"
 msgstr "בחודש האחרון"
@@ -270,31 +270,29 @@ msgstr "לייקים, בממוצע"
 msgid "Billboards"
 msgstr "המצעד"
 
-#: core/templates/core/date_filter.html:73
+#: core/templates/core/date_filter.html:75
 msgid "Filter By Date:"
 msgstr "סינון לפי תאריך:"
 
-#: core/templates/core/date_filter.html:74
+#: core/templates/core/date_filter.html:76
 msgid "Add date(s), Click"
 msgstr "בחר(י) טווח, לחצ(י)"
 
-#: core/templates/core/date_filter.html:83
+#: core/templates/core/date_filter.html:85
 #: core/templates/core/searchgui.html:154
 msgid "to"
 msgstr "עד"
 
-#: core/templates/core/date_filter.html:86
+#: core/templates/core/date_filter.html:88
 #: core/templates/core/searchgui.html:159
 msgid "Empty clears filter"
 msgstr "ריק=בלי פילטר"
 
-#: core/templates/core/date_filter.html:96
-msgid "Default Filter"
-msgstr "סינון ברירת מחדל"
-
-#: core/templates/core/date_filter.html:98
-msgid "No Filter"
-msgstr "ללא סינון"
+#: core/templates/core/date_filter.html:97
+msgid ""
+"No\n"
+"                    Filter"
+msgstr "לשמוע על כך!"
 
 #: core/templates/core/date_filter.html:104
 msgid "During"
@@ -308,15 +306,15 @@ msgstr "ל"
 msgid "(Starting midnight)"
 msgstr "(החל מחצות)"
 
-#: core/templates/core/date_filter.html:128
-#: core/templates/core/date_filter.html:133
+#: core/templates/core/date_filter.html:135
+#: core/templates/core/date_filter.html:141
 msgid "During "
 msgstr "במהלך"
 
-#: core/templates/core/date_filter.html:139
+#: core/templates/core/date_filter.html:148
 msgid ""
 "During 20th Knesset Election\n"
-"                    Campaign"
+"                        Campaign"
 msgstr "במהלך הבחירות לכנסת ה-20"
 
 #: core/templates/core/facebook_status.html:48
@@ -967,6 +965,12 @@ msgstr "RSS Feed of trackbacks on"
 msgid "Edit the entry"
 msgstr "ערוך/ערכי רשומה"
 
+#~ msgid "Default Filter"
+#~ msgstr "סינון ברירת מחדל"
+
+#~ msgid "No Filter"
+#~ msgstr "ללא סינון"
+
 #~ msgid "(Free text And/Or Tags must appear)"
 #~ msgstr "(מילים וגם/או תגיות חייבות להופיע)"
 
@@ -1018,11 +1022,6 @@ msgstr "ערוך/ערכי רשומה"
 
 #~ msgid "Last update at"
 #~ msgstr "עדכון אחרון בתאריך"
-
-#~ msgid ""
-#~ "hear about\n"
-#~ "                        it!"
-#~ msgstr "לשמוע על כך!"
 
 #, fuzzy
 #~| msgid "Likes on average"

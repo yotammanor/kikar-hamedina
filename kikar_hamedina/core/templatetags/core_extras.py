@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
+
+from dateutil.relativedelta import relativedelta
+
 from urllib2 import unquote
 from django import template
 from django.utils import timezone
@@ -75,6 +78,20 @@ def naturaltime_ext(value, locale):
 
     return formatted_value
 
+
+@register.simple_tag
+def now_plus_timedelta(requested_format, delta_value=0, delta_by='days'):
+    return format(
+        timezone.now() + relativedelta(**{str(delta_by): delta_value}),
+        requested_format)
+
+
+@register.filter(name='format_date')
+def format_date(value, requested_format):
+    return format(value, requested_format)
+
+
 @register.simple_tag
 def tomorrow(requested_format):
-    return format(timezone.now() + timezone.timedelta(days=1), requested_format)
+    return format(timezone.now() + timezone.timedelta(days=1),
+                  requested_format)

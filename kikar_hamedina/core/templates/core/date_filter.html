@@ -40,7 +40,7 @@
         $('#input-from-date').val(url_args["from_date"]);
         $('#input-to-date').val(url_args["to_date"]);
 
-        $('#filter-by-date-range-options li').on('click', function (event) {
+        $('#filter-by-date-range-options li.preset-date').on('click', function (event) {
             $('#input-from-date').val($(this).data('from-date'));
             $('#input-to-date').val($(this).data('to-date'));
         });
@@ -69,76 +69,85 @@
     })
 </script>
 <div class="row" id="preset-dates">
-    {% with DEFAULT_FORMAT="d-m-Y" %}<ul class="nav nav-pills nav-stacked" id="filter-by-date-range-options">
-        <li class="heading"><b>{% trans 'Filter By Date:' %}</b>
-            <span style="color: darkgrey">&nbsp;{% trans 'Add date(s), Click' %} "<i
-                    class="fa fa-filter"></i>"</span>
-        </li>
-        <li id="datepicker-container">
-            <div class="input-daterange input-group" id="datepicker"
-                 data-datepicker-options-language="{{ LANGUAGE_CODE }}">
-                <input type="text" class="input-sm form-control"
-                       name="from-date" id="input-from-date"
-                       placeholder="dd-mm-yyyy"/>
-                <span class="input-group-addon">{% trans 'to' %}</span>
-                <input type="text" class="input-sm form-control"
-                       name="to-date" id="input-to-date"
-                       placeholder="{% trans 'Empty clears filter' %}"/>
-                <span class="input-group-addon btn btn-primary"
-                      id="custom-date-filter-submit"><i
-                        class="fa fa-filter"></i></span>
-            </div>
-        </li>
-        <li data-range="default" id="default-filter" data-from-date=""
-            data-to-date="">
-            <a class="btn btn-link">
-                {% if '/custom/' in request.path %}
-                    {% blocktrans %}Default Filter{% endblocktrans %}
-                {% else %}
-                    {% blocktrans %}No Filter{% endblocktrans %}
-                {% endif %}
-            </a>
-        </li>
-        <li data-from-date="08-11-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
-            <a class="btn btn-link">
-                {% blocktrans %}During{% endblocktrans %}
-                {% now "j" %}
-                {% trans 'Of' %}
-                {% now "F" %}
-                {% blocktrans %}(Starting midnight){% endblocktrans %}
-            </a>
-        </li>
-        <li data-from-date="01-11-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
-            <a class="btn btn-link">
-                {% blocktrans %}Last Week{% endblocktrans %}
-            </a>
-        </li>
-        <li data-from-date="22-11-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
-            <a class="btn btn-link">
-                {% blocktrans %}Last Two Weeks{% endblocktrans %}
-            </a>
-        </li>
-        <li data-from-date="08-11-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
-            <a class="btn btn-link">
-                {% blocktrans %}Last Month{% endblocktrans %}
-            </a>
-        </li>
-        <li data-from-date="01-12-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
-            <a class="btn btn-link">
-                {% blocktrans %}During {% endblocktrans %}
-                {% now "F" %}</a>
-        </li>
-        <li data-from-date="01-01-2016" data-to-date="{% tomorrow DEFAULT_FORMAT %}">
-            <a class="btn btn-link">
-                {% blocktrans %}During {% endblocktrans %}
-                {% now "Y" %}
-            </a>
-        </li>
-        <li data-from-date="08-12-2014" data-to-date="19-03-2015">
-            <a class="btn btn-link">
-                {% blocktrans %}During 20th Knesset Election
-                    Campaign{% endblocktrans %}
-            </a>
-        </li>
-    </ul>{% endwith %}
+    {% with DEFAULT_FORMAT_BE="d-m-Y" DEFAULT_FORMAT_FE="j-m-Y" %}
+        <ul class="nav nav-pills nav-stacked"
+            id="filter-by-date-range-options">
+            <li class="heading"><b>{% trans 'Filter By Date:' %}</b>
+                <span style="color: darkgrey">&nbsp;{% trans 'Add date(s), Click' %} "<i
+                        class="fa fa-filter"></i>"</span>
+            </li>
+            <li id="datepicker-container">
+                <div class="input-daterange input-group" id="datepicker"
+                     data-datepicker-options-language="{{ LANGUAGE_CODE }}">
+                    <input type="text" class="input-sm form-control"
+                           name="from-date" id="input-from-date"
+                           placeholder="dd-mm-yyyy"/>
+                    <span class="input-group-addon">{% trans 'to' %}</span>
+                    <input type="text" class="input-sm form-control"
+                           name="to-date" id="input-to-date"
+                           placeholder="{% trans 'Empty clears filter' %}"/>
+                    <span class="input-group-addon btn btn-primary"
+                          id="custom-date-filter-submit"><i
+                            class="fa fa-filter"></i></span>
+                </div>
+            </li>
+            <li data-range="default" class="preset-date" id="default-filter"
+                data-from-date=""
+                data-to-date="">
+                <a class="btn btn-link">{% blocktrans %}No
+                    Filter{% endblocktrans %}</a>
+            </li>
+            <li data-from-date="{% now "j-m-Y" %}"
+                class="preset-date"
+                data-to-date="{% tomorrow DEFAULT_FORMAT_BE %}">
+                <a class="btn btn-link">
+                    {% blocktrans %}During{% endblocktrans %}
+                    {% now "j" %}
+                    {% trans 'Of' %}
+                    {% now "F" %}
+                    {% blocktrans %}(Starting midnight){% endblocktrans %}
+                </a>
+            </li>
+            <li data-from-date="{% now_plus_timedelta DEFAULT_FORMAT_BE -7 %}"
+                class="preset-date"
+                data-to-date="{% tomorrow DEFAULT_FORMAT_BE %}">
+                <a class="btn btn-link">
+                    {% blocktrans %}Last Week{% endblocktrans %}
+                </a>
+            </li>
+            <li data-from-date="{% now_plus_timedelta DEFAULT_FORMAT_BE -14 %}"
+                class="preset-date"
+                data-to-date="{% tomorrow DEFAULT_FORMAT_BE %}">
+                <a class="btn btn-link">
+                    {% blocktrans %}Last Two Weeks{% endblocktrans %}
+                </a>
+            </li>
+            <li data-from-date="{% now_plus_timedelta DEFAULT_FORMAT_BE -1 "months" %}"
+                class="preset-date"
+                data-to-date="{% tomorrow DEFAULT_FORMAT_BE %}">
+                <a class="btn btn-link">
+                    {% blocktrans %}Last Month{% endblocktrans %}
+                </a>
+            </li>
+            <li data-from-date="01-{% now "m-Y" %}" class="preset-date"
+                data-to-date="{% tomorrow DEFAULT_FORMAT_BE %}">
+                <a class="btn btn-link">
+                    {% blocktrans %}During {% endblocktrans %}
+                    {% now "F" %}</a>
+            </li>
+            <li data-from-date="01-01-{% now "Y" %}" class="preset-date"
+                data-to-date="{% tomorrow DEFAULT_FORMAT_BE %}">
+                <a class="btn btn-link">
+                    {% blocktrans %}During {% endblocktrans %}
+                    {% now "Y" %}
+                </a>
+            </li>
+            <li data-from-date="08-12-2014" class="preset-date"
+                data-to-date="19-03-2015">
+                <a class="btn btn-link">
+                    {% blocktrans %}During 20th Knesset Election
+                        Campaign{% endblocktrans %}
+                </a>
+            </li>
+        </ul>{% endwith %}
 </div>
