@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-14 16:39+0200\n"
-"PO-Revision-Date: 2016-12-14 17:09+0200\n"
+"POT-Creation-Date: 2016-12-15 12:50+0200\n"
+"PO-Revision-Date: 2016-12-15 13:00+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -350,7 +350,7 @@ msgid "shares"
 msgstr "שיתפו"
 
 #: core/templates/core/facebook_status.html:149
-#: core/templates/core/search.html:15 core/templates/core/searchgui.html:211
+#: core/templates/core/search.html:22 core/templates/core/searchgui.html:211
 #: kikartags/models.py:32
 msgid "Tags"
 msgstr "תגיות"
@@ -523,36 +523,36 @@ msgstr "ביטול"
 msgid "Search Results\n"
 msgstr "תוצאות חיפוש\n"
 
-#: core/templates/core/search.html:9 core/templates/core/searchgui.html:195
+#: core/templates/core/search.html:16 core/templates/core/searchgui.html:195
 msgid "MKs"
 msgstr "חברי כנסת"
 
-#: core/templates/core/search.html:12 core/templates/core/searchgui.html:203
+#: core/templates/core/search.html:19 core/templates/core/searchgui.html:203
 #: mks/models.py:88
 msgid "Parties"
 msgstr "מפלגות"
 
-#: core/templates/core/search.html:18
+#: core/templates/core/search.html:25
 msgid "Search Terms"
 msgstr "מילות חיפוש"
 
-#: core/templates/core/search.html:29
+#: core/templates/core/search.html:36
 msgid "Number of Results"
 msgstr "מספר תוצאות"
 
-#: core/templates/core/search.html:34
+#: core/templates/core/search.html:41
 msgid "Need another try? Go back to "
 msgstr "עדיין לא מספיק? אפשר לחזור ל"
 
-#: core/templates/core/search.html:34 core/templates/core/search.html.py:37
+#: core/templates/core/search.html:42 core/templates/core/search.html.py:45
 msgid "Advanced Search"
 msgstr "חיפוש מתקדם"
 
-#: core/templates/core/search.html:36
-msgid "Search didn't come out as precise as you wished? Try our Beta&nbsp;"
-msgstr "החיפוש לא יצא מדויק כפי שקיווית? יש לנו גרסת בטא ל"
+#: core/templates/core/search.html:44
+msgid "Search didn't come out as precise as you wished? Try our Beta "
+msgstr "החיפוש לא יצא מדויק כפי שקיווית? יש לנו גרסת בטא ל "
 
-#: core/templates/core/search.html:42 core/templates/core/searchgui.html:219
+#: core/templates/core/search.html:51 core/templates/core/searchgui.html:219
 msgid "Excluded Statuses"
 msgstr "סטאטוסים שסוננו"
 

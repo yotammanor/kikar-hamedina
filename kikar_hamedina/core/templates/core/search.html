@@ -41,8 +41,7 @@
                 {% trans 'Need another try? Go back to ' %}
                 <a href="{% url 'search-gui' %}?{{ request_arguments }}">{% trans 'Advanced Search' %}</a>
             {% else %}
-                {% blocktrans %}Search didn't come out as precise as you
-                    wished? Try our Beta&nbsp;{% endblocktrans %}<a
+                {% trans "Search didn't come out as precise as you wished? Try our Beta " %}<a
                     href="{% url 'search-gui' %}">{% trans 'Advanced Search' %}</a>
                 !
             {% endif %}
