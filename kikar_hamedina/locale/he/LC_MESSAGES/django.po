@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-15 12:50+0200\n"
-"PO-Revision-Date: 2016-12-15 13:00+0200\n"
+"PO-Revision-Date: 2016-12-15 13:05+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he\n"
@@ -550,7 +550,7 @@ msgstr "חיפוש מתקדם"
 
 #: core/templates/core/search.html:44
 msgid "Search didn't come out as precise as you wished? Try our Beta "
-msgstr "החיפוש לא יצא מדויק כפי שקיווית? יש לנו גרסת בטא ל "
+msgstr "החיפוש לא יצא מדויק כפי שקיווית? יש לנו גרסת בטא ל"
 
 #: core/templates/core/search.html:51 core/templates/core/searchgui.html:219
 msgid "Excluded Statuses"
