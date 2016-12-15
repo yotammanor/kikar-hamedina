@@ -3,6 +3,13 @@
 {% block title %}{{ search_title }} | {% blocktrans %}Search Results
 {% endblocktrans %}{% endblock title %}
 
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.4.3/mark.min.js"></script>
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.4.3/jquery.mark.min.js"></script>#}
+    <script src="{{ STATIC_URL }}js/highlightSearchResults.js"></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/highlightSearchResults.css" />
+{% endblock scripts %}
 {% block h1 %}
     <i class="fa fa-search"></i></br>
     {% if members|length > 0 %}
@@ -30,12 +37,15 @@
             : {{ number_of_results }}
         </div>
         <div><br>
-        {% if 'operator' in request.GET %}
-            {% trans 'Need another try? Go back to ' %}<a href="{% url 'search-gui' %}?{{ request_arguments }}">{% trans 'Advanced Search' %}</a>
-        {% else %}
-            {% blocktrans %}Search didn't come out as precise as you wished? Try our Beta&nbsp;{% endblocktrans %}<a
-                href="{% url 'search-gui' %}">{% trans 'Advanced Search' %}</a>!
-        {% endif %}
+            {% if 'operator' in request.GET %}
+                {% trans 'Need another try? Go back to ' %}
+                <a href="{% url 'search-gui' %}?{{ request_arguments }}">{% trans 'Advanced Search' %}</a>
+            {% else %}
+                {% blocktrans %}Search didn't come out as precise as you
+                    wished? Try our Beta&nbsp;{% endblocktrans %}<a
+                    href="{% url 'search-gui' %}">{% trans 'Advanced Search' %}</a>
+                !
+            {% endif %}
         </div>
         <h4>
             {% if excluded %}<p>
