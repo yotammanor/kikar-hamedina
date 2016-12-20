@@ -37,7 +37,7 @@ class Command(KikarCommentCommand):
                             help="if flagged, get second stage features. Otherwise, get first stage."
                             )
 
-        parser.add_argument('--all',
+        parser.add_argument('--all_comments',
                             action='store_true',
                             dest='all_comments',
                             default=False,
