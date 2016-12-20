@@ -7,7 +7,8 @@ import dateutil
 from django.utils import timezone
 
 from facebook_feeds.models import Facebook_Feed, Facebook_Status
-from facebook_feeds.management.commands.kikar_base_commands import KikarCommentCommand
+from facebook_feeds.management.commands.kikar_base_commands import \
+    KikarCommentCommand
 from reporting.utils import TextProcessor
 
 from langdetect import detect
@@ -36,13 +37,25 @@ class Command(KikarCommentCommand):
                             help="if flagged, get second stage features. Otherwise, get first stage."
                             )
 
+        parser.add_argument('--all',
+                            action='store_true',
+                            dest='all_comments',
+                            default=False,
+                            help="if flagged, export all comments, and use file to mark if in file."
+                            )
+
     def handle(self, *args, **options):
         print('Start.')
 
-        comments = self.parse_comments(options)
-        file_name = '{}_full_data.csv'.format(options['file_path'].split('.csv')[0])
+        comments_in_file = self.parse_comments(options)
+        if options['all_comments']:
+            file_name_part = 'all_comments'
+        else:
+            file_name_part = options['file_path'].split('.csv')[0]
+        file_name = '{}_full_data.csv'.format(file_name_part)
         if options['second_stage']:
-            file_name = ''.join([file_name.split('.')[0], '_2nd_stage.', file_name.split('.')[1]])
+            file_name = ''.join([file_name.split('.')[0], '_2nd_stage.',
+                                 file_name.split('.')[1]])
         f = open(file_name, 'wb')
         if options['second_stage']:
             field_names = [
@@ -110,6 +123,7 @@ class Command(KikarCommentCommand):
                 'NUM_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS',
                 'RATIO_OF_COMMENTS_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS',
                 'RATIO_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS',
+                'is_train',
             ]
 
         else:
@@ -129,6 +143,7 @@ class Command(KikarCommentCommand):
                 'like_count',
                 'comment_count',
                 'language',
+                'is_train',
             ]
         csv_data = DictWriter(f, fieldnames=field_names, delimiter=DELIMITER)
         headers = {field_name: field_name for field_name in field_names}
@@ -136,44 +151,77 @@ class Command(KikarCommentCommand):
 
         processor = TextProcessor()
 
-        for i, comment in enumerate(comments):
-            processed_text = processor.replace_mk_names(text=comment.content, context_status=comment.parent)
-            if options['translate']:
-                processed_text = processor.request_translated_text_from_google(text=processed_text)
-            processed_text = processor.replace_emojis_to_named_text(text=processed_text)
-            print('writing comment {} of {}'.format(i + 1, comments.count()))
-            if options['second_stage']:
-                dict_row = self.get_second_stage_comment_features(comment, processed_text, processor)
-            else:
-                dict_row = self.get_first_stage_comment_features(comment, processed_text, processor)
-            csv_data.writerow(dict_row)
+        if options['all_comments']:
+            i = 0
+            for status in Facebook_Status.objects_no_filters.filter(
+                    is_comment=False):
+                for comment in status.comments.all():
+                    print('writing comment {}'.format(i + 1))
+                    i += 1
+                    self.handle_comment(comment, comments_in_file, csv_data,
+                                        options, processor)
+        else:
+            for i, comment in enumerate(comments_in_file):
+                print('writing comment {} '
+                      'of {}'.format(i + 1, comments_in_file.count()))
+                self.handle_comment(comment, comments_in_file, csv_data,
+                                    options, processor)
 
         f.close()
         print('Done.')
 
-    def get_first_stage_comment_features(self, comment, processed_text, processor):
+    def handle_comment(self, comment, comments_in_file, csv_data, options,
+                       processor):
+        processed_text = processor.replace_mk_names(text=comment.content,
+                                                    context_status=comment.parent)
+        if options['translate']:
+            processed_text = processor.request_translated_text_from_google(
+                text=processed_text)
+        processed_text = processor.replace_emojis_to_named_text(
+            text=processed_text)
+        if options['second_stage']:
+            dict_row = self.get_second_stage_comment_features(comment,
+                                                              processed_text,
+                                                              processor,
+                                                              comments_in_file)
+        else:
+            dict_row = self.get_first_stage_comment_features(comment,
+                                                             processed_text,
+                                                             processor,
+                                                             comments_in_file)
+        csv_data.writerow(dict_row)
+
+    def get_first_stage_comment_features(self, comment, processed_text,
+                                         processor, comments_in_file):
         return {
             'comment_id': comment.comment_id,
             'mk_id': comment.parent.feed.persona.content_object.id,
-            'mk_name': processor.flatten_text(comment.parent.feed.persona.content_object.name,
-                                              delimiter=DELIMITER),
+            'mk_name': processor.flatten_text(
+                comment.parent.feed.persona.content_object.name,
+                delimiter=DELIMITER),
             'parent_status_id': comment.parent.status_id,
-            'parent_status_content': processor.flatten_text(comment.parent.content,
-                                                            delimiter=DELIMITER),
+            'parent_status_content': processor.flatten_text(
+                comment.parent.content,
+                delimiter=DELIMITER),
             'parent_status_link': comment.parent.get_link,
             'comment_link': 'www.facebook.com/{}'.format(comment.comment_id),
-            'content': processor.flatten_text(comment.content, delimiter=DELIMITER),
-            'content_processed': processor.flatten_text(processed_text, delimiter=DELIMITER),
+            'content': processor.flatten_text(comment.content,
+                                              delimiter=DELIMITER),
+            'content_processed': processor.flatten_text(processed_text,
+                                                        delimiter=DELIMITER),
             'published': comment.published,
             'commentator_id': comment.comment_from.facebook_id,
             'commentator_also_liked_status': comment.comment_from.likes.filter(
                 status__status_id=comment.parent.status_id).exists(),
             'like_count': comment.like_count,
             'comment_count': comment.comment_count,
-            'language': comment.content_lang()
+            'language': comment.content_lang(),
+            'is_train': comments_in_file.filter(
+                comment_id=comment.comment_id).exists()
         }
 
-    def get_second_stage_comment_features(self, comment, processed_text, processor):
+    def get_second_stage_comment_features(self, comment, processed_text,
+                                          processor, comments_in_file):
         mk = comment.parent.feed.persona.content_object
 
         status_langs = self.detect_languages(comment.parent)
@@ -183,13 +231,17 @@ class Command(KikarCommentCommand):
             'MK_ID': mk.id,
             'mk_name': processor.flatten_text(mk.name, delimiter=DELIMITER),
             'post_status_id': comment.parent.status_id,
-            'post_content': processor.flatten_text(comment.parent.content, delimiter=DELIMITER),
+            'post_content': processor.flatten_text(comment.parent.content,
+                                                   delimiter=DELIMITER),
             'post_link': comment.parent.get_link,
             'comment_link': 'www.facebook.com/{}'.format(comment.comment_id),
-            'comment_content': processor.flatten_text(comment.content, delimiter=DELIMITER),
-            'comment_content_processed': processor.flatten_text(processed_text, delimiter=DELIMITER),
+            'comment_content': processor.flatten_text(comment.content,
+                                                      delimiter=DELIMITER),
+            'comment_content_processed': processor.flatten_text(processed_text,
+                                                                delimiter=DELIMITER),
             'comment_time_of_publication': comment.published,
-            'COMMENT_PUBLICATION_DAYS_FROM_RESEARCH_START_DATE': self.days_from_research_start_date(comment.published),
+            'COMMENT_PUBLICATION_DAYS_FROM_RESEARCH_START_DATE': self.days_from_research_start_date(
+                comment.published),
             'post_like_count': comment.parent.like_count,
             'post_comment_count': comment.parent.comment_count,
             'post_share_count': comment.parent.share_count,
@@ -200,26 +252,34 @@ class Command(KikarCommentCommand):
             'COMMENT_LEN_MESSAGE': len(comment.content),
             'COMMENTATOR_LIKED_POST': comment.comment_from.likes.filter(
                 status__status_id=comment.parent.status_id).exists(),
-            'HAS_NAME_OF_POST_WRITER_MK_IN_COMMENT': processor.is_mk_id_pattern_in_text(text=comment.content,
-                                                                                        mk_id=mk.id),
+            'HAS_NAME_OF_POST_WRITER_MK_IN_COMMENT': processor.is_mk_id_pattern_in_text(
+                text=comment.content,
+                mk_id=mk.id),
             'IDS_OF_MKS_MENTIONED_IN_COMMENT': ';'.join(
-                ['{}'.format(x) for x in processor.get_mentioned_mks(text=comment.content)]),
+                ['{}'.format(x) for x in
+                 processor.get_mentioned_mks(text=comment.content)]),
             'NUM_OF_COMMENTS_BY_COMMENTATOR_ON_POST': self.number_of_comments_by_commentator_on_statuses(
                 comment.comment_from, [comment.parent]),
             'COMMENTATOR_ID': comment.comment_from.facebook_id,
-            'POLITICAL_WING_HATNUA_LEFT': self.get_political_wing(mk.current_party, hatnua="LEFT"),
-            'POLITICAL_WING_HATNUA_CENTER': self.get_political_wing(mk.current_party, hatnua="CENTER"),
-            'IS_COALITION': self.is_party_in_coalition_during_date(mk.current_party, comment.parent.published),
+            'POLITICAL_WING_HATNUA_LEFT': self.get_political_wing(
+                mk.current_party, hatnua="LEFT"),
+            'POLITICAL_WING_HATNUA_CENTER': self.get_political_wing(
+                mk.current_party, hatnua="CENTER"),
+            'IS_COALITION': self.is_party_in_coalition_during_date(
+                mk.current_party, comment.parent.published),
             'PARTY_NAME': processor.flatten_text(mk.current_party.name),
             'IS_FEMALE': self.is_mk_female(mk),
             'AGE': mk.age.years,
             'MK_POLITICAL_STATUS': None,
             'MK_POLITICAL_SENIORITY': None,
-            'IS_CURRENT_OR_PAST_PARTY_LEADER': self.is_current_or_past_party_leader(comment.parent.feed),
-            'IS_CURRENT_OR_PAST_PM_CANDIDATE': self.is_current_or_past_pm_candidate(comment.parent.feed),
+            'IS_CURRENT_OR_PAST_PARTY_LEADER': self.is_current_or_past_party_leader(
+                comment.parent.feed),
+            'IS_CURRENT_OR_PAST_PM_CANDIDATE': self.is_current_or_past_pm_candidate(
+                comment.parent.feed),
             'IS_PM': self.is_pm(comment.parent.feed),
             'POST_PUBLICATION_TIMESTAMP': comment.parent.published,
-            'POST_PUBLICATION_DATE': comment.parent.published.strftime('%Y/%m/%d'),
+            'POST_PUBLICATION_DATE': comment.parent.published.strftime(
+                '%Y/%m/%d'),
             'POST_PUBLICATION_DAYS_FROM_RESEARCH_START_DATE': self.days_from_research_start_date(
                 comment.parent.published),
             'POST_WITH_PHOTO': comment.parent.has_attachment and comment.parent.attachment.type == 'photo',
@@ -230,22 +290,32 @@ class Command(KikarCommentCommand):
             'POST_IN_HEBREW': 'he' in status_langs,
             'POST_IN_ENGLISH': 'en' in status_langs,
             'POST_IN_ARABIC': 'ar' in status_langs,
-            'POST_IN_OTHER': bool([x for x in status_langs if x not in ['he', 'en', 'ar']]),
+            'POST_IN_OTHER': bool(
+                [x for x in status_langs if x not in ['he', 'en', 'ar']]),
             'DAYS_FROM_ELECTION': self.days_from_event(
-                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 3, 17))),
+                comment.parent.published,
+                timezone.make_aware(timezone.datetime(2015, 3, 17))),
             'DAYS_FROM_THREE_TEENAGER_KIDNAP': self.days_from_event(
-                comment.parent.published, timezone.make_aware(timezone.datetime(2014, 6, 12))),
+                comment.parent.published,
+                timezone.make_aware(timezone.datetime(2014, 6, 12))),
             'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_START_DATE': self.days_from_event(
-                comment.parent.published, timezone.make_aware(timezone.datetime(2014, 7, 8))),
+                comment.parent.published,
+                timezone.make_aware(timezone.datetime(2014, 7, 8))),
             'DAYS_FROM_PROTECTIVE_EDGE_OFFICIAL_END_DATE': self.days_from_event(
-                comment.parent.published, timezone.make_aware(timezone.datetime(2014, 8, 26))),
+                comment.parent.published,
+                timezone.make_aware(timezone.datetime(2014, 8, 26))),
             'DAYS_FROM_DUMA_ARSON_ATTACK': self.days_from_event(
-                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 7, 31))),
+                comment.parent.published,
+                timezone.make_aware(timezone.datetime(2015, 7, 31))),
             'DAYS_FROM_THIRD_INTIFADA_START_DATE': self.days_from_event(
-                comment.parent.published, timezone.make_aware(timezone.datetime(2015, 9, 13))),
-            'DAYS_FROM_MK_BIRTHDAY': self.days_from_birthday(comment.parent.published, mk),
-            'POST_PUBLISHED_ON_SATURDAY': self.is_date_in_holiday(comment.parent.published),
-            'COMMENT_PUBLISHED_ON_SATURDAY': self.is_date_in_holiday(comment.published),
+                comment.parent.published,
+                timezone.make_aware(timezone.datetime(2015, 9, 13))),
+            'DAYS_FROM_MK_BIRTHDAY': self.days_from_birthday(
+                comment.parent.published, mk),
+            'POST_PUBLISHED_ON_SATURDAY': self.is_date_in_holiday(
+                comment.parent.published),
+            'COMMENT_PUBLISHED_ON_SATURDAY': self.is_date_in_holiday(
+                comment.published),
             'NUM_OF_COMMENTS_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
                 self.number_of_comments_by_commentator_for_feed_id(
                     comment.comment_from, comment.parent.feed.id),
@@ -253,11 +323,13 @@ class Command(KikarCommentCommand):
                 self.num_of_likes_by_commentator_for_feed_id(
                     comment.comment_from, comment.parent.feed.id),
             'RATIO_OF_COMMENTS_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
-                self.ratio_of_commented_statuses_by_commentator_for_feed_id(comment.comment_from,
-                                                                            comment.parent.feed.id),
+                self.ratio_of_commented_statuses_by_commentator_for_feed_id(
+                    comment.comment_from,
+                    comment.parent.feed.id),
             'RATIO_OF_LIKES_BY_COMMENTATOR_ID_ON_GIVEN_MK_POSTS':
-                self.ratio_of_likes_by_commentator_on_statuses_by_feed_id(comment.comment_from,
-                                                                          comment.parent.feed.id),
+                self.ratio_of_likes_by_commentator_on_statuses_by_feed_id(
+                    comment.comment_from,
+                    comment.parent.feed.id),
             'NUM_OF_COMMENTS_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or self.num_of_comments_by_commentator_on_all_statuses(
                 comment.comment_from),
             'NUM_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or self.num_of_likes_by_commentator_on_all_statuses(
@@ -267,17 +339,22 @@ class Command(KikarCommentCommand):
                                                                        comment.comment_from),
             'RATIO_OF_LIKES_BY_COMMENTATOR_ID_ON_ALL_MK_POSTS': 1 or self.ratio_of_likes_by_commentator_on_all_statuses(
                 comment.comment_from),
+            'is_train': comments_in_file.filter(
+                comment_id=comment.comment_id).exists()
         }
 
     def is_party_in_coalition_during_date(self, party, published):
         if party.id in [14, 27, 30, 17]:  # likud, Habayt Hayehudi
             return True
-        elif party.id in [33, 10, 16, 20, 22, 28, 25, 35]:  # Meretz, Haavoda, Arab Parties, Kadima
+        elif party.id in [33, 10, 16, 20, 22, 28, 25,
+                          35]:  # Meretz, Haavoda, Arab Parties, Kadima
             return False
         elif party.id in [32, 19, 34]:  # Kulanu, Yehadut Hatora
-            return published.date() >= timezone.datetime(2015, 4, 29).date()  # Coalition Agreement w. parties
+            return published.date() >= timezone.datetime(2015, 4,
+                                                         29).date()  # Coalition Agreement w. parties
         elif party.id in [36, 18]:  # Shas
-            return published.date() >= timezone.datetime(2015, 5, 4).date()  # Coalition Agreement w. party
+            return published.date() >= timezone.datetime(2015, 5,
+                                                         4).date()  # Coalition Agreement w. party
         elif party.id in [15, 21, 29]:  # Yesh Atid, Hatnua
             return published.date() < self.get_gov_33_break_date()
         elif party.id in [31]:  # Israel Beiteinu
@@ -307,22 +384,31 @@ class Command(KikarCommentCommand):
 
     def days_from_birthday(self, pub_date, mk):
         birthday_this_year = self.mk_birthday_for_year(mk, year=pub_date.year)
-        birthday_last_year = self.mk_birthday_for_year(mk, year=pub_date.year - 1)
-        birthday_next_year = self.mk_birthday_for_year(mk, year=pub_date.year + 1)
+        birthday_last_year = self.mk_birthday_for_year(mk,
+                                                       year=pub_date.year - 1)
+        birthday_next_year = self.mk_birthday_for_year(mk,
+                                                       year=pub_date.year + 1)
         return min(abs(pub_date - birthday_this_year).days,
                    abs(pub_date - birthday_last_year).days,
                    abs(pub_date - birthday_next_year).days)
 
     def mk_birthday_for_year(self, mk, year=2016):
         if mk.date_of_birth:
-            return timezone.make_aware((timezone.datetime(year, mk.date_of_birth.month, mk.date_of_birth.day)))
+            return timezone.make_aware((timezone.datetime(year,
+                                                          mk.date_of_birth.month,
+                                                          mk.date_of_birth.day)))
         return None
 
-    def ratio_of_commented_statuses_by_commentator_on_all_statuses(self, commentator):
-        return self.num_of_comments_by_commentator_on_all_statuses(commentator) * 1.0 / self.count_all_statuses()
+    def ratio_of_commented_statuses_by_commentator_on_all_statuses(self,
+                                                                   commentator):
+        return self.num_of_comments_by_commentator_on_all_statuses(
+            commentator) * 1.0 / self.count_all_statuses()
 
-    def ratio_of_commented_statuses_by_commentator_for_feed_id(self, commentator, feed_id):
-        return self.number_of_commented_on_statuses_for_feed_id(commentator, feed_id) * 1.0 / \
+    def ratio_of_commented_statuses_by_commentator_for_feed_id(self,
+                                                               commentator,
+                                                               feed_id):
+        return self.number_of_commented_on_statuses_for_feed_id(commentator,
+                                                                feed_id) * 1.0 / \
                self.count_statuses_for_feed_id(feed_id)
 
     @lru_cache(maxsize=180)
@@ -330,33 +416,45 @@ class Command(KikarCommentCommand):
         statuses = Facebook_Status.objects.all()
         count_statuses = 0
         for status in statuses:
-            count_statuses += int(self.is_status_commented_on_by_commentator(commentator, status))
+            count_statuses += int(
+                self.is_status_commented_on_by_commentator(commentator,
+                                                           status))
         return count_statuses
 
     @lru_cache(maxsize=180)
-    def number_of_commented_on_statuses_for_feed_id(self, commentator, feed_id):
-        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set_no_filters.all()
+    def number_of_commented_on_statuses_for_feed_id(self, commentator,
+                                                    feed_id):
+        statuses = Facebook_Feed.objects.get(
+            id=feed_id).facebook_status_set_no_filters.all()
         count_statuses = 0
         for status in statuses:
-            count_statuses += int(self.is_status_commented_on_by_commentator(commentator, status))
+            count_statuses += int(
+                self.is_status_commented_on_by_commentator(commentator,
+                                                           status))
         return count_statuses
 
     @lru_cache(maxsize=180)
     def is_status_commented_on_by_commentator(self, commentator, status):
-        return commentator.comments.filter(parent__status_id=status.status_id).exists()
+        return commentator.comments.filter(
+            parent__status_id=status.status_id).exists()
 
     @lru_cache(maxsize=180)
-    def number_of_comments_by_commentator_for_feed_id(self, commentator, feed_id):
-        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set_no_filters.all()
-        return self.number_of_comments_by_commentator_on_statuses(commentator, statuses)
+    def number_of_comments_by_commentator_for_feed_id(self, commentator,
+                                                      feed_id):
+        statuses = Facebook_Feed.objects.get(
+            id=feed_id).facebook_status_set_no_filters.all()
+        return self.number_of_comments_by_commentator_on_statuses(commentator,
+                                                                  statuses)
 
-    def number_of_comments_by_commentator_on_statuses(self, commentator, statuses):
+    def number_of_comments_by_commentator_on_statuses(self, commentator,
+                                                      statuses):
         return commentator.comments.filter(parent__in=statuses).count()
 
     @lru_cache(maxsize=180)
     def get_number_of_comments_for_feed(self, feed_id):
         feed = Facebook_Feed.objects.get(id=feed_id)
-        return self.get_number_of_comments(feed.facebook_status_set_no_filters.all())
+        return self.get_number_of_comments(
+            feed.facebook_status_set_no_filters.all())
 
     def get_number_of_comments(self, statuses):
         num_of_comments = 0
@@ -364,12 +462,15 @@ class Command(KikarCommentCommand):
             num_of_comments += status.comments.count()
         return num_of_comments
 
-    def ratio_of_likes_by_commentator_on_statuses_by_feed_id(self, commentator, feed_id):
+    def ratio_of_likes_by_commentator_on_statuses_by_feed_id(self, commentator,
+                                                             feed_id):
         return self.num_of_likes_by_commentator_for_feed_id(commentator,
-                                                            feed_id) * 1.0 / self.count_statuses_for_feed_id(feed_id)
+                                                            feed_id) * 1.0 / self.count_statuses_for_feed_id(
+            feed_id)
 
     def ratio_of_likes_by_commentator_on_all_statuses(self, commentator):
-        return self.num_of_likes_by_commentator_on_all_statuses(commentator) * 1.0 / self.count_all_statuses()
+        return self.num_of_likes_by_commentator_on_all_statuses(
+            commentator) * 1.0 / self.count_all_statuses()
 
     @lru_cache(maxsize=5)
     def count_all_statuses(self):
@@ -377,25 +478,31 @@ class Command(KikarCommentCommand):
 
     @lru_cache(maxsize=180)
     def count_statuses_for_feed_id(self, feed_id):
-        return Facebook_Feed.objects.get(id=feed_id).facebook_status_set_no_filters.count()
+        return Facebook_Feed.objects.get(
+            id=feed_id).facebook_status_set_no_filters.count()
 
     @lru_cache(maxsize=180)
     def num_of_likes_by_commentator_for_feed_id(self, commentator, feed_id):
-        statuses = Facebook_Feed.objects.get(id=feed_id).facebook_status_set_no_filters.all()
-        return self.number_of_likes_by_commentator_on_statuses(commentator, statuses)
+        statuses = Facebook_Feed.objects.get(
+            id=feed_id).facebook_status_set_no_filters.all()
+        return self.number_of_likes_by_commentator_on_statuses(commentator,
+                                                               statuses)
 
     @lru_cache(maxsize=180)
     def num_of_likes_by_commentator_on_all_statuses(self, commentator):
         statuses = Facebook_Status.objects.all()
-        return self.number_of_likes_by_commentator_on_statuses(commentator, statuses)
+        return self.number_of_likes_by_commentator_on_statuses(commentator,
+                                                               statuses)
 
-    def number_of_likes_by_commentator_on_statuses(self, commentator, statuses):
+    def number_of_likes_by_commentator_on_statuses(self, commentator,
+                                                   statuses):
         return commentator.likes.filter(status__in=statuses).count()
 
     def get_political_wing(self, party, hatnua='LEFT'):
         if party.id in [21]:  # Hatnua
             return hatnua
-        if party.id in [30, 31, 27, 14, 17]:  # Habait Hayehudi, Israel-Beitenu, Likud, Likud-Israel Beitenu
+        if party.id in [30, 31, 27, 14,
+                        17]:  # Habait Hayehudi, Israel-Beitenu, Likud, Likud-Israel Beitenu
             return 'RIGHT'
         elif party.id in [32, 15, 25, 29]:  # Yesh Atid, Kulanu, Kadima
             return 'CENTER'
@@ -445,7 +552,8 @@ class Command(KikarCommentCommand):
         return False
 
     def is_current_or_past_party_leader(self, feed):
-        if feed.id in [53, 109, 141, 138, 4, 52, 80, 20, 51, 40, 79, 54, 14, 35, 30, 73, 12, 22, 89, 44]:
+        if feed.id in [53, 109, 141, 138, 4, 52, 80, 20, 51, 40, 79, 54, 14,
+                       35, 30, 73, 12, 22, 89, 44]:
             return True
         return False
 
@@ -461,5 +569,6 @@ class Command(KikarCommentCommand):
             time_pairs = json.load(f)
         parsed_time_pairs = []
         for pair in time_pairs:
-            parsed_time_pairs.append((dateutil.parser.parse(pair[0]), dateutil.parser.parse(pair[1])))
+            parsed_time_pairs.append((dateutil.parser.parse(pair[0]),
+                                      dateutil.parser.parse(pair[1])))
         return parsed_time_pairs
