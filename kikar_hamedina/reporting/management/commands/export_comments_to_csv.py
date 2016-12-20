@@ -193,11 +193,15 @@ class Command(KikarCommentCommand):
 
     def get_first_stage_comment_features(self, comment, processed_text,
                                          processor, comments_in_file):
+
+        mk = comment.parent.feed.persona.content_object or \
+             comment.parent.feed.persona.alt_content_object
+
         return {
             'comment_id': comment.comment_id,
-            'mk_id': comment.parent.feed.persona.content_object.id,
+            'mk_id': mk.id if mk else None,
             'mk_name': processor.flatten_text(
-                comment.parent.feed.persona.content_object.name,
+                mk.name if mk else None,
                 delimiter=DELIMITER),
             'parent_status_id': comment.parent.status_id,
             'parent_status_content': processor.flatten_text(
