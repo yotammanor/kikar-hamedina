@@ -52,7 +52,7 @@ No worries, We might still have something for you. You are invited to
 * **Before you go up**: If you want to run the server to a different port (rather than 8000), you can add an 
 **environment variable** like this: `export KIKAR_HAMEDINA_PORT=1234` (Linux/Mac),  or `set KIKAR_HAMEDINA_PORT=1234` (Windows).  
 
-* Run `vagrant up`. First time might take a while. this can take about 25-30 minutes
+* Run `vagrant up`. First time might take a while. this can take about 25-30 minutes. If you are running on a windows machine please make sure you have virutalization enabled, which is something you need to do on your BIOS.
 
 * If you reached a point where the output talks about creating and updating statuses, you're good to go!
 
