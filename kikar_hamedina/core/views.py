@@ -483,8 +483,6 @@ def get_data_from_facebook(request):
     # Extension into long-term token
     extended_access_token = graph.extend_access_token(settings.FACEBOOK_APP_ID,
                                                       settings.FACEBOOK_SECRET_KEY)
-    print 'access token, changed \nfrom: %s \nto: %s ' % (
-        user_access_token, extended_access_token)
     graph.access_token = extended_access_token['access_token']
     # create or update token for user in db
     user = graph.get_object('me')
@@ -495,12 +493,11 @@ def get_data_from_facebook(request):
     token.token = extended_access_token['access_token']
     token.date_of_creation = timezone.now()
     token.date_of_expiration = timezone.now() + timezone.timedelta(
-        seconds=int(extended_access_token['expires']))
+        seconds=int(extended_access_token['expires_in']))
     token.save()
 
     # add or update relevant feeds for token
     user_profile_feeds = Facebook_Feed.objects.filter(feed_type='UP')
-    # user_profile_feeds = ['508516607', '509928464']  # Used for testing
     relevant_feeds = []
     print 'checking %d user_profile feeds.' % len(user_profile_feeds)
     for i, feed in enumerate(user_profile_feeds):
@@ -520,8 +517,9 @@ def get_data_from_facebook(request):
         token.feeds.add(feed)
     print 'adding %d feeds to token' % len(relevant_feeds)
     token.save()
-    # Redirect
-    return HttpResponseRedirect(request.META["HTTP_REFERER"])
+
+    return HttpResponse(content_type='application/json', status=200,
+                        content=json.dumps({'msg': 'great success!'}))
 
 
 # A handler for status_update ajax call from client
@@ -596,7 +594,6 @@ def add_tag_to_status(request):
     2. using POST method instead of GET method
     3. using single transaction for the whole process
     """
-    c = {}
     response_data = dict()
     response_data['success'] = False
     status_id = request.GET["id"]
