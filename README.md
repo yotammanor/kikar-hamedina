@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/hasadna/kikar-hamedina.svg?branch=master)](https://travis-ci.org/hasadna/kikar-hamedina)
 
-#Welcome to Kikar Hamdina#
+# Welcome to Kikar Hamdina #
 
 Welcome to Kikar Hamedina, An Open-Source Project by The Public Knowledge Workshop.
  
@@ -12,14 +12,14 @@ We monitor Israeli MKs' activity in the Social Media, and put it in context.
 You can see our live website at [kikar.org](http://www.kikar.org).
 
 
-####Are a developer who's looking to get involved?####
+#### Are a developer who's looking to get involved? ####
 Great! take a look at our [Trello Board](https://trello.com/b/gJFDhaJa/kikar-hamedina). In particular, 
 anything on the **MiniBites** list is up for grabs. We'd love your help!
 
 Please read below for project set-up instructions, and contribution guidelines.
 
 
-####Are you interested in helping out, but not through coding?####
+#### Are you interested in helping out, but not through coding? ####
 No worries, We might still have something for you. You are invited to 
 <a href="mailto:yotammanor@gmail.com?subject='I Want to Help with Kikar Hamedina'">contact us</a>, and we'll find you a place.
 
