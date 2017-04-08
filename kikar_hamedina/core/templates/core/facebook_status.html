@@ -86,11 +86,21 @@
                             <div class="panel-body">
                                 <div class="container{% if not LANGUAGE_BIDI %} attachment-container-en{% endif %}"
                                      style="text-align: center">
-                                    <video width="auto" height="auto" controls>
+                                    {% if  status.attachment.is_youtube_video %}
+                                        <object data="{{ status.attachment.source }}"  >
+                                            <embed>
+                                                <source src="{{ status.attachment.source }}" type="video/mp4">
+                                                <source src="{{ status.attachment.source }}" type="video/ogg">
+                                            {% trans 'Apologies, your broswer does not support displaying videos.' %}
+                                            </embed>
+                                        </object>
+                                    {% else %}
+                                     <video width="auto" height="auto" autoplay controls>
                                         <source src="{{ status.attachment.source }}" type="video/mp4">
                                         <source src="{{ status.attachment.source }}" type="video/ogg">
                                         {% trans 'Apologies, your broswer does not support displaying videos.' %}
-                                    </video>
+                                     </video>
+                                    {% endif %}
                                 </div>
                             </div>
                             {% if status.story %}
