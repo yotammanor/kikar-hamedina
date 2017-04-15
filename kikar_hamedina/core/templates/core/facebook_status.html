@@ -96,7 +96,7 @@
                 style="text-align: center">
               {% if status.attachment.is_youtube_video %}
               <object data="{{ status.attachment.source }}">
-                <embed>
+                <embed autoplay="false">
                   <source src="{{ status.attachment.source }}"
                           type="video/mp4">
                   <source src="{{ status.attachment.source }}"
@@ -106,7 +106,7 @@
                 </embed>
               </object>
               {% else %}
-              <video width="auto" height="auto" autoplay controls>
+              <video width="auto" height="auto" controls>
                 <source src="{{ status.attachment.source }}" type="video/mp4">
                 <source src="{{ status.attachment.source }}" type="video/ogg">
                 {% trans 'Apologies, your broswer does not support displaying
