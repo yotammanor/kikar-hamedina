@@ -95,3 +95,11 @@ def format_date(value, requested_format):
 def tomorrow(requested_format):
     return format(timezone.now() + timezone.timedelta(days=1),
                   requested_format)
+
+
+@register.filter(name='autoplay_off')
+def autoplay_off(url):
+    url = url.replace('autoplay=1', '')
+    if url.endswith('?'):
+        return url[:-1]
+    return url
