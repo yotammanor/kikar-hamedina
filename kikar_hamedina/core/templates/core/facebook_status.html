@@ -95,16 +95,24 @@
                 class="container{% if not LANGUAGE_BIDI %} attachment-container-en{% endif %}"
                 style="text-align: center">
               {% if status.attachment.is_youtube_video %}
-              <object data="{{ status.attachment.source }}">
+              <object data="{{ status.attachment.source | autoplay_off }}">
                 <embed autoplay="false">
-                  <source src="{{ status.attachment.source }}"
+                  <source src="{{ status.attachment.source | autoplay_off }}"
                           type="video/mp4">
-                  <source src="{{ status.attachment.source }}"
+                  <source src="{{ status.attachment.source | autoplay_off }}"
                           type="video/ogg">
-                  {% trans 'Apologies, your broswer does not support displaying
+                  {% trans 'Apologies, your browser does not support displaying
                   videos.' %}
                 </embed>
               </object>
+              {% elif status.attachment.is_facebook_video %}
+              <div class="fb-video"
+                   data-href="{{ status.attachment.link}}"
+                   data-width="auto"
+                   data-show-text="false"
+                   data-allowfullscreen="true">
+                <div class="fb-xfbml-parse-ignore"></div>
+              </div>
               {% else %}
               <video width="auto" height="auto" controls>
                 <source src="{{ status.attachment.source }}" type="video/mp4">

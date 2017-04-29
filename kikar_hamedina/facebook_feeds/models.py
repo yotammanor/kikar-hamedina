@@ -441,6 +441,12 @@ class Facebook_Status_Attachment(models.Model):
         return False
 
     @property
+    def is_facebook_video(self):
+        if self.type == 'video' and 'facebook.com' in self.link:
+            return True
+        return False
+
+    @property
     def source_clean(self):
         if not self.source:
             return self.source
