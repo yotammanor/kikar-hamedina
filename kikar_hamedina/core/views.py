@@ -65,10 +65,13 @@ class AboutUsView(ListView):
 
         party_ids = [x['id'] for x in
                      PARTY_MODEL.current_knesset.all().values('id')]
+        try:
+            featured_party_id = choice(party_ids)
+            context['featured_party'] = PARTY_MODEL.objects.get(
+                id=featured_party_id)
+        except IndexError:
+            context['featured_party'] = PARTY_MODEL.objects.first()
 
-        featured_party_id = choice(party_ids)
-        context['featured_party'] = PARTY_MODEL.objects.get(
-            id=featured_party_id)
         context['featured_search'] = {
             'search_value': u'search_str=%22%D7%A6%D7%95%D7%A0%D7%90%D7%9E%D7%99%22',
             'search_name': u'\u05e6\u05d5\u05e0\u05d0\u05de\u05d9'}
@@ -76,8 +79,9 @@ class AboutUsView(ListView):
             POPULARITY_DIF_DAYS_BACK,
             DEFAULT_POPULARITY_DIF_COMPARISON_TYPE,
             MIN_FAN_COUNT_FOR_REL_COMPARISON)
+        feed = max_change['feed']
         max_change['member'] = MEMBER_MODEL.objects.get(
-            persona=max_change['feed'].persona)
+            persona=feed.persona)
         context['top_growth'] = max_change
         return context
 
