@@ -1,20 +1,13 @@
 import datetime
 import json
-import re
-from operator import or_, and_
-from unidecode import unidecode
 from random import random, choice
-import slugify
 from django.core.urlresolvers import reverse
-from django.conf import settings
-from django.utils.datastructures import MultiValueDictKeyError
-from django.utils import timezone
+
 from django.shortcuts import render, render_to_response, get_object_or_404, \
-    redirect, resolve_url
+    redirect
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest, \
     QueryDict
-from django.core.urlresolvers import resolve
-from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic import DetailView, ListView
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from django.db.models import Count, Q
@@ -27,18 +20,20 @@ from endless_pagination.views import AjaxListView
 import waffle
 
 from facebook_feeds.management.commands import updatestatus
-from facebook_feeds.models import Facebook_Status, Facebook_Feed, User_Token, \
-    Feed_Popularity, TAG_NAME_REGEX
+from facebook_feeds.models import Facebook_Feed, User_Token, TAG_NAME_REGEX
 from facebook_feeds.models import Tag as OldTag
 from kikartags.models import Tag as Tag, HasSynonymError, TaggedItem
 from core.insights import StatsEngine
 from core.billboards import Billboards
 from core.models import MEMBER_MODEL, PARTY_MODEL, UserSearch
-from core.query_utils import join_queries_discard_empty, get_parsed_request, \
-    parse_to_q_object, apply_request_params, get_order_by, \
-    filter_by_date
+from core.query_utils import get_parsed_request, parse_to_q_object, \
+    apply_request_params, get_order_by, filter_by_date
 from core.params import *  # look at params.py for all constants used in Views.
 from core.qserializer import QSerializer
+
+import logging
+
+logger = logging.getLogger(__file__)
 
 
 class StatusListView(AjaxListView):
@@ -141,7 +136,6 @@ class BillboardsView(ListView):
         context['list_of_billboards'] = []
         context['list_of_billboards'].append(
             billboards.number_of_followers_board)
-        # context['list_of_billboards'].append(billboards.popularity_relative_growth_board)
         context['list_of_billboards'].append(
             billboards.popularity_growth_board)
         context['list_of_billboards'].append(billboards.number_of_status_board)
@@ -197,12 +191,10 @@ class AllStatusesView(StatusListView):
 
 class SearchView(StatusListView):
     model = Facebook_Status
-    # paginate_by = 10
     context_object_name = 'filtered_statuses'
     template_name = "core/search.html"
 
     def get_queryset(self):
-        print(dir(self.request))
         params_dict = get_parsed_request(get_params=self.request.GET)
         query_Q = parse_to_q_object(self.request.GET, params_dict)
         return apply_request_params(Facebook_Status.objects.filter(query_Q),
@@ -253,7 +245,6 @@ class SearchGuiView(StatusListView):
 
 class StatusFilterUnifiedView(StatusListView):
     model = Facebook_Status
-    # paginate_by = 10
     context_object_name = 'filtered_statuses'
     page_template = "core/facebook_status_list.html"
 
@@ -307,10 +298,8 @@ class MemberView(StatusFilterUnifiedView):
 
     def get_context_data(self, **kwargs):
         context = super(MemberView, self).get_context_data(**kwargs)
-        stats = dict()
-        if self.persona is None:  # Member with no facebook persona
+        if self.persona is None:
             return context
-        member_id = self.kwargs['id']
         feed = self.persona.get_main_feed
 
         dif_dict = feed.popularity_dif(POPULARITY_DIF_DAYS_BACK)
@@ -385,7 +374,6 @@ class TagView(StatusFilterUnifiedView):
         selected_filter = variable_column + '__' + search_field
 
         selected_tag = get_object_or_404(Tag, **{search_field: search_value})
-        # selected_tag = Tag.objects.get(**{search_field: search_value})
         if selected_tag.synonyms.exists():
             # if has synonyms, add to queryset
             selected_filter = 'tags__in'
@@ -503,23 +491,23 @@ def get_data_from_facebook(request):
     # add or update relevant feeds for token
     user_profile_feeds = Facebook_Feed.objects.filter(feed_type='UP')
     relevant_feeds = []
-    print 'checking %d user_profile feeds.' % len(user_profile_feeds)
+    logger.debug('checking %d user_profile feeds.' % len(user_profile_feeds))
     for i, feed in enumerate(user_profile_feeds):
-        print 'working on %d of %d, vendor_id: %s.' % (
-            i + 1, len(user_profile_feeds), feed.vendor_id)
+        logger.debug('working on %d of %d, vendor_id: %s.' % (
+            i + 1, len(user_profile_feeds), feed.vendor_id))
         try:
             statuses = graph.get_connections(feed.vendor_id, 'statuses')
             if statuses['data']:
-                print 'feed %s returns at least one result.' % feed
+                logger.debug('feed %s returns at least one result.' % feed)
                 relevant_feeds.append(feed)
         except GraphAPIError:
-            print 'token not working for feed %s' % feed.vendor_id
+            logger.debug('token not working for feed %s' % feed.vendor_id)
             continue
-    print 'working on %d of %d user_profile feeds.' % (
-        len(relevant_feeds), len(user_profile_feeds))
+    logger.debug('working on %d of %d user_profile feeds.' % (
+        len(relevant_feeds), len(user_profile_feeds)))
     for feed in relevant_feeds:
         token.feeds.add(feed)
-    print 'adding %d feeds to token' % len(relevant_feeds)
+    logger.debug('adding %d feeds to token' % len(relevant_feeds))
     token.save()
 
     return HttpResponse(content_type='application/json', status=200,
@@ -574,7 +562,7 @@ def status_update(request, status_id):
         raise e
 
     except Exception as e:
-        print('status_update error:', e)
+        logger.exception('status_update error:', e)
         raise
 
     finally:
@@ -633,8 +621,8 @@ def add_tag_to_status(request):
             response_data['success'] = True  # Nothing to do
 
     except Exception as e:
-        print "ERROR AT ADDING STATUS TO TAG:", e
-        print status_id
+        logger.error("ERROR AT ADDING STATUS TO TAG:", e)
+        logger.error(status_id)
 
     finally:
         return HttpResponse(json.dumps(response_data),
@@ -678,8 +666,8 @@ def search_bar(request):
                     result_factory(tag.id, tag.name, "tag"))
 
         except Exception as e:
-            print "search bar exception:", e
-            raise
+            logger.error("search bar exception:", e)
+            raise e
 
     return HttpResponse(json.dumps(response_data),
                         content_type="application/json")
@@ -785,7 +773,6 @@ class CustomWidgetView(DetailView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(UserSearch, title=self.kwargs['title'])
-        # return UserSearch.objects.get(title=self.kwargs['title'])
 
 
 def title_exists(request):
@@ -831,35 +818,30 @@ def delete_queryset(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def save_queryset_for_user(request):
-    # print request.POST
     user = request.user
     qserializer = QSerializer(base64=True)
     query_params = unicode(request.POST.get('query').split('?')[-1])
     query_dict = QueryDict(query_params.encode('utf8'), encoding='utf8')
     fake_request = HttpRequest()
     fake_request.GET = query_dict
-    # print query_dict
 
     params_dict = get_parsed_request(query_dict)
     q_object = parse_to_q_object(query_dict, params_dict)
     dumped_queryset = qserializer.dumps(q_object)
-    # print dumped_queryset
 
     title = request.POST.get('title')
     description = request.POST.get('description')
     q_object_date = filter_by_date(fake_request)
-    # print q_object_date
+
     date_range = qserializer.dumps(q_object_date)
     order_by = json.dumps(get_order_by(fake_request))
 
-    # print title, description, date_range, order_by
-
     us, created = UserSearch.objects.get_or_create(user=user, title=title)
     if not created and us.user != request.user:
-        return HttpResponse(content=json.dumps({'message': 'failure'}),
-                            content_type="application/json")
-        raise Exception('User is not allowed to edit this query!')
-    # print us
+        return HttpResponse(content=json.dumps(
+            {'message': 'failure: User is not allowed to edit this query!'}),
+            content_type="application/json")
+
     us.queryset = dumped_queryset
     us.path = request.POST.get('query')
     us.order_by = order_by
@@ -867,7 +849,7 @@ def save_queryset_for_user(request):
     us.description = description
     us.save()
 
-    print us.queryset_dict
+    logger.debug(us.queryset_dict)
 
     return HttpResponse(content=json.dumps({'message': 'success'}),
                         content_type="application/json")
@@ -875,7 +857,6 @@ def save_queryset_for_user(request):
 
 class CustomView(SearchView):
     model = Facebook_Status
-    # paginate_by = 10
     context_object_name = 'filtered_statuses'
     template_name = "core/custom.html"
 
@@ -901,15 +882,6 @@ class CustomView(SearchView):
         qserialzer = QSerializer()
         query_filter = qserialzer.loads(sv.queryset)
 
-        params_dict = get_parsed_request(get_params=self.request.GET)
-
-        # context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
-        # context['parties'] = PARTY_MODEL.objects.filter(id__in=params_dict['parties_ids'])
-        # context['tags'] = Tag.objects.filter(id__in=params_dict['tags_ids'])
-        # context['search_str'] = params_dict['phrases']
-        # context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
-        #     x.name for x in context['tags'])
-
         context['saved_query'] = sv
         return_queryset = apply_request_params(
             Facebook_Status.objects.filter(query_filter), self.request)
@@ -922,7 +894,6 @@ class CustomView(SearchView):
 class CustomViewByID(CustomView):
     def get_queryset(self, **kwargs):
         sv = get_object_or_404(UserSearch, id=self.kwargs['id'])
-        # sv = UserSearch.objects.get(id=self.kwargs['id'])
         qserialzer = QSerializer()
         query_filter = qserialzer.loads(sv.queryset)
         return apply_request_params(
@@ -933,15 +904,6 @@ class CustomViewByID(CustomView):
         sv = UserSearch.objects.get(id=self.kwargs['id'])
         qserialzer = QSerializer()
         query_filter = qserialzer.loads(sv.queryset)
-
-        params_dict = get_parsed_request(get_params=self.request.GET)
-
-        # context['members'] = MEMBER_MODEL.objects.filter(id__in=params_dict['members_ids'])
-        # context['parties'] = PARTY_MODEL.objects.filter(id__in=params_dict['parties_ids'])
-        # context['tags'] = Tag.objects.filter(id__in=params_dict['tags_ids'])
-        # context['search_str'] = params_dict['phrases']
-        # context['search_title'] = ", ".join([x for x in params_dict['phrases']]) or ", ".join(
-        #     x.name for x in context['tags'])
 
         context['saved_query'] = sv
         return_queryset = apply_request_params(
@@ -963,7 +925,7 @@ class CustomsByUserView(ListView):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            user = User.objects.get(username=self.kwargs['username'])
+            User.objects.get(username=self.kwargs['username'])
         except User.DoesNotExist:
             return redirect(reverse('all-customs'))
         return super(CustomsByUserView, self).dispatch(request, *args,
