@@ -4,6 +4,10 @@ cache: pip
 python:
   - "2.7.11"
 
+before_install:
+  - export DJANGO_SETTINGS_MODULE=kikar_hamedina.settings
+  - export PYTHONPATH=$PYTHONPATH:$HOME/build/hasadna/kikar-hamedina/kikar_hamedina
+
 install:
  - "pip install pip -U"
  - "pip install -r requirements/vps.txt"
@@ -12,6 +16,7 @@ services: postgresql
 
 before_script:
   - psql -c "CREATE DATABASE travisci;" -U postgres
+  - python kikar_hamedina/manage.py migrate
 
 script:
   - cd kikar_hamedina; python manage.py test
