@@ -73,8 +73,8 @@ urlpatterns = patterns('',
                                'context_object': 'member'},
                            name='member'),
                        url(
-                           r'^tag/(?P<search_field>\w+)/(?P<id>{}+)/$'.format(
-                               TAG_NAME_CHARSET),
+                           r'^tag/(?P<search_field>\w+)/(?P<id>%s+)/$' %
+                           TAG_NAME_CHARSET,
                            views.TagView.as_view(),
                            kwargs={'variable_column': 'tags',
                                    'context_object': 'tag'},
