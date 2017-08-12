@@ -21,7 +21,7 @@ before_script:
 #  - python kikar_hamedina/manage.py loaddata fixture data_fixture_facebook_feeds.json --app facebook_feeds
 
 script:
-  - python manage.py test
+  - cd kikar_hamedina; python manage.py test
 
 after_script:
   - coveralls
