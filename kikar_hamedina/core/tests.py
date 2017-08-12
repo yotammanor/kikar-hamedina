@@ -10,6 +10,10 @@ from facebook_feeds.models import Facebook_Feed, Facebook_Persona, \
 from mks.models import Knesset, Member, Party
 
 
+def format_status_id(facebook_feed, status_id):
+    return "{}_{}".format(facebook_feed.id, status_id)
+
+
 class CoreViewsTests(TestCase):
     def setUp(self):
         knesset = Knesset(number=settings.CURRENT_KNESSET_NUMBER)
@@ -19,6 +23,7 @@ class CoreViewsTests(TestCase):
         party.save()
         member = Member(current_party=party, name="test_member")
         member.save()
+        self.member = member
         member_content_type = ContentType.objects.get(app_label="mks",
                                                       model="member")
         persona = Facebook_Persona(object_id=member.id,
@@ -37,7 +42,9 @@ class CoreViewsTests(TestCase):
         for status_id in xrange(10):
             creation_date = timezone.now() - timezone.timedelta(days=status_id)
             facebook_status = Facebook_Status(feed=facebook_feed,
-                                              status_id=str(status_id),
+                                              status_id=format_status_id(
+                                                  facebook_feed,
+                                                  status_id),
                                               content="foo",
                                               published=creation_date,
                                               updated=timezone.now())
@@ -57,8 +64,27 @@ class CoreViewsTests(TestCase):
         Facebook_Status.objects.all().delete()
         Facebook_Persona.objects.all().delete()
 
-    def test_about_us_view(self):
+    def test_about_us(self):
         url = reverse("about")
-        print Knesset.objects.all().count()
         response = self.client.get(url)
-        self.assertTrue(response.status_code == 200)
+        self.assertEqual(response.status_code, 200)
+
+    def test_homepage(self):
+        url = reverse("index")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_member(self):
+        url = reverse("member", args=[self.member.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_party(self):
+        url = reverse("party", args=[self.member.current_party_id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_search_page(self):
+        url = reverse("search")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
