@@ -11,6 +11,7 @@ before_install:
 install:
  - "pip install pip -U"
  - "pip install -r requirements/vps.txt"
+ - "pip install coveralls"
 
 services: postgresql
 
@@ -19,7 +20,7 @@ before_script:
   - python kikar_hamedina/manage.py migrate
 
 script:
-  - cd kikar_hamedina; python manage.py test
+  - cd kikar_hamedina; coverage run  --source=. manage.py test
 
 after_script:
   - coveralls
